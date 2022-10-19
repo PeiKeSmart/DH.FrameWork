@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	<LangVersion>latest</LangVersion>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+	<AssemblyName>DG.PluginCore.IPlugins</AssemblyName>
+	<RootNamespace>PluginCore.IPlugins</RootNamespace>
+  </PropertyGroup>
+
+</Project>
