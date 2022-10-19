@@ -4,3 +4,5 @@
 
 /.vs
 /src/DG.PluginCore/obj
+/src/DG.PluginCore.IPlugins.AspNetCore/obj
+/src/DG.PluginCore.IPlugins.AspNetCore/bin/Debug/netstandard2.1
