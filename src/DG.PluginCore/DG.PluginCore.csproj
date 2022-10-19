@@ -4,13 +4,12 @@
 	<LangVersion>latest</LangVersion>
     <TargetFrameworks>net5.0;net6.0;net7.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
-	<AssemblyName>DG.NCore</AssemblyName>
+	<AssemblyName>DG.PluginCore</AssemblyName>
 	<RootNamespace>PluginCore</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Interfaces\" />
-    <Folder Include="lmplements\" />
+    <PackageReference Include="SharpZipLib" Version="1.4.0" />
   </ItemGroup>
 
   <ItemGroup>

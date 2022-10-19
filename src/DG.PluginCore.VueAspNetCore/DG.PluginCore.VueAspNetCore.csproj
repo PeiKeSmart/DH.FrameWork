@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<LangVersion>latest</LangVersion>
+		<TargetFrameworks>net5.0;net6.0;net7.0</TargetFrameworks>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<AssemblyName>DG.PluginCore.VueAspNetCore</AssemblyName>
+		<RootNamespace>PluginCore.VueAspNetCore</RootNamespace>
+
+		<!--禁止生成launchSettings.json-->
+		<NoDefaultLaunchSettingsFile>True</NoDefaultLaunchSettingsFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\DG.PluginCore.IPlugins.AspNetCore\DG.PluginCore.IPlugins.AspNetCore.csproj" />
+	  <ProjectReference Include="..\DG.PluginCore\DG.PluginCore.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Include="node_modules/plugincore-admin-frontend/dist/**/**/*" />
+	</ItemGroup>
+
+	<!-- Use Visual Studio npm package if it is installed. -->
+	<PropertyGroup Condition="Exists('$(VsInstallRoot)\Web\External\npm.cmd')">
+		<Path>$(Path)$(VsInstallRoot)\Web\External\;</Path>
+	</PropertyGroup>
+
+	<Target Name="NpmInstall" BeforeTargets="Build">
+		<Exec Command="npm install" EnvironmentVariables="PATH=$(Path.Replace(';', '%3B'))" ContinueOnError="true">
+			<Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
+		</Exec>
+		<Error Condition="'$(ErrorCode)' != '0'" Text="Node.js/npm is required to build this project. To continue, please install Node.js from https://nodejs.org/ or Visual Studio Installer, and then restart your command prompt or IDE." />
+	</Target>
+
+</Project>
