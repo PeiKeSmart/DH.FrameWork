@@ -1,0 +1,10 @@
+E:\Code\DH.FrameWork\src\DG.PluginCore.IPlugins\bin\Debug\netstandard2.1\DG.PluginCore.IPlugins.deps.json
+E:\Code\DH.FrameWork\src\DG.PluginCore.IPlugins\bin\Debug\netstandard2.1\DG.PluginCore.IPlugins.dll
+E:\Code\DH.FrameWork\src\DG.PluginCore.IPlugins\bin\Debug\netstandard2.1\DG.PluginCore.IPlugins.pdb
+E:\Code\DH.FrameWork\src\DG.PluginCore.IPlugins\obj\Debug\netstandard2.1\DG.PluginCore.IPlugins.csproj.AssemblyReference.cache
+E:\Code\DH.FrameWork\src\DG.PluginCore.IPlugins\obj\Debug\netstandard2.1\DG.PluginCore.IPlugins.GeneratedMSBuildEditorConfig.editorconfig
+E:\Code\DH.FrameWork\src\DG.PluginCore.IPlugins\obj\Debug\netstandard2.1\DG.PluginCore.IPlugins.AssemblyInfoInputs.cache
+E:\Code\DH.FrameWork\src\DG.PluginCore.IPlugins\obj\Debug\netstandard2.1\DG.PluginCore.IPlugins.AssemblyInfo.cs
+E:\Code\DH.FrameWork\src\DG.PluginCore.IPlugins\obj\Debug\netstandard2.1\DG.PluginCore.IPlugins.csproj.CoreCompileInputs.cache
+E:\Code\DH.FrameWork\src\DG.PluginCore.IPlugins\obj\Debug\netstandard2.1\DG.PluginCore.IPlugins.dll
+E:\Code\DH.FrameWork\src\DG.PluginCore.IPlugins\obj\Debug\netstandard2.1\DG.PluginCore.IPlugins.pdb

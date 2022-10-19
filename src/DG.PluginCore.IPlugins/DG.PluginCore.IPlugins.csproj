@@ -8,4 +8,8 @@
 	<RootNamespace>PluginCore.IPlugins</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="System.Text.Json" Version="7.0.0-rc.2.22472.3" />
+  </ItemGroup>
+
 </Project>

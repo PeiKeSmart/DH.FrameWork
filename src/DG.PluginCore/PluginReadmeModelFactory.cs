@@ -29,7 +29,7 @@ namespace PluginCore
                 readmeModel.PluginId = pluginId;
                 readmeModel.Content = readmeStr;
             }
-            catch (Exception ex)
+            catch/* (Exception ex)*/
             {
                 readmeModel = null;
             }

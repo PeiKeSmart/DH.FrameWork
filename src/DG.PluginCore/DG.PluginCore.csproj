@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
 	<LangVersion>latest</LangVersion>
@@ -11,6 +11,10 @@
   <ItemGroup>
     <Folder Include="Interfaces\" />
     <Folder Include="lmplements\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DG.PluginCore.IPlugins\DG.PluginCore.IPlugins.csproj" />
   </ItemGroup>
 
 </Project>
