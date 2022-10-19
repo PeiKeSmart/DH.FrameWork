@@ -9,3 +9,5 @@
 /src/DG.PluginCore/bin/Debug
 /src/DG.PluginCore.AspNetCore/obj
 /src/DG.PluginCore.VueAspNetCore/obj
+/demo/DemoPluginsNetCore7/bin/Debug/net7.0
+/demo/DemoPluginsNetCore7/obj

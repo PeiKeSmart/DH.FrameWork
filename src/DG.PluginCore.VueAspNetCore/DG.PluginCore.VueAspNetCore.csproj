@@ -2,10 +2,11 @@
 
 	<PropertyGroup>
 		<LangVersion>latest</LangVersion>
+		<OutputType>Library</OutputType>
 		<TargetFrameworks>net5.0;net6.0;net7.0</TargetFrameworks>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<AssemblyName>DG.PluginCore.VueAspNetCore</AssemblyName>
-		<RootNamespace>PluginCore.VueAspNetCore</RootNamespace>
+		<RootNamespace>PluginCore.AspNetCore</RootNamespace>
 
 		<!--禁止生成launchSettings.json-->
 		<NoDefaultLaunchSettingsFile>True</NoDefaultLaunchSettingsFile>
