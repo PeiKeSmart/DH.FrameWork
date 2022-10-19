@@ -11,6 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{FE46
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DG.PluginCore.IPlugins", "src\DG.PluginCore.IPlugins\DG.PluginCore.IPlugins.csproj", "{C25137B0-AEBD-48ED-B030-C22D7AE69448}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DG.PluginCore.IPlugins.AspNetCore", "src\DG.PluginCore.IPlugins.AspNetCore\DG.PluginCore.IPlugins.AspNetCore.csproj", "{2BF53C82-636D-4852-BF0C-44267CDD70EF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +27,10 @@ Global
 		{C25137B0-AEBD-48ED-B030-C22D7AE69448}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C25137B0-AEBD-48ED-B030-C22D7AE69448}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C25137B0-AEBD-48ED-B030-C22D7AE69448}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2BF53C82-636D-4852-BF0C-44267CDD70EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2BF53C82-636D-4852-BF0C-44267CDD70EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2BF53C82-636D-4852-BF0C-44267CDD70EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2BF53C82-636D-4852-BF0C-44267CDD70EF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -33,6 +39,7 @@ Global
 		{E3453AC8-1D42-494B-8E21-2E4EFA105B8D} = {FE466F83-07F0-477A-82D5-3CD3B614D874}
 		{FE466F83-07F0-477A-82D5-3CD3B614D874} = {AD7AB001-3AF0-48C7-B277-513A2A2D6275}
 		{C25137B0-AEBD-48ED-B030-C22D7AE69448} = {FE466F83-07F0-477A-82D5-3CD3B614D874}
+		{2BF53C82-636D-4852-BF0C-44267CDD70EF} = {FE466F83-07F0-477A-82D5-3CD3B614D874}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8C334959-AE8C-42FF-B144-7B36F5C1B16A}
