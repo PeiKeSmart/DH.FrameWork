@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "47NkoHwSvZJxB1G0wg4JLBjrONzfg5TkEb982noAtxA=",
+  "Source": "DG.PluginCore.VueAspNetCore",
+  "BasePath": "_content/DG.PluginCore.VueAspNetCore",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

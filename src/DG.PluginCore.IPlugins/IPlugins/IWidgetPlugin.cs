@@ -1,4 +1,6 @@
-﻿namespace PluginCore.IPlugins
+﻿using System.Threading.Tasks;
+
+namespace PluginCore.IPlugins
 {
     public interface IWidgetPlugin : IPlugin
     {

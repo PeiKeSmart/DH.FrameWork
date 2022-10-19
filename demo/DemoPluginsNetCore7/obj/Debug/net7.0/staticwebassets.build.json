@@ -1,0 +1,23 @@
+{
+  "Version": 1,
+  "Hash": "uwTohXh9Xb6C0iDIeUJGNWm9JujzhDrJeQ3Bw/1KdNE=",
+  "Source": "DemoPluginsNetCore7",
+  "BasePath": "_content/DemoPluginsNetCore7",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [
+    {
+      "Identity": "E:\\Code\\DH.FrameWork\\src\\DG.PluginCore.VueAspNetCore\\DG.PluginCore.VueAspNetCore.csproj",
+      "Version": 2,
+      "Source": "DG.PluginCore.VueAspNetCore",
+      "GetPublishAssetsTargets": "ComputeReferencedStaticWebAssetsPublishManifest;GetCurrentProjectPublishStaticWebAssetItems",
+      "AdditionalPublishProperties": "TargetFramework=net7.0",
+      "AdditionalPublishPropertiesToRemove": "WebPublishProfileFile;RuntimeIdentifier;SelfContained",
+      "GetBuildAssetsTargets": "GetCurrentProjectBuildStaticWebAssetItems",
+      "AdditionalBuildProperties": "TargetFramework=net7.0",
+      "AdditionalBuildPropertiesToRemove": "WebPublishProfileFile;RuntimeIdentifier;SelfContained"
+    }
+  ],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

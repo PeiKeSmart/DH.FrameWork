@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\buildMultiTargeting\DG.PluginCore.VueAspNetCore.props" />
+</Project>

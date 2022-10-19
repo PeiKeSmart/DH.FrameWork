@@ -1,5 +1,7 @@
 ﻿using PluginCore.IPlugins;
 
+using System.Collections.Generic;
+
 namespace PluginCore.Interfaces
 {
     public interface IPluginFinder

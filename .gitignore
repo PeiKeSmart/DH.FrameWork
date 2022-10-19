@@ -3,11 +3,5 @@
 ################################################################################
 
 /.vs
-/src/DG.PluginCore/obj
-/src/DG.PluginCore.IPlugins.AspNetCore/obj
-/src/DG.PluginCore.IPlugins.AspNetCore/bin/Debug/netstandard2.1
-/src/DG.PluginCore/bin/Debug
-/src/DG.PluginCore.AspNetCore/obj
-/src/DG.PluginCore.VueAspNetCore/obj
-/demo/DemoPluginsNetCore7/bin/Debug/net7.0
-/demo/DemoPluginsNetCore7/obj
+/*/obj/*
+/*/bin/*
