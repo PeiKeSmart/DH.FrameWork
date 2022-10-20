@@ -3,9 +3,17 @@
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
 	<EnableDynamicLoading>true</EnableDynamicLoading>
+	<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+	  
+	<!--不打包模板文件-->
+    <RazorCompileOnBuild>false</RazorCompileOnBuild>
+    <MvcRazorCompileOnPublish>false</MvcRazorCompileOnPublish>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="DG.NCore" Version="8.1.2022.1018-beta00026">
+		<ExcludeAssets>runtime</ExcludeAssets>
+	</PackageReference>
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0">
 		<ExcludeAssets>runtime</ExcludeAssets>
 	</PackageReference>
@@ -29,6 +37,12 @@
 	<Content Include="settings.json">
 		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	</Content>
+	<Content Include="Views\*">
+	  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	</Content>
+	<Content Include="Views\*\*">
+	  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	</Content>
   </ItemGroup>
 
   <!-- 发布 wwwroot -->
@@ -39,8 +53,6 @@
 	<Content Include="wwwroot\*\*">
 		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	</Content>
-  </ItemGroup>
-
-  
+  </ItemGroup>  
 
 </Project>

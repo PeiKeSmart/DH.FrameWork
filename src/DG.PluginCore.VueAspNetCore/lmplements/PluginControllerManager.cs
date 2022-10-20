@@ -24,6 +24,9 @@ namespace PluginCore.AspNetCore.lmplements
             AssemblyPart assemblyPart = new AssemblyPart(assembly);
             _applicationPartManager.ApplicationParts.Add(assemblyPart);
 
+            //var viewAssemblyPart = new CompiledRazorAssemblyPart(assembly);
+            //_applicationPartManager.ApplicationParts.Add(viewAssemblyPart);
+
             ResetControllActions();
         }
 
