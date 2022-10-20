@@ -3,7 +3,7 @@
   <PropertyGroup>
 	<LangVersion>latest</LangVersion>
 	<OutputType>Library</OutputType>
-    <TargetFrameworks>net5.0;net6.0;net7.0</TargetFrameworks>
+    <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
 	<AssemblyName>DG.PluginCore.AspNetCore</AssemblyName>
 	<RootNamespace>PluginCore.AspNetCore</RootNamespace>
