@@ -3,8 +3,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
-using NewLife.Log;
-
 using PluginCore.IPlugins;
 
 using System;
@@ -28,6 +26,7 @@ namespace HelloWorldPlugin
 
         public void ConfigureServices(IServiceCollection services)
         {
+
         }
 
         public void Configure(IApplicationBuilder app)
