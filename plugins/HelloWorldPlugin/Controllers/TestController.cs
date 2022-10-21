@@ -6,7 +6,8 @@ namespace HelloWorldPlugin.Controllers
     {
         public IActionResult HelloWorld()
         {
-            return View("~/Plugins/HelloWorldPlugin/Views/HelloWorld.cshtml");
+            return View();
+            //return View("~/Plugins/HelloWorldPlugin/Views/HelloWorld.cshtml");
         }
     }
 }

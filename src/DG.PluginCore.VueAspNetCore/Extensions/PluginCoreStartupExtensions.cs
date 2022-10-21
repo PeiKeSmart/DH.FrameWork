@@ -1,14 +1,17 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Razor.Compilation;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.FileProviders;
 
 using PluginCore.AspNetCore.AdminUI;
 using PluginCore.AspNetCore.Authorization;
 using PluginCore.AspNetCore.BackgroundServices;
+using PluginCore.AspNetCore.Infrastructure;
 using PluginCore.AspNetCore.Interfaces;
 using PluginCore.AspNetCore.lmplements;
 using PluginCore.AspNetCore.Middlewares;
+using PluginCore.AspNetCore.ViewCompiler;
 using PluginCore.Interfaces;
 using PluginCore.IPlugins;
 using PluginCore.lmplements;
@@ -27,7 +30,7 @@ namespace PluginCore.AspNetCore.Extensions
 
         private static IServiceCollection _services;
 
-        private static IServiceProvider _serviceProvider;
+        public static IServiceProvider _serviceProvider;
 
         /// <summary>
         /// 若需要替换默认实现, 请在 <see cref="AddPluginCore(IServiceCollection)"/> 之前, 若在之后, 则无法影响 主程序启动时默认行为
@@ -76,7 +79,8 @@ namespace PluginCore.AspNetCore.Extensions
 
             #endregion
 
-
+            // 替换视图的注入
+            services.Replace<IViewCompilerProvider, DGViewCompilerProvider>();
 
             // ************************* 注意: IServiceCollection 是服务列表, 但由 IServiceProvider 来负责解析, AClass 单例 仅在 AServiceProvider 范围内
             _serviceProvider = services.BuildServiceProvider();
