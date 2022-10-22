@@ -5,17 +5,17 @@ VisualStudioVersion = 17.4.33006.217
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{AD7AB001-3AF0-48C7-B277-513A2A2D6275}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DG.PluginCore", "src\DG.PluginCore\DG.PluginCore.csproj", "{E3453AC8-1D42-494B-8E21-2E4EFA105B8D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DH.PluginCore", "src\DH.PluginCore\DH.PluginCore.csproj", "{E3453AC8-1D42-494B-8E21-2E4EFA105B8D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{FE466F83-07F0-477A-82D5-3CD3B614D874}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DG.PluginCore.IPlugins", "src\DG.PluginCore.IPlugins\DG.PluginCore.IPlugins.csproj", "{C25137B0-AEBD-48ED-B030-C22D7AE69448}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DH.PluginCore.IPlugins", "src\DH.PluginCore.IPlugins\DH.PluginCore.IPlugins.csproj", "{C25137B0-AEBD-48ED-B030-C22D7AE69448}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DG.PluginCore.IPlugins.AspNetCore", "src\DG.PluginCore.IPlugins.AspNetCore\DG.PluginCore.IPlugins.AspNetCore.csproj", "{2BF53C82-636D-4852-BF0C-44267CDD70EF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DH.PluginCore.IPlugins.AspNetCore", "src\DH.PluginCore.IPlugins.AspNetCore\DH.PluginCore.IPlugins.AspNetCore.csproj", "{2BF53C82-636D-4852-BF0C-44267CDD70EF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DG.PluginCore.AspNetCore", "src\DG.PluginCore.AspNetCore\DG.PluginCore.AspNetCore.csproj", "{558F2084-BCA2-4261-AA28-F4B988E19B8E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DH.PluginCore.AspNetCore", "src\DH.PluginCore.AspNetCore\DH.PluginCore.AspNetCore.csproj", "{558F2084-BCA2-4261-AA28-F4B988E19B8E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DG.PluginCore.VueAspNetCore", "src\DG.PluginCore.VueAspNetCore\DG.PluginCore.VueAspNetCore.csproj", "{11F9A54D-EF5F-498C-9B6F-F452E41816F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DH.PluginCore.VueAspNetCore", "src\DH.PluginCore.VueAspNetCore\DH.PluginCore.VueAspNetCore.csproj", "{11F9A54D-EF5F-498C-9B6F-F452E41816F6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "demo", "demo", "{0101909E-8F59-4941-BF55-6B7D03716BC5}"
 EndProject
@@ -38,13 +38,20 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "demo", "demo", "{9F6E4C76-E
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoolCatPluginDemo", "demo\CoolCatPluginDemo\CoolCatPluginDemo.csproj", "{9914E29E-F86B-4569-B783-11133EF01A52}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DG.CoolCat.Core", "src\DG.CoolCat.Core\DG.CoolCat.Core.csproj", "{81C99502-8AE4-43AF-9C82-13813BAFDA53}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DH.CoolCat.Core", "src\DH.CoolCat.Core\DH.CoolCat.Core.csproj", "{81C99502-8AE4-43AF-9C82-13813BAFDA53}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DG.CoolCat.Core.Mvc", "src\DG.CoolCat.Core.Mvc\DG.CoolCat.Core.Mvc.csproj", "{2CDB6483-8ADE-4973-9960-855FBEAA5395}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DH.CoolCat.Core.Mvc", "src\DH.CoolCat.Core.Mvc\DH.CoolCat.Core.Mvc.csproj", "{2CDB6483-8ADE-4973-9960-855FBEAA5395}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "plugins", "plugins", "{3796F065-C4F6-45BA-A6EB-76D33E5863D8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoPlugin1", "plugins\DemoPlugin1\DemoPlugin1.csproj", "{A4893F49-D80D-4860-A231-5B3B02952E00}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "解决方案项", "解决方案项", "{4CD50589-F057-406C-BCAE-50426AE9B0E5}"
+	ProjectSection(SolutionItems) = preProject
+		global.json = global.json
+		NuGet.config = NuGet.config
+		version.props = version.props
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -106,7 +113,6 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{E3453AC8-1D42-494B-8E21-2E4EFA105B8D} = {E05CDE1D-08ED-4160-85A9-7AC8D2FA8517}
-		{FE466F83-07F0-477A-82D5-3CD3B614D874} = {AD7AB001-3AF0-48C7-B277-513A2A2D6275}
 		{C25137B0-AEBD-48ED-B030-C22D7AE69448} = {E05CDE1D-08ED-4160-85A9-7AC8D2FA8517}
 		{2BF53C82-636D-4852-BF0C-44267CDD70EF} = {E05CDE1D-08ED-4160-85A9-7AC8D2FA8517}
 		{558F2084-BCA2-4261-AA28-F4B988E19B8E} = {E05CDE1D-08ED-4160-85A9-7AC8D2FA8517}

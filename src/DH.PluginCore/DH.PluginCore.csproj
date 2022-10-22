@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../../version.props"/>
+	
+  <PropertyGroup>
+	<LangVersion>latest</LangVersion>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+	<AssemblyName>DG.PluginCore</AssemblyName>
+	<RootNamespace>PluginCore</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SharpZipLib" Version="1.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DG.PluginCore.IPlugins\DG.PluginCore.IPlugins.csproj" />
+  </ItemGroup>
+
+</Project>

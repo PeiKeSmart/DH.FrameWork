@@ -1,4 +1,4 @@
-﻿using DG.CoolCat.Core.Mvc.Infrastructure;
+﻿using DH.CoolCat.Core.Mvc.Infrastructure;
 
 using Microsoft.AspNetCore.Authentication.Cookies;
 
