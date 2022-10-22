@@ -6,4 +6,4 @@
 交流请加群：774046050
 
 
-1、单例方法可以使用Singleton<T>
+1、单例方法可以使用Singleton<T>.Instance
