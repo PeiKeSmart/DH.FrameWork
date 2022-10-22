@@ -1,27 +1,26 @@
+using Autofac.Extensions.DependencyInjection;
+
+using DH.Core.Configuration;
+using DH.Web.Framework.Infrastructure.Extensions;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
+builder.Configuration.AddJsonFile(DHConfigurationDefaults.AppSettingsFilePath, true, true);
+if (!string.IsNullOrEmpty(builder.Environment?.EnvironmentName))
+{
+    var path = string.Format(DHConfigurationDefaults.AppSettingsEnvironmentFilePath, builder.Environment.EnvironmentName);
+    builder.Configuration.AddJsonFile(path, true, true);
+}
+builder.Configuration.AddEnvironmentVariables();
+
+// 向应用程序添加服务并配置服务提供商
+builder.Services.ConfigureApplicationServices(builder);
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
-}
-
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-
-app.UseRouting();
-
-app.UseAuthorization();
-
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+//Configure the application HTTP request pipeline
+app.ConfigureRequestPipeline();
+app.StartEngine();
 
 app.Run();

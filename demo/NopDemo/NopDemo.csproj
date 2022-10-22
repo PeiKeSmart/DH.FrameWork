@@ -33,16 +33,20 @@
     <Content Remove="App_Data\*.json" />
     <Content Update="App_Data\DataProtectionKeys\*.xml" CopyToPublishDirectory="Never" />
 
-    <Compile Remove="Themes\**" />
-    <Content Remove="Themes\**" />
-    <EmbeddedResource Remove="Themes\**" />
-    <None Remove="Themes\**" />
-    <None Include="Plugins\**" CopyToPublishDirectory="PreserveNewest" />
+    <Compile Remove="Plugins\**;Themes\**" />
+    <Content Remove="Plugins\**;Themes\**" />
+    <EmbeddedResource Remove="Plugins\**;Themes\**" />
+    <None Remove="Plugins\**;Themes\**" />
+    <None Include="Plugins\**" CopyToPublishDirectory="PreserveNewest" Exclude="Plugins\**\runtimes\**;Plugins\**\ref\**;Plugins\**\*.pdb" />
 
     <Content Include="Themes\**" CopyToPublishDirectory="PreserveNewest" CopyToOutputDirectory="Never" />
 
     <!-- 我们复制 \Logs 目录 -->
     <Content Include="Logs\**" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+	
+  <ItemGroup>
+    <Content Remove="App_Data\placeholder.txt" />
   </ItemGroup>
 	
   <ItemGroup>
@@ -63,6 +67,11 @@
   <ItemGroup>
     <Folder Include="Models\" />
     <Folder Include="wwwroot\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\DH.Core\DH.Core.csproj" />
+    <ProjectReference Include="..\..\src\DH.Web.Framework\DH.Web.Framework.csproj" />
   </ItemGroup>
 	
   <!-- 此目标在“Build”目标之后执行。
