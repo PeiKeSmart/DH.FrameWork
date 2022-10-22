@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="../../version.props"/>
+  <Import Project="../../version.props" />
 	
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -18,7 +18,7 @@
 
   <ItemGroup>
     <PackageReference Include="NewLife.XCode" Version="11.3.2022.1020-beta0841" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2-beta2" />
   </ItemGroup>
 
 </Project>
