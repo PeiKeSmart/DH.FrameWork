@@ -3,6 +3,21 @@ using Autofac.Extensions.DependencyInjection;
 using DH.Core.Configuration;
 using DH.Web.Framework.Infrastructure.Extensions;
 
+using NewLife.Log;
+
+var set = DHSetting.Current;
+if (set.Debug)
+{
+    XTrace.UseConsole();
+}
+
+if (!set.IsInstalled)
+{
+    set.IsInstalled = true;
+
+    set.Save();
+}
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
@@ -19,7 +34,7 @@ builder.Services.ConfigureApplicationServices(builder);
 
 var app = builder.Build();
 
-//Configure the application HTTP request pipeline
+// 配置应用程序HTTP请求管道
 app.ConfigureRequestPipeline();
 app.StartEngine();
 

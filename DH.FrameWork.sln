@@ -62,6 +62,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DH.Web.Framework", "src\DH.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DH.Core", "src\DH.Core\DH.Core.csproj", "{9D65A2C3-AD07-4ED2-8B92-730A4E291071}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DH.Services", "src\DH.Services\DH.Services.csproj", "{2D11ADB6-B927-4EAD-BB15-98B56AA559CF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -124,6 +126,10 @@ Global
 		{9D65A2C3-AD07-4ED2-8B92-730A4E291071}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9D65A2C3-AD07-4ED2-8B92-730A4E291071}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9D65A2C3-AD07-4ED2-8B92-730A4E291071}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D11ADB6-B927-4EAD-BB15-98B56AA559CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D11ADB6-B927-4EAD-BB15-98B56AA559CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D11ADB6-B927-4EAD-BB15-98B56AA559CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D11ADB6-B927-4EAD-BB15-98B56AA559CF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -151,6 +157,7 @@ Global
 		{8ED504DD-57C1-47D3-82E7-9F7E4CDE4137} = {AD7AB001-3AF0-48C7-B277-513A2A2D6275}
 		{24DEDFFB-7A34-4344-8414-87089F9B8799} = {8ED504DD-57C1-47D3-82E7-9F7E4CDE4137}
 		{9D65A2C3-AD07-4ED2-8B92-730A4E291071} = {8ED504DD-57C1-47D3-82E7-9F7E4CDE4137}
+		{2D11ADB6-B927-4EAD-BB15-98B56AA559CF} = {8ED504DD-57C1-47D3-82E7-9F7E4CDE4137}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8C334959-AE8C-42FF-B144-7B36F5C1B16A}

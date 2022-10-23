@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Tables xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:schemaLocation="https://newlifex.com https://newlifex.com/Model2022.xsd" NameSpace="DH.Entity" ConnName="DH" Output="" BaseClass="Entity" Version="11.2.2022.0716" Document="https://newlifex.com/xcode/model" xmlns="https://newlifex.com/Model2022.xsd">
+  <Table Name="Store" TableName="DH_Store" Description="站点信息">
+    <Columns>
+      <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
+      <Column Name="Name" DataType="String" Master="True" Length="400" Description="站点名称" />
+      <Column Name="Url" DataType="String" Length="400" Description="站点Url" />
+      <Column Name="SslEnabled" DataType="Boolean" Description="是否启用SSL" />
+      <Column Name="Hosts" DataType="String" Length="1000" Description="可能的HTTP_HOST值的逗号分隔列表" />
+      <Column Name="DefaultLanguageId" DataType="Int32" Description="此站点的默认语言的标识符。使用默认语言时设置0" />
+      <Column Name="DisplayOrder" DataType="Int32" Description="获取或设置显示顺序" />
+      <Column Name="CompanyName" DataType="String" Length="1000" Description="公司名称" />
+      <Column Name="CompanyAddress" DataType="String" Length="1000" Description="公司地址" />
+      <Column Name="CompanyPhoneNumber" DataType="String" Length="1000" Description="公司电话号码" />
+      <Column Name="CompanyVat" DataType="String" Length="1000" Description="公司VAT。用于欧盟国家/地区" />
+    </Columns>
+  </Table>
+  <Table Name="Language" TableName="DH_Language" Description="语言">
+    <Columns>
+      <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
+      <Column Name="Name" DataType="String" Master="True" Length="100" Description="语言名称" />
+      <Column Name="LanguageCulture" DataType="String" Length="20" Description="语言区域性" />
+      <Column Name="UniqueSeoCode" DataType="String" Length="2" Description="唯一SEO代码" />
+      <Column Name="FlagImageFileName" DataType="String" Description="标记图像文件名" />
+      <Column Name="Rtl" DataType="Boolean" Description="语言是否支持从右向左" />
+      <Column Name="LimitedToStores" DataType="Boolean" Description="是否受限于/限制于网站系统设置" />
+      <Column Name="DefaultCurrencyId" DataType="Int32" Description="语言的默认货币的标识符。使用默认货币显示顺序时设置0" />
+      <Column Name="Published" DataType="Boolean" Description="是否发布该语言" />
+      <Column Name="DisplayOrder" DataType="Int32" Description="显示顺序" />
+    </Columns>
+    <Indexes>
+      <Index Columns="UniqueSeoCode" Unique="True" />
+    </Indexes>
+  </Table>
+  <Table Name="Setting" TableName="DH_Setting" Description="站点配置">
+    <Columns>
+      <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
+      <Column Name="Name" DataType="String" Master="True" Length="200" Description="键名称" />
+      <Column Name="Value" DataType="String" Length="6000" Description="值" />
+      <Column Name="StoreId" DataType="Int32" Description="站点Id" />
+    </Columns>
+    <Indexes>
+      <Index Columns="Name,StoreId" Unique="True" />
+    </Indexes>
+  </Table>
+</Tables>

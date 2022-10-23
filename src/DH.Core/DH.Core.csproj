@@ -6,9 +6,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Entity\Config\**" />
+    <Compile Remove="Entity\Log\**" />
+    <EmbeddedResource Remove="Entity\Config\**" />
+    <EmbeddedResource Remove="Entity\Log\**" />
+    <None Remove="Entity\Config\**" />
+    <None Remove="Entity\Log\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="7.0.0-rc.2.22476.2" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="7.0.0-rc.2.22476.2" />
+    <PackageReference Include="NewLife.XCode" Version="11.3.2022.1020-beta0841" />
   </ItemGroup>
 
 </Project>
