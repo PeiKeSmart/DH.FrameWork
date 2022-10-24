@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Tables xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:schemaLocation="https://newlifex.com https://newlifex.com/Model2022.xsd" NameSpace="DH.Entity" ConnName="DH" Output="" BaseClass="Entity" Version="11.2.2022.0716" Document="https://newlifex.com/xcode/model" xmlns="https://newlifex.com/Model2022.xsd">
+  <Table Name="UserDetail" TableName="DH_UserDetail" Description="用户扩展">
+    <Columns>
+      <Column Name="Id" DataType="Int32" PrimaryKey="True" Description="编号" />
+      <Column Name="LanguageId" DataType="Int32" Description="语言Id" />
+      <Column Name="IsSuper" DataType="Boolean" Description="是否超级管理员" />
+    </Columns>
+  </Table>
   <Table Name="Store" TableName="DH_Store" Description="站点信息">
     <Columns>
       <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
@@ -30,6 +37,17 @@
     </Columns>
     <Indexes>
       <Index Columns="UniqueSeoCode" Unique="True" />
+    </Indexes>
+  </Table>
+  <Table Name="LocaleStringResource" TableName="DH_LocaleStringResource" Description="语言包">
+    <Columns>
+      <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
+      <Column Name="ResourceName" DataType="String" Master="True" Length="200" Description="资源名称" />
+      <Column Name="ResourceValue" DataType="String" Length="2048" Description="资源值" />
+      <Column Name="LanguageId" DataType="Int32" Description="语言标识符" />
+    </Columns>
+    <Indexes>
+      <Index Columns="ResourceName,LanguageId" Unique="True" />
     </Indexes>
   </Table>
   <Table Name="Setting" TableName="DH_Setting" Description="站点配置">

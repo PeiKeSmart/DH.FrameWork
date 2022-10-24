@@ -66,7 +66,7 @@ namespace DH.Core.Infrastructure
         }
 
         /// <summary>
-        /// 检查dll是否是我们知道不需要调查的发货dll之一。
+        /// 检查dll是否是我们知道不需要分析的dll之一。
         /// </summary>
         /// <param name="assemblyFullName">
         /// 要检查的程序集的名称。
@@ -81,7 +81,7 @@ namespace DH.Core.Infrastructure
         }
 
         /// <summary>
-        /// 检查dll是否是我们知道不需要调查的发货dll之一。
+        /// 检查dll是否是我们知道不需要分析的dll之一。
         /// </summary>
         /// <param name="assemblyFullName">
         /// 要匹配的程序集名称。
@@ -294,7 +294,7 @@ namespace DH.Core.Infrastructure
         public IList<string> AssemblyNames { get; set; } = new List<string>();
 
         /// <summary>获取我们知道不需要分析的dll的模式。</summary>
-        public string AssemblySkipLoadingPattern { get; set; } = "^System|^mscorlib|^Microsoft|^AjaxControlToolkit|^Antlr3|^Autofac|^AutoMapper|^Castle|^ComponentArt|^CppCodeProvider|^DotNetOpenAuth|^EntityFramework|^EPPlus|^FluentValidation|^ImageResizer|^itextsharp|^log4net|^MaxMind|^MbUnit|^MiniProfiler|^Mono.Math|^MvcContrib|^Newtonsoft|^NHibernate|^nunit|^Org.Mentalis|^PerlRegex|^QuickGraph|^Recaptcha|^Remotion|^RestSharp|^Rhino|^Telerik|^Iesi|^TestDriven|^TestFu|^UserAgentStringLibrary|^VJSharpCodeProvider|^WebActivator|^WebDev|^WebGrease";
+        public string AssemblySkipLoadingPattern { get; set; } = "^System|^mscorlib|^Microsoft|^AjaxControlToolkit|^Antlr3|^Autofac|^AutoMapper|^Castle|^ComponentArt|^CppCodeProvider|^DotNetOpenAuth|^EntityFramework|^EPPlus|^FluentValidation|^ImageResizer|^itextsharp|^log4net|^MaxMind|^MbUnit|^MiniProfiler|^Mono.Math|^MvcContrib|^Newtonsoft|^NHibernate|^nunit|^Org.Mentalis|^PerlRegex|^QuickGraph|^Recaptcha|^Remotion|^RestSharp|^Rhino|^Telerik|^Iesi|^TestDriven|^TestFu|^UserAgentStringLibrary|^VJSharpCodeProvider|^WebActivator|^WebDev|^WebGrease|^NewLife|^XCode|^Azure";
 
         /// <summary>获取或设置将被调查的dll的模式。为了易于使用，此默认值将匹配所有内容，但为了提高性能，您可能需要配置一个包含程序集和您自己的模式。</summary>
         /// <remarks>如果您更改此设置以便不调查DH程序集（例如，不包括"^DH|…"之类的内容），则可能会破坏核心功能。</remarks>

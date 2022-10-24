@@ -1,4 +1,4 @@
-﻿using XCode.Membership;
+﻿using DH.Entity;
 
 namespace DH.Core
 {
@@ -11,7 +11,13 @@ namespace DH.Core
         /// 获取当前用户
         /// </summary>
         /// <returns>表示异步操作的任务</returns>
-        Task<User> GetCurrentCustomerAsync();
+        UserDetail GetCurrentCustomer();
+
+        /// <summary>
+        /// 获取当前用户工作语言
+        /// </summary>
+        /// <returns>表示异步操作的任务</returns>
+        Task<Language> GetWorkingLanguageAsync();
 
     }
 }

@@ -18,7 +18,7 @@
         /// <summary>
         /// 获取本地化资源文件扩展名
         /// </summary>
-        public static string LocalizationResourcesFileExtension => "nopres.xml";
+        public static string LocalizationResourcesFileExtension => "dhres.xml";
 
         /// <summary>
         /// 获取安装示例映像的路径

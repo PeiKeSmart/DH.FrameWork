@@ -144,7 +144,6 @@ namespace DH.Services.Plugins
             }
 
             // 按显示顺序对列表进行排序。注：最低显示顺序为第一，即0、1、1、5、10
-            // 要求: https://www.nopcommerce.com/boards/topic/17455/load-plugins-based-on-their-displayorder-on-startup
             result = result.OrderBy(item => item.PluginDescriptor.DisplayOrder).ToList();
 
             return result;

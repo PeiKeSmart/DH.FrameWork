@@ -113,11 +113,11 @@ namespace DH.Web.Framework.Infrastructure.Extensions
                             var webHelper = EngineContext.Current.Resolve<IWebHelper>();
 
                             // 获取当前客户
-                            var currentCustomer = await EngineContext.Current.Resolve<IWorkContext>().GetCurrentCustomerAsync();
+                            var currentCustomer = EngineContext.Current.Resolve<IWorkContext>().GetCurrentCustomer();
 
                             // 错误日志
                             XTrace.WriteException(exception);
-                            LogProvider.Provider?.WriteLog("系统", "错误", false, exception.Message + " " + Environment.NewLine + exception.GetMessage(), currentCustomer.ID, currentCustomer.Name, webHelper.GetCurrentIpAddress());
+                            LogProvider.Provider?.WriteLog("系统", "错误", false, exception.Message + " " + Environment.NewLine + exception.GetMessage(), currentCustomer.User.ID, currentCustomer.User.Name, webHelper.GetCurrentIpAddress());
                         }
                     }
                     finally
@@ -156,11 +156,11 @@ namespace DH.Web.Framework.Infrastructure.Extensions
                                 var workContext = EngineContext.Current.Resolve<IWorkContext>();
 
                                 // 获取当前客户
-                                var currentCustomer = await workContext.GetCurrentCustomerAsync();
+                                var currentCustomer = workContext.GetCurrentCustomer();
 
                                 var message = $"Error 404. The requested page ({originalPath}) was not found";
                                 XTrace.Log.Error(message);
-                                LogProvider.Provider?.WriteLog("系统", "错误", false, message, currentCustomer.ID, currentCustomer.Name, webHelper.GetCurrentIpAddress());
+                                LogProvider.Provider?.WriteLog("系统", "错误", false, message, currentCustomer.User.ID, currentCustomer.User.Name, webHelper.GetCurrentIpAddress());
                             }
                         }
 
@@ -197,11 +197,11 @@ namespace DH.Web.Framework.Infrastructure.Extensions
                     var workContext = EngineContext.Current.Resolve<IWorkContext>();
 
                     // 获取当前客户
-                    var currentCustomer = await workContext.GetCurrentCustomerAsync();
+                    var currentCustomer = workContext.GetCurrentCustomer();
 
                     var message = $"Error 400. Bad request";
                     XTrace.Log.Error(message);
-                    LogProvider.Provider?.WriteLog("系统", "错误", false, message, currentCustomer.ID, currentCustomer.Name, webHelper.GetCurrentIpAddress());
+                    LogProvider.Provider?.WriteLog("系统", "错误", false, message, currentCustomer.User.ID, currentCustomer.User.Name, webHelper.GetCurrentIpAddress());
                 }
             });
         }
@@ -327,7 +327,8 @@ namespace DH.Web.Framework.Infrastructure.Extensions
                 ContentTypeProvider = provider,
                 OnPrepareResponse = context =>
                 {
-                    if (!DHSetting.Current.IsInstalled)
+                    if (!DHSetting.Current.IsInstalled ||
+                        !UserDetail.IsSuperAdmin())
                     {
                         context.Context.Response.StatusCode = StatusCodes.Status404NotFound;
                         context.Context.Response.ContentLength = 0;

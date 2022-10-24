@@ -80,10 +80,10 @@ namespace DH.Services.Authentication
                     var webHelper = EngineContext.Current.Resolve<IWebHelper>();
 
                     // 获取当前客户
-                    var currentCustomer = await EngineContext.Current.Resolve<IWorkContext>().GetCurrentCustomerAsync();
+                    var currentCustomer = EngineContext.Current.Resolve<IWorkContext>().GetCurrentCustomer();
 
                     XTrace.WriteException(ex);
-                    LogProvider.Provider?.WriteLog("系统", "错误", false, ex.Message + " " + Environment.NewLine + ex.GetMessage(), currentCustomer.ID, currentCustomer.Name, webHelper.GetCurrentIpAddress());
+                    LogProvider.Provider?.WriteLog("系统", "错误", false, ex.Message + " " + Environment.NewLine + ex.GetMessage(), currentCustomer.User.ID, currentCustomer.User.Name, webHelper.GetCurrentIpAddress());
                 }
             }
 

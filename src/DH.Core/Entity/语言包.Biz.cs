@@ -1,19 +1,39 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.Serialization;
+using System.Text;
+using System.Threading.Tasks;
+using System.Web;
+using System.Web.Script.Serialization;
+using System.Xml.Serialization;
+using NewLife;
 using NewLife.Data;
-
-using System.Globalization;
-
+using NewLife.Log;
+using NewLife.Model;
+using NewLife.Reflection;
+using NewLife.Threading;
+using NewLife.Web;
 using XCode;
+using XCode.Cache;
+using XCode.Configuration;
+using XCode.DataAccessLayer;
+using XCode.Membership;
+using XCode.Shards;
 
 namespace DH.Entity
 {
-    public partial class Language : Entity<Language>
+    public partial class LocaleStringResource : Entity<LocaleStringResource>
     {
         #region 对象操作
-        static Language()
+        static LocaleStringResource()
         {
             // 累加字段，生成 Update xx Set Count=Count+1234 Where xxx
             //var df = Meta.Factory.AdditionalFields;
-            //df.Add(nameof(DefaultCurrencyId));
+            //df.Add(nameof(LanguageId));
 
             // 过滤器 UserModule、TimeModule、IPModule
         }
@@ -38,21 +58,15 @@ namespace DH.Entity
         //    // InitData一般用于当数据表没有数据时添加一些默认数据，该实体类的任何第一次数据库操作都会触发该方法，默认异步调用
         //    if (Meta.Session.Count > 0) return;
 
-        //    if (XTrace.Debug) XTrace.WriteLine("开始初始化Language[语言]数据……");
+        //    if (XTrace.Debug) XTrace.WriteLine("开始初始化LocaleStringResource[语言包]数据……");
 
-        //    var entity = new Language();
-        //    entity.Name = "abc";
-        //    entity.LanguageCulture = "abc";
-        //    entity.UniqueSeoCode = "abc";
-        //    entity.FlagImageFileName = "abc";
-        //    entity.Rtl = true;
-        //    entity.LimitedToStores = true;
-        //    entity.DefaultCurrencyId = 0;
-        //    entity.Published = true;
-        //    entity.DisplayOrder = 0;
+        //    var entity = new LocaleStringResource();
+        //    entity.ResourceName = "abc";
+        //    entity.ResourceValue = "abc";
+        //    entity.LanguageId = 0;
         //    entity.Insert();
 
-        //    if (XTrace.Debug) XTrace.WriteLine("完成初始化Language[语言]数据！");
+        //    if (XTrace.Debug) XTrace.WriteLine("完成初始化LocaleStringResource[语言包]数据！");
         //}
 
         ///// <summary>已重载。基类先调用Valid(true)验证数据，然后在事务保护内调用OnInsert</summary>
@@ -71,18 +85,27 @@ namespace DH.Entity
         #endregion
 
         #region 扩展属性
+        /// <summary>语言标识符</summary>
+        [XmlIgnore, IgnoreDataMember]
+        //[ScriptIgnore]
+        public Language Language => Extends.Get(nameof(Language), k => Language.FindById(LanguageId));
+
+        /// <summary>语言标识符</summary>
+        [Map(nameof(LanguageId), typeof(Language), "Id")]
+        public String LanguageName => Language?.Name;
+
         #endregion
 
         #region 扩展查询
         /// <summary>根据编号查找</summary>
         /// <param name="id">编号</param>
         /// <returns>实体对象</returns>
-        public static Language FindById(Int32 id)
+        public static LocaleStringResource FindById(Int32 id)
         {
             if (id <= 0) return null;
 
             // 实体缓存
-            if (Meta.Session.Count < 1000) return Meta.Cache.Find(e => e.Id == id);
+            if (Meta.Session.Count < 20000) return Meta.Cache.Find(e => e.Id == id);
 
             // 单对象缓存
             return Meta.SingleCache[id];
@@ -90,58 +113,36 @@ namespace DH.Entity
             //return Find(_.Id == id);
         }
 
-        /// <summary>获取所有语言</summary>
+        /// <summary>根据编号查找</summary>
+        /// <param name="resourceName">资源名称</param>
+        /// <param name="languageId">语言Id</param>
+        /// <returns>实体对象</returns>
+        public static LocaleStringResource FindByResourceNameAndLanguageId(String resourceName, Int32 languageId)
+        {
+            if (languageId <= 0 || resourceName.IsNullOrWhiteSpace()) return null;
+
+            // 实体缓存
+            if (Meta.Session.Count < 20000) return Meta.Cache.Find(e => e.LanguageId == languageId && e.ResourceName == resourceName);
+
+            return Find(_.LanguageId == languageId & _.ResourceName == resourceName);
+        }
+
+        /// <summary>获取所有语言包</summary>
         /// <returns>语言集合</returns>
-        public static IList<Language> GetAll()
+        public static IList<LocaleStringResource> GetAll()
         {
             // 实体缓存
-            if (Meta.Session.Count < 1000) return Meta.Cache.Entities;
+            if (Meta.Session.Count < 20000) return Meta.Cache.Entities;
 
             return FindAll();
-        }
-
-        /// <summary>获取所有语言</summary>
-        /// <returns>语言集合</returns>
-        public static IEnumerable<Language> GetAllLanguages(bool showHidden = false)
-        {
-            // 实体缓存
-            if (Meta.Session.Count < 1000)
-            {
-                if (showHidden) return Meta.Cache.Entities.OrderBy(l => l.DisplayOrder).ThenBy(l => l.Id);
-                else return Meta.Cache.FindAll(e => e.Published).OrderBy(l => l.DisplayOrder).ThenBy(l => l.Id);
-            }
-
-            if (showHidden)
-                return FindAll(null, new PageParameter { PageSize = 0, OrderBy = "DisplayOrder asc, Id asc" });
-
-            return FindAll(_.Published == true, new PageParameter { PageSize = 0, OrderBy = "DisplayOrder asc, Id asc" });
-        }
-
-        /// <summary>
-        /// 获取2个字母的ISO语言代码
-        /// </summary>
-        /// <param name="language">语言</param>
-        /// <returns>ISO语言代码</returns>
-        public static string GetTwoLetterIsoLanguageName(Language language)
-        {
-            if (language == null)
-                throw new ArgumentNullException(nameof(language));
-
-            if (string.IsNullOrEmpty(language.LanguageCulture))
-                return "en";
-
-            var culture = new CultureInfo(language.LanguageCulture);
-            var code = culture.TwoLetterISOLanguageName;
-
-            return string.IsNullOrEmpty(code) ? "en" : code;
         }
 
         #endregion
 
         #region 高级查询
 
-        // Select Count(Id) as Id,Category From DH_Language Where CreateTime>'2020-01-24 00:00:00' Group By Category Order By Id Desc limit 20
-        //static readonly FieldCache<Language> _CategoryCache = new FieldCache<Language>(nameof(Category))
+        // Select Count(Id) as Id,Category From DH_LocaleStringResource Where CreateTime>'2020-01-24 00:00:00' Group By Category Order By Id Desc limit 20
+        //static readonly FieldCache<LocaleStringResource> _CategoryCache = new FieldCache<LocaleStringResource>(nameof(Category))
         //{
         //Where = _.CreateTime > DateTime.Today.AddDays(-30) & Expression.Empty
         //};
@@ -152,7 +153,6 @@ namespace DH.Entity
         #endregion
 
         #region 业务操作
-        
         #endregion
     }
 }
