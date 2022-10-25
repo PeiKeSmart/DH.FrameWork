@@ -40,7 +40,7 @@ namespace DH.Services.Localization
                 .FirstOrDefault(urlLanguage => urlLanguage.UniqueSeoCode.Equals(firstSegment, StringComparison.InvariantCultureIgnoreCase));
 
             // 如果语言存在并且发布的传递URL已本地化
-            return (language?.Published ?? false, language);
+            return (language?.Status ?? false, language);
         }
 
         /// <summary>

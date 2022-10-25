@@ -45,10 +45,10 @@ namespace DH.Web.Framework.Mvc.ModelBinding
             get
             {
                 // 获取工作语言标识符
-                var workingLanguageId = EngineContext.Current.Resolve<IWorkContext>().GetWorkingLanguageAsync().Result.Id;
+                var workingLanguageId = EngineContext.Current.Resolve<IWorkContext>().GetWorkingLanguage().Id;
 
                 // 获取区域设置资源值
-                _resourceValue = EngineContext.Current.Resolve<ILocalizationService>().GetResourceAsync(ResourceKey, workingLanguageId, true, ResourceKey).Result;
+                _resourceValue = EngineContext.Current.Resolve<ILocalizationService>().GetResource(ResourceKey, workingLanguageId, true, ResourceKey);
 
                 return _resourceValue;
             }

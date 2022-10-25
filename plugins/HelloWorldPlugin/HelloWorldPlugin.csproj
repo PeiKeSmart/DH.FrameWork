@@ -12,7 +12,7 @@
   </ItemGroup>
 	
   <ItemGroup>
-    <ProjectReference Include="..\..\src\DG.PluginCore.IPlugins.AspNetCore\DH.PluginCore.IPlugins.AspNetCore.csproj">
+    <ProjectReference Include="..\..\src\DH.PluginCore.IPlugins.AspNetCore\DH.PluginCore.IPlugins.AspNetCore.csproj">
 		<Private>false</Private>
 		<ExcludeAssets>runtime</ExcludeAssets>
 	</ProjectReference>

@@ -1,7 +1,7 @@
 ﻿namespace DH.Services.ScheduleTasks
 {
     /// <summary>
-    /// 任务管理器界面
+    /// 任务管理器接口
     /// </summary>
     public interface ITaskScheduler
     {

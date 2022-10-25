@@ -1,6 +1,8 @@
 using Autofac.Extensions.DependencyInjection;
 
 using DH.Core.Configuration;
+using DH.Core.Domain;
+using DH.Entity;
 using DH.Web.Framework.Infrastructure.Extensions;
 
 using NewLife.Log;
@@ -14,6 +16,11 @@ if (set.Debug)
 if (!set.IsInstalled)
 {
     set.IsInstalled = true;
+
+    Setting.SaveSetting(new StoreInformationSettings
+    {
+        DefaultStoreTheme = "DefaultClean",
+    });
 
     set.Save();
 }

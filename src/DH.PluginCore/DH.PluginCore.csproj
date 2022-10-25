@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DG.PluginCore.IPlugins\DG.PluginCore.IPlugins.csproj" />
+    <ProjectReference Include="..\DH.PluginCore.IPlugins\DH.PluginCore.IPlugins.csproj" />
   </ItemGroup>
 
 </Project>

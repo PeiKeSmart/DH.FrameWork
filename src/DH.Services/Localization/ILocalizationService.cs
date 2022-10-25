@@ -20,10 +20,9 @@
         /// </summary>
         /// <param name="resourceKey">表示ResourceKey的字符串.</param>
         /// <returns>
-        /// 表示异步操作的任务
         /// 任务结果包含表示请求的资源字符串的字符串.
         /// </returns>
-        Task<string> GetResourceAsync(string resourceKey);
+        string GetResource(string resourceKey);
 
         /// <summary>
         /// 基于指定的ResourceKey属性获取资源字符串。
@@ -34,10 +33,9 @@
         /// <param name="defaultValue">默认值</param>
         /// <param name="returnEmptyIfNotFound">一个值，指示如果未找到资源且默认值设置为空字符串，是否返回空字符串</param>
         /// <returns>
-        /// 表示异步操作的任务
         /// 任务结果包含表示请求的资源字符串的字符串.
         /// </returns>
-        Task<string> GetResourceAsync(string resourceKey, int languageId,
+        string GetResource(string resourceKey, int languageId,
             bool logIfNotFound = true, string defaultValue = "", bool returnEmptyIfNotFound = false);
     }
 }

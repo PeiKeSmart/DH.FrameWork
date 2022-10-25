@@ -48,7 +48,7 @@
         /// <summary>
         /// 获取或设置将安装的插件名称列表
         /// </summary>
-        IList<(string SystemName, Guid? CustomerGuid)> PluginNamesToInstall { get; set; }
+        IList<(string SystemName, Int32? CustomerGuid)> PluginNamesToInstall { get; set; }
 
         /// <summary>
         /// 获取或设置程序集加载冲突的列表

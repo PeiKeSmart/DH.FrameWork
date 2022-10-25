@@ -5,7 +5,7 @@ namespace DH.Core.Configuration
 {
     /// <summary>基类设置</summary>
     [DisplayName("基类设置")]
-    [XmlConfigFile("Config/DG.config", 10000)]
+    [XmlConfigFile("Config/DHSetting.config", 10000)]
     public class DHSetting : XmlConfig<DHSetting>
     {
         /// <summary>是否启用调试。默认true</summary>

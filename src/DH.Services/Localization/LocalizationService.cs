@@ -74,15 +74,14 @@ namespace DH.Services.Localization
         /// </summary>
         /// <param name="resourceKey">表示resourceKey的字符串。</param>
         /// <returns>
-        /// 表示异步操作的任务
         /// 任务结果包含表示请求的资源字符串的字符串。
         /// </returns>
-        public virtual async Task<string> GetResourceAsync(string resourceKey)
+        public virtual string GetResource(string resourceKey)
         {
-            var workingLanguage = await _workContext.GetWorkingLanguageAsync();
+            var workingLanguage = _workContext.GetWorkingLanguage();
 
             if (workingLanguage != null)
-                return await GetResourceAsync(resourceKey, workingLanguage.Id);
+                return GetResource(resourceKey, workingLanguage.Id);
 
             return string.Empty;
         }
@@ -96,10 +95,9 @@ namespace DH.Services.Localization
         /// <param name="defaultValue">默认值</param>
         /// <param name="returnEmptyIfNotFound">一个值，指示如果找不到资源并且默认值设置为空字符串，是否会返回空字符串</param>
         /// <returns>
-        /// 表示异步操作的任务
         /// 任务结果包含表示请求的资源字符串的字符串.
         /// </returns>
-        public virtual async Task<string> GetResourceAsync(string resourceKey, int languageId,
+        public virtual string GetResource(string resourceKey, int languageId,
             bool logIfNotFound = true, string defaultValue = "", bool returnEmptyIfNotFound = false)
         {
             var result = string.Empty;

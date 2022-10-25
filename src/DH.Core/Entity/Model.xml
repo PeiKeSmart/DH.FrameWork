@@ -25,18 +25,32 @@
   <Table Name="Language" TableName="DH_Language" Description="语言">
     <Columns>
       <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
-      <Column Name="Name" DataType="String" Master="True" Length="100" Description="语言名称" />
-      <Column Name="LanguageCulture" DataType="String" Length="20" Description="语言区域性" />
-      <Column Name="UniqueSeoCode" DataType="String" Length="2" Description="唯一SEO代码" />
-      <Column Name="FlagImageFileName" DataType="String" Description="标记图像文件名" />
-      <Column Name="Rtl" DataType="Boolean" Description="语言是否支持从右向左" />
-      <Column Name="LimitedToStores" DataType="Boolean" Description="是否受限于/限制于网站系统设置" />
-      <Column Name="DefaultCurrencyId" DataType="Int32" Description="语言的默认货币的标识符。使用默认货币显示顺序时设置0" />
-      <Column Name="Published" DataType="Boolean" Description="是否发布该语言" />
-      <Column Name="DisplayOrder" DataType="Int32" Description="显示顺序" />
+      <Column Name="Name" DataType="String" RawType="varchar(30)" Master="True" Length="30" Description="语言名称" />
+      <Column Name="DisplayName" DataType="String" RawType="varchar(30)" Master="True" Length="30" Description="显示名称" />
+      <Column Name="EnglishName" DataType="String" RawType="varchar(50)" Description="英文名称" />
+      <Column Name="LanguageCulture" DataType="String" RawType="varchar(30)" Length="30" Description="本地化语言标识" />
+      <Column Name="UniqueSeoCode" DataType="String" RawType="varchar(30)" Length="30" Description="Url缩写" />
+      <Column Name="LangAbbreviation" DataType="String" RawType="varchar(10)" Length="10" Description="语言简写" />
+      <Column Name="Flag" DataType="String" RawType="varchar(100)" Length="100" Description="旗帜" />
+      <Column Name="Domain" DataType="String" RawType="varchar(100)" Length="100" Description="域名" />
+      <Column Name="Lcid" DataType="Int32" RawType="int(11)" Description="LCID" />
+      <Column Name="Status" DataType="Boolean" Description="状态。是否启用" />
+      <Column Name="Rtl" DataType="Boolean" Description="该语言是否支持从右到左" />
+      <Column Name="DisplayOrder" DataType="Int32" RawType="int(11)" Nullable="True" Description="排序" />
+      <Column Name="IsDefault" DataType="Byte" RawType="tinyint(1)" Description="是否网站打开默认语言" />
+      <Column Name="Remark" DataType="String" RawType="varchar(255)" Length="255" Description="描述" />
+      <Column Name="CreateUser" DataType="String" Description="创建者" />
+      <Column Name="CreateUserID" DataType="Int32" Description="创建者" />
+      <Column Name="CreateTime" DataType="DateTime" Description="创建时间" />
+      <Column Name="CreateIP" DataType="String" Description="创建地址" />
+      <Column Name="UpdateUser" DataType="String" Description="更新者" />
+      <Column Name="UpdateUserID" DataType="Int32" Description="更新者" />
+      <Column Name="UpdateTime" DataType="DateTime" Description="更新时间" />
+      <Column Name="UpdateIP" DataType="String" Description="更新地址" />
     </Columns>
     <Indexes>
       <Index Columns="UniqueSeoCode" Unique="True" />
+      <Index Columns="LanguageCulture" Unique="True" />
     </Indexes>
   </Table>
   <Table Name="LocaleStringResource" TableName="DH_LocaleStringResource" Description="语言包">
@@ -60,5 +74,54 @@
     <Indexes>
       <Index Columns="Name,StoreId" Unique="True" />
     </Indexes>
+  </Table>
+  <Table Name="UrlRecord" TableName="DH_UrlRecord" Description="SlugURL记录">
+    <Columns>
+      <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
+      <Column Name="EntityId" DataType="Int32" Description="对应实体标识符" />
+      <Column Name="EntityName" DataType="String" Master="True" Length="400" Description="对应实体名称" />
+      <Column Name="Slug" DataType="String" Length="400" Description="分段名称" />
+      <Column Name="IsActive" DataType="Boolean" Description="是否处于活动状态" />
+      <Column Name="LanguageId" DataType="Int32" Description="语言标识符" />
+    </Columns>
+    <Indexes>
+      <Index Columns="Slug" />
+      <Index Columns="EntityId,EntityName,LanguageId" />
+    </Indexes>
+  </Table>
+  <Table Name="ScheduleTask" TableName="DH_ScheduleTask" Description="计划任务">
+    <Columns>
+      <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
+      <Column Name="Name" DataType="String" Master="True" Length="1024" Description="名称" />
+      <Column Name="Seconds" DataType="Int32" Description="运行周期（秒）" />
+      <Column Name="Type" DataType="String" Length="1024" Description="适当的IScheduleTask类的类型" />
+      <Column Name="LastEnabledUtc" DataType="DateTime" Description="上次启用任务的日期时间" />
+      <Column Name="Enabled" DataType="Boolean" Description="是否启用任务" />
+      <Column Name="StopOnError" DataType="Boolean" Description="是否应在出现错误时停止任务" />
+      <Column Name="LastStartUtc" DataType="DateTime" Description="上次启动的日期时间" />
+      <Column Name="LastEndUtc" DataType="DateTime" Description="上次完成的日期时间（无论失败还是成功）" />
+      <Column Name="LastSuccessUtc" DataType="DateTime" Description="上次成功完成的日期时间" />
+    </Columns>
+  </Table>
+  <Table Name="GenericAttribute" TableName="DH_GenericAttribute" Description="公共属性">
+    <Columns>
+      <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
+      <Column Name="Key" DataType="String" Master="True" Length="400" Description="键值" />
+      <Column Name="EntityId" DataType="Int32" Description="实体标识符" />
+      <Column Name="KeyGroup" DataType="String" Length="400" Description="键组" />
+      <Column Name="Value" DataType="String" Length="1024" Description="值" />
+      <Column Name="StoreId" DataType="Int32" Description="站点标识符" />
+      <Column Name="CreateUser" DataType="String" Description="创建者" />
+      <Column Name="CreateUserID" DataType="Int32" Description="创建者" />
+      <Column Name="CreateTime" DataType="DateTime" Description="创建时间" />
+      <Column Name="CreateIP" DataType="String" Description="创建地址" />
+      <Column Name="UpdateUser" DataType="String" Description="更新者" />
+      <Column Name="UpdateUserID" DataType="Int32" Description="更新者" />
+      <Column Name="UpdateTime" DataType="DateTime" Description="更新时间" />
+      <Column Name="UpdateIP" DataType="String" Description="更新地址" />
+    </Columns>
+	  <Indexes>
+		  <Index Columns="EntityId,KeyGroup" />
+	  </Indexes>
   </Table>
 </Tables>

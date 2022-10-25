@@ -14,8 +14,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\DG.PluginCore.IPlugins.AspNetCore\DH.PluginCore.IPlugins.AspNetCore.csproj" />
-	  <ProjectReference Include="..\DG.PluginCore\DH.PluginCore.csproj" />
+	  <ProjectReference Include="..\DH.PluginCore.IPlugins.AspNetCore\DH.PluginCore.IPlugins.AspNetCore.csproj" />
+	  <ProjectReference Include="..\DH.PluginCore\DH.PluginCore.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

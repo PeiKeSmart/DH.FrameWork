@@ -125,6 +125,8 @@ namespace DH.Web.Framework.Infrastructure.Extensions
                         // 重新引发异常以显示错误页
                         ExceptionDispatchInfo.Throw(exception);
                     }
+
+                    await Task.CompletedTask;
                 });
             });
         }
@@ -179,6 +181,8 @@ namespace DH.Web.Framework.Infrastructure.Extensions
                         }
                     }
                 }
+
+                await Task.CompletedTask;
             });
         }
 
@@ -203,6 +207,8 @@ namespace DH.Web.Framework.Infrastructure.Extensions
                     XTrace.Log.Error(message);
                     LogProvider.Provider?.WriteLog("系统", "错误", false, message, currentCustomer.User.ID, currentCustomer.User.Name, webHelper.GetCurrentIpAddress());
                 }
+
+                await Task.CompletedTask;
             });
         }
 
@@ -412,7 +418,6 @@ namespace DH.Web.Framework.Infrastructure.Extensions
 
                 // 准备支持的区域性
                 var cultures = Language.GetAllLanguages()
-                    .OrderBy(language => language.DisplayOrder)
                     .Select(language => new CultureInfo(language.LanguageCulture)).ToList();
                 options.SupportedCultures = cultures;
                 options.SupportedUICultures = cultures;

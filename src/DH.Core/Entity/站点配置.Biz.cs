@@ -1,7 +1,10 @@
 using DH.Core;
+using DH.Core.Configuration;
 
 using NewLife;
 using NewLife.Data;
+
+using System.ComponentModel;
 
 using XCode;
 
@@ -82,7 +85,7 @@ namespace DH.Entity
             if (id <= 0) return null;
 
             // 实体缓存
-            if (Meta.Session.Count < 1000) return Meta.Cache.Find(e => e.Id == id);
+            if (Meta.Session.Count < 10000) return Meta.Cache.Find(e => e.Id == id);
 
             // 单对象缓存
             return Meta.SingleCache[id];
@@ -96,12 +99,24 @@ namespace DH.Entity
         public static Setting FindByName(String name)
         {
             // 实体缓存
-            if (Meta.Session.Count < 1000) return Meta.Cache.Find(e => e.Name.EqualIgnoreCase(name));
+            if (Meta.Session.Count < 10000) return Meta.Cache.Find(e => e.Name.EqualIgnoreCase(name));
 
             // 单对象缓存
             //return Meta.SingleCache.GetItemWithSlaveKey(name) as Setting;
 
             return Find(_.Name == name);
+        }
+
+        /// <summary>根据键名称查找</summary>
+        /// <param name="name">键名称</param>
+        /// <param name="storeId">站点Id</param>
+        /// <returns>实体对象</returns>
+        public static Setting FindByNameAndStoreId(String name, Int32 storeId)
+        {
+            // 实体缓存
+            if (Meta.Session.Count < 10000) return Meta.Cache.Find(e => e.Name.EqualIgnoreCase(name) && e.StoreId == storeId);
+
+            return Find(_.Name == name & _.StoreId == storeId);
         }
 
         /// <summary>获取全部配置项</summary>
@@ -195,6 +210,75 @@ namespace DH.Entity
         #endregion
 
         #region 业务操作
+
+        /// <summary>
+        /// 保存设置对象
+        /// </summary>
+        /// <typeparam name="T">类型</typeparam>
+        /// <param name="storeId">站点标识</param>
+        /// <param name="settings">正在设置实例</param>
+        public static void SaveSetting<T>(T settings, int storeId = 0) where T : ISettings, new()
+        {
+            foreach (var prop in typeof(T).GetProperties())
+            {
+                // 获取可以读写的属性
+                if (!prop.CanRead || !prop.CanWrite)
+                    continue;
+
+                if (!TypeDescriptor.GetConverter(prop.PropertyType).CanConvertFrom(typeof(string)))
+                    continue;
+
+                var key = typeof(T).Name + "." + prop.Name;
+                var value = prop.GetValue(settings, null);
+                if (value != null)
+                    SetSetting(prop.PropertyType, key, value, storeId);
+                else
+                    SetSetting(key, string.Empty, storeId);
+            }
+        }
+
+        /// <summary>
+        /// 设置设定值
+        /// </summary>
+        /// <typeparam name="T">类型</typeparam>
+        /// <param name="key">键</param>
+        /// <param name="value">值</param>
+        /// <param name="storeId">站点标识符</param>
+        public static void SetSetting<T>(string key, T value, int storeId = 0)
+        {
+            SetSetting(typeof(T), key, value, storeId);
+        }
+
+        /// <summary>
+        /// 设置设定值
+        /// </summary>
+        /// <param name="type">类型</param>
+        /// <param name="key">键</param>
+        /// <param name="value">值</param>
+        /// <param name="storeId">站点标识符</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static void SetSetting(Type type, string key, object value, int storeId = 0)
+        {
+            if (key == null)
+                throw new ArgumentNullException(nameof(key));
+            key = key.Trim().ToLowerInvariant();
+            var valueStr = TypeDescriptor.GetConverter(type).ConvertToInvariantString(value);
+
+            var model = FindByNameAndStoreId(key, storeId);
+            if (model == null)
+            {
+                model = new Setting();
+                model.Name = key;
+                model.Value = valueStr;
+                model.StoreId = storeId;
+                model.Insert();
+            }
+            else
+            {
+                model.Value = valueStr;
+                model.Update();
+            }
+        }
         #endregion
     }
 }

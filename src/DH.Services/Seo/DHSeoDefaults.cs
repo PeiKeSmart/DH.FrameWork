@@ -96,7 +96,7 @@ namespace DH.Services.Seo
         /// {1} : 实体名称
         /// {2} : 语言ID
         /// </remarks>
-        public static CacheKey UrlRecordCacheKey => new("DH.urlrecord.{0}-{1}-{2}");
+        public static String UrlRecordCacheKey => "DH.urlrecord.{0}-{1}-{2}";
 
         /// <summary>
         /// 获取用于缓存的键

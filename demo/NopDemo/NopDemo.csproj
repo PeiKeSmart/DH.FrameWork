@@ -16,8 +16,7 @@
     <Company>湖北登灏科技有限公司</Company>
     <Copyright>版权所有 © 湖北登灏科技有限公司 2020-2022</Copyright>
 	<Version>1.0.0.0</Version>
-	<!--从. net 6 SDK,[Appname].runtimesettings.dev.json文件不再是在编译时生成的默认。
-如果你仍然想要这个文件生成,设置GenerateRuntimeConfigDevFile属性为true。-->
+	<!--从. net 6 SDK,[Appname].runtimesettings.dev.json文件不再是在编译时生成的默认。如果你仍然想要这个文件生成,设置GenerateRuntimeConfigDevFile属性为true。-->
     <GenerateRuntimeConfigDevFile>true</GenerateRuntimeConfigDevFile>
 	<!--这个参数设置为true的dll从NuGet复制缓存的输出您的项目-->
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
@@ -26,6 +25,11 @@
 	<!--如果为 true，则在发布项目时编译并发出 Razor 程序集-->
     <RazorCompileOnPublish>false</RazorCompileOnPublish>
   </PropertyGroup>
+	
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\DH.Core\DH.Core.csproj" />
+    <ProjectReference Include="..\..\src\DH.Web.Framework\DH.Web.Framework.csproj" />
+  </ItemGroup>
 	
   <ItemGroup>
 	<!-- 我们复制整个\App_Data目录。 但是我们忽略了JSON文件和数据保护密钥  -->
@@ -46,10 +50,6 @@
   </ItemGroup>
 	
   <ItemGroup>
-    <Content Remove="App_Data\placeholder.txt" />
-  </ItemGroup>
-	
-  <ItemGroup>
     <!-- 此设置修复了vs2019中websdk中此更新导致的问题
     https://github.com/aspnet/websdk/commit/7e6b193ddcf1eec5c0a88a9748c626775555273e#diff-edf5a48ed0d4aa5a4289cb857bf46a04
     因此，我们恢复了标准配置行为（没有输出目录的副本）以避免发布期间出现“重复dll”错误。我们还可以根据以下条件使用“ExcludeConfigFilesFromBuildOutput”https://github.com/aspnet/AspNetCore/issues/14017 -->
@@ -65,14 +65,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
     <Folder Include="Plugins\" />
-    <Folder Include="wwwroot\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\DH.Core\DH.Core.csproj" />
-    <ProjectReference Include="..\..\src\DH.Web.Framework\DH.Web.Framework.csproj" />
   </ItemGroup>
 	
   <!-- 此目标在“Build”目标之后执行。

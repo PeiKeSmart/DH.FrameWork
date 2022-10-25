@@ -321,7 +321,7 @@ namespace DH.Services.Plugins
             PluginNamesToUninstall = pluginsInfo.PluginNamesToUninstall?.ToList() ?? new List<string>();
             PluginNamesToDelete = pluginsInfo.PluginNamesToDelete?.ToList() ?? new List<string>();
             PluginNamesToInstall = pluginsInfo.PluginNamesToInstall?.ToList() ??
-                                   new List<(string SystemName, Guid? CustomerGuid)>();
+                                   new List<(string SystemName, Int32? CustomerGuid)>();
             AssemblyLoadedCollision = pluginsInfo.AssemblyLoadedCollision?.ToList();
             PluginDescriptors = pluginsInfo.PluginDescriptors;
             IncompatiblePlugins = pluginsInfo.IncompatiblePlugins?.ToList();
@@ -388,8 +388,8 @@ namespace DH.Services.Plugins
         /// <summary>
         /// 获取或设置将安装的插件名称列表
         /// </summary>
-        public virtual IList<(string SystemName, Guid? CustomerGuid)> PluginNamesToInstall { get; set; } =
-            new List<(string SystemName, Guid? CustomerGuid)>();
+        public virtual IList<(string SystemName, Int32? CustomerGuid)> PluginNamesToInstall { get; set; } =
+            new List<(string SystemName, Int32? CustomerGuid)>();
 
         /// <summary>
         /// 获取或设置与当前版本不兼容的插件名称列表

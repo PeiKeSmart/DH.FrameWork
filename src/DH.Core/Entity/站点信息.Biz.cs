@@ -1,28 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
-using System.Web.Script.Serialization;
-using System.Xml.Serialization;
-using NewLife;
 using NewLife.Data;
 using NewLife.Log;
-using NewLife.Model;
-using NewLife.Reflection;
-using NewLife.Threading;
-using NewLife.Web;
+
+using System.ComponentModel;
+
 using XCode;
-using XCode.Cache;
-using XCode.Configuration;
-using XCode.DataAccessLayer;
-using XCode.Membership;
-using XCode.Shards;
 
 namespace DH.Entity
 {
@@ -51,30 +32,30 @@ namespace DH.Entity
             // 在新插入数据或者修改了指定字段时进行修正
         }
 
-        ///// <summary>首次连接数据库时初始化数据，仅用于实体类重载，用户不应该调用该方法</summary>
-        //[EditorBrowsable(EditorBrowsableState.Never)]
-        //protected override void InitData()
-        //{
-        //    // InitData一般用于当数据表没有数据时添加一些默认数据，该实体类的任何第一次数据库操作都会触发该方法，默认异步调用
-        //    if (Meta.Session.Count > 0) return;
+        /// <summary>首次连接数据库时初始化数据，仅用于实体类重载，用户不应该调用该方法</summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        protected override void InitData()
+        {
+            // InitData一般用于当数据表没有数据时添加一些默认数据，该实体类的任何第一次数据库操作都会触发该方法，默认异步调用
+            if (Meta.Session.Count > 0) return;
 
-        //    if (XTrace.Debug) XTrace.WriteLine("开始初始化Store[站点信息]数据……");
+            if (XTrace.Debug) XTrace.WriteLine("开始初始化Store[站点信息]数据……");
 
-        //    var entity = new Store();
-        //    entity.Name = "abc";
-        //    entity.Url = "abc";
-        //    entity.SslEnabled = true;
-        //    entity.Hosts = "abc";
-        //    entity.DefaultLanguageId = 0;
-        //    entity.DisplayOrder = 0;
-        //    entity.CompanyName = "abc";
-        //    entity.CompanyAddress = "abc";
-        //    entity.CompanyPhoneNumber = "abc";
-        //    entity.CompanyVat = "abc";
-        //    entity.Insert();
+            var entity = new Store();
+            entity.Name = "Your store name";
+            entity.Url = "http://localhost:5000/";
+            entity.SslEnabled = false;
+            entity.Hosts = "yourstore.com,www.yourstore.com";
+            entity.DefaultLanguageId = 0;
+            entity.DisplayOrder = 1;
+            entity.CompanyName = "Your company name";
+            entity.CompanyAddress = "your company country, state, zip, street, etc";
+            entity.CompanyPhoneNumber = "(123) 456-78901";
+            entity.CompanyVat = "";
+            entity.Insert();
 
-        //    if (XTrace.Debug) XTrace.WriteLine("完成初始化Store[站点信息]数据！");
-        //}
+            if (XTrace.Debug) XTrace.WriteLine("完成初始化Store[站点信息]数据！");
+        }
 
         ///// <summary>已重载。基类先调用Valid(true)验证数据，然后在事务保护内调用OnInsert</summary>
         ///// <returns></returns>
@@ -110,6 +91,29 @@ namespace DH.Entity
 
             //return Find(_.Id == id);
         }
+
+        /// <summary>获取所有站点</summary>
+        /// <returns>站点集合</returns>
+        public static IList<Store> GetAll()
+        {
+            // 实体缓存
+            if (Meta.Session.Count < 1000) return Meta.Cache.Entities;
+
+            return FindAll();
+        }
+
+        /// <summary>获取所有站点</summary>
+        /// <returns>站点集合</returns>
+        public static IEnumerable<Store> GetAllStores()
+        {
+            // 实体缓存
+            if (Meta.Session.Count < 1000)
+            {
+                return Meta.Cache.Entities.OrderBy(l => l.DisplayOrder).ThenBy(l => l.Id);
+            }
+
+            return FindAll(null, new PageParameter { PageSize = 0, OrderBy = "DisplayOrder asc, Id asc" });
+        }
         #endregion
 
         #region 高级查询
@@ -126,6 +130,52 @@ namespace DH.Entity
         #endregion
 
         #region 业务操作
+
+        /// <summary>
+        /// 指示站点是否包含指定的主机
+        /// </summary>
+        /// <param name="store">站点</param>
+        /// <param name="host">主机Host</param>
+        /// <returns>true - contains, false - no</returns>
+        public static bool ContainsHostValue(Store store, string host)
+        {
+            if (store == null)
+                throw new ArgumentNullException(nameof(store));
+
+            if (string.IsNullOrEmpty(host))
+                return false;
+
+            var contains = ParseHostValues(store).Any(x => x.Equals(host, StringComparison.InvariantCultureIgnoreCase));
+
+            return contains;
+        }
+
+        /// <summary>
+        /// 解析逗号分隔的主机
+        /// </summary>
+        /// <param name="store">站点</param>
+        /// <returns>逗号分隔的主机</returns>
+        protected static string[] ParseHostValues(Store store)
+        {
+            if (store == null)
+                throw new ArgumentNullException(nameof(store));
+
+            var parsedValues = new List<string>();
+            if (string.IsNullOrEmpty(store.Hosts))
+                return parsedValues.ToArray();
+
+            var hosts = store.Hosts.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var host in hosts)
+            {
+                var tmp = host.Trim();
+                if (!string.IsNullOrEmpty(tmp))
+                    parsedValues.Add(tmp);
+            }
+
+            return parsedValues.ToArray();
+        }
+
+
         #endregion
     }
 }

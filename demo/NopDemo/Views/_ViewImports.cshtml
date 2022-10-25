@@ -1,2 +1,17 @@
-﻿@using NopDemo
+﻿@inherits DH.Web.Framework.Mvc.Razor.DHRazorPage<TModel>
+
+@inject IDHHtmlHelper DHHtml
+
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@*我们删除默认的InputTagHelper以防止复选框重复： https://stackoverflow.com/questions/42544961/asp-net-core-custom-input-tag-helper-rendering-duplicate-checkboxes*@
+@removeTagHelper Microsoft.AspNetCore.Mvc.TagHelpers.InputTagHelper, Microsoft.AspNetCore.Mvc.TagHelpers
+@addTagHelper *, DH.Web.Framework
+@addTagHelper *, MiniProfiler.AspNetCore.Mvc
+
+@using System.Globalization;
+@using System.Text.Encodings.Web
+@using Microsoft.AspNetCore.Mvc.ViewFeatures
+@using Microsoft.Extensions.Primitives
+@using static DH.Services.Common.DHLinksDefaults
+@using NopDemo
+@using DH.Web.Framework.UI;

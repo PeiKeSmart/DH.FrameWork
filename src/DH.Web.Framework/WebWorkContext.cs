@@ -2,6 +2,8 @@
 using DH.Core.Domain.Localization;
 using DH.Core.Http;
 using DH.Entity;
+using DH.Services.Helpers;
+using DH.Services.ScheduleTasks;
 using DH.Web.Framework.Globalization;
 
 using Microsoft.AspNetCore.Http;
@@ -21,6 +23,7 @@ namespace DH.Web.Framework
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly LocalizationSettings _localizationSettings;
         private readonly IStoreContext _storeContext;
+        private readonly IUserAgentHelper _userAgentHelper;
 
         private Language _cachedLanguage;
 
@@ -30,11 +33,13 @@ namespace DH.Web.Framework
 
         public WebWorkContext(IHttpContextAccessor httpContextAccessor,
             IStoreContext storeContext,
+            IUserAgentHelper userAgentHelper,
             LocalizationSettings localizationSettings)
         {
             _httpContextAccessor = httpContextAccessor;
             _localizationSettings = localizationSettings;
             _storeContext = storeContext;
+            _userAgentHelper = userAgentHelper;
         }
 
         #endregion
@@ -89,7 +94,7 @@ namespace DH.Web.Framework
                 language.LanguageCulture.Equals(requestCultureFeature.RequestCulture.Culture.Name, StringComparison.InvariantCultureIgnoreCase));
 
             // 检查语言可用性
-            if (requestLanguage == null || !requestLanguage.Published)
+            if (requestLanguage == null || !requestLanguage.Status)
                 return null;
 
             return requestLanguage;
@@ -112,6 +117,23 @@ namespace DH.Web.Framework
                 return UserDetail.FindById(model.ID);
             }
 
+            // 检查请求是否由后台（计划）任务发出
+            if (_httpContextAccessor.HttpContext?.Request
+                ?.Path.Equals(new PathString($"/{DHTaskDefaults.ScheduleTaskPath}"), StringComparison.InvariantCultureIgnoreCase)
+                ?? true)
+            {
+                // 在这种情况下，返回后台任务的内置客户记录
+            }
+
+            if (model == null)
+            {
+                // 检查请求是否由搜索引擎发出，在这种情况下，返回搜索引擎的内置客户记录
+                if (_userAgentHelper.IsSearchEngine())
+                {
+
+                }
+            }
+
             return null;
         }
 
@@ -119,14 +141,14 @@ namespace DH.Web.Framework
         /// 获取当前用户工作语言
         /// </summary>
         /// <returns>表示异步操作的任务</returns>
-        public virtual async Task<Language> GetWorkingLanguageAsync()
+        public virtual Language GetWorkingLanguage()
         {
             // 是否存在缓存值
             if (_cachedLanguage != null)
                 return _cachedLanguage;
 
             var customer = GetCurrentCustomer();
-            var store = await _storeContext.GetCurrentStoreAsync();
+            var store = _storeContext.GetCurrentStore();
 
             // 是否应该从请求中检测语言
             var detectedLanguage = GetLanguageFromRequest();

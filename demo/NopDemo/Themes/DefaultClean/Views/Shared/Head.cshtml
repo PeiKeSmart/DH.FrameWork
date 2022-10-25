@@ -1,0 +1,26 @@
+﻿@using DH.Core
+@using DH.Core.Domain.Catalog
+@using DH.Services.Helpers
+@using DH.Web.Framework.UI
+
+@inject CatalogSettings catalogSettings
+@inject IThemeContext themeContext
+@inject IUserAgentHelper userAgentHelper
+
+@{
+    Layout ="";
+    var themeName = await themeContext.GetWorkingThemeNameAsync();
+    var supportRtl = await Html.ShouldUseRtlThemeAsync();
+
+    // 添加主CSS文件
+    DHHtml.AppendCssFileParts($"~/Themes/{themeName}/Content/css/styles{(supportRtl ? ".rtl" : "")}.css");
+    
+    // 添加swiper css文件
+    if (catalogSettings.DisplayAllPicturesOnCatalogPages)
+    {
+        DHHtml.AppendCssFileParts("~/lib_npm/swiper/swiper-bundle.min.css");
+    }
+
+    // 添加jQuery UI css文件
+    DHHtml.AppendCssFileParts("~/lib_npm/jquery-ui-dist/jquery-ui.min.css");
+}
