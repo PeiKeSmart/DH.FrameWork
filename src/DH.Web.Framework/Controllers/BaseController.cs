@@ -194,7 +194,7 @@ namespace DH.Web.Framework.Controllers
         /// A task that represents the asynchronous operation
         /// The task result contains the access denied JSON data
         /// </returns>
-        protected async Task<JsonResult> AccessDeniedDataTablesJson()
+        protected JsonResult AccessDeniedDataTablesJson()
         {
             var localizationService = EngineContext.Current.Resolve<ILocalizationService>();
 

@@ -57,7 +57,7 @@ namespace DH.Web.Framework.Mvc.Filters
             /// </summary>
             /// <param name="context">A context for action filters</param>
             /// <returns>A task that represents the asynchronous operation</returns>
-            private async Task CheckNotNullValidationAsync(ActionExecutingContext context)
+            private void CheckNotNullValidationAsync(ActionExecutingContext context)
             {
                 if (context == null)
                     throw new ArgumentNullException(nameof(context));
@@ -123,7 +123,7 @@ namespace DH.Web.Framework.Mvc.Filters
             /// <returns>A task that represents the asynchronous operation</returns>
             public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
             {
-                await CheckNotNullValidationAsync(context);
+                CheckNotNullValidationAsync(context);
                 if (context.Result == null)
                     await next();
             }

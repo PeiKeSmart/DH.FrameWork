@@ -7,5 +7,9 @@
     <StartupObject />
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="NewLife.Core" Version="10.0.2022.923-beta0329" />
+  </ItemGroup>
+
 
 </Project>

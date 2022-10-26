@@ -1,19 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <Copyright>版权所有 © 湖北登灏科技有限公司 2020-2022</Copyright>
     <Company>湖北登灏科技有限公司</Company>
     <Authors>丁川</Authors>
 
-    <OutputPath>$(MSBuildProjectDirectory)\..\demo\NopDemo\bin\$(Configuration)</OutputPath>
+    <OutputPath>$(MSBuildProjectDirectory)\..\BinWeb\</OutputPath>
   </PropertyGroup> 
 
   <Target Name="DHClear">
     
-    <!-- When .NET Core builds a project, it copies all referenced libraries to the output folder.
-    For plugins it creates too many unnecessary files that just take up space.
-    At the moment you can't disable this behavior. That's why we have to manually delete all unnecessary libraries from plugin output directories. -->  
+    <!-- 当.NETCore构建项目时，它会将所有引用的库复制到输出文件夹。对于插件，它会创建太多不必要的文件，只会占用空间。目前您不能禁用此行为。这就是为什么我们必须从插件输出目录中手动删除所有不必要的库。 -->  
     <Exec Command='dotnet "ClearPluginAssemblies.dll" "OutputPath=$(OutputPath)|PluginPath=$(PluginPath)|SaveLocalesFolders=$(SaveLocalesFolders)"' />
   </Target> 
       

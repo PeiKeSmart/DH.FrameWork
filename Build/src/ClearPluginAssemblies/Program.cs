@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using NewLife;
+using NewLife.Log;
+
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -10,6 +13,8 @@ namespace ClearPluginAssemblies
 
         protected static void Clear(string paths, IList<string> fileNames, bool saveLocalesFolders)
         {
+            XTrace.WriteLine($"获取到的数据为：{paths}");
+
             foreach (var pluginPath in paths.Split(';'))
             {
                 try
@@ -24,11 +29,11 @@ namespace ClearPluginAssemblies
                     {
                         foreach (var fileName in fileNames)
                         {
-                            //delete dll file if it exists in current path
+                            // 删除当前路径中存在的dll文件
                             var dllfilePath = Path.Combine(directoryInfo.FullName, fileName + ".dll");
                             if (File.Exists(dllfilePath))
                                 File.Delete(dllfilePath);
-                            //delete pdb file if it exists in current path
+                            // 删除当前路径中存在的pdb文件
                             var pdbfilePath = Path.Combine(directoryInfo.FullName, fileName + ".pdb");
                             if (File.Exists(pdbfilePath))
                                 File.Delete(pdbfilePath);
@@ -36,7 +41,7 @@ namespace ClearPluginAssemblies
 
                         foreach (var fileName in FILES_TO_DELETE.Split(';'))
                         {
-                            //delete file if it exists in current path
+                            // 删除当前路径中存在的文件
                             var pdbfilePath = Path.Combine(directoryInfo.FullName, fileName);
                             if (File.Exists(pdbfilePath))
                                 File.Delete(pdbfilePath);
@@ -55,6 +60,8 @@ namespace ClearPluginAssemblies
 
         private static void Main(string[] args)
         {
+            XTrace.WriteLine($"开始执行：{args.Join()}");
+
             var outputPath = string.Empty;
             var pluginPaths = string.Empty;
             var saveLocalesFolders = true;
