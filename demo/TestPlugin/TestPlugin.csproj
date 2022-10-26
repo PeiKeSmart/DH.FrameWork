@@ -1,0 +1,46 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Copyright>湖北登灏科技有限公司版权所有</Copyright>
+    <Company>湖北登灏科技有限公司</Company>
+    <Authors>丁川</Authors>
+    <OutputPath>..\NopDemo\Plugins\TestPlugin</OutputPath>
+    <OutDir>$(OutputPath)</OutDir>
+    <!--将此参数设置为true，以获取从NuGet缓存复制到项目输出的dll。如果您的插件有一个nuget包，则需要将此参数设置为true，以确保dll从nuget缓存复制到项目的输出-->
+    <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
+	
+  <ItemGroup>
+    <None Remove="logo.jpg" />
+    <None Remove="plugin.json" />
+    <None Remove="Views\HelloWorld.cshtml" />
+    <None Remove="Views\PublicInfo.cshtml" />
+  </ItemGroup>
+	
+  <ItemGroup>
+    <Content Include="logo.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="plugin.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\HelloWorld.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\PublicInfo.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+	<ProjectReference Include="..\..\src\DH.Web.Framework\DH.Web.Framework.csproj" />
+    <ClearPluginAssemblies Include="$(MSBuildProjectDirectory)\..\..\Build\ClearPluginAssemblies.proj" />
+  </ItemGroup>
+	
+  <!-- 此目标在“生成”目标之后执行 -->
+  <Target Name="DHTarget" AfterTargets="Build">
+    <!-- 从插件路径中删除不必要的库 -->
+    <MSBuild Projects="@(ClearPluginAssemblies)" Properties="PluginPath=$(MSBuildProjectDirectory)\$(OutDir)" Targets="DHClear" />
+  </Target>
+</Project>

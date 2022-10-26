@@ -11,6 +11,7 @@ using DH.Services.Helpers;
 using DH.Services.Plugins;
 using DH.Services.Plugins.Marketplace;
 using DH.Services.ScheduleTasks;
+using DH.Services.Seo;
 using DH.Services.Themes;
 using DH.Web.Framework.Mvc.Routing;
 using DH.Web.Framework.Themes;
@@ -100,6 +101,7 @@ namespace DH.Web.Framework.Infrastructure
             services.AddScoped<IGenericAttributeService, GenericAttributeService>();
             services.AddScoped<ICustomerService, CustomerService>();
             services.AddScoped<IDHHtmlHelper, DHHtmlHelper>();
+            services.AddScoped<IUrlRecordService, UrlRecordService>();
             services.AddScoped<IThemeProvider, ThemeProvider>();
             services.AddScoped<IThemeContext, ThemeContext>();
             services.AddSingleton<IRoutePublisher, RoutePublisher>();

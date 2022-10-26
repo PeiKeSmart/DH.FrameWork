@@ -29,7 +29,7 @@ namespace DH.Web.Framework.Infrastructure
         /// <param name="application">用于配置应用程序的请求管道的生成器</param>
         public void Configure(IApplicationBuilder application)
         {
-            // 使用MiniProfiler必须在UseNopEndpoints之前
+            // 使用MiniProfiler必须在UseDHEndpoints之前
             application.UseMiniProfiler();
 
             // 添加RoutingMiddleware

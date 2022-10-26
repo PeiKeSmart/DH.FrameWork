@@ -3,6 +3,8 @@ using NewLife.Log;
 
 using System.ComponentModel;
 using System.Globalization;
+using System.Runtime.Serialization;
+using System.Xml.Serialization;
 
 using XCode;
 
@@ -611,6 +613,12 @@ namespace DH.Entity
         #endregion
 
         #region 扩展属性
+
+        /// <summary>标志图像文件名</summary>
+        [XmlIgnore, IgnoreDataMember]
+        //[ScriptIgnore]
+        public String FlagImageFileName => Extends.Get(nameof(FlagImageFileName), k => $"{new CultureInfo(LanguageCulture).Name.ToLowerInvariant()[^2..]}.png");
+
         #endregion
 
         #region 扩展查询

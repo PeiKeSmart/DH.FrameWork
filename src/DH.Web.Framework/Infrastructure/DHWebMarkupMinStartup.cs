@@ -36,6 +36,6 @@ namespace DH.Web.Framework.Infrastructure
         /// <summary>
         /// 获取此启动配置实现的顺序
         /// </summary>
-        public int Order => 300; // 确保在"UseRouting"之前调用"UseNopWebMarkupMin"方法。否则，HTML缩小将无法工作
+        public int Order => 300; // 确保在"UseRouting"之前调用"UseDHWebMarkupMin"方法。否则，HTML缩小将无法工作
     }
 }

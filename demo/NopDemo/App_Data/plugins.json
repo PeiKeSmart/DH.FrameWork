@@ -2,7 +2,12 @@
   "InstalledPluginNames": [
     "Obsolete field, using only for compatibility"
   ],
-  "InstalledPlugins": [],
+  "InstalledPlugins": [
+    {
+      "SystemName": "Widgets.NivoSlider",
+      "Version": "1.00"
+    }
+  ],
   "PluginNamesToUninstall": [],
   "PluginNamesToDelete": [],
   "PluginNamesToInstall": []
