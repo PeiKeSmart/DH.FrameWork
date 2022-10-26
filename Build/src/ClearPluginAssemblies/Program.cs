@@ -6,7 +6,7 @@ namespace ClearPluginAssemblies
 {
     public class Program
     {
-        protected const string FILES_TO_DELETE = "dotnet-bundle.exe;Nop.Web.pdb;Nop.Web.exe;Nop.Web.exe.config";
+        protected const string FILES_TO_DELETE = "dotnet-bundle.exe;DH.Web.pdb;DH.Web.exe;DH.Web.exe.config";
 
         protected static void Clear(string paths, IList<string> fileNames, bool saveLocalesFolders)
         {

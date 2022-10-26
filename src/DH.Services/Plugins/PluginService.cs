@@ -8,6 +8,7 @@ using DH.Services.Localization;
 using Microsoft.AspNetCore.Http;
 
 using NewLife.Log;
+using NewLife.Serialization;
 
 using XCode.Membership;
 
@@ -325,6 +326,8 @@ namespace DH.Services.Plugins
         /// <returns>表示异步操作的任务</returns>
         public virtual async Task InstallPluginsAsync()
         {
+            XTrace.WriteLine($"获取插件：{_pluginsInfo.PluginDescriptors.ToJson()}");
+
             // 获取所有已卸载的插件
             var pluginDescriptors = _pluginsInfo.PluginDescriptors.Where(descriptor => !descriptor.pluginDescriptor.Installed).ToList();
 

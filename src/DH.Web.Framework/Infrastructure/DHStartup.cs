@@ -8,6 +8,7 @@ using DH.Services.Configuration;
 using DH.Services.Customers;
 using DH.Services.Events;
 using DH.Services.Helpers;
+using DH.Services.Localization;
 using DH.Services.Plugins;
 using DH.Services.Plugins.Marketplace;
 using DH.Services.ScheduleTasks;
@@ -101,6 +102,7 @@ namespace DH.Web.Framework.Infrastructure
             services.AddScoped<IGenericAttributeService, GenericAttributeService>();
             services.AddScoped<ICustomerService, CustomerService>();
             services.AddScoped<IDHHtmlHelper, DHHtmlHelper>();
+            services.AddScoped<ILocalizationService, LocalizationService>();
             services.AddScoped<IUrlRecordService, UrlRecordService>();
             services.AddScoped<IThemeProvider, ThemeProvider>();
             services.AddScoped<IThemeContext, ThemeContext>();

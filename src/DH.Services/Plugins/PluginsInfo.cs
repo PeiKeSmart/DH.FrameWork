@@ -1,6 +1,9 @@
 ﻿using DH.Core;
 using DH.Core.Infrastructure;
 
+using NewLife.Log;
+using NewLife.Serialization;
+
 using Newtonsoft.Json;
 
 using System.Reflection;
@@ -286,7 +289,6 @@ namespace DH.Services.Plugins
             IncompatiblePlugins = incompatiblePlugins;
             PluginDescriptors = pluginDescriptors;
         }
-
 
         /// <summary>
         /// 将插件信息保存到文件

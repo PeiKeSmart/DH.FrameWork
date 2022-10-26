@@ -65,7 +65,7 @@ namespace DH.Web.Framework.Infrastructure.Extensions
                 XTrace.WriteLine("应用程序已启动");
                 LogProvider.Provider?.WriteLog("启动", "成功", true, $"应用程序已启动", 0);
 
-                //install and update plugins
+                // 安装和更新插件
                 var pluginService = engine.Resolve<IPluginService>();
                 pluginService.InstallPluginsAsync().Wait();
                 pluginService.UpdatePluginsAsync().Wait();

@@ -9,6 +9,8 @@ using DH.Data.Mapping;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 
 using System.Reflection;
+using NewLife.Log;
+using NewLife.Serialization;
 
 namespace DH.Web.Framework.Infrastructure.Extensions
 {
@@ -225,11 +227,13 @@ namespace DH.Web.Framework.Infrastructure.Extensions
 
                     PluginsInfo = new PluginsInfo(_fileProvider);
                     PluginsInfo.LoadPluginInfo();
+                    XTrace.WriteLine($"获取到的插件信息：{PluginsInfo.ToJson()}");
 
                     foreach (var pluginDescriptor in PluginsInfo.PluginDescriptors.Where(p => p.needToDeploy)
                                  .Select(p => p.pluginDescriptor))
                     {
                         var mainPluginFile = pluginDescriptor.OriginalAssemblyFile;
+                        XTrace.WriteLine($"获取到的插件信息111：{mainPluginFile}");
 
                         // 尝试部署主插件程序集
                         pluginDescriptor.ReferencedAssembly =

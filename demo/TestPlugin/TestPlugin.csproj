@@ -9,6 +9,7 @@
     <OutDir>$(OutputPath)</OutDir>
     <!--将此参数设置为true，以获取从NuGet缓存复制到项目输出的dll。如果您的插件有一个nuget包，则需要将此参数设置为true，以确保dll从nuget缓存复制到项目的输出-->
     <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
   </PropertyGroup>
 	
   <ItemGroup>
