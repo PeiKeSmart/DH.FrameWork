@@ -684,6 +684,17 @@ namespace DH.Entity
             return string.IsNullOrEmpty(code) ? "en" : code;
         }
 
+        /// <summary>
+        /// 获取指定状态的语言集合
+        /// </summary>
+        /// <returns>实体集合</returns>
+        public static IEnumerable<Language> FindByStatus(Boolean status = true)
+        {
+            if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(x => x.Status == status).OrderBy(e => e.Id);
+
+            return FindAll(_.Status == status, new PageParameter { Desc = false, Sort = "Id" });
+        }
+
         #endregion
 
         #region 高级查询

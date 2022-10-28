@@ -10,13 +10,12 @@ using XCode.DataAccessLayer;
 
 namespace DH.Entity
 {
-    /// <summary>公共属性</summary>
+    /// <summary>重定向表</summary>
     [Serializable]
     [DataObject]
-    [Description("公共属性")]
-    [BindIndex("IX_DH_GenericAttribute_EntityId_KeyGroup", false, "EntityId,KeyGroup")]
-    [BindTable("DH_GenericAttribute", Description = "公共属性", ConnName = "DH", DbType = DatabaseType.None)]
-    public partial class GenericAttribute
+    [Description("重定向表")]
+    [BindTable("DG_RouteRewrite", Description = "重定向表", ConnName = "DH", DbType = DatabaseType.None)]
+    public partial class RouteRewrite
     {
         #region 属性
         private Int32 _Id;
@@ -27,45 +26,37 @@ namespace DH.Entity
         [BindColumn("Id", "编号", "")]
         public Int32 Id { get => _Id; set { if (OnPropertyChanging("Id", value)) { _Id = value; OnPropertyChanged("Id"); } } }
 
-        private String _Key;
-        /// <summary>键值</summary>
-        [DisplayName("键值")]
-        [Description("键值")]
-        [DataObjectField(false, false, true, 400)]
-        [BindColumn("Key", "键值", "", Master = true)]
-        public String Key { get => _Key; set { if (OnPropertyChanging("Key", value)) { _Key = value; OnPropertyChanged("Key"); } } }
+        private String _Name;
+        /// <summary>名称</summary>
+        [DisplayName("名称")]
+        [Description("名称")]
+        [DataObjectField(false, false, false, 20)]
+        [BindColumn("Name", "名称", "", Master = true)]
+        public String Name { get => _Name; set { if (OnPropertyChanging("Name", value)) { _Name = value; OnPropertyChanged("Name"); } } }
 
-        private Int32 _EntityId;
-        /// <summary>实体标识符</summary>
-        [DisplayName("实体标识符")]
-        [Description("实体标识符")]
+        private String _RegexInfo;
+        /// <summary>正则表达式</summary>
+        [DisplayName("正则表达式")]
+        [Description("正则表达式")]
+        [DataObjectField(false, false, false, 50)]
+        [BindColumn("RegexInfo", "正则表达式", "")]
+        public String RegexInfo { get => _RegexInfo; set { if (OnPropertyChanging("RegexInfo", value)) { _RegexInfo = value; OnPropertyChanged("RegexInfo"); } } }
+
+        private String _ReplacementInfo;
+        /// <summary>uri匹配实际路径</summary>
+        [DisplayName("uri匹配实际路径")]
+        [Description("uri匹配实际路径")]
+        [DataObjectField(false, false, false, 50)]
+        [BindColumn("ReplacementInfo", "uri匹配实际路径", "")]
+        public String ReplacementInfo { get => _ReplacementInfo; set { if (OnPropertyChanging("ReplacementInfo", value)) { _ReplacementInfo = value; OnPropertyChanged("ReplacementInfo"); } } }
+
+        private Int32 _ParentId;
+        /// <summary>多语言关联默认Id</summary>
+        [DisplayName("多语言关联默认Id")]
+        [Description("多语言关联默认Id")]
         [DataObjectField(false, false, false, 0)]
-        [BindColumn("EntityId", "实体标识符", "")]
-        public Int32 EntityId { get => _EntityId; set { if (OnPropertyChanging("EntityId", value)) { _EntityId = value; OnPropertyChanged("EntityId"); } } }
-
-        private String _KeyGroup;
-        /// <summary>键组</summary>
-        [DisplayName("键组")]
-        [Description("键组")]
-        [DataObjectField(false, false, true, 400)]
-        [BindColumn("KeyGroup", "键组", "")]
-        public String KeyGroup { get => _KeyGroup; set { if (OnPropertyChanging("KeyGroup", value)) { _KeyGroup = value; OnPropertyChanged("KeyGroup"); } } }
-
-        private String _Value;
-        /// <summary>值</summary>
-        [DisplayName("值")]
-        [Description("值")]
-        [DataObjectField(false, false, true, 1024)]
-        [BindColumn("Value", "值", "")]
-        public String Value { get => _Value; set { if (OnPropertyChanging("Value", value)) { _Value = value; OnPropertyChanged("Value"); } } }
-
-        private Int32 _StoreId;
-        /// <summary>站点标识符</summary>
-        [DisplayName("站点标识符")]
-        [Description("站点标识符")]
-        [DataObjectField(false, false, false, 0)]
-        [BindColumn("StoreId", "站点标识符", "")]
-        public Int32 StoreId { get => _StoreId; set { if (OnPropertyChanging("StoreId", value)) { _StoreId = value; OnPropertyChanged("StoreId"); } } }
+        [BindColumn("ParentId", "多语言关联默认Id", "")]
+        public Int32 ParentId { get => _ParentId; set { if (OnPropertyChanging("ParentId", value)) { _ParentId = value; OnPropertyChanged("ParentId"); } } }
 
         private String _CreateUser;
         /// <summary>创建者</summary>
@@ -143,11 +134,10 @@ namespace DH.Entity
                 switch (name)
                 {
                     case "Id": return _Id;
-                    case "Key": return _Key;
-                    case "EntityId": return _EntityId;
-                    case "KeyGroup": return _KeyGroup;
-                    case "Value": return _Value;
-                    case "StoreId": return _StoreId;
+                    case "Name": return _Name;
+                    case "RegexInfo": return _RegexInfo;
+                    case "ReplacementInfo": return _ReplacementInfo;
+                    case "ParentId": return _ParentId;
                     case "CreateUser": return _CreateUser;
                     case "CreateUserID": return _CreateUserID;
                     case "CreateTime": return _CreateTime;
@@ -164,11 +154,10 @@ namespace DH.Entity
                 switch (name)
                 {
                     case "Id": _Id = value.ToInt(); break;
-                    case "Key": _Key = Convert.ToString(value); break;
-                    case "EntityId": _EntityId = value.ToInt(); break;
-                    case "KeyGroup": _KeyGroup = Convert.ToString(value); break;
-                    case "Value": _Value = Convert.ToString(value); break;
-                    case "StoreId": _StoreId = value.ToInt(); break;
+                    case "Name": _Name = Convert.ToString(value); break;
+                    case "RegexInfo": _RegexInfo = Convert.ToString(value); break;
+                    case "ReplacementInfo": _ReplacementInfo = Convert.ToString(value); break;
+                    case "ParentId": _ParentId = value.ToInt(); break;
                     case "CreateUser": _CreateUser = Convert.ToString(value); break;
                     case "CreateUserID": _CreateUserID = value.ToInt(); break;
                     case "CreateTime": _CreateTime = value.ToDateTime(); break;
@@ -184,26 +173,23 @@ namespace DH.Entity
         #endregion
 
         #region 字段名
-        /// <summary>取得公共属性字段信息的快捷方式</summary>
+        /// <summary>取得重定向表字段信息的快捷方式</summary>
         public partial class _
         {
             /// <summary>编号</summary>
             public static readonly Field Id = FindByName("Id");
 
-            /// <summary>键值</summary>
-            public static readonly Field Key = FindByName("Key");
+            /// <summary>名称</summary>
+            public static readonly Field Name = FindByName("Name");
 
-            /// <summary>实体标识符</summary>
-            public static readonly Field EntityId = FindByName("EntityId");
+            /// <summary>正则表达式</summary>
+            public static readonly Field RegexInfo = FindByName("RegexInfo");
 
-            /// <summary>键组</summary>
-            public static readonly Field KeyGroup = FindByName("KeyGroup");
+            /// <summary>uri匹配实际路径</summary>
+            public static readonly Field ReplacementInfo = FindByName("ReplacementInfo");
 
-            /// <summary>值</summary>
-            public static readonly Field Value = FindByName("Value");
-
-            /// <summary>站点标识符</summary>
-            public static readonly Field StoreId = FindByName("StoreId");
+            /// <summary>多语言关联默认Id</summary>
+            public static readonly Field ParentId = FindByName("ParentId");
 
             /// <summary>创建者</summary>
             public static readonly Field CreateUser = FindByName("CreateUser");
@@ -232,26 +218,23 @@ namespace DH.Entity
             static Field FindByName(String name) => Meta.Table.FindByName(name);
         }
 
-        /// <summary>取得公共属性字段名称的快捷方式</summary>
+        /// <summary>取得重定向表字段名称的快捷方式</summary>
         public partial class __
         {
             /// <summary>编号</summary>
             public const String Id = "Id";
 
-            /// <summary>键值</summary>
-            public const String Key = "Key";
+            /// <summary>名称</summary>
+            public const String Name = "Name";
 
-            /// <summary>实体标识符</summary>
-            public const String EntityId = "EntityId";
+            /// <summary>正则表达式</summary>
+            public const String RegexInfo = "RegexInfo";
 
-            /// <summary>键组</summary>
-            public const String KeyGroup = "KeyGroup";
+            /// <summary>uri匹配实际路径</summary>
+            public const String ReplacementInfo = "ReplacementInfo";
 
-            /// <summary>值</summary>
-            public const String Value = "Value";
-
-            /// <summary>站点标识符</summary>
-            public const String StoreId = "StoreId";
+            /// <summary>多语言关联默认Id</summary>
+            public const String ParentId = "ParentId";
 
             /// <summary>创建者</summary>
             public const String CreateUser = "CreateUser";
