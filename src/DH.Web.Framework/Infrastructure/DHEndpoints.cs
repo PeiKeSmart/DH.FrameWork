@@ -1,5 +1,6 @@
 ﻿using DH.Core.Infrastructure;
 using DH.Web.Framework.Infrastructure.Extensions;
+using DH.Web.Framework.Mvc.Routing;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
@@ -19,6 +20,7 @@ namespace DH.Web.Framework.Infrastructure
         /// <param name="configuration">应用程序的配置</param>
         public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
         {
+            services.AddSingleton<TranslationTransformer>();
         }
 
         /// <summary>

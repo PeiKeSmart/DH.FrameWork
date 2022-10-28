@@ -441,6 +441,8 @@ namespace DH.Web.Framework.Infrastructure.Extensions
             // 执行路由中间件选择的端点
             application.UseEndpoints(endpoints =>
             {
+                endpoints.MapDynamicControllerRoute<TranslationTransformer>("/");
+
                 // 注册所有路由
                 EngineContext.Current.Resolve<IRoutePublisher>().RegisterRoutes(endpoints);
             });

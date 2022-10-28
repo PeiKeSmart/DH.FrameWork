@@ -1,5 +1,6 @@
 ﻿using DH.Core.Infrastructure;
 using DH.Entity;
+using DH.Web.Framework.Mvc.Routing;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Rewrite;
@@ -20,7 +21,6 @@ namespace DH.Web.Framework.Infrastructure
         /// <param name="configuration">应用程序的配置</param>
         public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
         {
-
         }
 
         /// <summary>

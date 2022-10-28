@@ -140,5 +140,29 @@
       <Column Name="UpdateTime" DataType="DateTime" Description="更新时间" />
       <Column Name="UpdateIP" DataType="String" Description="更新地址" />
     </Columns>
+    <Indexes>
+      <Index Columns="RegexInfo" Unique="True" />
+    </Indexes>
+  </Table>
+  <Table Name="DynamicRoute" TableName="DG_DynamicRoute" Description="动态路由表" IgnoreNameCase="False">
+    <Columns>
+      <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
+      <Column Name="RegexInfo" DataType="String" Nullable="False" Description="正则表达式" />
+      <Column Name="Controller" DataType="String" Nullable="False" Description="控制器" />
+      <Column Name="Action" DataType="String" Nullable="False" Description="动作" />
+      <Column Name="Area" DataType="String" Description="区域" />
+      <Column Name="Other" DataType="String" Description="其他参数" />
+      <Column Name="CreateUser" DataType="String" Description="创建者" />
+      <Column Name="CreateUserID" DataType="Int32" Description="创建者" />
+      <Column Name="CreateTime" DataType="DateTime" Description="创建时间" />
+      <Column Name="CreateIP" DataType="String" Description="创建地址" />
+      <Column Name="UpdateUser" DataType="String" Description="更新者" />
+      <Column Name="UpdateUserID" DataType="Int32" Description="更新者" />
+      <Column Name="UpdateTime" DataType="DateTime" Description="更新时间" />
+      <Column Name="UpdateIP" DataType="String" Description="更新地址" />
+    </Columns>
+    <Indexes>
+      <Index Columns="RegexInfo" Unique="True" />
+    </Indexes>
   </Table>
 </Tables>

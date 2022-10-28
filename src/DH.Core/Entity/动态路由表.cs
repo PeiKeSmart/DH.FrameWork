@@ -10,13 +10,13 @@ using XCode.DataAccessLayer;
 
 namespace DH.Entity
 {
-    /// <summary>重定向表</summary>
+    /// <summary>动态路由表</summary>
     [Serializable]
     [DataObject]
-    [Description("重定向表")]
-    [BindIndex("IU_DG_RouteRewrite_RegexInfo", true, "RegexInfo")]
-    [BindTable("DG_RouteRewrite", Description = "重定向表", ConnName = "DH", DbType = DatabaseType.None)]
-    public partial class RouteRewrite
+    [Description("动态路由表")]
+    [BindIndex("IU_DG_DynamicRoute_RegexInfo", true, "RegexInfo")]
+    [BindTable("DG_DynamicRoute", Description = "动态路由表", ConnName = "DH", DbType = DatabaseType.None)]
+    public partial class DynamicRoute
     {
         #region 属性
         private Int32 _Id;
@@ -27,14 +27,6 @@ namespace DH.Entity
         [BindColumn("Id", "编号", "")]
         public Int32 Id { get => _Id; set { if (OnPropertyChanging("Id", value)) { _Id = value; OnPropertyChanged("Id"); } } }
 
-        private String _Name;
-        /// <summary>名称</summary>
-        [DisplayName("名称")]
-        [Description("名称")]
-        [DataObjectField(false, false, false, 20)]
-        [BindColumn("Name", "名称", "", Master = true)]
-        public String Name { get => _Name; set { if (OnPropertyChanging("Name", value)) { _Name = value; OnPropertyChanged("Name"); } } }
-
         private String _RegexInfo;
         /// <summary>正则表达式</summary>
         [DisplayName("正则表达式")]
@@ -43,21 +35,37 @@ namespace DH.Entity
         [BindColumn("RegexInfo", "正则表达式", "")]
         public String RegexInfo { get => _RegexInfo; set { if (OnPropertyChanging("RegexInfo", value)) { _RegexInfo = value; OnPropertyChanged("RegexInfo"); } } }
 
-        private String _ReplacementInfo;
-        /// <summary>uri匹配实际路径</summary>
-        [DisplayName("uri匹配实际路径")]
-        [Description("uri匹配实际路径")]
+        private String _Controller;
+        /// <summary>控制器</summary>
+        [DisplayName("控制器")]
+        [Description("控制器")]
         [DataObjectField(false, false, false, 50)]
-        [BindColumn("ReplacementInfo", "uri匹配实际路径", "")]
-        public String ReplacementInfo { get => _ReplacementInfo; set { if (OnPropertyChanging("ReplacementInfo", value)) { _ReplacementInfo = value; OnPropertyChanged("ReplacementInfo"); } } }
+        [BindColumn("Controller", "控制器", "")]
+        public String Controller { get => _Controller; set { if (OnPropertyChanging("Controller", value)) { _Controller = value; OnPropertyChanged("Controller"); } } }
 
-        private Int32 _ParentId;
-        /// <summary>多语言关联默认Id</summary>
-        [DisplayName("多语言关联默认Id")]
-        [Description("多语言关联默认Id")]
-        [DataObjectField(false, false, false, 0)]
-        [BindColumn("ParentId", "多语言关联默认Id", "")]
-        public Int32 ParentId { get => _ParentId; set { if (OnPropertyChanging("ParentId", value)) { _ParentId = value; OnPropertyChanged("ParentId"); } } }
+        private String _Action;
+        /// <summary>动作</summary>
+        [DisplayName("动作")]
+        [Description("动作")]
+        [DataObjectField(false, false, false, 50)]
+        [BindColumn("Action", "动作", "")]
+        public String Action { get => _Action; set { if (OnPropertyChanging("Action", value)) { _Action = value; OnPropertyChanged("Action"); } } }
+
+        private String _Area;
+        /// <summary>区域</summary>
+        [DisplayName("区域")]
+        [Description("区域")]
+        [DataObjectField(false, false, true, 50)]
+        [BindColumn("Area", "区域", "")]
+        public String Area { get => _Area; set { if (OnPropertyChanging("Area", value)) { _Area = value; OnPropertyChanged("Area"); } } }
+
+        private String _Other;
+        /// <summary>其他参数</summary>
+        [DisplayName("其他参数")]
+        [Description("其他参数")]
+        [DataObjectField(false, false, true, 50)]
+        [BindColumn("Other", "其他参数", "")]
+        public String Other { get => _Other; set { if (OnPropertyChanging("Other", value)) { _Other = value; OnPropertyChanged("Other"); } } }
 
         private String _CreateUser;
         /// <summary>创建者</summary>
@@ -135,10 +143,11 @@ namespace DH.Entity
                 switch (name)
                 {
                     case "Id": return _Id;
-                    case "Name": return _Name;
                     case "RegexInfo": return _RegexInfo;
-                    case "ReplacementInfo": return _ReplacementInfo;
-                    case "ParentId": return _ParentId;
+                    case "Controller": return _Controller;
+                    case "Action": return _Action;
+                    case "Area": return _Area;
+                    case "Other": return _Other;
                     case "CreateUser": return _CreateUser;
                     case "CreateUserID": return _CreateUserID;
                     case "CreateTime": return _CreateTime;
@@ -155,10 +164,11 @@ namespace DH.Entity
                 switch (name)
                 {
                     case "Id": _Id = value.ToInt(); break;
-                    case "Name": _Name = Convert.ToString(value); break;
                     case "RegexInfo": _RegexInfo = Convert.ToString(value); break;
-                    case "ReplacementInfo": _ReplacementInfo = Convert.ToString(value); break;
-                    case "ParentId": _ParentId = value.ToInt(); break;
+                    case "Controller": _Controller = Convert.ToString(value); break;
+                    case "Action": _Action = Convert.ToString(value); break;
+                    case "Area": _Area = Convert.ToString(value); break;
+                    case "Other": _Other = Convert.ToString(value); break;
                     case "CreateUser": _CreateUser = Convert.ToString(value); break;
                     case "CreateUserID": _CreateUserID = value.ToInt(); break;
                     case "CreateTime": _CreateTime = value.ToDateTime(); break;
@@ -174,23 +184,26 @@ namespace DH.Entity
         #endregion
 
         #region 字段名
-        /// <summary>取得重定向表字段信息的快捷方式</summary>
+        /// <summary>取得动态路由表字段信息的快捷方式</summary>
         public partial class _
         {
             /// <summary>编号</summary>
             public static readonly Field Id = FindByName("Id");
 
-            /// <summary>名称</summary>
-            public static readonly Field Name = FindByName("Name");
-
             /// <summary>正则表达式</summary>
             public static readonly Field RegexInfo = FindByName("RegexInfo");
 
-            /// <summary>uri匹配实际路径</summary>
-            public static readonly Field ReplacementInfo = FindByName("ReplacementInfo");
+            /// <summary>控制器</summary>
+            public static readonly Field Controller = FindByName("Controller");
 
-            /// <summary>多语言关联默认Id</summary>
-            public static readonly Field ParentId = FindByName("ParentId");
+            /// <summary>动作</summary>
+            public static readonly Field Action = FindByName("Action");
+
+            /// <summary>区域</summary>
+            public static readonly Field Area = FindByName("Area");
+
+            /// <summary>其他参数</summary>
+            public static readonly Field Other = FindByName("Other");
 
             /// <summary>创建者</summary>
             public static readonly Field CreateUser = FindByName("CreateUser");
@@ -219,23 +232,26 @@ namespace DH.Entity
             static Field FindByName(String name) => Meta.Table.FindByName(name);
         }
 
-        /// <summary>取得重定向表字段名称的快捷方式</summary>
+        /// <summary>取得动态路由表字段名称的快捷方式</summary>
         public partial class __
         {
             /// <summary>编号</summary>
             public const String Id = "Id";
 
-            /// <summary>名称</summary>
-            public const String Name = "Name";
-
             /// <summary>正则表达式</summary>
             public const String RegexInfo = "RegexInfo";
 
-            /// <summary>uri匹配实际路径</summary>
-            public const String ReplacementInfo = "ReplacementInfo";
+            /// <summary>控制器</summary>
+            public const String Controller = "Controller";
 
-            /// <summary>多语言关联默认Id</summary>
-            public const String ParentId = "ParentId";
+            /// <summary>动作</summary>
+            public const String Action = "Action";
+
+            /// <summary>区域</summary>
+            public const String Area = "Area";
+
+            /// <summary>其他参数</summary>
+            public const String Other = "Other";
 
             /// <summary>创建者</summary>
             public const String CreateUser = "CreateUser";
