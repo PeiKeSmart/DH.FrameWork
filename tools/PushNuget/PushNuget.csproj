@@ -1,10 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <Company>湖北登灏科技有限公司</Company>
+    <Copyright>©2020-2022 湖北登灏科技有限公司</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
