@@ -17,8 +17,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="NewLife.XCode" Version="11.3.2022.1020-beta0841" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2-beta2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DH.NCode\DH.NCode.csproj" />
   </ItemGroup>
 
 </Project>
