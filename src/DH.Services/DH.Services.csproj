@@ -53,13 +53,20 @@
 	<Optimize>false</Optimize>
 	<WarningLevel>3</WarningLevel>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DH.Core\DH.Core.csproj" />
+  </ItemGroup>
 	
   <ItemGroup>
 	<Content Include="..\..\Doc\DH.png" Link="DH.png" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DH.Core\DH.Core.csproj" />
+	<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
+		<PrivateAssets>all</PrivateAssets>
+		<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	</PackageReference>
   </ItemGroup>
 
 </Project>

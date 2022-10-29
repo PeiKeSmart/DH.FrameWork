@@ -53,10 +53,6 @@
 	<Optimize>false</Optimize>
 	<WarningLevel>3</WarningLevel>
   </PropertyGroup>
-	
-  <ItemGroup>
-	<Content Include="..\..\Doc\DH.png" Link="DH.png" PackagePath="\" />
-  </ItemGroup>
 
   <ItemGroup>
     <Compile Remove="Entity\Config\**" />
@@ -81,6 +77,17 @@
     <PackageReference Include="NewLife.XCode" Version="11.3.2022.1020-beta0841" />
     <PackageReference Include="Nito.AsyncEx.Coordination" Version="5.1.2" />
     <PackageReference Include="System.Linq.Async" Version="6.0.1" />
+  </ItemGroup>
+	
+  <ItemGroup>
+	<Content Include="..\..\Doc\DH.png" Link="DH.png" PackagePath="\" />
+  </ItemGroup>	
+
+  <ItemGroup>
+	<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
+		<PrivateAssets>all</PrivateAssets>
+		<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	</PackageReference>
   </ItemGroup>
 
 </Project>

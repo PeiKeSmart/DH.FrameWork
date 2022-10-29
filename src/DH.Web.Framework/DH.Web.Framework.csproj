@@ -40,7 +40,7 @@
 	<RepositoryUrl>https://gitee.com/chuangchu/DH.FrameWork</RepositoryUrl>
 	<RepositoryType>Git</RepositoryType>
 	<PackageTags>湖北登灏科技有限公司;DH组件;DH;$(AssemblyName)</PackageTags>
-	<PackageReleaseNotes>DH框架基类核心库</PackageReleaseNotes>
+	<PackageReleaseNotes>Net Core Web基础开发框架，支持模版视图重载覆盖</PackageReleaseNotes>
 	<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 	<PublishRepositoryUrl>true</PublishRepositoryUrl>
 	<EmbedUntrackedSources>true</EmbedUntrackedSources>
@@ -56,10 +56,6 @@
 	<Optimize>false</Optimize>
 	<WarningLevel>3</WarningLevel>
   </PropertyGroup>
-	
-  <ItemGroup>
-	<Content Include="..\..\Doc\DH.png" Link="DH.png" PackagePath="\" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.2.2" />
@@ -74,7 +70,14 @@
   </ItemGroup>
 	
   <ItemGroup>
-	<PackageReference Update="Microsoft.SourceLink.GitHub" Version="1.1.0-beta-20204-02" />
+	<Content Include="..\..\Doc\DH.png" Link="DH.png" PackagePath="\" />
+  </ItemGroup>
+	
+  <ItemGroup>
+	<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
+		<PrivateAssets>all</PrivateAssets>
+		<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	</PackageReference>
   </ItemGroup>
 
 </Project>
