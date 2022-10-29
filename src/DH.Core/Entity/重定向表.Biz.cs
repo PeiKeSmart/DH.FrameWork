@@ -10,7 +10,7 @@ using XCode.Membership;
 namespace DH.Entity
 {
     /// <summary>重定向表</summary>
-    public partial class RouteRewrite : Entity<RouteRewrite>
+    public partial class RouteRewrite : DHEntityBase<RouteRewrite>
     {
         #region 对象操作
         static RouteRewrite()

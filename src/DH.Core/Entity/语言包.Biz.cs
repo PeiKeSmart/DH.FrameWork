@@ -26,7 +26,7 @@ using XCode.Shards;
 
 namespace DH.Entity
 {
-    public partial class LocaleStringResource : Entity<LocaleStringResource>
+    public partial class LocaleStringResource : DHEntityBase<LocaleStringResource>
     {
         #region 对象操作
         static LocaleStringResource()

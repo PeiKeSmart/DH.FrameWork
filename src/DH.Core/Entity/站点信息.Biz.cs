@@ -7,7 +7,7 @@ using XCode;
 
 namespace DH.Entity
 {
-    public partial class Store : Entity<Store>
+    public partial class Store : DHEntityBase<Store>
     {
         #region 对象操作
         static Store()

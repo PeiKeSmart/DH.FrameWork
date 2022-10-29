@@ -26,7 +26,7 @@ using XCode.Shards;
 
 namespace DH.Entity
 {
-    public partial class DynamicRoute : Entity<DynamicRoute>
+    public partial class DynamicRoute : DHEntityBase<DynamicRoute>
     {
         #region 对象操作
         static DynamicRoute()

@@ -6,7 +6,7 @@ using XCode.Membership;
 
 namespace DH.Entity
 {
-    public partial class UserDetail : Entity<UserDetail>
+    public partial class UserDetail : DHEntityBase<UserDetail>
     {
         #region 对象操作
         static UserDetail()

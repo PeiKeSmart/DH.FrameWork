@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Tables xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:schemaLocation="https://newlifex.com https://newlifex.com/Model2022.xsd" NameSpace="DH.Entity" ConnName="DH" Output="" BaseClass="Entity" Version="11.2.2022.0716" Document="https://newlifex.com/xcode/model" xmlns="https://newlifex.com/Model2022.xsd">
+<Tables xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:schemaLocation="https://newlifex.com https://newlifex.com/Model2022.xsd" NameSpace="DH.Entity" ConnName="DH" Output="" BaseClass="DHEntityBase" Version="11.2.2022.0716" Document="https://newlifex.com/xcode/model" xmlns="https://newlifex.com/Model2022.xsd">
   <Table Name="UserDetail" TableName="DH_UserDetail" Description="用户扩展">
     <Columns>
       <Column Name="Id" DataType="Int32" PrimaryKey="True" Description="编号" />

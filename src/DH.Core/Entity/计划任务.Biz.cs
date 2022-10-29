@@ -26,7 +26,7 @@ using XCode.Shards;
 
 namespace DH.Entity
 {
-    public partial class ScheduleTask : Entity<ScheduleTask>
+    public partial class ScheduleTask : DHEntityBase<ScheduleTask>
     {
         #region 对象操作
         static ScheduleTask()

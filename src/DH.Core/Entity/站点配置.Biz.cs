@@ -10,7 +10,7 @@ using XCode;
 
 namespace DH.Entity
 {
-    public partial class Setting : Entity<Setting>
+    public partial class Setting : DHEntityBase<Setting>
     {
         #region 对象操作
         static Setting()

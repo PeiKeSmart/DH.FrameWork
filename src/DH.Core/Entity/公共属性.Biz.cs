@@ -27,7 +27,7 @@ using XCode.Shards;
 
 namespace DH.Entity
 {
-    public partial class GenericAttribute : Entity<GenericAttribute>
+    public partial class GenericAttribute : DHEntityBase<GenericAttribute>
     {
         #region 对象操作
         static GenericAttribute()

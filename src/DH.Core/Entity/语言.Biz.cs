@@ -10,7 +10,7 @@ using XCode;
 
 namespace DH.Entity
 {
-    public partial class Language : Entity<Language>
+    public partial class Language : DHEntityBase<Language>
     {
         #region 对象操作
         static Language()
