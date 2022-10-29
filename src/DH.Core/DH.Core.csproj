@@ -80,6 +80,10 @@
   </ItemGroup>
 	
   <ItemGroup>
+    <ProjectReference Include="..\DH.Base\DH.Base.csproj" />
+  </ItemGroup>
+	
+  <ItemGroup>
 	<Content Include="..\..\Doc\DH.png" Link="DH.png" PackagePath="\" />
   </ItemGroup>	
 
@@ -89,9 +93,5 @@
 		<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	</PackageReference>
   </ItemGroup>	
-
-  <ItemGroup>
-    <ProjectReference Include="..\DG.Base\DG.Base.csproj" />
-  </ItemGroup>
 
 </Project>

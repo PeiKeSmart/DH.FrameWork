@@ -304,7 +304,6 @@ namespace DH.Web.Framework.Infrastructure.Extensions
             {
                 // 我们会用这个直到 https://github.com/dotnet/aspnetcore/issues/6566已解决 
                 options.ModelBinderProviders.Insert(0, new InvariantNumberModelBinderProvider());
-                options.ModelBinderProviders.Insert(1, new CustomPropertiesModelBinderProvider());
                 // 添加自定义显示元数据提供者
                 options.ModelMetadataDetailsProviders.Add(new DHMetadataProvider());
 

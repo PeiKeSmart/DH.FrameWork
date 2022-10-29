@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DG.CoolCat.Core\DH.CoolCat.Core.csproj" />
+    <ProjectReference Include="..\DH.CoolCat.Core\DH.CoolCat.Core.csproj" />
   </ItemGroup>
 
 </Project>

@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\DG.CoolCat.Core.Mvc\DH.CoolCat.Core.Mvc.csproj" />
+    <ProjectReference Include="..\..\src\DH.CoolCat.Core.Mvc\DH.CoolCat.Core.Mvc.csproj" />
   </ItemGroup>
 
 </Project>
