@@ -18,10 +18,10 @@ namespace NopDemo.Extensions
         /// <param name="html">HTML helper</param>
         /// <param name="themeName">Theme name</param>
         /// <returns>
-        /// A task that represents the asynchronous operation
+        /// 表示异步操作的任务
         /// The task result contains the value
         /// </returns>
-        public static async Task<bool> ShouldUseRtlThemeAsync(this IHtmlHelper html, string themeName = null)
+        public static async Task<bool> ShouldUseRtlThemeAsync(this IHtmlHelper html, string? themeName = null)
         {
             if (!CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft)
                 return false;

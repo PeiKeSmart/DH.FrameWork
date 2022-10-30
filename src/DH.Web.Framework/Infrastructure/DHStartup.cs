@@ -38,7 +38,7 @@ namespace DH.Web.Framework.Infrastructure
         /// </summary>
         public int Order => 2000;
 
-        // <summary>
+        /// <summary>
         /// 文件提供程序
         /// </summary>
         /// <param name="application">用于配置应用程序的请求管道的生成器</param>

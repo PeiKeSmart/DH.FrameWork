@@ -303,7 +303,7 @@ namespace DH.Core
         /// <param name="year">年</param>
         /// <param name="month">月</param>
         /// <param name="day">日</param>
-        /// <returns>可为空的实例<System.DateTime></returns>
+        /// <returns>可为空的实例</returns>
         public static DateTime? ParseDate(int? year, int? month, int? day)
         {
             if (!year.HasValue || !month.HasValue || !day.HasValue)

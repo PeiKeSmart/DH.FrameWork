@@ -55,7 +55,8 @@ namespace DH.Web.Framework.WebOptimizer.Processors
 
             context.Content = content;
 
-            return;
+            await Task.CompletedTask;
+            return ;
         }
 
         #endregion
