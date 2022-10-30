@@ -104,6 +104,8 @@ namespace DH.Services.ScheduleTasks
 
                 _taskThreads.Add(taskThread);
             }
+
+            await Task.CompletedTask;
         }
 
         /// <summary>
