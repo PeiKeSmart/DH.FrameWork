@@ -2,8 +2,11 @@
 using DH.Web.Framework.Infrastructure.Extensions;
 
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+
+using System.IO.Compression;
 
 namespace DH.Web.Framework.Infrastructure
 {
@@ -20,7 +23,27 @@ namespace DH.Web.Framework.Infrastructure
         public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
         {
             // 压缩
-            services.AddResponseCompression();
+            services.AddResponseCompression();  // 注入响应缓存
+            services.Configure<BrotliCompressionProviderOptions>(options =>
+            {
+                options.Level = CompressionLevel.Fastest;
+            }).Configure<GzipCompressionProviderOptions>(options =>
+            {
+                options.Level = CompressionLevel.Optimal;
+            }).AddResponseCompression(options =>
+            {
+                options.EnableForHttps = true;
+                options.Providers.Add<BrotliCompressionProvider>();
+                options.Providers.Add<GzipCompressionProvider>();
+                options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[]
+                {
+                    "text/html; charset=utf-8",
+                    "application/xhtml+xml",
+                    "application/atom+xml",
+                    "image/svg+xml",
+                    "application/octet-stream"
+                });
+            });
 
             // 用于绑定和缩小CSS和JavaScript文件的中间件。
             services.AddDHWebOptimizer();
