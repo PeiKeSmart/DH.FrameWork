@@ -12,6 +12,7 @@
 	<Description>DH框架的数据中间件，MySQL、SQLite、SqlServer、Oracle、Postgresql，参考X组件的XCode</Description>
     <Company>湖北登灏科技有限公司</Company>
     <Copyright>©2020-2022 湖北登灏科技有限公司</Copyright>
+	  
 	<OutputPath>..\Bin</OutputPath>
 	<DocumentationFile>$(OutputPath)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
 	<GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
@@ -22,6 +23,7 @@
 	<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 	<!-- 对控制器/操作/方法没有阻止注释禁用警告 -->
 	<NoWarn>1701;1702;1705;1591</NoWarn>
+	<GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 	
   <PropertyGroup>

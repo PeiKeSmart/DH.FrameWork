@@ -15,7 +15,6 @@
 	
 	<OutputPath>..\Bin</OutputPath>
 	<DocumentationFile>$(OutputPath)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-	<DefineConstants>$(DefineConstants);__CORE__</DefineConstants>
 	<GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
 	  
 	<!--将此参数设置为true，以获取从NuGet缓存复制到项目输出的dll。
@@ -24,6 +23,7 @@
 	<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 	<!-- 对控制器/操作/方法没有阻止注释禁用警告 -->
 	<NoWarn>1701;1702;1705;1591</NoWarn>
+	<GenerateDocumentationFile>true</GenerateDocumentationFile>
 	<!--禁止生成launchSettings.json-->
 	<NoDefaultLaunchSettingsFile>True</NoDefaultLaunchSettingsFile>
   </PropertyGroup>

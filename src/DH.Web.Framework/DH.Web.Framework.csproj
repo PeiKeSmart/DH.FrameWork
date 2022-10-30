@@ -15,7 +15,6 @@
 	
 	<OutputPath>..\Bin</OutputPath>
 	<DocumentationFile>$(OutputPath)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-	<DefineConstants>$(DefineConstants);__CORE__</DefineConstants>
     <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
 	<StaticWebAssetsEnabled>false</StaticWebAssetsEnabled>
 
@@ -25,10 +24,9 @@
 	<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 	<!-- 对控制器/操作/方法没有阻止注释禁用警告 -->
 	<NoWarn>1701;1702;1705;1591</NoWarn>
-	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	<GenerateDocumentationFile>true</GenerateDocumentationFile>
 	<!--禁止生成launchSettings.json-->
 	<NoDefaultLaunchSettingsFile>True</NoDefaultLaunchSettingsFile>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 	
   <PropertyGroup>

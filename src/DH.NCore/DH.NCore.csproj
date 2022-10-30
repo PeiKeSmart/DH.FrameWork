@@ -12,6 +12,7 @@
 	<Description>DH框架的核心基础组件，日志（文件/网络）、配置（XML/Json/Http）、缓存（内存/Redis）、网络（Tcp/Udp/Http）、RPC框架、序列化（Binary/XML/Json）、APM性能追踪。参考X组件的NewLife.Core</Description>
     <Company>湖北登灏科技有限公司</Company>
     <Copyright>©2020-2022 湖北登灏科技有限公司</Copyright>
+	  
 	<OutputPath>..\Bin</OutputPath>
 	<DocumentationFile>$(OutputPath)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
 	<GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
@@ -22,6 +23,7 @@
 	<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 	<!-- 对控制器/操作/方法没有阻止注释禁用警告 -->
 	<NoWarn>1701;1702;1705;1591</NoWarn>
+	<GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 	
   <PropertyGroup>

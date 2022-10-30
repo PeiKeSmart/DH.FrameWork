@@ -3,7 +3,7 @@
     /// <summary>
     /// 系统扩展 - 类型转换扩展
     /// </summary>
-    public static partial class DGExtensions
+    public static partial class DHExtensions
     {
         #region SafeString(安全转换为字符串)
 
