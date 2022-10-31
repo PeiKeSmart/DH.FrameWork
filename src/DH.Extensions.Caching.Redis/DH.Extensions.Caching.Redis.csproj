@@ -1,15 +1,15 @@
-<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
   <Import Project="../../version.props" />
-
+	
   <PropertyGroup>
 	<LangVersion>latest</LangVersion>
     <OutputType>Library</OutputType>
-	<TargetFrameworks>net461;net7.0</TargetFrameworks>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-	<RootNamespace>DH</RootNamespace>
-	<AssemblyName>DH.MDB</AssemblyName>
-	<AssemblyTitle>内存数据库管理</AssemblyTitle>
-	<Description>用于DH框架的基于json持久化存储的内存数据库</Description>
+	<RootNamespace>DH.Extensions.Caching.Redis</RootNamespace>
+	<AssemblyName>DH.Extensions.Caching.Redis</AssemblyName>
+	<AssemblyTitle>Redis缓存组件</AssemblyTitle>
+	<Description>DH框架的edis基础操作、消息队列，经过日均100亿次调用量的项目验证，参考NewLife.Redis</Description>
 	<Company>湖北登灏科技有限公司</Company>
 	<Copyright>©2020-2022 湖北登灏科技有限公司</Copyright>
 	
@@ -37,7 +37,7 @@
 	<RepositoryUrl>https://gitee.com/chuangchu/DH.FrameWork</RepositoryUrl>
 	<RepositoryType>Git</RepositoryType>
 	<PackageTags>湖北登灏科技有限公司;DH组件;DH;$(AssemblyName)</PackageTags>
-	<PackageReleaseNotes>用于DH框架的基于json持久化存储的内存数据库</PackageReleaseNotes>
+	<PackageReleaseNotes>优化动态Topic</PackageReleaseNotes>
 	<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 	<PublishRepositoryUrl>true</PublishRepositoryUrl>
 	<EmbedUntrackedSources>true</EmbedUntrackedSources>
@@ -46,27 +46,30 @@
 	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-
+	
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-	<DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
-	<DebugType>full</DebugType>
-	<Optimize>false</Optimize>
-	<WarningLevel>3</WarningLevel>
+    <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <WarningLevel>3</WarningLevel>
   </PropertyGroup>
 	
-  <ItemGroup Condition="'$(TargetFramework)'=='net461'">
-	<Reference Include="System.Net.Http" />
+  <ItemGroup>
+    <ProjectReference Include="..\DH.NRedis\DH.NRedis.csproj" />
+	<PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="7.0.0-rc.2.22472.3" />
+	<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0-rc.2.22472.3" />
+	<PackageReference Include="Microsoft.Extensions.Options" Version="7.0.0-rc.2.22472.3" />
   </ItemGroup>
-	
+
   <ItemGroup>
 	<Content Include="..\..\Doc\DH.png" Link="DH.png" PackagePath="\" />
-  </ItemGroup>
+  </ItemGroup>	
 
   <ItemGroup>
 	<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
 		<PrivateAssets>all</PrivateAssets>
 		<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	</PackageReference>
-  </ItemGroup>
-
+  </ItemGroup>	
+	
 </Project>

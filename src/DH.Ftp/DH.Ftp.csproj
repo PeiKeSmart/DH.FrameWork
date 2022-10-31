@@ -4,12 +4,12 @@
   <PropertyGroup>
 	<LangVersion>latest</LangVersion>
     <OutputType>Library</OutputType>
-	<TargetFrameworks>net461;net7.0</TargetFrameworks>
+    <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-	<RootNamespace>DH</RootNamespace>
-	<AssemblyName>DH.MDB</AssemblyName>
-	<AssemblyTitle>内存数据库管理</AssemblyTitle>
-	<Description>用于DH框架的基于json持久化存储的内存数据库</Description>
+	<RootNamespace>DH.Ftp</RootNamespace>
+	<AssemblyName>DH.Ftp</AssemblyName>
+	<AssemblyTitle>Ftp客户端</AssemblyTitle>
+	<Description>纯托管轻量级Ftp客户端,建议也可以参考使用FluentFTP，https://github.com/robinrodricks/FluentFTP</Description>
 	<Company>湖北登灏科技有限公司</Company>
 	<Copyright>©2020-2022 湖北登灏科技有限公司</Copyright>
 	
@@ -37,7 +37,7 @@
 	<RepositoryUrl>https://gitee.com/chuangchu/DH.FrameWork</RepositoryUrl>
 	<RepositoryType>Git</RepositoryType>
 	<PackageTags>湖北登灏科技有限公司;DH组件;DH;$(AssemblyName)</PackageTags>
-	<PackageReleaseNotes>用于DH框架的基于json持久化存储的内存数据库</PackageReleaseNotes>
+	<PackageReleaseNotes>纯托管轻量级Ftp客户端</PackageReleaseNotes>
 	<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 	<PublishRepositoryUrl>true</PublishRepositoryUrl>
 	<EmbedUntrackedSources>true</EmbedUntrackedSources>
@@ -46,21 +46,17 @@
 	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-	<DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
-	<DebugType>full</DebugType>
-	<Optimize>false</Optimize>
-	<WarningLevel>3</WarningLevel>
-  </PropertyGroup>
 	
-  <ItemGroup Condition="'$(TargetFramework)'=='net461'">
-	<Reference Include="System.Net.Http" />
-  </ItemGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <WarningLevel>3</WarningLevel>
+  </PropertyGroup>
 	
   <ItemGroup>
 	<Content Include="..\..\Doc\DH.png" Link="DH.png" PackagePath="\" />
-  </ItemGroup>
+  </ItemGroup>	
 
   <ItemGroup>
 	<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">

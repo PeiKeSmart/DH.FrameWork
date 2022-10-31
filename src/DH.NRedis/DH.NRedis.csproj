@@ -1,15 +1,15 @@
-<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
   <Import Project="../../version.props" />
 
   <PropertyGroup>
 	<LangVersion>latest</LangVersion>
     <OutputType>Library</OutputType>
-	<TargetFrameworks>net461;net7.0</TargetFrameworks>
+    <TargetFrameworks>net461;netstandard2.0;netstandard2.1</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
-	<RootNamespace>DH</RootNamespace>
-	<AssemblyName>DH.MDB</AssemblyName>
-	<AssemblyTitle>内存数据库管理</AssemblyTitle>
-	<Description>用于DH框架的基于json持久化存储的内存数据库</Description>
+	<RootNamespace>DH.Caching</RootNamespace>
+	<AssemblyName>DH.NRedis</AssemblyName>
+	<AssemblyTitle>Redis客户端组件</AssemblyTitle>
+	<Description>DH框架的Redis基础操作、消息队列，经过日均100亿次调用量的项目验证，参考NewLife.Redis</Description>
 	<Company>湖北登灏科技有限公司</Company>
 	<Copyright>©2020-2022 湖北登灏科技有限公司</Copyright>
 	
@@ -37,7 +37,7 @@
 	<RepositoryUrl>https://gitee.com/chuangchu/DH.FrameWork</RepositoryUrl>
 	<RepositoryType>Git</RepositoryType>
 	<PackageTags>湖北登灏科技有限公司;DH组件;DH;$(AssemblyName)</PackageTags>
-	<PackageReleaseNotes>用于DH框架的基于json持久化存储的内存数据库</PackageReleaseNotes>
+	<PackageReleaseNotes>优化动态Topic</PackageReleaseNotes>
 	<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 	<PublishRepositoryUrl>true</PublishRepositoryUrl>
 	<EmbedUntrackedSources>true</EmbedUntrackedSources>
@@ -46,13 +46,17 @@
 	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-
+	
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-	<DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
-	<DebugType>full</DebugType>
-	<Optimize>false</Optimize>
-	<WarningLevel>3</WarningLevel>
+    <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <WarningLevel>3</WarningLevel>
   </PropertyGroup>
+	
+  <ItemGroup>
+    <Compile Remove="DependencyInjectionExtensions.cs" />
+  </ItemGroup>
 	
   <ItemGroup Condition="'$(TargetFramework)'=='net461'">
 	<Reference Include="System.Net.Http" />
@@ -60,13 +64,17 @@
 	
   <ItemGroup>
 	<Content Include="..\..\Doc\DH.png" Link="DH.png" PackagePath="\" />
-  </ItemGroup>
+  </ItemGroup>	
 
   <ItemGroup>
 	<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
 		<PrivateAssets>all</PrivateAssets>
 		<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	</PackageReference>
-  </ItemGroup>
+  </ItemGroup>	
 
+  <ItemGroup>
+    <ProjectReference Include="..\DH.NCore\DH.NCore.csproj" />
+  </ItemGroup>
+	
 </Project>
