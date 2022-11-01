@@ -232,7 +232,6 @@ namespace DH.Web.Framework.Infrastructure.Extensions
                                  .Select(p => p.pluginDescriptor))
                     {
                         var mainPluginFile = pluginDescriptor.OriginalAssemblyFile;
-                        XTrace.WriteLine($"获取到的插件信息111：{mainPluginFile}");
 
                         // 尝试部署主插件程序集
                         pluginDescriptor.ReferencedAssembly =
