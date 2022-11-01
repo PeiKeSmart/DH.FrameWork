@@ -1,4 +1,5 @@
 ﻿using DH.Core.Infrastructure;
+using DH.VirtualFileSystem;
 using DH.Web.Framework.Infrastructure.Extensions;
 
 using Microsoft.AspNetCore.Builder;
@@ -17,7 +18,8 @@ namespace DH.Web.Framework.Infrastructure
         /// </summary>
         /// <param name="services">服务描述符集合</param>
         /// <param name="configuration">应用程序的配置</param>
-        public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
+        /// <param name="startups">查找到的IDHStartup集合</param>
+        public void ConfigureServices(IServiceCollection services, IConfiguration configuration, IEnumerable<IDHStartup> startups)
         {
             // 添加数据保护
             services.AddDHDataProtection();
@@ -34,6 +36,14 @@ namespace DH.Web.Framework.Infrastructure
         {
             // 配置身份验证
             application.UseDHAuthentication();
+        }
+
+        /// <summary>
+        /// 配置虚拟文件系统
+        /// </summary>
+        /// <param name="options">虚拟文件配置</param>
+        public void ConfigureVirtualFileSystem(DHVirtualFileSystemOptions options)
+        {
         }
 
         /// <summary>

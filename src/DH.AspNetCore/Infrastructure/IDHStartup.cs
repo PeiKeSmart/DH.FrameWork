@@ -1,17 +1,15 @@
-﻿using DH.Core.Infrastructure;
-using DH.VirtualFileSystem;
-using DH.Web.Framework.Infrastructure.Extensions;
+﻿using DH.VirtualFileSystem;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace DH.Web.Framework.Infrastructure;
+namespace DH.Core.Infrastructure;
 
 /// <summary>
-/// 表示应用程序启动时配置MVC的对象
+/// 表示应用程序启动时配置服务和中间件的对象
 /// </summary>
-public partial class DHMvcStartup : IDHStartup
+public partial interface IDHStartup
 {
     /// <summary>
     /// 添加并配置任何中间件
@@ -19,35 +17,22 @@ public partial class DHMvcStartup : IDHStartup
     /// <param name="services">服务描述符集合</param>
     /// <param name="configuration">应用程序的配置</param>
     /// <param name="startups">查找到的IDHStartup集合</param>
-    public void ConfigureServices(IServiceCollection services, IConfiguration configuration, IEnumerable<IDHStartup> startups)
-    {
-        // 添加和配置MVC功能
-        services.AddDHMvc();
-
-        services.AddWebEncoders();
-
-        // 添加自定义重定向结果执行器
-        services.AddDHRedirectResultExecutor();
-    }
+    void ConfigureServices(IServiceCollection services, IConfiguration configuration, IEnumerable<IDHStartup> startups);
 
     /// <summary>
     /// 配置添加的中间件的使用
     /// </summary>
     /// <param name="application">用于配置应用程序的请求管道的生成器</param>
-    public void Configure(IApplicationBuilder application)
-    {
-    }
+    void Configure(IApplicationBuilder application);
 
     /// <summary>
     /// 配置虚拟文件系统
     /// </summary>
     /// <param name="options">虚拟文件配置</param>
-    public void ConfigureVirtualFileSystem(DHVirtualFileSystemOptions options)
-    {
-    }
+    void ConfigureVirtualFileSystem(DHVirtualFileSystemOptions options);
 
     /// <summary>
     /// 获取此启动配置实现的顺序
     /// </summary>
-    public int Order => 1000; // MVC应最后加载
+    int Order { get; }
 }

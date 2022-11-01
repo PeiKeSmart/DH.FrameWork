@@ -1,4 +1,5 @@
 ﻿using DH.Core.Infrastructure;
+using DH.VirtualFileSystem;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
@@ -25,9 +26,18 @@ namespace DH.Web.Framework.Infrastructure
         /// </summary>
         /// <param name="services">服务描述符集合</param>
         /// <param name="configuration">应用程序的配置</param>
-        public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
+        /// <param name="startups">查找到的IDHStartup集合</param>
+        public void ConfigureServices(IServiceCollection services, IConfiguration configuration, IEnumerable<IDHStartup> startups)
         {
             services.AddHealthChecks();  // 健康检查，可以增加自定义方法。
+        }
+
+        /// <summary>
+        /// 配置虚拟文件系统
+        /// </summary>
+        /// <param name="options">虚拟文件配置</param>
+        public void ConfigureVirtualFileSystem(DHVirtualFileSystemOptions options)
+        {
         }
 
         /// <summary>

@@ -6,10 +6,10 @@
     <OutputType>Library</OutputType>
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-	<RootNamespace>DH</RootNamespace>
-	<AssemblyName>DH.Base</AssemblyName>
-	<AssemblyTitle>DH框架基础类</AssemblyTitle>
-	<Description>用于DH框架的最基础类库，支持Xamarin/Asp.net Core/.net core/winform/wpf</Description>
+	<RootNamespace>DH.AspNetCore</RootNamespace>
+	<AssemblyName>DH.AspNetCore</AssemblyName>
+	<AssemblyTitle>基于DH框架的Asp.NetCore的基类</AssemblyTitle>
+	<Description>基于DH框架的Asp.NetCore的基类</Description>
 	<Company>湖北登灏科技有限公司</Company>
 	<Copyright>©2020-2022 湖北登灏科技有限公司</Copyright>
 	
@@ -37,7 +37,7 @@
 	<RepositoryUrl>https://gitee.com/chuangchu/DH.FrameWork</RepositoryUrl>
 	<RepositoryType>Git</RepositoryType>
 	<PackageTags>湖北登灏科技有限公司;DH组件;DH;$(AssemblyName)</PackageTags>
-	<PackageReleaseNotes>用于DH框架的最基础类库，支持Xamarin/Asp.net Core/.net core/winform/wpf</PackageReleaseNotes>
+	<PackageReleaseNotes>基于DH框架的Asp.NetCore的基类</PackageReleaseNotes>
 	<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 	<PublishRepositoryUrl>true</PublishRepositoryUrl>
 	<EmbedUntrackedSources>true</EmbedUntrackedSources>
@@ -48,27 +48,31 @@
   </PropertyGroup>
 	
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-    <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <WarningLevel>3</WarningLevel>
+	<DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
+	<DebugType>full</DebugType>
+	<Optimize>false</Optimize>
+	<WarningLevel>3</WarningLevel>
   </PropertyGroup>
 	
   <ItemGroup>
-    <ProjectReference Include="..\DH.NCore\DH.NCore.csproj" />
-    <PackageReference Include="JetBrains.Annotations" Version="2022.1.0" />
-  </ItemGroup>	
-
+    <ProjectReference Include="..\DH.Base\DH.Base.csproj" />
+  </ItemGroup>
+	
+  <ItemGroup>
+	<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+	<PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0-rc.2.22472.3" />
+	<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0-rc.2.22472.3" />
+  </ItemGroup>
+	
   <ItemGroup>
 	<Content Include="..\..\Doc\DH.png" Link="DH.png" PackagePath="\" />
-  </ItemGroup>	
+  </ItemGroup>
 
   <ItemGroup>
-	<PackageReference Include="Microsoft.Extensions.FileProviders.Composite" Version="7.0.0-rc.2.22472.3" />
 	<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
 		<PrivateAssets>all</PrivateAssets>
 		<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	</PackageReference>
   </ItemGroup>
-  
+
 </Project>

@@ -1,17 +1,19 @@
 ﻿using DH.Core.Infrastructure;
+using DH.Entity;
 using DH.VirtualFileSystem;
-using DH.Web.Framework.Infrastructure.Extensions;
+using DH.Web.Framework.Mvc.Routing;
 
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DH.Web.Framework.Infrastructure;
 
 /// <summary>
-/// 表示用于在应用程序启动时配置WebMarkupMin服务的对象
+/// 表示应用程序启动时配置路由的类
 /// </summary>
-public partial class DHWebMarkupMinStartup : IDHStartup
+public partial class DHUrlRewriteStartup : IDHStartup
 {
     /// <summary>
     /// 添加并配置任何中间件
@@ -21,8 +23,6 @@ public partial class DHWebMarkupMinStartup : IDHStartup
     /// <param name="startups">查找到的IDHStartup集合</param>
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration, IEnumerable<IDHStartup> startups)
     {
-        // 将WebMarkupMin服务添加到服务容器
-        services.AddDHWebMarkupMin();
     }
 
     /// <summary>
@@ -31,8 +31,23 @@ public partial class DHWebMarkupMinStartup : IDHStartup
     /// <param name="application">用于配置应用程序的请求管道的生成器</param>
     public void Configure(IApplicationBuilder application)
     {
-        // 使用WebMarkupMin
-        application.UseDHWebMarkupMin();
+        var options = new RewriteOptions();
+
+        var RewriteList = RouteRewrite.GetAll();
+        var language = Language.FindByStatus();
+
+        foreach (var item in RewriteList)
+        {
+            var regexInfo = item.RegexInfo;
+            options.AddRewrite("(?i)" + regexInfo.Replace("{language}/", ""), item.ReplacementInfo.Replace("{language}/", ""), skipRemainingRules: true);
+
+            foreach (var item1 in language)
+            {
+                options.AddRewrite("(?i)" + regexInfo.Replace("{language}", item1.UniqueSeoCode), item.ReplacementInfo.Replace("{language}", item1.UniqueSeoCode), skipRemainingRules: true);
+            }
+        }
+
+        application.UseRewriter(options);
     }
 
     /// <summary>
@@ -46,5 +61,5 @@ public partial class DHWebMarkupMinStartup : IDHStartup
     /// <summary>
     /// 获取此启动配置实现的顺序
     /// </summary>
-    public int Order => 300; // 确保在"UseRouting"之前调用"UseDHWebMarkupMin"方法。否则，HTML缩小将无法工作
+    public int Order => 98; // URL重写中间件应在静态文件之前注册
 }
