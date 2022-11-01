@@ -28,8 +28,7 @@
   </PropertyGroup>
 	
   <ItemGroup>
-    <ProjectReference Include="..\..\src\DH.Core\DH.Core.csproj" />
-    <ProjectReference Include="..\..\src\DH.Web.Framework\DH.Web.Framework.csproj" />
+    <ProjectReference Include="..\UIDemo1\UIDemo1.csproj" />
   </ItemGroup>
 	
   <ItemGroup>

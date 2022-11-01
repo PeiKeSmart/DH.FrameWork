@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
+using NewLife.Log;
+
 namespace DH.VirtualFileSystem;
 
 public partial class DHStartup : IDHStartup
@@ -31,6 +33,7 @@ public partial class DHStartup : IDHStartup
     /// <param name="startups">查找到的IDHStartup集合</param>
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration, IEnumerable<IDHStartup> startups)
     {
+        XTrace.WriteLine($"进到这里了么？");
         // 注册虚拟文件系统
         services.AddVFS();
 
