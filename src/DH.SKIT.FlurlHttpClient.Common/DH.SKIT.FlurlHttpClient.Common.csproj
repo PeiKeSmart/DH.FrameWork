@@ -1,0 +1,74 @@
+<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
+  <Import Project="../../version.props" />
+	
+  <PropertyGroup>
+	<LangVersion>latest</LangVersion>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+	<RootNamespace>SKIT.FlurlHttpClient.Common</RootNamespace>
+	<AssemblyName>DH.SKIT.FlurlHttpClient.Common</AssemblyName>
+	<AssemblyTitle>DH框架工具包</AssemblyTitle>
+	<Description>用于DH框架的一个开发工具包的公共组件。为开发者提供使用体验一致的、可跨平台的第三方 API .NET SDK。已支持微信、字节跳动、又拍云系列 API。参考https://github.com/fudiwei/DotNetCore.SKIT.FlurlHttpClient</Description>
+	<Company>湖北登灏科技有限公司</Company>
+	<Copyright>©2020-2022 湖北登灏科技有限公司</Copyright>
+	
+	<OutputPath>..\Bin</OutputPath>
+	<DocumentationFile>$(OutputPath)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+	<GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
+	  
+	<!--将此参数设置为true，以获取从NuGet缓存复制到项目输出的dll。
+     如果您的插件具有nuget包，则需要将此参数设置为true
+     确保从NuGet缓存复制的dll到项目的输出-->
+	<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+	<!-- 对控制器/操作/方法没有阻止注释禁用警告 -->
+	<NoWarn>1701;1702;1705;1591</NoWarn>
+	<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	<!--禁止生成launchSettings.json-->
+	<NoDefaultLaunchSettingsFile>True</NoDefaultLaunchSettingsFile>
+  </PropertyGroup>
+	
+  <PropertyGroup>
+	<IsPackable>true</IsPackable>
+	<PackageId>$(AssemblyName)</PackageId>
+	<Authors>$(Company)</Authors>
+	<PackageProjectUrl>https://www.haocoding.com/</PackageProjectUrl>
+	<PackageIcon>DH.png</PackageIcon>
+	<RepositoryUrl>https://gitee.com/chuangchu/DH.FrameWork</RepositoryUrl>
+	<RepositoryType>Git</RepositoryType>
+	<PackageTags>湖北登灏科技有限公司;DH组件;DH;$(AssemblyName)</PackageTags>
+	<PackageReleaseNotes>用于DH框架的一个开发工具包的公共组件。为开发者提供使用体验一致的、可跨平台的第三方 API .NET SDK。已支持微信、字节跳动、又拍云系列 API。参考https://github.com/fudiwei/DotNetCore.SKIT.FlurlHttpClient</PackageReleaseNotes>
+	<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+	<PublishRepositoryUrl>true</PublishRepositoryUrl>
+	<EmbedUntrackedSources>true</EmbedUntrackedSources>
+	<IncludeSymbols>true</IncludeSymbols>
+	<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+	
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+	<DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
+	<DebugType>full</DebugType>
+	<Optimize>false</Optimize>
+	<WarningLevel>3</WarningLevel>
+  </PropertyGroup>
+	
+  <ItemGroup>
+	<Content Include="..\..\Doc\DH.png" Link="DH.png" PackagePath="\" />
+  </ItemGroup>
+	
+  <ItemGroup>
+	<PackageReference Include="Flurl.Http" Version="3.2.4" />
+	<PackageReference Include="Newtonsoft.Json" Version="13.0.2-beta2" />
+	<PackageReference Include="System.Text.Json" Version="7.0.0-rc.2.22472.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+	<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
+		<PrivateAssets>all</PrivateAssets>
+		<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	</PackageReference>
+  </ItemGroup>
+	
+</Project>
