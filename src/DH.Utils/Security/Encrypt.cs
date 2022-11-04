@@ -1,5 +1,4 @@
-﻿using DH.Extensions;
-using DH.Helpers;
+﻿using DH.Helpers;
 
 using System.Security.Cryptography;
 using System.Text;
@@ -118,13 +117,14 @@ namespace DH.Security
         /// 创建Des加密服务提供程序
         /// </summary>
         /// <param name="key">密钥，24位</param>
-        private static TripleDESCryptoServiceProvider CreateDesProvider(string key) =>
-            new TripleDESCryptoServiceProvider
-            {
-                Key = Encoding.ASCII.GetBytes(key),
-                Mode = CipherMode.ECB,
-                Padding = PaddingMode.PKCS7
-            };
+        private static SymmetricAlgorithm CreateDesProvider(string key) 
+        {
+            SymmetricAlgorithm sma = TripleDES.Create();
+            sma.Key = Encoding.ASCII.GetBytes(key);
+            sma.Mode = CipherMode.ECB;
+            sma.Padding = PaddingMode.PKCS7;
+            return sma;
+        }
 
         /// <summary>
         /// 获取加密结果
@@ -246,14 +246,16 @@ namespace DH.Security
         /// 创建RijndaelManaged
         /// </summary>
         /// <param name="key">密钥</param>
-        private static RijndaelManaged CreateRijndaelManaged(string key) =>
-            new RijndaelManaged
-            {
-                Key = Convert.FromBase64String(key),
-                Mode = CipherMode.CBC,
-                Padding = PaddingMode.PKCS7,
-                IV = Iv
-            };
+        private static SymmetricAlgorithm CreateRijndaelManaged(string key)
+        {
+            SymmetricAlgorithm sma = Aes.Create();
+            sma.Key = Convert.FromBase64String(key);
+            sma.Mode = CipherMode.CBC;
+            sma.Padding = PaddingMode.PKCS7;
+            sma.IV = Iv;
+
+            return sma;
+        }
 
         /// <summary>
         /// AES解密

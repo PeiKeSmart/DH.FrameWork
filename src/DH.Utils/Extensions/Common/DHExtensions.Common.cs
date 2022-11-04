@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Text.RegularExpressions;
 
-namespace DH.Extensions;
+namespace DH;
 
 /// <summary>
 /// 系统扩展 - 公共扩展
@@ -25,14 +25,14 @@ public static partial class DHExtensions
     /// 获取枚举值
     /// </summary>
     /// <param name="instance">枚举实例</param>
-    public static int Value(this System.Enum instance) => DH.Helpers.Enum.GetValue(instance.GetType(), instance);
+    public static int Value(this Enum instance) => Helpers.Enum.GetValue(instance.GetType(), instance);
 
     /// <summary>
     /// 获取枚举值
     /// </summary>
     /// <typeparam name="TResult">返回值类型</typeparam>
     /// <param name="instance">枚举实例</param>
-    public static TResult Value<TResult>(this System.Enum instance) => DH.Helpers.Conv.To<TResult>(Value(instance));
+    public static TResult Value<TResult>(this Enum instance) => Helpers.Conv.To<TResult>(instance.Value());
 
     #endregion
 
@@ -42,7 +42,7 @@ public static partial class DHExtensions
     /// 获取枚举描述，使用<see cref="DescriptionAttribute"/>特性设置描述
     /// </summary>
     /// <param name="instance">枚举实例</param>
-    public static string Description(this System.Enum instance) => DH.Helpers.Enum.GetDescription(instance.GetType(), instance);
+    public static string Description(this Enum instance) => Helpers.Enum.GetDescription(instance.GetType(), instance);
 
     #endregion
 
@@ -71,7 +71,7 @@ public static partial class DHExtensions
     {
         if (value.IsEmpty())
             return new string[] { };
-        return GetMatchingValues(value, pattern, RegexOptions.None);
+        return value.GetMatchingValues(pattern, RegexOptions.None);
     }
 
     /// <summary>
@@ -82,7 +82,7 @@ public static partial class DHExtensions
     /// <param name="options">比较规则</param>
     /// <returns>匹配字符串的枚举</returns>
     public static IEnumerable<string> GetMatchingValues(this string value, string pattern, RegexOptions options) =>
-        from Match match in GetMatches(value, pattern, options) where match.Success select match.Value;
+        from Match match in value.GetMatches(pattern, options) where match.Success select match.Value;
 
     /// <summary>
     /// 使用正则表达式来确定指定的正则表达式模式的所有匹配项

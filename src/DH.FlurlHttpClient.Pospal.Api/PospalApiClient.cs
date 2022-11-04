@@ -156,7 +156,7 @@ namespace DG.FlurlHttpClient.Pospal.Api
                     flurlRequest.Verb == HttpMethod.Head ||
                     flurlRequest.Verb == HttpMethod.Options;
                 using IFlurlResponse flurlResponse = isSimpleRequest ?
-                    await base.SendRequestAsync(flurlRequest, null, cancellationToken) :
+                    await base.SendRequestAsync(flurlRequest, header, null, cancellationToken) :
                     await base.SendRequestWithJsonAsync(flurlRequest, header, data, cancellationToken);
 
                 return await WrapResponseWithJsonAsync<T>(flurlResponse, cancellationToken);

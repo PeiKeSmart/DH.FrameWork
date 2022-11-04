@@ -1,7 +1,7 @@
 ﻿namespace DH.FlurlHttpClient.KeRuYun.Api
 {
     /// <summary>
-    /// 一个用于构造 <see cref="KeRunYunApiClient"/> 时使用的配置项。
+    /// 一个用于构造 <see cref="KeRuYunApiClient"/> 时使用的配置项。
     /// </summary>
     public class KeRuYunApiClientOptions
     {

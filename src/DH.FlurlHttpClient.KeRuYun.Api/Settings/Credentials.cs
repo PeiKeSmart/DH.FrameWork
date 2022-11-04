@@ -12,12 +12,18 @@
         /// </summary>
         public string APPSecret { get; }
 
+        /// <summary>
+        /// 初始化客户端时 <see cref="KeRuYunApiClientOptions.Version"/> 的副本。
+        /// </summary>
+        public String Version { get;}
+
         internal Credentials(KeRuYunApiClientOptions options)
         {
             if (options == null) throw new ArgumentNullException(nameof(options));
 
             APPSecret = options.APPSecret;
             AppKey = options.AppKey;
+            Version = options.Version;
         }
     }
 }

@@ -55,11 +55,13 @@
   </PropertyGroup>
 	
   <ItemGroup>
-    <ProjectReference Include="..\DH.Base\DH.Base.csproj" />
+	<Content Include="..\..\Doc\DH.png" Link="DH.png" PackagePath="\" />
   </ItemGroup>
 	
   <ItemGroup>
-	<Content Include="..\..\Doc\DH.png" Link="DH.png" PackagePath="\" />
+	<ProjectReference Include="..\DH.NCore\DH.NCore.csproj" />
+	<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+	<PackageReference Include="JetBrains.Annotations" Version="2022.1.0" />
   </ItemGroup>
 
   <ItemGroup>

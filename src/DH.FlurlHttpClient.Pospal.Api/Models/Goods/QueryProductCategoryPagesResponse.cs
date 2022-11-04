@@ -3,7 +3,7 @@
 namespace DG.FlurlHttpClient.Pospal.Api.Models
 {
     /// <summary>
-    /// <para>表示 [GET] /pospal-api2/openapi/v1/productOpenApi/queryProductCategoryPages 接口的响应。</para>
+    /// <para>表示 [POST] /pospal-api2/openapi/v1/productOpenApi/queryProductCategoryPages 接口的响应。</para>
     /// </summary>
     public class QueryProductCategoryPagesResponse : PospalApiResponse
     {

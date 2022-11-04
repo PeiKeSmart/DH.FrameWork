@@ -102,6 +102,28 @@ namespace SKIT.FlurlHttpClient
 
         /// <summary>
         /// 异步发起请求。
+        /// </summary>
+        /// <param name="flurlRequest"></param>
+        /// <param name="httpContent"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        protected virtual async Task<IFlurlResponse> SendRequestAsync(IFlurlRequest flurlRequest, IDictionary<String, Object>? header = null, HttpContent? httpContent = null, CancellationToken cancellationToken = default)
+        {
+            if (flurlRequest == null) throw new ArgumentNullException(nameof(flurlRequest));
+
+            if (header != null)
+            {
+                foreach (var item in header)
+                {
+                    flurlRequest.WithHeader(item.Key, item.Value);
+                }
+            }
+
+            return await WrapRequest(flurlRequest).SendAsync(flurlRequest.Verb, httpContent, cancellationToken);
+        }
+
+        /// <summary>
+        /// 异步发起请求。
         /// <para>指定请求标头 `Content-Type` 为 `application/json`。</para>
         /// </summary>
         /// <param name="flurlRequest"></param>

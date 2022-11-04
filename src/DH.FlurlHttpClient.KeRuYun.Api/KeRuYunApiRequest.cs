@@ -15,10 +15,10 @@ namespace DH.FlurlHttpClient.KeRuYun.Api
         public virtual int? Timeout { get; set; }
 
         /// <summary>
-        /// 获取或设置访问凭证。
+        /// 获取或设置门店id。
         /// </summary>
-        //[Newtonsoft.Json.JsonIgnore]
-        //[System.Text.Json.Serialization.JsonIgnore]
-        public virtual String? AppKey { get; set; }
+        [Newtonsoft.Json.JsonIgnore]
+        [System.Text.Json.Serialization.JsonIgnore]
+        public virtual Int64 ShopIdenty { get; set; }
     }
 }

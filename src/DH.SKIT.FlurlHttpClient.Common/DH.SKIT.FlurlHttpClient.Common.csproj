@@ -71,5 +71,9 @@
 		<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	</PackageReference>
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DH.Utils\DH.Utils.csproj" />
+  </ItemGroup>
 	
 </Project>
