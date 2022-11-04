@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
   <Import Project="../../version.props" />
 	
   <PropertyGroup>
@@ -6,11 +6,10 @@
     <OutputType>Library</OutputType>
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-	<Nullable>enable</Nullable>
-	<RootNamespace>SKIT.FlurlHttpClient.Common</RootNamespace>
-	<AssemblyName>DH.SKIT.FlurlHttpClient.Common</AssemblyName>
-	<AssemblyTitle>DH框架工具包</AssemblyTitle>
-	<Description>用于DH框架的一个开发工具包的公共组件。为开发者提供使用体验一致的、可跨平台的第三方 API .NET SDK。已支持微信、字节跳动、又拍云系列 API。参考https://github.com/fudiwei/DotNetCore.SKIT.FlurlHttpClient</Description>
+	<RootNamespace>DH</RootNamespace>
+	<AssemblyName>DH.Utils</AssemblyName>
+	<AssemblyTitle>DH框架基类工具类</AssemblyTitle>
+	<Description>DH框架基类工具类</Description>
 	<Company>湖北登灏科技有限公司</Company>
 	<Copyright>©2020-2022 湖北登灏科技有限公司</Copyright>
 	
@@ -38,7 +37,7 @@
 	<RepositoryUrl>https://gitee.com/chuangchu/DH.FrameWork</RepositoryUrl>
 	<RepositoryType>Git</RepositoryType>
 	<PackageTags>湖北登灏科技有限公司;DH组件;DH;$(AssemblyName)</PackageTags>
-	<PackageReleaseNotes>用于DH框架的一个开发工具包的公共组件。为开发者提供使用体验一致的、可跨平台的第三方 API .NET SDK。已支持微信、字节跳动、又拍云系列 API。参考https://github.com/fudiwei/DotNetCore.SKIT.FlurlHttpClient</PackageReleaseNotes>
+	<PackageReleaseNotes>DH框架基类工具类</PackageReleaseNotes>
 	<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 	<PublishRepositoryUrl>true</PublishRepositoryUrl>
 	<EmbedUntrackedSources>true</EmbedUntrackedSources>
@@ -56,13 +55,11 @@
   </PropertyGroup>
 	
   <ItemGroup>
-	<Content Include="..\..\Doc\DH.png" Link="DH.png" PackagePath="\" />
+    <ProjectReference Include="..\DH.Base\DH.Base.csproj" />
   </ItemGroup>
 	
   <ItemGroup>
-	<PackageReference Include="Flurl.Http" Version="3.2.4" />
-	<PackageReference Include="Newtonsoft.Json" Version="13.0.2-beta2" />
-	<PackageReference Include="System.Text.Json" Version="7.0.0-rc.2.22472.3" />
+	<Content Include="..\..\Doc\DH.png" Link="DH.png" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -71,5 +68,5 @@
 		<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	</PackageReference>
   </ItemGroup>
-	
+
 </Project>
