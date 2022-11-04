@@ -35,7 +35,7 @@ namespace DH.FlurlHttpClient.KeRuYun.Api
         /// <param name="appsecret">客如云 APPSecret。</param>
         /// <param name="appkey">客如云 AppKey。</param>
         public KeRuYunApiClient(string appsecret, string appkey)
-            : this(new KeRuYunApiClientOptions() { APPSecret = appsecret, AppKey = appkey })
+            : this(new KeRuYunApiClientOptions() { AppSecret = appsecret, AppKey = appkey })
         {
         }
 

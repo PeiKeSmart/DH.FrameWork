@@ -58,6 +58,10 @@
   <ItemGroup>
 	<Content Include="..\..\Doc\DH.png" Link="DH.png" PackagePath="\" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DH.Utils\DH.Utils.csproj" />
+  </ItemGroup>
 	
   <ItemGroup>
 	<PackageReference Include="Flurl.Http" Version="3.2.4" />
@@ -70,10 +74,6 @@
 		<PrivateAssets>all</PrivateAssets>
 		<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	</PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\DH.Utils\DH.Utils.csproj" />
   </ItemGroup>
 	
 </Project>

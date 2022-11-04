@@ -1,4 +1,5 @@
-﻿using DH.Timing;
+﻿using DH.Security;
+using DH.Timing;
 
 using Flurl.Http;
 
@@ -25,7 +26,7 @@ public static class KeRuYunApiClientExecuteGetTokenExtensions
         if (request is null) throw new ArgumentNullException(nameof(request));
 
         IFlurlRequest flurlReq = client
-            .CreateRequest(request, HttpMethod.Get, "pospal-api2", "openapi", "v1", "openNotificationOpenApi", "queryPushUrl")
+            .CreateRequest(request, HttpMethod.Get, "open", "v1", "token", "get")
             ;
 
         IDictionary<string, string> queryDic = new Dictionary<string, string>();
@@ -41,14 +42,9 @@ public static class KeRuYunApiClientExecuteGetTokenExtensions
         }
         var signBuild = build.Put(true) + client.Credentials.APPSecret;
         var sign = Encrypt.Sha256(signBuild);
+        queryDic.Add("sign", sign);
 
-        flurlReq.SetQueryParams(new
-        {
-            appKey = client.Credentials.AppKey,
-            shopIdenty = request.ShopIdenty,
-            Version = client.Credentials.Version,
-            timestamp = UnixTime.ToTimestamp()
-        });
+        flurlReq.SetQueryParams(queryDic);
 
         return await client.SendRequestWithJsonAsync<Models.TokenGetResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
     }

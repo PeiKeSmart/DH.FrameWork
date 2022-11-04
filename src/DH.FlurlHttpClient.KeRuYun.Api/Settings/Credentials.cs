@@ -21,7 +21,7 @@
         {
             if (options == null) throw new ArgumentNullException(nameof(options));
 
-            APPSecret = options.APPSecret;
+            APPSecret = options.AppSecret;
             AppKey = options.AppKey;
             Version = options.Version;
         }

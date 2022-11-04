@@ -25,7 +25,7 @@
         /// <summary>
         /// 获取或设置客如云 APPSecret。
         /// </summary>
-        public string APPSecret { get; set; } = default!;
+        public string AppSecret { get; set; } = default!;
 
         /// <summary>
         /// 版本,默认2.0
