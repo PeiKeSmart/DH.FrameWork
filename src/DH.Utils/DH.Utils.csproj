@@ -60,7 +60,7 @@
 	
   <ItemGroup>
 	<ProjectReference Include="..\DH.NCore\DH.NCore.csproj" />
-	<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+	<PackageReference Include="Newtonsoft.Json" Version="13.0.2-beta2" />
 	<PackageReference Include="JetBrains.Annotations" Version="2022.1.0" />
   </ItemGroup>
 
