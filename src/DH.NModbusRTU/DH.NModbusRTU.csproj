@@ -4,12 +4,12 @@
   <PropertyGroup>
 	<LangVersion>latest</LangVersion>
     <OutputType>Library</OutputType>
-    <TargetFrameworks>netstandard2.1;netstandard2.0;net461</TargetFrameworks>
+    <TargetFrameworks>netstandard2.1;netstandard2.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
-	<RootNamespace>DH.NMQTT</RootNamespace>
-	<AssemblyName>DH.NMQTT</AssemblyName>
-	<AssemblyTitle>物联网通信协议MQTT库</AssemblyTitle>
-	<Description>DH框架的流行的物联网通信协议MQTT，包括客户端、服务端，参考NewLife.MQTT</Description>
+	<RootNamespace>NewLife.Serial</RootNamespace>
+	<AssemblyName>DH.NModbusRTU</AssemblyName>
+	<AssemblyTitle>ModbusRTU协议</AssemblyTitle>
+	<Description>DH框架的串口ModbusRTU协议</Description>
 	<Company>湖北登灏科技有限公司</Company>
 	<Copyright>©2020-2022 湖北登灏科技有限公司</Copyright>
 	
@@ -37,7 +37,7 @@
 	<RepositoryUrl>https://gitee.com/chuangchu/DH.FrameWork</RepositoryUrl>
 	<RepositoryType>Git</RepositoryType>
 	<PackageTags>湖北登灏科技有限公司;DH组件;DH;$(AssemblyName)</PackageTags>
-	<PackageReleaseNotes>完成Mqtt客户端</PackageReleaseNotes>
+	<PackageReleaseNotes>DH框架的串口ModbusRTU协议</PackageReleaseNotes>
 	<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 	<PublishRepositoryUrl>true</PublishRepositoryUrl>
 	<EmbedUntrackedSources>true</EmbedUntrackedSources>
@@ -48,34 +48,26 @@
   </PropertyGroup>
 	
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-    <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <WarningLevel>3</WarningLevel>
+	<DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
+	<DebugType>full</DebugType>
+	<Optimize>false</Optimize>
+	<WarningLevel>3</WarningLevel>
   </PropertyGroup>
 	
   <ItemGroup>
-	<Compile Remove="Handlers\MqttHandler.cs" />
-	<Compile Remove="Handlers\MqttTypeAttribute.cs" />
+    <ProjectReference Include="..\DH.NModbus\DH.NModbus.csproj" />
   </ItemGroup>
 	
-  <ItemGroup Condition="'$(TargetFramework)'=='net461'">
-	<Reference Include="System.Net.Http" />
-  </ItemGroup>
-	
-  <ItemGroup>
-    <ProjectReference Include="..\DH.NIoT\DH.NIoT.csproj" />
-  </ItemGroup>
-
   <ItemGroup>
 	<Content Include="..\..\Doc\DH.png" Link="DH.png" PackagePath="\" />
-  </ItemGroup>	
+  </ItemGroup>
 
   <ItemGroup>
 	<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
 		<PrivateAssets>all</PrivateAssets>
 		<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	</PackageReference>
-  </ItemGroup>	
-	
+	<PackageReference Include="System.IO.Ports" Version="7.0.0-rc.2.22472.3" />
+  </ItemGroup>
+
 </Project>
