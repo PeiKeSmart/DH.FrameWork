@@ -11,7 +11,7 @@
 1、单例方法可以使用`Singleton<T>.Instance`  
 2、支持多语种  
 3、支持插件  
-4、数据库ORM使用新生命的NewLife.XCode
+4、数据库ORM使用新生命的NewLife.XCode  
 5、支持缓存。缓存支持内存缓存和Redis缓存，Redis缓存组件使用新生命的NewLife.Redis  
 6、支持项目内事件发布和消费
 7、支持动态路由，目前暂支持首页动态路由为指定插件的页面路由。  
