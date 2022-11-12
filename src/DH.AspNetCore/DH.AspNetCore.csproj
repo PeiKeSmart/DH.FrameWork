@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
+<Project Sdk="Microsoft.NET.Sdk.Web" ToolsVersion="Current">
   <Import Project="../../version.props" />
 	
   <PropertyGroup>
@@ -56,12 +56,6 @@
 	
   <ItemGroup>
     <ProjectReference Include="..\DH.Base\DH.Base.csproj" />
-  </ItemGroup>
-	
-  <ItemGroup>
-	<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
-	<PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
-	<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
   </ItemGroup>
 	
   <ItemGroup>
