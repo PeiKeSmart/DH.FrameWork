@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
+<Project Sdk="Microsoft.NET.Sdk.Web" ToolsVersion="Current">
   <Import Project="../../version.props" />
 	
   <PropertyGroup>
@@ -6,10 +6,10 @@
     <OutputType>Library</OutputType>
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-	<RootNamespace>DH.AspNetCore</RootNamespace>
-	<AssemblyName>DH.AspNetCore</AssemblyName>
-	<AssemblyTitle>基于DH框架的Asp.NetCore的基类</AssemblyTitle>
-	<Description>基于DH框架的Asp.NetCore的基类</Description>
+	<RootNamespace>DH.SignalR</RootNamespace>
+	<AssemblyName>DH.SignalR</AssemblyName>
+	<AssemblyTitle>SignalR实时推送</AssemblyTitle>
+	<Description>用于DH框架的基于SignalR的实时推送库</Description>
 	<Company>湖北登灏科技有限公司</Company>
 	<Copyright>©2020-2022 湖北登灏科技有限公司</Copyright>
 	
@@ -37,7 +37,7 @@
 	<RepositoryUrl>https://gitee.com/chuangchu/DH.FrameWork</RepositoryUrl>
 	<RepositoryType>Git</RepositoryType>
 	<PackageTags>湖北登灏科技有限公司;DH组件;DH;$(AssemblyName)</PackageTags>
-	<PackageReleaseNotes>基于DH框架的Asp.NetCore的基类</PackageReleaseNotes>
+	<PackageReleaseNotes>用于DH框架的基于SignalR的实时推送库</PackageReleaseNotes>
 	<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 	<PublishRepositoryUrl>true</PublishRepositoryUrl>
 	<EmbedUntrackedSources>true</EmbedUntrackedSources>
@@ -55,17 +55,11 @@
   </PropertyGroup>
 	
   <ItemGroup>
-    <ProjectReference Include="..\DH.Base\DH.Base.csproj" />
-  </ItemGroup>
-	
-  <ItemGroup>
-	<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
-	<PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
-	<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
-  </ItemGroup>
-	
-  <ItemGroup>
 	<Content Include="..\..\Doc\DH.png" Link="DH.png" PackagePath="\" />
+  </ItemGroup>
+	
+  <ItemGroup>
+    <EmbeddedResource Include="wwwroot\**\*.*" />
   </ItemGroup>
 
   <ItemGroup>

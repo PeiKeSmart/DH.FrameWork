@@ -28,6 +28,7 @@
   </PropertyGroup>
 	
   <ItemGroup>
+    <ProjectReference Include="..\..\src\DH.SignalR\DH.SignalR.csproj" />
     <ProjectReference Include="..\UIDemo1\UIDemo1.csproj" />
   </ItemGroup>
 	
