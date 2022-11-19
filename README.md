@@ -5,7 +5,9 @@
 
 已上传Nuet:请搜索DH.Web.Framework
 
-交流请加群：774046050
+交流请加群：774046050  
+
+另有基于Maui的项目：[DH.Maui.FrameWork](https://gitee.com/dengho/DH.Maui.FrameWork)
 
 
 1、单例方法可以使用`Singleton<T>.Instance`  
