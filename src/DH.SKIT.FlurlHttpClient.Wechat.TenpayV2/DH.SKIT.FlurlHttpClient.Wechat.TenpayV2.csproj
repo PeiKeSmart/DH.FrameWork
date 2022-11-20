@@ -6,6 +6,7 @@
     <OutputType>Library</OutputType>
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
+	<Nullable>enable</Nullable>
 	<RootNamespace>SKIT.FlurlHttpClient.Wechat.TenpayV2</RootNamespace>
 	<AssemblyName>DH.SKIT.FlurlHttpClient.Wechat.TenpayV2</AssemblyName>
 	<AssemblyTitle>DH框架微信支付 API v2 版客户端</AssemblyTitle>

@@ -6,6 +6,7 @@
     <OutputType>Library</OutputType>
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
+	<Nullable>enable</Nullable>
 	<RootNamespace>SKIT.FlurlHttpClient.Wechat.Ads</RootNamespace>
 	<AssemblyName>DH.SKIT.FlurlHttpClient.Wechat.Ads</AssemblyName>
 	<AssemblyTitle>DH框架微信广告类</AssemblyTitle>

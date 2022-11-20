@@ -6,6 +6,7 @@
     <OutputType>Library</OutputType>
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
+	<Nullable>enable</Nullable>
 	<RootNamespace>SKIT.FlurlHttpClient.Wechat.OpenAI</RootNamespace>
 	<AssemblyName>DH.SKIT.FlurlHttpClient.Wechat.OpenAI</AssemblyName>
 	<AssemblyTitle>DH框架微信对话类</AssemblyTitle>
