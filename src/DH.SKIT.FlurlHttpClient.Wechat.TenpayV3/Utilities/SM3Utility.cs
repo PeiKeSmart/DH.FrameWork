@@ -2,7 +2,7 @@ using System;
 using System.Text;
 using Org.BouncyCastle.Crypto;
 
-namespace SKIT.FlurlHttpClient.Wechat.TenpayBusiness.Utilities
+namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Utilities
 {
     /// <summary>
     /// SM3 算法工具类。
