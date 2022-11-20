@@ -1,4 +1,6 @@
-﻿namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Models
+using System.Collections.Generic;
+
+namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Models
 {
     /// <summary>
     /// <para>表示 [POST] /industry-coupon/tokens 接口的请求。</para>

@@ -1,4 +1,6 @@
-﻿namespace SKIT.FlurlHttpClient.Wechat.Ads.Exceptions
+using System;
+
+namespace SKIT.FlurlHttpClient.Wechat.Ads.Exceptions
 {
     public class WechatAdsRequestTimeoutException : WechatAdsException
     {

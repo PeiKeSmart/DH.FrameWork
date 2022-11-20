@@ -79,10 +79,6 @@ namespace SKIT.FlurlHttpClient.Wechat.OpenAI
                 using IFlurlResponse flurlResponse = await base.SendRequestAsync(flurlRequest, httpContent, cancellationToken);
                 return await WrapResponseWithJsonAsync<T>(flurlResponse, cancellationToken);
             }
-            catch (FlurlHttpTimeoutException ex)
-            {
-                throw new Exceptions.WechatOpenAIRequestTimeoutException(ex.Message, ex);
-            }
             catch (FlurlHttpException ex)
             {
                 throw new WechatOpenAIException(ex.Message, ex);

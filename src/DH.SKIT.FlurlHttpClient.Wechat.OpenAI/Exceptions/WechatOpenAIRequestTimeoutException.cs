@@ -1,4 +1,6 @@
-﻿namespace SKIT.FlurlHttpClient.Wechat.OpenAI.Exceptions
+using System;
+
+namespace SKIT.FlurlHttpClient.Wechat.OpenAI.Exceptions
 {
     public class WechatOpenAIRequestTimeoutException : WechatOpenAIException
     {

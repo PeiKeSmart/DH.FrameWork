@@ -1,6 +1,10 @@
-﻿using Flurl.Http;
+using System;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
+using Flurl.Http;
 
-namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Extensions
+namespace SKIT.FlurlHttpClient.Wechat.TenpayV3
 {
     /// <summary>
     /// 为 <see cref="WechatTenpayClient"/> 提供出行券相关的 API 扩展方法。

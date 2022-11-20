@@ -1,4 +1,6 @@
-﻿namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Models
+using System.Collections.Generic;
+
+namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Models
 {
     /// <summary>
     /// <para>表示 [POST] /applyment4sub/applyment/ 接口的请求。</para>

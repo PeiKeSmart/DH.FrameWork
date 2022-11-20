@@ -1,4 +1,6 @@
-﻿namespace SKIT.FlurlHttpClient.Wechat.TenpayV2.Exceptions
+using System;
+
+namespace SKIT.FlurlHttpClient.Wechat.TenpayV2.Exceptions
 {
     public class WechatTenpayRequestTimeoutException : WechatTenpayException
     {
