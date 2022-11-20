@@ -36,6 +36,7 @@ namespace SKIT.FlurlHttpClient.Upyun.Console
         /// </summary>
         /// <param name="username">又拍云服务管理后台用户名。</param>
         /// <param name="password">又拍云服务管理后台密码。</param>
+        /// <param name="options">配置项。</param>
         public UpyunConsoleClient(string username, string password)
             : this(new UpyunConsoleClientOptions() { Username = username, Password = password })
         {

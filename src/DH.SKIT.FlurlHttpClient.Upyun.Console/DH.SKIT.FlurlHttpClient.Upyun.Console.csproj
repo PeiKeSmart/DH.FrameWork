@@ -6,6 +6,7 @@
     <OutputType>Library</OutputType>
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
+	<Nullable>enable</Nullable>
 	<RootNamespace>SKIT.FlurlHttpClient.Upyun.Console</RootNamespace>
 	<AssemblyName>DH.SKIT.FlurlHttpClient.Upyun.Console</AssemblyName>
 	<AssemblyTitle>DH框架又拍云客户端</AssemblyTitle>
