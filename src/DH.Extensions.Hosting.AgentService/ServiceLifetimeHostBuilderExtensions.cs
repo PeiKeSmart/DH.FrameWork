@@ -1,11 +1,8 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Hosting;
-
+﻿using Microsoft.Extensions.DependencyInjection.Extensions;
 using NewLife.Agent;
 using NewLife.Log;
 
-namespace DG.Extensions.Hosting.AgentService;
+namespace NewLife.Extensions.Hosting.AgentService;
 
 /// <summary>服务声明周期扩展</summary>
 public static class ServiceLifetimeHostBuilderExtensions

@@ -1,10 +1,23 @@
-﻿using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
-
+﻿using Microsoft.Extensions.Options;
 using NewLife.Agent;
 using NewLife.Log;
 
-namespace DG.Extensions.Hosting.AgentService;
+/*
+ * IHost主机主流程：
+ * IHost.RunAsync
+ *   IHost.StartAsync
+ *     await _hostLifetime.WaitForStartAsync
+ *     foreach await IHostedService.StartAsync
+ *     ApplicationLifetime.ApplicationStarted
+ *   IHost.WaitForShutdownAsync
+ *   IHost.StopAsync
+ *     ApplicationLifetime.ApplicationStopping
+ *     foreach.Reverse await IHostedService.StopAsync
+ *     ApplicationLifetime.ApplicationStopped
+ *     _hostLifetime.StopAsync
+ */
+
+namespace NewLife.Extensions.Hosting.AgentService;
 
 /// <summary>Agent服务主机。接管IHost应用的启动和停止</summary>
 public class ServiceLifetime : ServiceBase, IHostLifetime

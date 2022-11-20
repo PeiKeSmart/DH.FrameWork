@@ -1,4 +1,4 @@
-﻿namespace DG.Extensions.Hosting.AgentService;
+﻿namespace NewLife.Extensions.Hosting.AgentService;
 
 /// <summary>服务生命周期选项</summary>
 public class ServiceLifetimeOptions
