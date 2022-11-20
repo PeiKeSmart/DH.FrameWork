@@ -1,8 +1,7 @@
-﻿using System;
+using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-
 using Flurl.Http;
 
 namespace SKIT.FlurlHttpClient.ByteDance.TikTok
@@ -28,7 +27,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTok
 
             Credentials = new Settings.Credentials(options);
 
-            FlurlClient.BaseUrl = options.Endpoints ?? TikTokEndpoints.XIGUA;
+            FlurlClient.BaseUrl = options.Endpoints ?? TikTokEndpoints.DEFAULT;
             FlurlClient.WithTimeout(TimeSpan.FromMilliseconds(options.Timeout));
         }
 
