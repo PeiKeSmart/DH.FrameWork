@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /tcb/getfuncconfig 接口的响应。</para>
     /// </summary>
-    public class TcbGetFunctionConfigResponse : WechatApiResponse
+    public class TCBGetFunctionConfigResponse : WechatApiResponse
     {
         /// <summary>
         /// 获取或设置 JSON 格式的配置。

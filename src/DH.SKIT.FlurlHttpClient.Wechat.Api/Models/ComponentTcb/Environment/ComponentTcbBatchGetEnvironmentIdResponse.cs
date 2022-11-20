@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /componenttcb/batchgetenvid 接口的响应。</para>
     /// </summary>
-    public class ComponentTcbBatchGetEnvironmentIdResponse : WechatApiResponse
+    public class ComponentTCBBatchGetEnvironmentIdResponse : WechatApiResponse
     {
         public static class Types
         {
@@ -24,7 +24,7 @@
                 public string[] EnvironmentIdList { get; set; } = default!;
             }
 
-            public class Error : ComponentTcbBatchShareEnvironmentResponse.Types.Error
+            public class Error : ComponentTCBBatchShareEnvironmentResponse.Types.Error
             {
             }
         }

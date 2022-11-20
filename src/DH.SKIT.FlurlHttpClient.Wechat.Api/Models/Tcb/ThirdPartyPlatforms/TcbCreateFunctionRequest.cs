@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /tcb/createfunction 接口的请求。</para>
     /// </summary>
-    public class TcbCreateFunctionRequest : WechatApiRequest, IInferable<TcbCreateFunctionRequest, TcbCreateFunctionResponse>
+    public class TCBCreateFunctionRequest : WechatApiRequest, IInferable<TCBCreateFunctionRequest, TCBCreateFunctionResponse>
     {
         /// <summary>
         /// 获取或设置环境 ID。

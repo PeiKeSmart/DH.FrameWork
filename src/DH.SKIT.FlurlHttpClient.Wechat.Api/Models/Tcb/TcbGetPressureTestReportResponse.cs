@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /tcb/getpressuretestreport 接口的响应。</para>
     /// </summary>
-    public class TcbGetPressureTestReportResponse : WechatApiResponse
+    public class TCBGetPressureTestReportResponse : WechatApiResponse
     {
         public static class Types
         {

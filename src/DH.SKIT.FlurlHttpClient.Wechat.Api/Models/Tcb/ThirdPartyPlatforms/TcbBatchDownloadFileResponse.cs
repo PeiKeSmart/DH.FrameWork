@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /tcb/batchdownloadfile 接口的响应。</para>
     /// </summary>
-    public class TcbBatchDownloadFileResponse : WechatApiResponse
+    public class TCBBatchDownloadFileResponse : WechatApiResponse
     {
         public static class Types
         {

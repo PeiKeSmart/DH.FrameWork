@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /componenttcb/updatescfconfig 接口的响应。</para>
     /// </summary>
-    public class ComponentTcbUploadSCFConfigResponse : WechatApiResponse
+    public class ComponentTCBUploadSCFConfigResponse : WechatApiResponse
     {
     }
 }

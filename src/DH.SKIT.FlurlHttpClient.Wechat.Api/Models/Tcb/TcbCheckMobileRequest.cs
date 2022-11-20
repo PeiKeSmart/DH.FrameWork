@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /tcb/checkmobile 接口的请求。</para>
     /// </summary>
-    public class TcbCheckMobileRequest : WechatApiRequest, IInferable<TcbCheckMobileRequest, TcbCheckMobileResponse>
+    public class TCBCheckMobileRequest : WechatApiRequest, IInferable<TCBCheckMobileRequest, TCBCheckMobileResponse>
     {
         /// <summary>
         /// 获取或设置是否在小程序未绑定手机号时推送模版消息给管理员收集手机号。

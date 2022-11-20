@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /tcb/getstatistics 接口的请求。</para>
     /// </summary>
-    public class TcbGetStatisticsRequest : WechatApiRequest, IInferable<TcbGetStatisticsRequest, TcbGetStatisticsResponse>
+    public class TCBGetStatisticsRequest : WechatApiRequest, IInferable<TCBGetStatisticsRequest, TCBGetStatisticsResponse>
     {
         public static class Types
         {

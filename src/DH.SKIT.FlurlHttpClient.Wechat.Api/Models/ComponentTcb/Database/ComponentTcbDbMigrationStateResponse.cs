@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /componenttcb/dbmigrationstate 接口的响应。</para>
     /// </summary>
-    public class ComponentTcbDbMigrationStateResponse : WechatApiResponse
+    public class ComponentTCBDbMigrationStateResponse : WechatApiResponse
     {
         /// <summary>
         /// 获取或设置状态。

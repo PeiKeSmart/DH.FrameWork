@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /tcb/getstatistics 接口的响应。</para>
     /// </summary>
-    public class TcbGetStatisticsResponse : WechatApiResponse
+    public class TCBGetStatisticsResponse : WechatApiResponse
     {
         public static class Types
         {

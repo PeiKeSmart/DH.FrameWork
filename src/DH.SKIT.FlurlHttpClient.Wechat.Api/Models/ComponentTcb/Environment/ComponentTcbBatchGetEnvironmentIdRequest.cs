@@ -5,7 +5,7 @@ namespace SKIT.FlurlHttpClient.Wechat.Api.Models
     /// <summary>
     /// <para>表示 [POST] /componenttcb/batchgetenvid 接口的请求。</para>
     /// </summary>
-    public class ComponentTcbBatchGetEnvironmentIdRequest : WechatApiRequest, IInferable<ComponentTcbBatchGetEnvironmentIdRequest, ComponentTcbBatchGetEnvironmentIdResponse>
+    public class ComponentTCBBatchGetEnvironmentIdRequest : WechatApiRequest, IInferable<ComponentTCBBatchGetEnvironmentIdRequest, ComponentTCBBatchGetEnvironmentIdResponse>
     {
         /// <summary>
         /// 获取或设置第三方平台 AccessToken。

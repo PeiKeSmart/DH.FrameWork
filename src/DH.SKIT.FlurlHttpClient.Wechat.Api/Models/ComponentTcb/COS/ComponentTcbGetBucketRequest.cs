@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /componenttcb/getbucket 接口的请求。</para>
     /// </summary>
-    public class ComponentTcbGetBucketRequest : WechatApiRequest, IInferable<ComponentTcbGetBucketRequest, ComponentTcbGetBucketResponse>
+    public class ComponentTCBGetBucketRequest : WechatApiRequest, IInferable<ComponentTCBGetBucketRequest, ComponentTCBGetBucketResponse>
     {
         /// <summary>
         /// 获取或设置第三方平台 AccessToken。

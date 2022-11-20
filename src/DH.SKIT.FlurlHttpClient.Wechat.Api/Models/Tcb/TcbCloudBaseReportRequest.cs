@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /tcb/cloudbasereport 接口的请求。</para>
     /// </summary>
-    public class TcbCloudBaseReportRequest : WechatApiRequest, IInferable<TcbCloudBaseReportRequest, TcbCloudBaseReportResponse>
+    public class TCBCloudBaseReportRequest : WechatApiRequest, IInferable<TCBCloudBaseReportRequest, TCBCloudBaseReportResponse>
     {
         /// <summary>
         /// 获取或设置上报动作。

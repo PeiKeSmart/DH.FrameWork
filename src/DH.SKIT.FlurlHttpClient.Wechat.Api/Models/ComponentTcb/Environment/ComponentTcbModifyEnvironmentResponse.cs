@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /tcb/modifyenv 接口的响应。</para>
     /// </summary>
-    public class ComponentTcbModifyEnvironmentResponse : WechatApiResponse
+    public class ComponentTCBModifyEnvironmentResponse : WechatApiResponse
     {
     }
 }

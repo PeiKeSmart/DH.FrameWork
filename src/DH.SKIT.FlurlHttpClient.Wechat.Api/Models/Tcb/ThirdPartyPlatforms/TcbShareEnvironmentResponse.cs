@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /tcb/shareenv 接口的响应。</para>
     /// </summary>
-    public class TcbShareEnvironmentResponse : WechatApiResponse
+    public class TCBShareEnvironmentResponse : WechatApiResponse
     {
     }
 }

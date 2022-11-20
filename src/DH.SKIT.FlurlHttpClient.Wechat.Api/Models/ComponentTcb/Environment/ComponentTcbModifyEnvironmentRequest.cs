@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /tcb/modifyenv 接口的请求。</para>
     /// </summary>
-    public class ComponentTcbModifyEnvironmentRequest : WechatApiRequest, IInferable<ComponentTcbModifyEnvironmentRequest, ComponentTcbModifyEnvironmentResponse>
+    public class ComponentTCBModifyEnvironmentRequest : WechatApiRequest, IInferable<ComponentTCBModifyEnvironmentRequest, ComponentTCBModifyEnvironmentResponse>
     {
         /// <summary>
         /// 获取或设置第三方平台 AccessToken。

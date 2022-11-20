@@ -3,7 +3,7 @@ namespace SKIT.FlurlHttpClient.Wechat.Api.Models
     /// <summary>
     /// <para>表示 [POST] /componenttcb/createenv 接口的请求。</para>
     /// </summary>
-    public class ComponentTcbCreateEnvironmentRequest : WechatApiRequest, IInferable<ComponentTcbCreateEnvironmentRequest, ComponentTcbCreateEnvironmentResponse>
+    public class ComponentTCBCreateEnvironmentRequest : WechatApiRequest, IInferable<ComponentTCBCreateEnvironmentRequest, ComponentTCBCreateEnvironmentResponse>
     {
         /// <summary>
         /// 获取或设置第三方平台 AccessToken。

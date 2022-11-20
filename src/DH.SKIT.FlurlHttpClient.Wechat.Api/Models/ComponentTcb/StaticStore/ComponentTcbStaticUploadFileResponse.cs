@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /componenttcb/staticuploadfile 接口的响应。</para>
     /// </summary>
-    public class ComponentTcbStaticUploadFileResponse : WechatApiResponse
+    public class ComponentTCBStaticUploadFileResponse : WechatApiResponse
     {
         /// <summary>
         /// 获取或设置上传 URL。

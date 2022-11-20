@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /componenttcb/getcslist 接口的请求。</para>
     /// </summary>
-    public class ComponentTcbGetContainerServiceListRequest : WechatApiRequest, IInferable<ComponentTcbGetContainerServiceListRequest, ComponentTcbGetContainerServiceListResponse>
+    public class ComponentTCBGetContainerServiceListRequest : WechatApiRequest, IInferable<ComponentTCBGetContainerServiceListRequest, ComponentTCBGetContainerServiceListResponse>
     {
         /// <summary>
         /// 获取或设置第三方平台 AccessToken。

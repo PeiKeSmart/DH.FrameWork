@@ -5,7 +5,7 @@ namespace SKIT.FlurlHttpClient.Wechat.Api.Models
     /// <summary>
     /// <para>表示 [POST] /componenttcb/batchuploadscf 接口的请求。</para>
     /// </summary>
-    public class ComponentTcbBatchUploadSCFRequest : WechatApiRequest, IInferable<ComponentTcbBatchUploadSCFRequest, ComponentTcbBatchUploadSCFResponse>
+    public class ComponentTCBBatchUploadSCFRequest : WechatApiRequest, IInferable<ComponentTCBBatchUploadSCFRequest, ComponentTCBBatchUploadSCFResponse>
     {
         /// <summary>
         /// 获取或设置第三方平台 AccessToken。

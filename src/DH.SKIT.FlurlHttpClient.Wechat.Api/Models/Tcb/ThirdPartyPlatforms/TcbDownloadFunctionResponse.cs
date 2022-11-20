@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /tcb/downloadfunction 接口的响应。</para>
     /// </summary>
-    public class TcbDownloadFunctionResponse : WechatApiResponse
+    public class TCBDownloadFunctionResponse : WechatApiResponse
     {
         /// <summary>
         /// 获取或设置下载地址。

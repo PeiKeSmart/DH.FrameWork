@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /componenttcb/createcsversion 接口的响应。</para>
     /// </summary>
-    public class ComponentTcbCreateContainerServiceVersionResponse : WechatApiResponse
+    public class ComponentTCBCreateContainerServiceVersionResponse : WechatApiResponse
     {
         /// <summary>
         /// 获取或设置版本名称。

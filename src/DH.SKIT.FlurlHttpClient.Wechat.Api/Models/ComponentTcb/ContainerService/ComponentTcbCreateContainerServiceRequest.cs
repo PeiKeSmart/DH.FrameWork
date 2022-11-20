@@ -5,7 +5,7 @@ namespace SKIT.FlurlHttpClient.Wechat.Api.Models
     /// <summary>
     /// <para>表示 [POST] /componenttcb/createcontainerservice 接口的请求。</para>
     /// </summary>
-    public class ComponentTcbCreateContainerServiceRequest : WechatApiRequest, IInferable<ComponentTcbCreateContainerServiceRequest, ComponentTcbCreateContainerServiceResponse>
+    public class ComponentTCBCreateContainerServiceRequest : WechatApiRequest, IInferable<ComponentTCBCreateContainerServiceRequest, ComponentTCBCreateContainerServiceResponse>
     {
         public static class Types
         {
@@ -23,7 +23,7 @@ namespace SKIT.FlurlHttpClient.Wechat.Api.Models
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("subnetids")]
                 [System.Text.Json.Serialization.JsonPropertyName("subnetids")]
-                public IList<string> SubnetIdList { get; set; } = new List<string>();
+                public IList<string>? SubnetIdList { get; set; }
 
                 /// <summary>
                 /// 获取或设置创建类型。

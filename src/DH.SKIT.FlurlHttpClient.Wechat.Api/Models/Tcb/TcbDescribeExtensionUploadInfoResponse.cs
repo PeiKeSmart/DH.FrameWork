@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /tcb/describeextensionuploadinfo 接口的响应。</para>
     /// </summary>
-    public class TcbDescribeExtensionUploadInfoResponse : WechatApiResponse
+    public class TCBDescribeExtensionUploadInfoResponse : WechatApiResponse
     {
         public static class Types
         {

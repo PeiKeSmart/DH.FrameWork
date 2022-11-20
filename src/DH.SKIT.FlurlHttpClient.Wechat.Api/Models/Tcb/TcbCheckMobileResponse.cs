@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /tcb/checkmobile 接口的响应。</para>
     /// </summary>
-    public class TcbCheckMobileResponse : WechatApiResponse
+    public class TCBCheckMobileResponse : WechatApiResponse
     {
         /// <summary>
         /// 获取或设置是否绑定了手机号。

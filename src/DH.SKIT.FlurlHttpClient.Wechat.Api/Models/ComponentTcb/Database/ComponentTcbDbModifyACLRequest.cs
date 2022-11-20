@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /componenttcb/dbmodifyacl 接口的请求。</para>
     /// </summary>
-    public class ComponentTcbDbModifyACLRequest : WechatApiRequest, IInferable<ComponentTcbDbModifyACLRequest, ComponentTcbDbModifyACLResponse>
+    public class ComponentTCBDbModifyACLRequest : WechatApiRequest, IInferable<ComponentTCBDbModifyACLRequest, ComponentTCBDbModifyACLResponse>
     {
         /// <summary>
         /// 获取或设置第三方平台 AccessToken。

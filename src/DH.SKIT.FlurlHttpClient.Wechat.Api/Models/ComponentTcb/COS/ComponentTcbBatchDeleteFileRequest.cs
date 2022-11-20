@@ -5,7 +5,7 @@ namespace SKIT.FlurlHttpClient.Wechat.Api.Models
     /// <summary>
     /// <para>表示 [POST] /componenttcb/batchdeletefile 接口的请求。</para>
     /// </summary>
-    public class ComponentTcbBatchDeleteFileRequest : WechatApiRequest, IInferable<ComponentTcbBatchDeleteFileRequest, ComponentTcbBatchDeleteFileResponse>
+    public class ComponentTCBBatchDeleteFileRequest : WechatApiRequest, IInferable<ComponentTCBBatchDeleteFileRequest, ComponentTCBBatchDeleteFileResponse>
     {
         /// <summary>
         /// 获取或设置第三方平台 AccessToken。

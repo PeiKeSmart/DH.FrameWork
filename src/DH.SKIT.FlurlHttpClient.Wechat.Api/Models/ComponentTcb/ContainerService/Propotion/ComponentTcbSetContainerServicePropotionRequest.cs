@@ -5,7 +5,7 @@ namespace SKIT.FlurlHttpClient.Wechat.Api.Models
     /// <summary>
     /// <para>表示 [POST] /componenttcb/setcspropotion 接口的请求。</para>
     /// </summary>
-    public class ComponentTcbSetContainerServicePropotionRequest : WechatApiRequest, IInferable<ComponentTcbSetContainerServicePropotionRequest, ComponentTcbSetContainerServicePropotionResponse>
+    public class ComponentTCBSetContainerServicePropotionRequest : WechatApiRequest, IInferable<ComponentTCBSetContainerServicePropotionRequest, ComponentTCBSetContainerServicePropotionResponse>
     {
         public static class Types
         {

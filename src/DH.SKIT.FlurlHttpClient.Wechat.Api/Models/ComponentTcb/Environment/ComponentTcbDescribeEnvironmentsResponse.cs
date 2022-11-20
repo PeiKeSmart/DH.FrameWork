@@ -5,7 +5,7 @@ namespace SKIT.FlurlHttpClient.Wechat.Api.Models
     /// <summary>
     /// <para>表示 [POST] /componenttcb/describeenvs 接口的响应。</para>
     /// </summary>
-    public class ComponentTcbDescribeEnvironmentsResponse : WechatApiResponse
+    public class ComponentTCBDescribeEnvironmentsResponse : WechatApiResponse
     {
         public static class Types
         {

@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /componenttcb/createenv 接口的响应。</para>
     /// </summary>
-    public class ComponentTcbCreateEnvironmentResponse : WechatApiResponse
+    public class ComponentTCBCreateEnvironmentResponse : WechatApiResponse
     {
         /// <summary>
         /// 获取或设置环境 ID。

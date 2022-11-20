@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /componenttcb/dbgetacl 接口的响应。</para>
     /// </summary>
-    public class ComponentTcbDbGetACLResponse : WechatApiResponse
+    public class ComponentTCBDbGetACLResponse : WechatApiResponse
     {
         /// <summary>
         /// 获取或设置权限说明。

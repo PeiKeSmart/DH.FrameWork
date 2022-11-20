@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /componenttcb/delcontainerservice 接口的响应。</para>
     /// </summary>
-    public class ComponentTcbDeleteContainerServiceResponse : WechatApiResponse
+    public class ComponentTCBDeleteContainerServiceResponse : WechatApiResponse
     {
     }
 }

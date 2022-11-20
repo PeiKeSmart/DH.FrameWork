@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /componenttcb/delcsversion 接口的响应。</para>
     /// </summary>
-    public class ComponentTcbDeleteContainerServiceVersionResponse : WechatApiResponse
+    public class ComponentTCBDeleteContainerServiceVersionResponse : WechatApiResponse
     {
     }
 }

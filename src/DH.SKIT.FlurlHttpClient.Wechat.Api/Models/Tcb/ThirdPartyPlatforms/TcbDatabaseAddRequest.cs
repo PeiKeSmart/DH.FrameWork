@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /tcb/databaseadd 接口的请求。</para>
     /// </summary>
-    public class TcbDatabaseAddRequest : WechatApiRequest, IInferable<TcbDatabaseAddRequest, TcbDatabaseAddResponse>
+    public class TCBDatabaseAddRequest : WechatApiRequest, IInferable<TCBDatabaseAddRequest, TCBDatabaseAddResponse>
     {
         /// <summary>
         /// 获取或设置环境 ID。

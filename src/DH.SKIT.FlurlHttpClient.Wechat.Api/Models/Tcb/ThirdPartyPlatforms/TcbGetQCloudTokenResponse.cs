@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /tcb/getqcloudtoken 接口的响应。</para>
     /// </summary>
-    public class TcbGetQCloudTokenResponse : WechatApiResponse
+    public class TCBGetQCloudTokenResponse : WechatApiResponse
     {
         /// <summary>
         /// 获取或设置 SecretId。

@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /tcb/getpressureteststatus 接口的响应。</para>
     /// </summary>
-    public class TcbGetPressureTestStatusResponse : WechatApiResponse
+    public class TCBGetPressureTestStatusResponse : WechatApiResponse
     {
         /// <summary>
         /// 获取或设置压测任务状态。

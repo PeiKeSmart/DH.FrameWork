@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /tcb/createenvandresource 接口的请求。</para>
     /// </summary>
-    public class TcbCreateEnvironmentAndResourceRequest : WechatApiRequest, IInferable<TcbCreateEnvironmentAndResourceRequest, TcbCreateEnvironmentAndResourceResponse>
+    public class TCBCreateEnvironmentAndResourceRequest : WechatApiRequest, IInferable<TCBCreateEnvironmentAndResourceRequest, TCBCreateEnvironmentAndResourceResponse>
     {
         /// <summary>
         /// 获取或设置环境 ID。

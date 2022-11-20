@@ -3,7 +3,7 @@ namespace SKIT.FlurlHttpClient.Wechat.Api.Models
     /// <summary>
     /// <para>表示 [POST] /componenttcb/createcloudbaserunenv 接口的响应。</para>
     /// </summary>
-    public class ComponentTcbCreateCloudBaseRunEnvironmentResponse : WechatApiResponse
+    public class ComponentTCBCreateCloudBaseRunEnvironmentResponse : WechatApiResponse
     {
         /// <summary>
         /// 获取或设置环境 ID。

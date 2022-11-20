@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /componenttcb/batchshareenv 接口的响应。</para>
     /// </summary>
-    public class ComponentTcbBatchShareEnvironmentResponse : WechatApiResponse
+    public class ComponentTCBBatchShareEnvironmentResponse : WechatApiResponse
     {
         public static class Types
         {

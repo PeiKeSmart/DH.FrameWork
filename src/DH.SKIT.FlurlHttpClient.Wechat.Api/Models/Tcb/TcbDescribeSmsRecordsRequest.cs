@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /tcb/describesmsrecords 接口的请求。</para>
     /// </summary>
-    public class TcbDescribeSmsRecordsRequest : WechatApiRequest, IInferable<TcbDescribeSmsRecordsRequest, TcbDescribeSmsRecordsResponse>
+    public class TCBDescribeSmsRecordsRequest : WechatApiRequest, IInferable<TCBDescribeSmsRecordsRequest, TCBDescribeSmsRecordsResponse>
     {
         public static class Types
         {

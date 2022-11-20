@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /tcb/getvoipsign 接口的响应。</para>
     /// </summary>
-    public class TcbGetVoIPSignResponse : WechatApiResponse
+    public class TCBGetVoIPSignResponse : WechatApiResponse
     {
         /// <summary>
         /// 获取或设置签名。

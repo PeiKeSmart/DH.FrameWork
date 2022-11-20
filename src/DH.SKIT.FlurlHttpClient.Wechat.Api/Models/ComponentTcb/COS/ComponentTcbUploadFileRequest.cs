@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /componenttcb/uploadfile 接口的请求。</para>
     /// </summary>
-    public class ComponentTcbUploadFileRequest : WechatApiRequest, IInferable<ComponentTcbUploadFileRequest, ComponentTcbUploadFileResponse>
+    public class ComponentTCBUploadFileRequest : WechatApiRequest, IInferable<ComponentTCBUploadFileRequest, ComponentTCBUploadFileResponse>
     {
         /// <summary>
         /// 获取或设置第三方平台 AccessToken。

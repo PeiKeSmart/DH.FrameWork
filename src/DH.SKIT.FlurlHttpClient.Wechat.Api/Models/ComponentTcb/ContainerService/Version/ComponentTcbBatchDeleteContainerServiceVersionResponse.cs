@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /componenttcb/batchdelcsversion 接口的响应。</para>
     /// </summary>
-    public class ComponentTcbBatchDeleteContainerServiceVersionResponse : WechatApiResponse
+    public class ComponentTCBBatchDeleteContainerServiceVersionResponse : WechatApiResponse
     {
         public static class Types
         {

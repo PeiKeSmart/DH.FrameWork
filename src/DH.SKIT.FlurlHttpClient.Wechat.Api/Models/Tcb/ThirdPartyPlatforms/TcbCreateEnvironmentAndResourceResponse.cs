@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /tcb/createenvandresource 接口的响应。</para>
     /// </summary>
-    public class TcbCreateEnvironmentAndResourceResponse : WechatApiResponse
+    public class TCBCreateEnvironmentAndResourceResponse : WechatApiResponse
     {
         /// <summary>
         /// 获取或设置环境状态。

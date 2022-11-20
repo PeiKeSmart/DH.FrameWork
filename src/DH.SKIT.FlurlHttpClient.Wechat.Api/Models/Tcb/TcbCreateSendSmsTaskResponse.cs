@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /tcb/createsendsmstask 接口的响应。</para>
     /// </summary>
-    public class TcbCreateSendSmsTaskResponse : WechatApiResponse
+    public class TCBCreateSendSmsTaskResponse : WechatApiResponse
     {
         /// <summary>
         /// 获取或设置查询 ID。

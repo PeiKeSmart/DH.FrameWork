@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /tcb/uploadfile 接口的请求。</para>
     /// </summary>
-    public class TcbUploadFileRequest : WechatApiRequest, IInferable<TcbUploadFileRequest, TcbUploadFileResponse>
+    public class TCBUploadFileRequest : WechatApiRequest, IInferable<TCBUploadFileRequest, TCBUploadFileResponse>
     {
         /// <summary>
         /// 获取或设置环境 ID。

@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /tcb/adddelayedfunctiontask 接口的响应。</para>
     /// </summary>
-    public class TcbAddDelayedFunctionTaskResponse : WechatApiResponse
+    public class TCBAddDelayedFunctionTaskResponse : WechatApiResponse
     {
     }
 }

@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /tcb/getopendata 接口的响应。</para>
     /// </summary>
-    public class TcbGetOpenDataResponse : WechatApiResponse
+    public class TCBGetOpenDataResponse : WechatApiResponse
     {
         public static class Types
         {

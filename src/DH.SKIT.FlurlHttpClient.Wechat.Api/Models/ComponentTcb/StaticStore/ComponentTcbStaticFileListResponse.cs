@@ -3,11 +3,11 @@
     /// <summary>
     /// <para>表示 [POST] /componenttcb/staticfilelist 接口的响应。</para>
     /// </summary>
-    public class ComponentTcbStaticFileListResponse : WechatApiResponse
+    public class ComponentTCBStaticFileListResponse : WechatApiResponse
     {
         public static class Types
         {
-            public class File : ComponentTcbGetBucketResponse.Types.File
+            public class File : ComponentTCBGetBucketResponse.Types.File
             {
             }
         }

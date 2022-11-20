@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /tcb/databasecount 接口的响应。</para>
     /// </summary>
-    public class TcbDatabaseCountResponse : WechatApiResponse
+    public class TCBDatabaseCountResponse : WechatApiResponse
     {
         /// <summary>
         /// 获取或设置记录数量。

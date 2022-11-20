@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /componenttcb/gettriggers 接口的响应。</para>
     /// </summary>
-    public class ComponentTcbGetTriggersResponse : WechatApiResponse
+    public class ComponentTCBGetTriggersResponse : WechatApiResponse
     {
         public static class Types
         {

@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /tcb/databasemigrateimport 接口的请求。</para>
     /// </summary>
-    public class TcbDatabaseMigrateImportRequest : WechatApiRequest, IInferable<TcbDatabaseMigrateImportRequest, TcbDatabaseMigrateImportResponse>
+    public class TCBDatabaseMigrateImportRequest : WechatApiRequest, IInferable<TCBDatabaseMigrateImportRequest, TCBDatabaseMigrateImportResponse>
     {
         /// <summary>
         /// 获取或设置环境 ID。

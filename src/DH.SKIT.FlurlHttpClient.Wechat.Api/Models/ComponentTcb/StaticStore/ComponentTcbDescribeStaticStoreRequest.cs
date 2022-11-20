@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /componenttcb/describestaticstore 接口的请求。</para>
     /// </summary>
-    public class ComponentTcbDescribeStaticStoreRequest : WechatApiRequest, IInferable<ComponentTcbDescribeStaticStoreRequest, ComponentTcbDescribeStaticStoreResponse>
+    public class ComponentTCBDescribeStaticStoreRequest : WechatApiRequest, IInferable<ComponentTCBDescribeStaticStoreRequest, ComponentTCBDescribeStaticStoreResponse>
     {
         /// <summary>
         /// 获取或设置第三方平台 AccessToken。

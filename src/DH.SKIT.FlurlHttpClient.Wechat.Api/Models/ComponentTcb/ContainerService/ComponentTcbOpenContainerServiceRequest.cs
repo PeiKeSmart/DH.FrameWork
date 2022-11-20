@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /componenttcb/opencontainerservice 接口的请求。</para>
     /// </summary>
-    public class ComponentTcbOpenContainerServiceRequest : WechatApiRequest, IInferable<ComponentTcbOpenContainerServiceRequest, ComponentTcbOpenContainerServiceResponse>
+    public class ComponentTCBOpenContainerServiceRequest : WechatApiRequest, IInferable<ComponentTCBOpenContainerServiceRequest, ComponentTCBOpenContainerServiceResponse>
     {
         /// <summary>
         /// 获取或设置第三方平台 AccessToken。

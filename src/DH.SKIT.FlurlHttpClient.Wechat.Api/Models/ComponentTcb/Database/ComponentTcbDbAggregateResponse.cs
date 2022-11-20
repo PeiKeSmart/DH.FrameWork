@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /componenttcb/dbaggregate 接口的响应。</para>
     /// </summary>
-    public class ComponentTcbDbAggregateResponse : WechatApiResponse
+    public class ComponentTCBDbAggregateResponse : WechatApiResponse
     {
         /// <summary>
         /// 获取或设置查询数据列表。

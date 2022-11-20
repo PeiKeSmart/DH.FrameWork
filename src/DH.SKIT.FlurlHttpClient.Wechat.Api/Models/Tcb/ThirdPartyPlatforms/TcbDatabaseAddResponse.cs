@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /tcb/databaseadd 接口的响应。</para>
     /// </summary>
-    public class TcbDatabaseAddResponse : WechatApiResponse
+    public class TCBDatabaseAddResponse : WechatApiResponse
     {
         /// <summary>
         /// 获取或设置插入成功的数据集合主键 ID 列表。

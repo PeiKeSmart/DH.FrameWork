@@ -5,7 +5,7 @@ namespace SKIT.FlurlHttpClient.Wechat.Api.Models
     /// <summary>
     /// <para>表示 [POST] /componenttcb/getbucket 接口的响应。</para>
     /// </summary>
-    public class ComponentTcbGetBucketResponse : WechatApiResponse
+    public class ComponentTCBGetBucketResponse : WechatApiResponse
     {
         public static class Types
         {

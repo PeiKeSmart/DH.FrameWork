@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /componenttcb/dbexport 接口的响应。</para>
     /// </summary>
-    public class ComponentTcbDbExportResponse : WechatApiResponse
+    public class ComponentTCBDbExportResponse : WechatApiResponse
     {
         /// <summary>
         /// 获取或设置导出任务 ID。

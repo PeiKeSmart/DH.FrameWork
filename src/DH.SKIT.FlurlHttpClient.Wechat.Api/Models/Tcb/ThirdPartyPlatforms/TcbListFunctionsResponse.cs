@@ -5,7 +5,7 @@ namespace SKIT.FlurlHttpClient.Wechat.Api.Models
     /// <summary>
     /// <para>表示 [POST] /tcb/listfunctions 接口的响应。</para>
     /// </summary>
-    public class TcbListFunctionsResponse : WechatApiResponse
+    public class TCBListFunctionsResponse : WechatApiResponse
     {
         public static class Types
         {

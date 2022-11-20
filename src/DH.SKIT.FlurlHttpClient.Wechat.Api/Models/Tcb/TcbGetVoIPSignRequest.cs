@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /tcb/getvoipsign 接口的请求。</para>
     /// </summary>
-    public class TcbGetVoIPSignRequest : WechatApiRequest, IInferable<TcbGetVoIPSignRequest, TcbGetVoIPSignResponse>
+    public class TCBGetVoIPSignRequest : WechatApiRequest, IInferable<TCBGetVoIPSignRequest, TCBGetVoIPSignResponse>
     {
         /// <summary>
         /// 获取或设置用户唯一标识。

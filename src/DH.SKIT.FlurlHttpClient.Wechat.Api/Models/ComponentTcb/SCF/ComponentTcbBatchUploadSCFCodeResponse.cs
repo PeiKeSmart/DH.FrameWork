@@ -3,11 +3,11 @@
     /// <summary>
     /// <para>表示 [POST] /componenttcb/batchuploadscfcode 接口的响应。</para>
     /// </summary>
-    public class ComponentTcbBatchUploadSCFCodeResponse : WechatApiResponse
+    public class ComponentTCBBatchUploadSCFCodeResponse : WechatApiResponse
     {
         public static class Types
         {
-            public class Failure : ComponentTcbBatchUploadSCFResponse.Types.Failure
+            public class Failure : ComponentTCBBatchUploadSCFResponse.Types.Failure
             {
             }
         }

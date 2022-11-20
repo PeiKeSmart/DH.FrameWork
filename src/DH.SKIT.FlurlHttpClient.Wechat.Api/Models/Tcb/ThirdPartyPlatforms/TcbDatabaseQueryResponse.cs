@@ -3,11 +3,11 @@
     /// <summary>
     /// <para>表示 [POST] /tcb/databasequery 接口的响应。</para>
     /// </summary>
-    public class TcbDatabaseQueryResponse : WechatApiResponse
+    public class TCBDatabaseQueryResponse : WechatApiResponse
     {
         public static class Types
         {
-            public class Pagination : TcbDatabaseCollectionGetResponse.Types.Pagination
+            public class Pagination : TCBDatabaseCollectionGetResponse.Types.Pagination
             {
             }
         }

@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /componenttcb/dbmigrationstate 接口的请求。</para>
     /// </summary>
-    public class ComponentTcbDbMigrationStateRequest : WechatApiRequest, IInferable<ComponentTcbDbMigrationStateRequest, ComponentTcbDbMigrationStateResponse>
+    public class ComponentTCBDbMigrationStateRequest : WechatApiRequest, IInferable<ComponentTCBDbMigrationStateRequest, ComponentTCBDbMigrationStateResponse>
     {
         /// <summary>
         /// 获取或设置第三方平台 AccessToken。

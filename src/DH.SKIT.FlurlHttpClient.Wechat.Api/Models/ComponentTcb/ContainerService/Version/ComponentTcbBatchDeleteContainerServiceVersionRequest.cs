@@ -5,7 +5,7 @@ namespace SKIT.FlurlHttpClient.Wechat.Api.Models
     /// <summary>
     /// <para>表示 [POST] /componenttcb/batchdelcsversion 接口的请求。</para>
     /// </summary>
-    public class ComponentTcbBatchDeleteContainerServiceVersionRequest : WechatApiRequest, IInferable<ComponentTcbBatchDeleteContainerServiceVersionRequest, ComponentTcbBatchDeleteContainerServiceVersionResponse>
+    public class ComponentTCBBatchDeleteContainerServiceVersionRequest : WechatApiRequest, IInferable<ComponentTCBBatchDeleteContainerServiceVersionRequest, ComponentTCBBatchDeleteContainerServiceVersionResponse>
     {
         public static class Types
         {

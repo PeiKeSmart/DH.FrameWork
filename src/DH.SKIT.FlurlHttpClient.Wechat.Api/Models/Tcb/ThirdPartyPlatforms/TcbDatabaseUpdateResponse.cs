@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /tcb/databaseupdate 接口的响应。</para>
     /// </summary>
-    public class TcbDatabaseUpdateResponse : WechatApiResponse
+    public class TCBDatabaseUpdateResponse : WechatApiResponse
     {
         /// <summary>
         /// 获取或设置修改记录数。

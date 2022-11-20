@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /tcb/sendsms 接口的响应。</para>
     /// </summary>
-    public class TcbSendSmsResponse : WechatApiResponse
+    public class TCBSendSmsResponse : WechatApiResponse
     {
         public static class Types
         {

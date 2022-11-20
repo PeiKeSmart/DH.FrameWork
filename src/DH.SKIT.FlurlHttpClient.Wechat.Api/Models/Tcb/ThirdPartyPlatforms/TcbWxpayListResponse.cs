@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /tcb/wxpaylist 接口的响应。</para>
     /// </summary>
-    public class TcbWxpayListResponse : WechatApiResponse
+    public class TCBWxpayListResponse : WechatApiResponse
     {
         public static class Types
         {

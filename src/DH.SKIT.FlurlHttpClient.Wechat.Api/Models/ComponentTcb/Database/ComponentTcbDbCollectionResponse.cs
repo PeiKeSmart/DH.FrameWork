@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /componenttcb/dbcollection 接口的响应。</para>
     /// </summary>
-    public class ComponentTcbDbCollectionResponse : WechatApiResponse
+    public class ComponentTCBDbCollectionResponse : WechatApiResponse
     {
         public static class Types
         {

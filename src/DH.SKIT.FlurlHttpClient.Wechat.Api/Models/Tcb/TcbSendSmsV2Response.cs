@@ -3,11 +3,11 @@
     /// <summary>
     /// <para>表示 [POST] /tcb/sendsmsv2 接口的响应。</para>
     /// </summary>
-    public class TcbSendSmsV2Response : WechatApiResponse
+    public class TCBSendSmsV2Response : WechatApiResponse
     {
         public static class Types
         {
-            public class SendStatus : TcbSendSmsResponse.Types.SendStatus
+            public class SendStatus : TCBSendSmsResponse.Types.SendStatus
             {
             }
         }

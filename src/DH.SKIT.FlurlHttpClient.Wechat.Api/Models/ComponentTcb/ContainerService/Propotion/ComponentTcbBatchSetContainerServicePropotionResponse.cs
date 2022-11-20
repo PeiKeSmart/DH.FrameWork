@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /componenttcb/batchsetcspropotion 接口的响应。</para>
     /// </summary>
-    public class ComponentTcbBatchSetContainerServicePropotionResponse : WechatApiResponse
+    public class ComponentTCBBatchSetContainerServicePropotionResponse : WechatApiResponse
     {
         public static class Types
         {

@@ -5,7 +5,7 @@ namespace SKIT.FlurlHttpClient.Wechat.Api.Models
     /// <summary>
     /// <para>表示 [POST] /componenttcb/getcsversionlist 接口的响应。</para>
     /// </summary>
-    public class ComponentTcbGetContainerServiceVersionListResponse : WechatApiResponse
+    public class ComponentTCBGetContainerServiceVersionListResponse : WechatApiResponse
     {
         public static class Types
         {

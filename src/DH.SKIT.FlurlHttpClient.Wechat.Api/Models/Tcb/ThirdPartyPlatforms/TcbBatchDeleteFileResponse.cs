@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /tcb/batchdeletefile 接口的响应。</para>
     /// </summary>
-    public class TcbBatchDeleteFileResponse : WechatApiResponse
+    public class TCBBatchDeleteFileResponse : WechatApiResponse
     {
         public static class Types
         {

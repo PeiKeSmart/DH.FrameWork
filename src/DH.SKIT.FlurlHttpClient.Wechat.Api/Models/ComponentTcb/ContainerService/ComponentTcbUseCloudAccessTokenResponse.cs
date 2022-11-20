@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /tcb/usecloudaccesstoken 接口的响应。</para>
     /// </summary>
-    public class ComponentTcbUseCloudAccessTokenResponse : WechatApiResponse
+    public class ComponentTCBUseCloudAccessTokenResponse : WechatApiResponse
     {
         /// <summary>
         /// 获取或设置是否关闭。

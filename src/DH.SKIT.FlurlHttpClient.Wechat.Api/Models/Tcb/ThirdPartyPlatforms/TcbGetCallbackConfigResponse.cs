@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /tcb/getcallbackconfig 接口的响应。</para>
     /// </summary>
-    public class TcbGetCallbackConfigResponse : WechatApiResponse
+    public class TCBGetCallbackConfigResponse : WechatApiResponse
     {
         public static class Types
         {
@@ -11,7 +11,7 @@
             {
                 public static class Types
                 {
-                    public class ContainerConfig : TcbSetCallbackConfigRequest.Types.ContainerConfig
+                    public class ContainerConfig : TCBSetCallbackConfigRequest.Types.ContainerConfig
                     {
                     }
 
@@ -19,7 +19,7 @@
                     {
                         public static class Types
                         {
-                            public class Callback : TcbSetCallbackConfigRequest.Types.FunctionConfig.Types.Callback
+                            public class Callback : TCBSetCallbackConfigRequest.Types.FunctionConfig.Types.Callback
                             {
                             }
                         }

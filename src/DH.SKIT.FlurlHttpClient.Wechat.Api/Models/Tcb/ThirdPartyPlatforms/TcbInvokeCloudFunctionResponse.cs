@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /tcb/invokecloudfunction 接口的响应。</para>
     /// </summary>
-    public class TcbInvokeCloudFunctionResponse : WechatApiResponse
+    public class TCBInvokeCloudFunctionResponse : WechatApiResponse
     {
         /// <summary>
         /// 获取或设置函数返回结果。

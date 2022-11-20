@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /tcb/databasemigrateimport 接口的响应。</para>
     /// </summary>
-    public class TcbDatabaseMigrateImportResponse : WechatApiResponse
+    public class TCBDatabaseMigrateImportResponse : WechatApiResponse
     {
         /// <summary>
         /// 获取或设置导入任务 ID。

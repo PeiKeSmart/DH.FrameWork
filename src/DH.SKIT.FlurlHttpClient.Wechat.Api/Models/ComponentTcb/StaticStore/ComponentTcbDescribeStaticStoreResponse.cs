@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /componenttcb/describestaticstore 接口的响应。</para>
     /// </summary>
-    public class ComponentTcbDescribeStaticStoreResponse : WechatApiResponse
+    public class ComponentTCBDescribeStaticStoreResponse : WechatApiResponse
     {
         public static class Types
         {

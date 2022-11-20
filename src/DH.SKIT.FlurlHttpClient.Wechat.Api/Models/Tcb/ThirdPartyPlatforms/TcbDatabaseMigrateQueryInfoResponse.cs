@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /tcb/databasemigratequeryinfo 接口的响应。</para>
     /// </summary>
-    public class TcbDatabaseMigrateQueryInfoResponse : WechatApiResponse
+    public class TCBDatabaseMigrateQueryInfoResponse : WechatApiResponse
     {
         /// <summary>
         /// 获取或设置状态。

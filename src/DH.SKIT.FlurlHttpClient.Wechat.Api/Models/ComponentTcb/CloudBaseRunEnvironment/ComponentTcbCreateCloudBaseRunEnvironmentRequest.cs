@@ -5,7 +5,7 @@ namespace SKIT.FlurlHttpClient.Wechat.Api.Models
     /// <summary>
     /// <para>表示 [POST] /componenttcb/createcloudbaserunenv 接口的请求。</para>
     /// </summary>
-    public class ComponentTcbCreateCloudBaseRunEnvironmentRequest : WechatApiRequest, IInferable<ComponentTcbCreateCloudBaseRunEnvironmentRequest, ComponentTcbCreateCloudBaseRunEnvironmentResponse>
+    public class ComponentTCBCreateCloudBaseRunEnvironmentRequest : WechatApiRequest, IInferable<ComponentTCBCreateCloudBaseRunEnvironmentRequest, ComponentTCBCreateCloudBaseRunEnvironmentResponse>
     {
         /// <summary>
         /// 获取或设置第三方平台 AccessToken。

@@ -5,7 +5,7 @@ namespace SKIT.FlurlHttpClient.Wechat.Api.Models
     /// <summary>
     /// <para>表示 [POST] /componenttcb/batchsetcspropotion 接口的请求。</para>
     /// </summary>
-    public class ComponentTcbBatchSetContainerServicePropotionRequest : WechatApiRequest, IInferable<ComponentTcbBatchSetContainerServicePropotionRequest, ComponentTcbBatchSetContainerServicePropotionResponse>
+    public class ComponentTCBBatchSetContainerServicePropotionRequest : WechatApiRequest, IInferable<ComponentTCBBatchSetContainerServicePropotionRequest, ComponentTCBBatchSetContainerServicePropotionResponse>
     {
         public static class Types
         {
@@ -13,7 +13,7 @@ namespace SKIT.FlurlHttpClient.Wechat.Api.Models
             {
                 public static class Types
                 {
-                    public class Version : ComponentTcbSetContainerServicePropotionRequest.Types.Version
+                    public class Version : ComponentTCBSetContainerServicePropotionRequest.Types.Version
                     {
                     }
                 }

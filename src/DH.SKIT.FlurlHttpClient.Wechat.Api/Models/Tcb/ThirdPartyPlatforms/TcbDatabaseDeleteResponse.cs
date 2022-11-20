@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /tcb/databasedelete 接口的响应。</para>
     /// </summary>
-    public class TcbDatabaseDeleteResponse : WechatApiResponse
+    public class TCBDatabaseDeleteResponse : WechatApiResponse
     {
         /// <summary>
         /// 获取或设置删除数量。

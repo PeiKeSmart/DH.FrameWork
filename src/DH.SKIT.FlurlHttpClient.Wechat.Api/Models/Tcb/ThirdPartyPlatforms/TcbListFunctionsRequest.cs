@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /tcb/listfunctions 接口的请求。</para>
     /// </summary>
-    public class TcbListFunctionsRequest : WechatApiRequest, IInferable<TcbListFunctionsRequest, TcbListFunctionsResponse>
+    public class TCBListFunctionsRequest : WechatApiRequest, IInferable<TCBListFunctionsRequest, TCBListFunctionsResponse>
     {
         /// <summary>
         /// 获取或设置环境 ID。

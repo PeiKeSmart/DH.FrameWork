@@ -3,7 +3,7 @@
     /// <summary>
     /// <para>表示 [POST] /tcb/databasecollectiondelete 接口的请求。</para>
     /// </summary>
-    public class TcbDatabaseCollectionDeleteRequest : WechatApiRequest, IInferable<TcbDatabaseCollectionDeleteRequest, TcbDatabaseCollectionDeleteResponse>
+    public class TCBDatabaseCollectionDeleteRequest : WechatApiRequest, IInferable<TCBDatabaseCollectionDeleteRequest, TCBDatabaseCollectionDeleteResponse>
     {
         /// <summary>
         /// 获取或设置环境 ID。
