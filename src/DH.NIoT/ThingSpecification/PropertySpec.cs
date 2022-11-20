@@ -2,9 +2,12 @@
 
 namespace NewLife.IoT.ThingSpecification;
 
-/// <summary>
-/// 属性规范
-/// </summary>
+/// <summary>属性规范</summary>
+/// <remarks>
+/// 用于描述设备运行时具体信息和状态。
+/// 例如，环境监测设备所读取的当前环境温度、智能灯开关状态、电风扇风力等级等。
+/// 属性可分为读写和只读两种类型。读写类型支持读取和设置属性值，只读类型仅支持读取属性值。
+/// </remarks>
 public class PropertySpec : SpecBase, IDictionarySource
 {
     #region 属性
@@ -18,10 +21,10 @@ public class PropertySpec : SpecBase, IDictionarySource
     /// </summary>
     public TypeSpec DataType { get; set; }
 
-    /// <summary>
-    /// 采集点位置信息
-    /// </summary>
-    public String Address { get; set; }
+    ///// <summary>
+    ///// 采集点位置信息
+    ///// </summary>
+    //public String Address { get; set; }
     #endregion
 
     #region 创建
@@ -30,15 +33,13 @@ public class PropertySpec : SpecBase, IDictionarySource
     /// <param name="name">名称</param>
     /// <param name="type">类型</param>
     /// <param name="length">长度</param>
-    /// <param name="address">点位地址</param>
     /// <returns></returns>
-    public static PropertySpec Create(String id, String name, String type, Int32 length = 0, String address = null)
+    public static PropertySpec Create(String id, String name, String type, Int32 length = 0)
     {
         var ps = new PropertySpec
         {
             Id = id,
             Name = name,
-            Address = address
         };
 
         if (type != null)
@@ -73,8 +74,8 @@ public class PropertySpec : SpecBase, IDictionarySource
         if (dt != null)
             dic.Add(nameof(DataType), dt);
 
-        if (!Address.IsNullOrEmpty())
-            dic.Add(nameof(Address), Address);
+        //if (!Address.IsNullOrEmpty())
+        //    dic.Add(nameof(Address), Address);
 
         return dic;
     }
