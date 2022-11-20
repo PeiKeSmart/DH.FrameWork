@@ -72,7 +72,7 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.2-beta2" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.2-beta3" />
 		<PackageReference Include="NLipsum" Version="1.1.0" />
 	</ItemGroup>
 
