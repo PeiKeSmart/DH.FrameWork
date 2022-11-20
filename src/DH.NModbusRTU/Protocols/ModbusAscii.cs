@@ -67,7 +67,7 @@ public class ModbusAscii : Modbus
             p.Open();
             _port = p;
 
-            WriteLog("ModbusAscii.Open {0} Baudrate={1}", PortName, Baudrate);
+            WriteLog("ModbusAscii.Open {0} Baudrate={1} DataBits={2} Parity={3} StopBits={4}", PortName, Baudrate, p.DataBits, p.Parity, p.StopBits);
         }
     }
 
@@ -105,11 +105,7 @@ public class ModbusAscii : Modbus
 
         {
             using var span = Tracer?.NewSpan("modbus:ReceiveCommand");
-#if NETSTANDARD2_1_OR_GREATER
-            var buf = ArrayPool<Byte>.Shared.Rent(BufferSize);
-#else
             var buf = new Byte[BufferSize];
-#endif
             try
             {
                 var count = _port.Read(buf, 0, buf.Length);
@@ -140,12 +136,6 @@ public class ModbusAscii : Modbus
                 if (ex is TimeoutException) return null;
                 throw;
             }
-            finally
-            {
-#if NETSTANDARD2_1_OR_GREATER
-                ArrayPool<Byte>.Shared.Return(buf);
-#endif
-            }
         }
     }
 
@@ -154,12 +144,10 @@ public class ModbusAscii : Modbus
         var count = sp.BytesToRead;
         if (count >= minLength) return;
 
-        var n = 0;
         var ms = Timeout;
         var sw = Stopwatch.StartNew();
         while (sp.IsOpen && sw.ElapsedMilliseconds < ms)
         {
-            n++;
             //Thread.SpinWait(1);
             Thread.Sleep(10);
             if (count != sp.BytesToRead)
@@ -170,8 +158,6 @@ public class ModbusAscii : Modbus
                 sw.Restart();
             }
         }
-
-        XTrace.WriteLine("n={0} count={1}", n, count);
     }
 
     /// <summary>获取串口列表</summary>
