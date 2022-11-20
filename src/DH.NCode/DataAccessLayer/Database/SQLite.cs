@@ -669,17 +669,24 @@ internal class SQLiteMetaData : FileDbMetaData
     #region 数据定义
     public override Object SetSchema(DDLSchema schema, params Object[] values)
     {
-        switch (schema)
         {
-            case DDLSchema.BackupDatabase:
-                var dbname = FileName;
-                if (!dbname.IsNullOrEmpty()) dbname = Path.GetFileNameWithoutExtension(dbname);
-                var file = "";
-                if (values != null && values.Length > 0) file = values[0] as String;
-                return Backup(dbname, file, false);
+            var db = Database as DbBase;
+            var tracer = db.Tracer;
+            if (schema is not DDLSchema.BackupDatabase) tracer = null;
+            using var span = tracer?.NewSpan($"db:{db.ConnName}:SetSchema:{schema}", values);
 
-            default:
-                break;
+            switch (schema)
+            {
+                case DDLSchema.BackupDatabase:
+                    var dbname = FileName;
+                    if (!dbname.IsNullOrEmpty()) dbname = Path.GetFileNameWithoutExtension(dbname);
+                    var file = "";
+                    if (values != null && values.Length > 0) file = values[0] as String;
+                    return Backup(dbname, file, false);
+
+                default:
+                    break;
+            }
         }
         return base.SetSchema(schema, values);
     }
@@ -815,8 +822,13 @@ internal class SQLiteMetaData : FileDbMetaData
         }
 
         // 把onlySql设为true，让基类只产生语句而不执行
-        var sql = base.CheckColumnsChange(entitytable, dbtable, true, false);
+        var sql = base.CheckColumnsChange(entitytable, dbtable, onlySql, true);
         if (sql.IsNullOrEmpty()) return sql;
+
+        // SQLite 3.35.0 起支持 Drop Column
+        // https://sqlite.org/releaselog/3_35_0.html
+        var ver = Database.ServerVersion;
+        var v = ver.IsNullOrEmpty() ? null : new Version(ver);
 
         // 只有修改字段、删除字段需要重建表
         if (!sql.Contains("Alter Column") && !sql.Contains("Drop Column"))
@@ -827,14 +839,27 @@ internal class SQLiteMetaData : FileDbMetaData
 
             return null;
         }
+        if (sql.Contains("Drop Column") && v != null && v >= new Version(3, 35))
+        {
+            if (onlySql || noDelete) return sql;
+
+            Database.CreateSession().Execute(sql);
+
+            return null;
+        }
+
+        var db = Database as DbBase;
+        using var span = db.Tracer?.NewSpan($"db:{db.ConnName}:SetSchema:RebuildTable", sql);
 
         var sql2 = sql;
 
-        sql = ReBuildTable(entitytable, dbtable);
+        sql = RebuildTable(entitytable, dbtable);
         if (sql.IsNullOrEmpty() || onlySql) return sql;
 
         // 输出日志，说明重建表的理由
         WriteLog("SQLite需要重建表，因无法执行：{0}", sql2);
+
+        span?.SetTag(sql);
 
         var flag = true;
         // 如果设定不允许删
@@ -866,8 +891,10 @@ internal class SQLiteMetaData : FileDbMetaData
             }
             session.Commit();
         }
-        catch
+        catch (Exception ex)
         {
+            span?.SetError(ex, null);
+
             session.Rollback();
             throw;
         }
@@ -908,8 +935,41 @@ internal class SQLiteMetaData : FileDbMetaData
         base.CheckTable(entitytable, dbtable, mode);
     }
 
+    protected override Boolean PerformSchema(StringBuilder sb, Boolean onlySql, DDLSchema schema, params Object[] values)
+    {
+        // SQLite表和字段不支持注释
+        switch (schema)
+        {
+            case DDLSchema.AddTableDescription:
+            case DDLSchema.DropTableDescription:
+            case DDLSchema.AddColumnDescription:
+            case DDLSchema.DropColumnDescription:
+                return true;
+            default:
+                break;
+        }
+        return base.PerformSchema(sb, onlySql, schema, values);
+    }
+
+    protected override Boolean IsColumnTypeChanged(IDataColumn entityColumn, IDataColumn dbColumn)
+    {
+        var type1 = entityColumn.DataType;
+        var type2 = dbColumn.DataType;
+
+        // SQLite只有一种整数，不去比较类型差异
+        if (type1 == type2) return false;
+        if (type1.IsInt() && type2.IsInt()) return false;
+        //if ((type1 == typeof(Int32) || type1 == typeof(Int64)) &&
+        //    (type2 == typeof(Int32) || type2 == typeof(Int64)))
+        //    return false;
+
+        return base.IsColumnTypeChanged(entityColumn, dbColumn);
+    }
+
+    //public override String AlterColumnSQL(IDataColumn field, IDataColumn oldfield) => null;
+
     public override String CompactDatabaseSQL() => "VACUUM";
 
-    public override Int32 CompactDatabase() => Database.CreateSession().Execute("VACUUM");
+    //public override Int32 CompactDatabase() => Database.CreateSession().Execute("VACUUM");
     #endregion
 }

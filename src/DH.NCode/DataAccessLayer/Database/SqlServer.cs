@@ -478,13 +478,14 @@ internal class SqlServer : RemoteDb
     public override String FormatLike(IDataColumn column, String format, String value)
     {
         if (value.IsNullOrEmpty()) return value;
-
-        if (value.IndexOfAny(_likeKeys) >= 0)
-            value = value
-                .Replace("[", "[[]")
-                .Replace("]", "[]]")
-                .Replace("%", "[%]")
-                .Replace("_", "[_]");
+        // fix 2022.11.17
+        // Like 构建SQL语句不参转义   
+        //if (value.IndexOfAny(_likeKeys) >= 0)
+        //    value = value
+        //        .Replace("[", "[[]")
+        //        .Replace("]", "[]]")
+        //        .Replace("%", "[%]")
+        //        .Replace("_", "[_]");
 
         return base.FormatLike(column, format, value);
     }
@@ -1133,31 +1134,38 @@ internal class SqlServerMetaData : RemoteDbMetaData
     #region 数据定义
     public override Object SetSchema(DDLSchema schema, params Object[] values)
     {
-        var dbname = "";
-        var file = "";
-        var recoverDir = "";
-        switch (schema)
         {
-            case DDLSchema.BackupDatabase:
-                if (values != null)
-                {
-                    if (values.Length > 0)
-                        dbname = values[0] as String;
-                    if (values.Length > 1)
-                        file = values[1] as String;
-                }
-                return Backup(dbname, file, false);
-            case DDLSchema.RestoreDatabase:
-                if (values != null)
-                {
-                    if (values.Length > 0)
-                        file = values[0] as String;
-                    if (values.Length > 1)
-                        recoverDir = values[1] as String;
-                }
-                return Restore(file, recoverDir, true);
-            default:
-                break;
+            var db = Database as DbBase;
+            var tracer = db.Tracer;
+            if (schema is not DDLSchema.BackupDatabase and not DDLSchema.RestoreDatabase) tracer = null;
+            using var span = tracer?.NewSpan($"db:{db.ConnName}:SetSchema:{schema}", values);
+
+            var dbname = "";
+            var file = "";
+            var recoverDir = "";
+            switch (schema)
+            {
+                case DDLSchema.BackupDatabase:
+                    if (values != null)
+                    {
+                        if (values.Length > 0)
+                            dbname = values[0] as String;
+                        if (values.Length > 1)
+                            file = values[1] as String;
+                    }
+                    return Backup(dbname, file, false);
+                case DDLSchema.RestoreDatabase:
+                    if (values != null)
+                    {
+                        if (values.Length > 0)
+                            file = values[0] as String;
+                        if (values.Length > 1)
+                            recoverDir = values[1] as String;
+                    }
+                    return Restore(file, recoverDir, true);
+                default:
+                    break;
+            }
         }
         return base.SetSchema(schema, values);
     }
@@ -1371,7 +1379,7 @@ internal class SqlServerMetaData : RemoteDbMetaData
         return result;
     }
 
-    public override String TableExistSQL(IDataTable table) => $"select * from sysobjects where xtype='U' and name='{table.TableName}'";
+    //public override String TableExistSQL(IDataTable table) => $"select * from sysobjects where xtype='U' and name='{table.TableName}'";
 
     /// <summary>使用数据架构确定数据表是否存在，因为使用系统视图可能没有权限</summary>
     /// <param name="table"></param>
@@ -1390,9 +1398,9 @@ internal class SqlServerMetaData : RemoteDbMetaData
             return base.RenameTable(tableName, tempTableName);
     }
 
-    protected override String ReBuildTable(IDataTable entitytable, IDataTable dbtable)
+    protected override String RebuildTable(IDataTable entitytable, IDataTable dbtable)
     {
-        var sql = base.ReBuildTable(entitytable, dbtable);
+        var sql = base.RebuildTable(entitytable, dbtable);
         if (String.IsNullOrEmpty(sql)) return sql;
 
         // 特殊处理带标识列的表，需要增加SET IDENTITY_INSERT
@@ -1423,10 +1431,10 @@ internal class SqlServerMetaData : RemoteDbMetaData
         if (field.Identity && !oldfield.Identity)
         {
             //return DropColumnSQL(oldfield) + ";" + Environment.NewLine + AddColumnSQL(field);
-            return ReBuildTable(field.Table, oldfield.Table);
+            return RebuildTable(field.Table, oldfield.Table);
         }
         // 类型改变，必须重建表
-        if (IsColumnTypeChanged(field, oldfield)) return ReBuildTable(field.Table, oldfield.Table);
+        if (IsColumnTypeChanged(field, oldfield)) return RebuildTable(field.Table, oldfield.Table);
 
         var sql = $"Alter Table {FormatName(field.Table)} Alter Column {FieldClause(field, false)}";
         var pk = DeletePrimaryKeySQL(field);
