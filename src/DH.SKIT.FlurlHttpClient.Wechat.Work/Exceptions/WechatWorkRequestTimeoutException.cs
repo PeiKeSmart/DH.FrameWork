@@ -1,4 +1,6 @@
-﻿namespace SKIT.FlurlHttpClient.Wechat.Work.Exceptions
+using System;
+
+namespace SKIT.FlurlHttpClient.Wechat.Work.Exceptions
 {
     public class WechatWorkRequestTimeoutException : WechatWorkException
     {
