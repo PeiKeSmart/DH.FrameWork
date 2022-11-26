@@ -182,6 +182,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DH.SKIT.FlurlHttpClient.Byt
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DH.Clay", "src\DH.Clay\DH.Clay.csproj", "{49C69686-7E00-4E8B-8297-8519D74FA001}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DH.VueCliMiddleware", "src\DH.VueCliMiddleware\DH.VueCliMiddleware.csproj", "{380B98D8-15AE-4BA8-AB94-BE68ED5C35B3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -452,6 +454,10 @@ Global
 		{49C69686-7E00-4E8B-8297-8519D74FA001}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{49C69686-7E00-4E8B-8297-8519D74FA001}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{49C69686-7E00-4E8B-8297-8519D74FA001}.Release|Any CPU.Build.0 = Release|Any CPU
+		{380B98D8-15AE-4BA8-AB94-BE68ED5C35B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{380B98D8-15AE-4BA8-AB94-BE68ED5C35B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{380B98D8-15AE-4BA8-AB94-BE68ED5C35B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{380B98D8-15AE-4BA8-AB94-BE68ED5C35B3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -538,6 +544,7 @@ Global
 		{7E3660CF-99CD-4A38-AEDD-95A2F53B50E4} = {8ED504DD-57C1-47D3-82E7-9F7E4CDE4137}
 		{EC5EB766-A3BA-4A6C-B58E-CBCD054033F8} = {A990D6A6-E99A-4A1F-911D-D8A9392F4560}
 		{49C69686-7E00-4E8B-8297-8519D74FA001} = {AD7AB001-3AF0-48C7-B277-513A2A2D6275}
+		{380B98D8-15AE-4BA8-AB94-BE68ED5C35B3} = {AD7AB001-3AF0-48C7-B277-513A2A2D6275}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8C334959-AE8C-42FF-B144-7B36F5C1B16A}
