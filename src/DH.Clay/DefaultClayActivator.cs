@@ -1,5 +1,6 @@
 ﻿using Castle.DynamicProxy;
 using System.Dynamic;
+using System.Linq.Expressions;
 
 namespace DH.Clay;
 
@@ -37,7 +38,7 @@ public class DefaultClayActivator : IClayActivator
             contextualize = proxy => { mixin.Instance = proxy; return prior(proxy); };
         }
 
-        var proxyType = _builder.CreateClassProxy(baseType, options);
+        var proxyType = _builder.CreateClassProxyType(baseType, null, options);
 
         constructorArgs.Add(new IInterceptor[] { new ClayInterceptor() });
         if (arguments != null)
