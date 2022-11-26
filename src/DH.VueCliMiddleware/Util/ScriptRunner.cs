@@ -129,15 +129,19 @@ namespace VueCliMiddleware
                 {
                     // NPM tasks commonly emit ANSI colors, but it wouldn't make sense to forward
                     // those to loggers (because a logger isn't necessarily any kind of terminal)
-                    //logger.LogInformation(StripAnsiColors(line).TrimEnd('\n'));
                     // making this console for debug purpose
                     if (line.StartsWith("<s>"))
                     {
-                        Console.Error.WriteLine(line.Substring(3));
+                        line = line.Substring(3);
+                    }
+
+                    if (logger == null)
+                    {
+                        Console.Error.WriteLine(line);
                     }
                     else
                     {
-                        Console.Error.WriteLine(line);
+                        logger.LogInformation(StripAnsiColors(line).TrimEnd('\n'));
                     }
                 }
             };
@@ -146,15 +150,19 @@ namespace VueCliMiddleware
             {
                 if (!string.IsNullOrWhiteSpace(line))
                 {
-                    //logger.LogError(StripAnsiColors(line).TrimEnd('\n'));
                     // making this console for debug purpose
                     if (line.StartsWith("<s>"))
                     {
-                        Console.Error.WriteLine(line.Substring(3));
+                        line = line.Substring(3);
+                    }
+
+                    if (logger == null)
+                    {
+                        Console.Error.WriteLine(line);
                     }
                     else
                     {
-                        Console.Error.WriteLine(line);
+                        logger.LogError(StripAnsiColors(line).TrimEnd('\n'));
                     }
                 }
             };
@@ -190,7 +198,7 @@ namespace VueCliMiddleware
             {
                 var message = $"Failed to start '{startInfo.FileName}'. To resolve this:.\n\n"
                             + $"[1] Ensure that '{startInfo.FileName}' is installed and can be found in one of the PATH directories.\n"
-                            + $"    Current PATH enviroment variable is: { Environment.GetEnvironmentVariable("PATH") }\n"
+                            + $"    Current PATH enviroment variable is: {Environment.GetEnvironmentVariable("PATH")}\n"
                             + "    Make sure the executable is in one of those directories, or update your PATH.\n\n"
                             + "[2] See the InnerException for further details of the cause.";
                 throw new InvalidOperationException(message, ex);
