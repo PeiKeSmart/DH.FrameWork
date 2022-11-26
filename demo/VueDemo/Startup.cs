@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -11,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+
 using VueCliMiddleware;
 
 namespace VueCliSample
@@ -41,7 +43,7 @@ namespace VueCliSample
             }
 
             // NOTE: this is optional, it adds HTTPS to Kestrel
-            app.UseHttpsRedirection();
+            // app.UseHttpsRedirection();
 
             // NOTE: PRODUCTION uses webpack static files
             app.UseSpaStaticFiles();
@@ -54,19 +56,36 @@ namespace VueCliSample
             {
                 endpoints.MapControllers();
 
-                // NOTE: VueCliProxy is meant for developement and hot module reload
-                // NOTE: SSR has not been tested
-                // Production systems should only need the UseSpaStaticFiles() (above)
-                // You could wrap this proxy in either
-                // if (System.Diagnostics.Debugger.IsAttached)
-                // or a preprocessor such as #if DEBUG
-                endpoints.MapToVueCliProxy(
-                    "{*path}",
-                    new SpaOptions { SourcePath = "ClientApp" },
-                    npmScript: (System.Diagnostics.Debugger.IsAttached) ? "serve" : null,
-                    regex: "Compiled successfully",
-                    forceKill: true
-                    );
+                if (env.IsDevelopment())
+                {
+                    app.UseSpa(spa =>
+                    {
+                        spa.Options.SourcePath = "ClientApp";
+                        spa.UseVueCli(npmScript: "serve", port: 8080); // optional port
+                    });
+                }
+                else
+                {
+                    // NOTE: VueCliProxy is meant for developement and hot module reload
+                    // NOTE: SSR has not been tested
+                    // Production systems should only need the UseSpaStaticFiles() (above)
+                    // You could wrap this proxy in either
+                    // if (System.Diagnostics.Debugger.IsAttached)
+                    // or a preprocessor such as #if DEBUG
+                    endpoints.MapToVueCliProxy(
+                        "{*path}",
+                        new SpaOptions { SourcePath = "ClientApp" },
+                        npmScript: (System.Diagnostics.Debugger.IsAttached) ? "serve" : null,
+                        regex: "Compiled successfully",
+                        forceKill: true
+                        );
+                }
+#if DEBUG
+
+#else
+                
+#endif
+
             });
         }
     }
