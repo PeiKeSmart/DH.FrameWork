@@ -1,30 +1,30 @@
-﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.SpaServices;
-
 using System;
 
 namespace VueCliMiddleware
 {
     /// <summary>
-    /// 用于启用Vue开发服务器中间件支持的扩展方法。
+    /// Extension methods for enabling Vue development server middleware support.
     /// </summary>
     public static class VueCliMiddlewareExtensions
     {
         /// <summary>
-        /// 通过将请求传递给vue-cli服务器的实例来处理请求。
-        /// 这意味着您可以始终提供最新的CLI构建资源，而无需
-        /// 手动运行vue-cli服务器。
+        /// Handles requests by passing them through to an instance of the vue-cli server.
+        /// This means you can always serve up-to-date CLI-built resources without having
+        /// to run the vue-cli server manually.
         ///
-        /// 此功能只能在开发中使用。对于生产部署确保不要启用vue-cli服务器。
+        /// This feature should only be used in development. For production deployments, be
+        /// sure not to enable the vue-cli server.
         /// </summary>
-        /// <param name="spaBuilder"><see cref="ISpaBuilder"/>对像.</param>
-        /// <param name="npmScript">包中脚本的名称。json文件，启动vue-cli服务器。</param>
-        /// <param name="port">指定vue-cli服务器端口号。如果&lt；80，使用随机端口。</param>
-        /// <param name="https">指定vue-cli服务器模式</param>
-        /// <param name="runner">指定runner、Npm和Yarn是有效选项。纱线支撑高度实验性。</param>
-        /// <param name="regex">指定要在日志中搜索的自定义regex字符串，指示代理服务器正在运行。VueCli:“正在运行”，QuasarCli:“编译成功”</param>
+        /// <param name="spaBuilder">The <see cref="ISpaBuilder"/>.</param>
+        /// <param name="npmScript">The name of the script in your package.json file that launches the vue-cli server.</param>
+        /// <param name="port">Specify vue cli server port number. If &lt; 80, uses random port. </param>
+        /// <param name="https">Specify vue cli server schema </param>
+        /// <param name="runner">Specify the runner, Npm and Yarn are valid options. Yarn support is HIGHLY experimental.</param>
+        /// <param name="regex">Specify a custom regex string to search for in the log indicating proxied server is running. VueCli: "running at", QuasarCli: "Compiled successfully"</param>
         /// <param name="forceKill"></param>
         /// <param name="wsl"></param>
         public static void UseVueCli(
@@ -116,7 +116,7 @@ namespace VueCliMiddleware
         }
 
 
-
+        
         private static RequestDelegate CreateProxyRequestDelegate(
             IEndpointRouteBuilder endpoints,
             SpaOptions options,

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
@@ -115,7 +115,7 @@ namespace VueCliMiddleware
                 if (Task.WaitAll(new Task[] { stdOutT, stdErrorT }, 10000))
                 {
                     // if success, return data
-                    return (stdOutT.Result + Environment.NewLine + stdErrorT.Result).Trim();
+                    return (stdOutT.Result + Environment.NewLine + stdErrorT.Result).Trim();                   
                 }
                 return null;
             }
