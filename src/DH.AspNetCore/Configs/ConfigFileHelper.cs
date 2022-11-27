@@ -1,11 +1,11 @@
-﻿namespace DH.Configs;
-
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json;
+
+namespace DH.Configs;
 
 /// <summary>
 /// 配置文件管理器
@@ -38,7 +38,7 @@ public static class ConfigFileHelper
             var spList = new ServiceCollection().AddOptions()
                                            .Configure<T>(options => _config.GetSection(sectionName))
                                            .BuildServiceProvider();
-            return spList.GetService<IOptions<T>>().Value;
+            return spList.GetService<IOptionsMonitor<T>>().CurrentValue;
         }
         catch (Exception)
         {
@@ -111,6 +111,42 @@ public static class ConfigFileHelper
             });
         }
     }
+
+#if NET5_0_OR_GREATER
+    /// <summary>
+    /// 从Settings导入配置文件
+    /// </summary>
+    public static void SetConfig(this ConfigurationManager config)
+    {
+        var dir = Path.GetFullPath(AppContext.BaseDirectory);
+        var settingsFolder = Path.Combine(dir, "Settings");
+
+        // 查找 Settings目录
+        if (!Directory.Exists(settingsFolder))
+        {
+            dir = Path.GetFullPath(AppContext.BaseDirectory + "/..");
+        }
+
+        settingsFolder = Path.Combine(dir, "Settings");
+
+        if (!Directory.Exists(settingsFolder))
+        {
+            dir = Path.GetFullPath(AppContext.BaseDirectory + "/bin");
+        }
+
+        settingsFolder = Path.Combine(dir, "Settings");
+
+        if (Directory.Exists(settingsFolder))
+        {
+            var settings = Directory.GetFiles(settingsFolder, "*.json");
+            settings.ToList().ForEach(setting =>
+            {
+                config.AddJsonFile(setting, optional: false, reloadOnChange: true);
+            });
+        }
+    }
+#endif
+
     #endregion
 
     #region 编辑appsettings.json

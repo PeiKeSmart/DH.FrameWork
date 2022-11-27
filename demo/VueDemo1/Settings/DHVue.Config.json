@@ -1,0 +1,4 @@
+﻿{
+  "FrontendMode": "LocalFolder",
+  "RemoteFrontend": "https://cdn.jsdelivr.net/gh/yiyungent/plugincore-admin-frontend@0.3.1/dist-cdn"
+}
