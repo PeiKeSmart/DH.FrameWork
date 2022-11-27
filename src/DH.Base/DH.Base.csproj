@@ -4,10 +4,10 @@
   <PropertyGroup>
 	<LangVersion>latest</LangVersion>
     <OutputType>Library</OutputType>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFrameworks>netcoreapp3.1;net6.0;net7.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
 	<RootNamespace>DH</RootNamespace>
-	<AssemblyName>DH.Base</AssemblyName>
+	<TargetFrameworks>netcoreapp3.1;net6.0;net7.0</TargetFrameworks>
 	<AssemblyTitle>DH框架基础类</AssemblyTitle>
 	<Description>用于DH框架的最基础类库，支持Xamarin/Asp.net Core/.net core/winform/wpf</Description>
 	<Company>湖北登灏科技有限公司</Company>
@@ -60,14 +60,23 @@
 
   <ItemGroup>
 	<Content Include="..\..\Doc\DH.png" Link="DH.png" PackagePath="\" />
-  </ItemGroup>	
+  </ItemGroup>
 
   <ItemGroup>
-	<PackageReference Include="Microsoft.Extensions.FileProviders.Composite" Version="7.0.0" />
 	<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
 		<PrivateAssets>all</PrivateAssets>
 		<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	</PackageReference>
+  </ItemGroup>
+	
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net7.0' ">
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Composite" Version="7.0.0" />
+  </ItemGroup>  
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
+	<PackageReference Include="Microsoft.Extensions.FileProviders.Composite" Version="6.0.0" />
+  </ItemGroup>  
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Composite" Version="3.1.31" />
   </ItemGroup>
   
 </Project>

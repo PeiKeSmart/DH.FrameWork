@@ -4,7 +4,7 @@
   <PropertyGroup>
 	<LangVersion>latest</LangVersion>
     <OutputType>Library</OutputType>
-    <TargetFrameworks>netcoreapp3.1;net5.0;net6.0;net7.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.1;net6.0;net7.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
 	<RootNamespace>VueCliMiddleware</RootNamespace>
 	<AssemblyName>DH.VueCliMiddleware</AssemblyName>
@@ -74,10 +74,6 @@
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
   </ItemGroup>  
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net5.0' ">
-	<PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="[5.0.1,6)" />
-	<PackageReference Include="Microsoft.Extensions.Logging" Version="[5.0.0,6)" />
-  </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
      <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="[3.1.0,4.0)" />
 	 <PackageReference Include="Microsoft.Extensions.Logging" Version="[3.1.0,4.0)" />
