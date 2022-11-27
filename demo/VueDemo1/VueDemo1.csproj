@@ -10,12 +10,303 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="DHVueUI\placeholder.txt" />
+    <None Remove="Themes\DefaultClean\Content\css\print.css" />
+    <None Remove="Themes\DefaultClean\Content\css\styles.css" />
+    <None Remove="Themes\DefaultClean\Content\css\styles.rtl.css" />
+    <None Remove="Themes\DefaultClean\Content\images\ajax-loader-small.gif" />
+    <None Remove="Themes\DefaultClean\Content\images\back-button.png" />
+    <None Remove="Themes\DefaultClean\Content\images\calendar-next.png" />
+    <None Remove="Themes\DefaultClean\Content\images\calendar-prev.png" />
+    <None Remove="Themes\DefaultClean\Content\images\close.png" />
+    <None Remove="Themes\DefaultClean\Content\images\compare-button.png" />
+    <None Remove="Themes\DefaultClean\Content\images\details.png" />
+    <None Remove="Themes\DefaultClean\Content\images\discontinued-product-icon.png" />
+    <None Remove="Themes\DefaultClean\Content\images\download-button.png" />
+    <None Remove="Themes\DefaultClean\Content\images\edit.png" />
+    <None Remove="Themes\DefaultClean\Content\images\edit_.png" />
+    <None Remove="Themes\DefaultClean\Content\images\email-button.png" />
+    <None Remove="Themes\DefaultClean\Content\images\first.png" />
+    <None Remove="Themes\DefaultClean\Content\images\ie_warning.jpg" />
+    <None Remove="Themes\DefaultClean\Content\images\last.png" />
+    <None Remove="Themes\DefaultClean\Content\images\loading.gif" />
+    <None Remove="Themes\DefaultClean\Content\images\logo.png" />
+    <None Remove="Themes\DefaultClean\Content\images\menu-icon.png" />
+    <None Remove="Themes\DefaultClean\Content\images\move.png" />
+    <None Remove="Themes\DefaultClean\Content\images\new.png" />
+    <None Remove="Themes\DefaultClean\Content\images\next.png" />
+    <None Remove="Themes\DefaultClean\Content\images\pointer.png" />
+    <None Remove="Themes\DefaultClean\Content\images\prev.png" />
+    <None Remove="Themes\DefaultClean\Content\images\rating1.png" />
+    <None Remove="Themes\DefaultClean\Content\images\rating2.png" />
+    <None Remove="Themes\DefaultClean\Content\images\remove.png" />
+    <None Remove="Themes\DefaultClean\Content\images\remove_.png" />
+    <None Remove="Themes\DefaultClean\Content\images\reply.png" />
+    <None Remove="Themes\DefaultClean\Content\images\retry.png" />
+    <None Remove="Themes\DefaultClean\Content\images\return.png" />
+    <None Remove="Themes\DefaultClean\Content\images\rss.png" />
+    <None Remove="Themes\DefaultClean\Content\images\shipping.png" />
+    <None Remove="Themes\DefaultClean\Content\images\shopping-bag.png" />
+    <None Remove="Themes\DefaultClean\Content\images\social-sprite.png" />
+    <None Remove="Themes\DefaultClean\Content\images\subscribe-button.png" />
+    <None Remove="Themes\DefaultClean\Content\images\toggle-black.png" />
+    <None Remove="Themes\DefaultClean\Content\images\toggle-gray.png" />
+    <None Remove="Themes\DefaultClean\Content\images\toggle-white.png" />
+    <None Remove="Themes\DefaultClean\Content\images\topic-type1.png" />
+    <None Remove="Themes\DefaultClean\Content\images\topic-type2.png" />
+    <None Remove="Themes\DefaultClean\Content\images\topic-type3.png" />
+    <None Remove="Themes\DefaultClean\Content\images\view-grid.png" />
+    <None Remove="Themes\DefaultClean\Content\images\view-list.png" />
+    <None Remove="Themes\DefaultClean\Content\images\vote-down-selected.png" />
+    <None Remove="Themes\DefaultClean\Content\images\vote-down.png" />
+    <None Remove="Themes\DefaultClean\Content\images\vote-up-selected.png" />
+    <None Remove="Themes\DefaultClean\Content\images\vote-up.png" />
+    <None Remove="Themes\DefaultClean\Content\images\watch.png" />
+    <None Remove="Themes\DefaultClean\Content\images\wishlist-button.png" />
+    <None Remove="Themes\DefaultClean\preview.jpg" />
+    <None Remove="Themes\placeholder.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="DHVueUI\placeholder.txt">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\css\print.css">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\css\styles.css">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\css\styles.rtl.css">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\images\ajax-loader-small.gif">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\images\back-button.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\images\calendar-next.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\images\calendar-prev.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\images\close.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\images\compare-button.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\images\details.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\images\discontinued-product-icon.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\images\download-button.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\images\edit.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\images\edit_.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\images\email-button.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\images\first.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\images\ie_warning.jpg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\images\last.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\images\loading.gif">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\images\logo.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\images\menu-icon.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\images\move.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\images\new.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\images\next.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\images\pointer.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\images\prev.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\images\rating1.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\images\rating2.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\images\remove.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\images\remove_.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\images\reply.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\images\retry.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\images\return.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\images\rss.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\images\shipping.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\images\shopping-bag.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\images\social-sprite.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\images\subscribe-button.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\images\toggle-black.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\images\toggle-gray.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\images\toggle-white.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\images\topic-type1.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\images\topic-type2.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\images\topic-type3.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\images\view-grid.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\images\view-list.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\images\vote-down-selected.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\images\vote-down.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\images\vote-up-selected.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\images\vote-up.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\images\watch.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\Content\images\wishlist-button.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\DefaultClean\preview.jpg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Themes\placeholder.txt">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\DH.VueCliMiddleware\DH.VueCliMiddleware.csproj" />
     <ProjectReference Include="..\..\src\DH.Web.Framework\DH.Web.Framework.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Themes\DefaultClean\theme.json">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Settings\" />
   </ItemGroup>
 
 </Project>
