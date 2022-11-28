@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -14,7 +15,8 @@ namespace DH.Core.Infrastructure
         /// </summary>
         /// <param name="services">服务描述符集合</param>
         /// <param name="configuration">应用程序的配置</param>
-        void ConfigureServices(IServiceCollection services, IConfiguration configuration);
+        /// <param name="webHostEnvironment">环境</param>
+        void ConfigureServices(IServiceCollection services, IConfiguration configuration, IWebHostEnvironment webHostEnvironment);
 
         /// <summary>
         /// 配置HTTP请求管道

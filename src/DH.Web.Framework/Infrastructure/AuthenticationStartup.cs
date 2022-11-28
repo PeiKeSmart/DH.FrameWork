@@ -3,6 +3,7 @@ using DH.VirtualFileSystem;
 using DH.Web.Framework.Infrastructure.Extensions;
 
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -19,7 +20,7 @@ namespace DH.Web.Framework.Infrastructure
         /// <param name="services">服务描述符集合</param>
         /// <param name="configuration">应用程序的配置</param>
         /// <param name="startups">查找到的IDHStartup集合</param>
-        public void ConfigureServices(IServiceCollection services, IConfiguration configuration, IEnumerable<IDHStartup> startups)
+        public void ConfigureServices(IServiceCollection services, IConfiguration configuration, IEnumerable<IDHStartup> startups, IWebHostEnvironment webHostEnvironment)
         {
             // 添加数据保护
             services.AddDHDataProtection();

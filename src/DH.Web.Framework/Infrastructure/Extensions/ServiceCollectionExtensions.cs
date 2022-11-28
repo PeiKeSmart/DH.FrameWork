@@ -11,7 +11,6 @@ using DH.Entity;
 using DH.Services.Authentication;
 using DH.Services.Authentication.External;
 using DH.Services.Common;
-using DH.Services.Security;
 using DH.Web.Framework.Captcha;
 using DH.Web.Framework.Mvc.ModelBinding;
 using DH.Web.Framework.Mvc.ModelBinding.Binders;
@@ -25,6 +24,7 @@ using FluentValidation.AspNetCore;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
@@ -43,8 +43,6 @@ using WebMarkupMin.AspNetCore6;
 using WebMarkupMin.Core;
 using WebMarkupMin.NUglify;
 
-using XCode.Membership;
-
 namespace DH.Web.Framework.Infrastructure.Extensions
 {
     /// <summary>
@@ -58,7 +56,7 @@ namespace DH.Web.Framework.Infrastructure.Extensions
         /// <param name="services">服务描述符集合</param>
         /// <param name="builder">web应用程序和服务的生成器</param>
         public static void ConfigureApplicationServices(this IServiceCollection services,
-            WebApplicationBuilder builder)
+            WebApplicationBuilder builder, IWebHostEnvironment webHostEnvironment)
         {
             // 让操作系统决定使用什么TLS协议版本
             // 参见https://docs.microsoft.com/dotnet/framework/network-programming/tls
@@ -96,7 +94,7 @@ namespace DH.Web.Framework.Infrastructure.Extensions
             // 创建引擎并配置服务提供商
             var engine = EngineContext.Create();
 
-            engine.ConfigureServices(services, builder.Configuration);
+            engine.ConfigureServices(services, builder.Configuration, webHostEnvironment);
         }
 
         /// <summary>

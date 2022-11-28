@@ -4,6 +4,7 @@ using DH.Core.Infrastructure.Mapper;
 using DH.VirtualFileSystem;
 
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -104,7 +105,8 @@ public partial class DHEngine : IEngine
     /// </summary>
     /// <param name="services">服务描述符集合</param>
     /// <param name="configuration">应用程序的配置</param>
-    public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
+    /// <param name="webHostEnvironment">环境</param>
+    public void ConfigureServices(IServiceCollection services, IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
     {
         // 注册引擎
         services.AddSingleton<IEngine>(this);
@@ -120,7 +122,7 @@ public partial class DHEngine : IEngine
 
         // 配置服务
         foreach (var instance in instances)
-            instance.ConfigureServices(services, configuration, instances);
+            instance.ConfigureServices(services, configuration, instances, webHostEnvironment);
 
         services.AddSingleton(services);
 

@@ -20,6 +20,7 @@ using DH.Web.Framework.Themes;
 using DH.Web.Framework.UI;
 
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -53,7 +54,7 @@ public partial class DHStartup : IDHStartup
     /// <param name="services">服务描述符集合</param>
     /// <param name="configuration">应用程序的配置</param>
     /// <param name="startups">查找到的IDHStartup集合</param>
-    public void ConfigureServices(IServiceCollection services, IConfiguration configuration, IEnumerable<IDHStartup> startups)
+    public void ConfigureServices(IServiceCollection services, IConfiguration configuration, IEnumerable<IDHStartup> startups, IWebHostEnvironment webHostEnvironment)
     {
         // 文件提供程序
         services.AddScoped<IDHFileProvider, DHFileProvider>();

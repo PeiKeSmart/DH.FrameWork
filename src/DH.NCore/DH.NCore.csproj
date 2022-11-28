@@ -5,7 +5,7 @@
 	<LangVersion>latest</LangVersion>
 	<OutputType>Library</OutputType>
     <ImplicitUsings>enable</ImplicitUsings>
-	<TargetFrameworks>net461;netstandard2.0;netstandard2.1;netcoreapp3.1;net5.0;net6.0;net7.0;net5.0-windows;net6.0-windows;net7.0-windows</TargetFrameworks>
+	<TargetFrameworks>net461;netstandard2.0;netstandard2.1;netcoreapp3.1;net6.0;net7.0;net6.0-windows;net7.0-windows</TargetFrameworks>
 	<RootNamespace>DH.NCore</RootNamespace>
 	<AssemblyName>DH.NCore</AssemblyName>
 	<AssemblyTitle>DH组件核心库</AssemblyTitle>

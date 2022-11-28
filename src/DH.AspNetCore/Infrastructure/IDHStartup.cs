@@ -1,6 +1,7 @@
 ﻿using DH.VirtualFileSystem;
 
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -17,7 +18,7 @@ public partial interface IDHStartup
     /// <param name="services">服务描述符集合</param>
     /// <param name="configuration">应用程序的配置</param>
     /// <param name="startups">查找到的IDHStartup集合</param>
-    void ConfigureServices(IServiceCollection services, IConfiguration configuration, IEnumerable<IDHStartup> startups);
+    void ConfigureServices(IServiceCollection services, IConfiguration configuration, IEnumerable<IDHStartup> startups, IWebHostEnvironment webHostEnvironment);
 
     /// <summary>
     /// 配置添加的中间件的使用

@@ -3,6 +3,7 @@ using DH.VirtualFileSystem;
 using DH.Web.Framework.Infrastructure.Extensions;
 
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,7 +23,7 @@ public partial class DHStaticFilesStartup : IDHStartup
     /// <param name="services">服务描述符集合</param>
     /// <param name="configuration">应用程序的配置</param>
     /// <param name="startups">查找到的IDHStartup集合</param>
-    public void ConfigureServices(IServiceCollection services, IConfiguration configuration, IEnumerable<IDHStartup> startups)
+    public void ConfigureServices(IServiceCollection services, IConfiguration configuration, IEnumerable<IDHStartup> startups, IWebHostEnvironment webHostEnvironment)
     {
         // 压缩
         services.AddResponseCompression();  // 注入响应缓存

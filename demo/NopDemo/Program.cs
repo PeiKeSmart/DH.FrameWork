@@ -4,6 +4,7 @@ using DH.Core.Configuration;
 using DH.Core.Domain;
 using DH.Entity;
 using DH.Web.Framework.Infrastructure.Extensions;
+using DH.Webs;
 
 using NewLife.Log;
 
@@ -37,9 +38,12 @@ if (!string.IsNullOrEmpty(builder.Environment?.EnvironmentName))
 builder.Configuration.AddEnvironmentVariables();
 
 // 向应用程序添加服务并配置服务提供商
-builder.Services.ConfigureApplicationServices(builder);
+builder.Services.ConfigureApplicationServices(builder, builder.Environment);
 
 var app = builder.Build();
+
+// 配置静态Http上下文访问器
+app.UseStaticHttpContext();
 
 // 配置应用程序HTTP请求管道
 app.ConfigureRequestPipeline();
