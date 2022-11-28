@@ -17,7 +17,7 @@ public static class CubeService
 
     #region 配置基类
     /// <summary>添加基类</summary>
-    /// <param name="services"></param>
+    /// <param name="builder"></param>
     /// <param name="configuration"></param>
     /// <param name="webHostEnvironment"></param>
     /// <returns></returns>
