@@ -54,6 +54,38 @@ namespace DH.Services.Events
             }
         }
 
+        /// <summary>
+        /// 向消费者发布活动
+        /// </summary>
+        /// <typeparam name="TEvent">事件类型</typeparam>
+        /// <param name="event">事件对象</param>
+        public virtual void Publish<TEvent>(TEvent @event)
+        {
+            //获取所有事件消费者
+            var consumers = EngineContext.Current.ResolveAll<IConsumer<TEvent>>().ToList();
+
+            foreach (var consumer in consumers)
+            {
+                try
+                {
+                    // 尝试处理已发布的事件
+                    consumer.HandleEvent(@event);
+                }
+                catch (Exception exception)
+                {
+                    // 记录错误，我们放入嵌套try-catch以防止可能的循环（如果发生某些错误）
+                    try
+                    {
+                        XTrace.WriteException(exception);
+                    }
+                    catch
+                    {
+                        // 忽略
+                    }
+                }
+            }
+        }
+
         #endregion
     }
 }

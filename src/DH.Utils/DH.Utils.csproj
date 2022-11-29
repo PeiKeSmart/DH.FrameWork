@@ -4,7 +4,7 @@
   <PropertyGroup>
 	<LangVersion>latest</LangVersion>
     <OutputType>Library</OutputType>
-    <TargetFrameworks>netcoreapp3.1;net6.0;net7.0</TargetFrameworks>
+    <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
 	<RootNamespace>DH</RootNamespace>
 	<AssemblyName>DH.Utils</AssemblyName>
@@ -60,6 +60,8 @@
 	
   <ItemGroup>
 	<ProjectReference Include="..\DH.NCore\DH.NCore.csproj" />
+	<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+	<PackageReference Include="Microsoft.Extensions.Options" Version="7.0.0" />
 	<PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
 	<PackageReference Include="JetBrains.Annotations" Version="2022.3.1" />
   </ItemGroup>

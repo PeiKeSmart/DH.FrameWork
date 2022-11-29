@@ -6,9 +6,10 @@
     <OutputType>Library</OutputType>
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-	<RootNamespace>DH</RootNamespace>
-	<AssemblyTitle>DH框架基础类</AssemblyTitle>
-	<Description>用于DH框架的最基础类库，支持Xamarin/Asp.net Core/.net core/winform/wpf</Description>
+	<RootNamespace>DH.MailKit</RootNamespace>
+	<AssemblyName>DH.MailKit</AssemblyName>
+	<AssemblyTitle>邮件操作类库</AssemblyTitle>
+	<Description>用于DH框架的邮件操作类库</Description>
 	<Company>湖北登灏科技有限公司</Company>
 	<Copyright>©2020-2022 湖北登灏科技有限公司</Copyright>
 	
@@ -36,7 +37,7 @@
 	<RepositoryUrl>https://gitee.com/chuangchu/DH.FrameWork</RepositoryUrl>
 	<RepositoryType>Git</RepositoryType>
 	<PackageTags>湖北登灏科技有限公司;DH组件;DH;$(AssemblyName)</PackageTags>
-	<PackageReleaseNotes>用于DH框架的最基础类库，支持Xamarin/Asp.net Core/.net core/winform/wpf</PackageReleaseNotes>
+	<PackageReleaseNotes>用于DH框架的邮件操作类库</PackageReleaseNotes>
 	<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 	<PublishRepositoryUrl>true</PublishRepositoryUrl>
 	<EmbedUntrackedSources>true</EmbedUntrackedSources>
@@ -47,16 +48,16 @@
   </PropertyGroup>
 	
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-    <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <WarningLevel>3</WarningLevel>
+	<DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
+	<DebugType>full</DebugType>
+	<Optimize>false</Optimize>
+	<WarningLevel>3</WarningLevel>
   </PropertyGroup>
-	
-  <ItemGroup>
-    <ProjectReference Include="..\DH.Utils\DH.Utils.csproj" />
-  </ItemGroup>	
 
+  <ItemGroup>
+    <ProjectReference Include="..\DH.Core\DH.Core.csproj" />
+  </ItemGroup>
+	
   <ItemGroup>
 	<Content Include="..\..\Doc\DH.png" Link="DH.png" PackagePath="\" />
   </ItemGroup>
@@ -68,14 +69,8 @@
 	</PackageReference>
   </ItemGroup>
 	
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net7.0' ">
-    <PackageReference Include="Microsoft.Extensions.FileProviders.Composite" Version="7.0.0" />
-  </ItemGroup>  
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
-	<PackageReference Include="Microsoft.Extensions.FileProviders.Composite" Version="6.0.0" />
-  </ItemGroup>  
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
-    <PackageReference Include="Microsoft.Extensions.FileProviders.Composite" Version="3.1.31" />
+  <ItemGroup>
+	<PackageReference Include="MailKit" Version="3.4.3" />
   </ItemGroup>
-  
+
 </Project>

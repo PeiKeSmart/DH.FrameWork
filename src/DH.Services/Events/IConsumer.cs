@@ -12,5 +12,11 @@
         /// <param name="eventMessage">事件</param>
         /// <returns>表示异步操作的任务</returns>
         Task HandleEventAsync(T eventMessage);
+
+        /// <summary>
+        /// 事件处理
+        /// </summary>
+        /// <param name="eventMessage">事件</param>
+        void HandleEvent(T eventMessage);
     }
 }
