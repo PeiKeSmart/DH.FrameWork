@@ -8,7 +8,6 @@ using NewLife.Log;
 using NewLife.Model;
 using NewLife.Reflection;
 using NewLife.Serialization;
-using System;
 #if NETFRAMEWORK
 using System.Management;
 using Microsoft.VisualBasic.Devices;
@@ -47,6 +46,12 @@ public class MachineInfo
     /// <summary>软件唯一标识。系统标识，操作系统重装后更新，Linux系统的machine_id，Android的android_id，Ghost系统存在重复</summary>
     public String Guid { get; set; }
 
+    /// <summary>计算机序列号。适用于品牌机，跟笔记本标签显示一致</summary>
+    public String Serial { get; set; }
+
+    /// <summary>主板。序列号或家族信息</summary>
+    public String Board { get; set; }
+
     /// <summary>磁盘序列号</summary>
     public String DiskID { get; set; }
 
@@ -76,7 +81,7 @@ public class MachineInfo
     /// <summary>当前机器信息。默认null，在RegisterAsync后才能使用</summary>
     public static MachineInfo Current { get; set; }
 
-    static MachineInfo() => RegisterAsync();
+    static MachineInfo() => RegisterAsync().Wait(100);
 
     private static Task<MachineInfo> _task;
     /// <summary>异步注册一个初始化后的机器信息实例</summary>
@@ -94,6 +99,7 @@ public class MachineInfo
             // 文件缓存，加快机器信息获取
             var file = Path.GetTempPath().CombinePath("machine_info.json");
             //var file2 = dataPath.CombinePath("machine_info.json").GetBasePath();
+            var json = "";
             if (Current == null)
             {
                 var f = file;
@@ -103,9 +109,13 @@ public class MachineInfo
                     try
                     {
                         //XTrace.WriteLine("Load MachineInfo {0}", f);
-                        Current = File.ReadAllText(f).ToJsonEntity<MachineInfo>();
+                        json = File.ReadAllText(f);
+                        Current = json.ToJsonEntity<MachineInfo>();
                     }
-                    catch { }
+                    catch (Exception ex)
+                    {
+                        if (XTrace.Log.Level <= LogLevel.Debug) XTrace.WriteException(ex);
+                    }
                 }
             }
 
@@ -119,11 +129,15 @@ public class MachineInfo
 
             try
             {
-                var json = mi.ToJson(true);
-                File.WriteAllText(file.EnsureDirectory(true), json);
+                var json2 = mi.ToJson(true);
+                if (json != json2)
+                    File.WriteAllText(file.EnsureDirectory(true), json2);
                 //File.WriteAllText(file2.EnsureDirectory(true), json);
             }
-            catch { }
+            catch (Exception ex)
+            {
+                if (XTrace.Log.Level <= LogLevel.Debug) XTrace.WriteException(ex);
+            }
 
             return mi;
         });
@@ -167,11 +181,10 @@ public class MachineInfo
         {
             Refresh();
         }
-#if DEBUG
-        catch (Exception ex) { XTrace.WriteException(ex); }
-#else
-        catch { }
-#endif
+        catch (Exception ex)
+        {
+            if (XTrace.Log.Level <= LogLevel.Debug) XTrace.WriteException(ex);
+        }
     }
 
 #if NETFRAMEWORK
@@ -198,11 +211,18 @@ public class MachineInfo
         }
         catch
         {
-            var reg2 = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
-            if (reg2 != null)
+            try
             {
-                OSName = reg2.GetValue("ProductName") + "";
-                OSVersion = reg2.GetValue("ReleaseId") + "";
+                var reg2 = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
+                if (reg2 != null)
+                {
+                    OSName = reg2.GetValue("ProductName") + "";
+                    OSVersion = reg2.GetValue("ReleaseId") + "";
+                }
+            }
+            catch (Exception ex)
+            {
+                if (XTrace.Log.Level <= LogLevel.Debug) XTrace.WriteException(ex);
             }
         }
 
@@ -211,6 +231,10 @@ public class MachineInfo
         var uuid = GetInfo("Win32_ComputerSystemProduct", "UUID");
         Product = GetInfo("Win32_ComputerSystemProduct", "Name");
         DiskID = GetInfo("Win32_DiskDrive", "SerialNumber");
+
+        var sn = GetInfo("Win32_BIOS", "SerialNumber");
+        if (!sn.IsNullOrEmpty() && !sn.EqualIgnoreCase("System Serial Number")) Serial = sn;
+        Board = GetInfo("Win32_BaseBoard", "SerialNumber");
 
         // UUID取不到时返回 FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF
         if (!uuid.IsNullOrEmpty() && !uuid.EqualIgnoreCase("FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF")) UUID = uuid;
@@ -263,6 +287,18 @@ public class MachineInfo
         if (disk != null)
         {
             if (disk.TryGetValue("serialnumber", out str)) DiskID = str?.Trim();
+        }
+
+        var sn = ReadWmic("bios", "serialnumber");
+        if (sn != null)
+        {
+            if (sn.TryGetValue("serialnumber", out str) && !str.EqualIgnoreCase("System Serial Number")) Serial = str?.Trim();
+        }
+
+        var board = ReadWmic("baseboard", "serialnumber");
+        if (board != null)
+        {
+            if (board.TryGetValue("serialnumber", out str)) Board = str?.Trim();
         }
 
         // 不要在刷新里面取CPU负载，因为运行wmic会导致CPU负载很不准确，影响测量
@@ -328,6 +364,7 @@ public class MachineInfo
         //else if (android.TryGetValue("Id", out str))
         //    Guid = str;
 
+        // DMI信息位于 /sys/class/dmi/id/ 目录，可以直接读取，不需要执行dmidecode命令
         var uuid = "";
         var file = "/sys/class/dmi/id/product_uuid";
         if (!File.Exists(file)) file = "/proc/serial_num";  // miui12支持/proc/serial_num
@@ -335,30 +372,88 @@ public class MachineInfo
             uuid = value;
         else if (device.TryGetValue("Serial", out str) && str != "unknown")
             uuid = str;
-        if (uuid.IsNullOrEmpty()) UUID = uuid;
-
-        file = "/sys/class/dmi/id/product_name";
-        if (TryRead(file, out value)) Product = value;
-
-        var disks = GetFiles("/dev/disk/by-id", true);
-        if (disks.Count == 0) disks = GetFiles("/dev/disk/by-uuid", false);
-        if (disks.Count > 0) DiskID = disks.Where(e => !e.IsNullOrEmpty()).Join(",");
+        if (!uuid.IsNullOrEmpty()) UUID = uuid;
 
         // 从release文件读取产品
         var prd = GetProductByRelease();
         if (!prd.IsNullOrEmpty()) Product = prd;
 
-        if (uuid.IsNullOrEmpty() || prd.IsNullOrEmpty())
+        if (prd.IsNullOrEmpty() && TryRead("/sys/class/dmi/id/product_name", out var product_name))
         {
-            var dmi = Execute("dmidecode")?.SplitAsDictionary(":", "\n");
-            if (dmi != null)
+            Product = product_name;
+
+            // 增加制造商。如 Tencent Cloud，它的产品名只有 CVM。阿里云产品名 Alibaba Cloud ECS
+            if (TryRead("/sys/class/dmi/id/sys_vendor", out var vendor) && !vendor.IsNullOrEmpty() && !product_name.Contains(vendor))
             {
-                //if (dmi.TryGetValue("ID", out str)) CpuID = str.Replace(" ", null);
-                if (dmi.TryGetValue("UUID", out str)) UUID = str;
-                if (dmi.TryGetValue("Product Name", out str)) Product = str;
-                //if (TryFind(dmi, new[] { "Serial Number" }, out str)) Guid = str;
+                // 红帽KVM太流行，细化处理
+                if (product_name == "KVM" && vendor == "Red Hat" &&
+                    TryRead("/sys/class/dmi/id/product_version", out var ver) && !ver.IsNullOrEmpty())
+                {
+                    var p = ver.IndexOf('(');
+                    if (p > 0) ver = ver[..p].Trim();
+                    Product = ver;
+                }
+                else
+                    Product = $"{vendor} {product_name}";
             }
         }
+
+        file = "/sys/class/dmi/id/product_serial";
+        if (TryRead(file, out value)) Serial = value;
+
+        // 在DMI信息内，没有太好的BoardID取值
+        file = "/sys/class/dmi/id/product_sku";
+        if (TryRead(file, out value) && !value.IsNullOrEmpty())
+            Board = value;
+        else
+        {
+            file = "/sys/class/dmi/id/product_family";
+            if (TryRead(file, out value)) Board = value;
+        }
+
+        var disks = GetFiles("/dev/disk/by-id", true);
+        if (disks.Count == 0) disks = GetFiles("/dev/disk/by-uuid", false);
+        if (disks.Count > 0) DiskID = disks.Where(e => !e.IsNullOrEmpty()).Join(",");
+
+        //if (uuid.IsNullOrEmpty() || prd.IsNullOrEmpty())
+        //{
+        //var dmi = Execute("dmidecode");
+        //if (!dmi.IsNullOrEmpty())
+        //{
+        //    var p = dmi.IndexOf("System Information");
+        //    if (p > 0) dmi = dmi[p..];
+
+        //    dic = dmi.SplitAsDictionary(":", "\n");
+        //    //if (dmi.TryGetValue("ID", out str)) CpuID = str.Replace(" ", null);
+        //    if (dic.TryGetValue("UUID", out str)) UUID = str;
+        //    if (dic.TryGetValue("Product Name", out str))
+        //    {
+        //        // 增加制造商。如 Tencent Cloud，它的产品名只有 CVM。阿里云产品名 Alibaba Cloud ECS
+        //        if (dic.TryGetValue("Manufacturer", out var man) && !man.IsNullOrEmpty() && !man.Contains(str))
+        //        {
+        //            // 红帽KVM太流行，细化处理
+        //            if (str == "KVM" && man == "Red Hat" && dic.TryGetValue("Version", out var ver) && !ver.IsNullOrEmpty())
+        //            {
+        //                p = ver.IndexOf('(');
+        //                if (p > 0) ver = ver[..p].Trim();
+        //                str = ver;
+        //            }
+        //            else
+        //                str = $"{man} {str}";
+        //        }
+
+        //        Product = str;
+        //    }
+        //    if (dic.TryGetValue("Serial Number", out str) && !str.IsNullOrEmpty() && !str.EqualIgnoreCase("Not Specified"))
+        //        Serial = str;
+
+        //    // 在DMI信息内，没有太好的BoardID取值
+        //    if (dic.TryGetValue("SKU Number", out str) && !str.IsNullOrEmpty() && !str.EqualIgnoreCase("Not Specified"))
+        //        Board = str;
+        //    if (dic.TryGetValue("Family", out str) && !str.IsNullOrEmpty() && !str.EqualIgnoreCase("Not Specified"))
+        //        Board = str;
+        //}
+        //}
     }
 
     private readonly ICollection<String> _excludes = new List<String>();
@@ -397,7 +492,7 @@ public class MachineInfo
         var total = current.TotalTime - (_systemTime?.TotalTime ?? 0);
         _systemTime = current;
 
-        CpuRate = total == 0 ? 0 : ((Single)(total - idle) / total);
+        CpuRate = total == 0 ? 0 : (Single)Math.Round((Single)(total - idle) / total, 4);
 
 #if NETCOREAPP
         //if (!_excludes.Contains(nameof(Temperature)))
@@ -530,10 +625,13 @@ public class MachineInfo
                     var total = current.TotalTime - (_systemTime?.TotalTime ?? 0);
                     _systemTime = current;
 
-                    CpuRate = total == 0 ? 0 : ((Single)(total - idle) / total);
+                    CpuRate = total == 0 ? 0 : (Single)Math.Round((Single)(total - idle) / total, 4);
                 }
             }
-            catch { _excludes.Add(nameof(_excludes)); }
+            catch
+            {
+                _excludes.Add(nameof(_excludes));
+            }
         }
     }
 
@@ -859,7 +957,10 @@ public class MachineInfo
         {
             return driveInfo.AvailableFreeSpace;
         }
-        catch { return -1; }
+        catch
+        {
+            return -1;
+        }
     }
 
     /// <summary>获取指定目录下文件名，支持去掉后缀的去重，主要用于Linux</summary>
