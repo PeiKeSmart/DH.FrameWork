@@ -23,6 +23,9 @@ public class ZipDeploy
     /// <summary>影子目录。应用将在其中执行</summary>
     public String Shadow { get; set; }
 
+    /// <summary>可执行文件路径</summary>
+    public String ExecuteFile { get; set; }
+
     /// <summary>进程</summary>
     public Process Process { get; private set; }
     #endregion
@@ -48,31 +51,36 @@ public class ZipDeploy
             if (args[i].EndsWithIgnoreCase(".zip"))
             {
                 file = args[i];
-                //Arguments = args.Skip(i + 1).Join(" ");
-
-                // 准备后续所有参数，后面可能会剔除部分
-                for (var j = i + 1; j < args.Length; j++)
-                {
-                    gs[j] = args[j];
-                }
             }
             else if (args[i].EqualIgnoreCase("-name") && i + 1 < args.Length)
             {
                 name = args[i + 1];
                 gs[i] = gs[i + 1] = null;
+                i++;
             }
             else if (args[i].EqualIgnoreCase("-shadow") && i + 1 < args.Length)
             {
                 shadow = args[i + 1];
                 gs[i] = gs[i + 1] = null;
+                i++;
+            }
+            else
+            {
+                // 其它参数全要，支持 urls=http://*:8000
+                gs[i] = args[i];
             }
         }
         if (file.IsNullOrEmpty()) return false;
 
         Arguments = gs.Where(e => e != null).Join(" ");
 
-        var fi = (WorkingDirectory.CombinePath(file)).AsFile();
-        if (!fi.Exists) throw new FileNotFoundException("找不到zip文件", fi.FullName);
+        var fi = WorkingDirectory.CombinePath(file).AsFile();
+        if (!fi.Exists)
+        {
+            //throw new FileNotFoundException("找不到zip文件", fi.FullName);
+            WriteLog("找不到zip文件 {0}", fi.FullName);
+            return false;
+        }
 
         if (name.IsNullOrEmpty()) name = Path.GetFileNameWithoutExtension(file);
         if (shadow.IsNullOrEmpty()) shadow = Path.GetTempPath().CombinePath(name);
@@ -85,10 +93,15 @@ public class ZipDeploy
     }
 
     /// <summary>执行拉起应用</summary>
-    public Boolean Execute()
+    public Boolean Execute(Int32 msWait = 3_000)
     {
-        var fi = (WorkingDirectory.CombinePath(FileName))?.AsFile();
-        if (fi == null || !fi.Exists) throw new Exception("未指定Zip文件");
+        var fi = WorkingDirectory.CombinePath(FileName)?.AsFile();
+        if (fi == null || !fi.Exists)
+        {
+            //throw new Exception("未指定Zip文件");
+            WriteLog("未指定Zip文件 {0}", fi.FullName);
+            return false;
+        }
 
         var name = Name;
         if (name.IsNullOrEmpty()) name = Name = Path.GetFileNameWithoutExtension(FileName);
@@ -121,6 +134,7 @@ public class ZipDeploy
         // 如果带有 NewLife.Core.dll ，重定向基础目录
         //Arguments = $"{Arguments} --BasePath={rundir}".Trim();
         Environment.SetEnvironmentVariable("BasePath", rundir.FullName);
+        ExecuteFile = runfile.FullName;
 
         WriteLog("执行 {0}", runfile);
 
@@ -156,9 +170,19 @@ public class ZipDeploy
         WriteLog("启动参数: {0}", si.Arguments);
 
         var p = Process.Start(si);
-        if (p.WaitForExit(3_000))
+        if (msWait > 0 && p.WaitForExit(msWait))
         {
             WriteLog("启动失败！ExitCode={0}", p.ExitCode);
+
+            // 启动失败时，删除影子目录，有可能上一次解压以后，该目录被篡改过。这次删除以后，下一次启动时会再次解压缩
+            try
+            {
+                Directory.Delete(shadow, true);
+            }
+            catch (Exception ex)
+            {
+                Log?.Error(ex.ToString());
+            }
 
             return false;
         }
@@ -174,7 +198,7 @@ public class ZipDeploy
     /// <param name="shadow"></param>
     protected virtual void Extract(String shadow)
     {
-        var fi = (WorkingDirectory.CombinePath(FileName)).AsFile();
+        var fi = WorkingDirectory.CombinePath(FileName).AsFile();
         var rundir = fi.Directory;
         WriteLog("解压缩 {0}", FileName);
 

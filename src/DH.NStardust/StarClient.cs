@@ -12,7 +12,6 @@ using NewLife.Reflection;
 using NewLife.Remoting;
 using NewLife.Serialization;
 using NewLife.Threading;
-using Stardust.Managers;
 using Stardust.Models;
 using Stardust.Services;
 using WebSocket = System.Net.WebSockets.WebSocket;
@@ -20,7 +19,7 @@ using WebSocket = System.Net.WebSockets.WebSocket;
 namespace Stardust;
 
 /// <summary>星星客户端。每个设备节点有一个客户端连接服务端</summary>
-public class StarClient : ApiHttpClient, ICommandClient
+public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
 {
     #region 属性
     /// <summary>证书</summary>
@@ -44,8 +43,11 @@ public class StarClient : ApiHttpClient, ICommandClient
     /// <summary>请求到服务端并返回的延迟时间。单位ms</summary>
     public Int32 Delay { get; set; }
 
-    /// <summary>本地应用服务管理</summary>
-    public ServiceManager Manager { get; set; }
+    ///// <summary>本地应用服务管理</summary>
+    //public ServiceManager Manager { get; set; }
+
+    /// <summary>最大失败数。超过该数时，新的数据将被抛弃，默认120</summary>
+    public Int32 MaxFails { get; set; } = 120;
 
     private ConcurrentDictionary<String, Delegate> _commands = new(StringComparer.OrdinalIgnoreCase);
     /// <summary>命令集合</summary>
@@ -54,8 +56,7 @@ public class StarClient : ApiHttpClient, ICommandClient
     /// <summary>收到命令时触发</summary>
     public event EventHandler<CommandEventArgs> Received;
 
-    ///// <summary>命令队列</summary>
-    //public IQueueService<CommandModel, Byte[]> CommandQueue { get; } = new QueueService<CommandModel, Byte[]>();
+    private readonly ConcurrentQueue<PingInfo> _fails = new();
     #endregion
 
     #region 构造
@@ -110,7 +111,7 @@ public class StarClient : ApiHttpClient, ICommandClient
         catch (Exception ex)
         {
             var ex2 = ex.GetTrue();
-            if (ex2 is ApiException aex && (aex.Code == 402 || aex.Code == 403) && !action.EqualIgnoreCase("Node/Login", "Node/Logout"))
+            if (ex2 is ApiException aex && (aex.Code == 401 || aex.Code == 403) && !action.EqualIgnoreCase("Node/Login", "Node/Logout"))
             {
                 Log?.Debug("{0}", ex);
                 //XTrace.WriteException(ex);
@@ -207,11 +208,14 @@ public class StarClient : ApiHttpClient, ICommandClient
             TotalSize = (UInt64)driveInfo?.TotalSize,
             AvailableFreeSpace = (UInt64)driveInfo?.AvailableFreeSpace,
 
+            Product = mi.Product,
             Processor = mi.Processor,
             //CpuID = mi.CpuID,
             CpuRate = mi.CpuRate,
             UUID = mi.UUID,
             MachineGuid = mi.Guid,
+            SerialNumber = mi.Serial,
+            Board = mi.Board,
             DiskID = mi.DiskID,
 
             Macs = mcs,
@@ -223,17 +227,19 @@ public class StarClient : ApiHttpClient, ICommandClient
             Time = DateTime.UtcNow,
         };
 
+#if NETCOREAPP || NETSTANDARD
         // 目标框架
+        di.Framework = GetNetCore()?.ToString();
+        di.Framework ??= RuntimeInformation.FrameworkDescription?.TrimStart(".NET Framework", ".NET Core", ".NET Native", ".NET").Trim();
+
+        di.Architecture = RuntimeInformation.ProcessArchitecture + "";
+#else
         var ver = "";
         var tar = asm.Asm.GetCustomAttribute<TargetFrameworkAttribute>();
         if (tar != null) ver = !tar.FrameworkDisplayName.IsNullOrEmpty() ? tar.FrameworkDisplayName : tar.FrameworkName;
 
-#if NETCOREAPP || NETSTANDARD
-        ver = RuntimeInformation.FrameworkDescription;
-#endif
         di.Framework = ver?.TrimStart(".NET Framework", ".NET Core", ".NET Native", ".NET").Trim();
 
-#if NET40_OR_GREATER
         // .NET45以上运行时
         if (Runtime.Windows && Environment.Version >= new Version("4.0.30319.42000"))
         {
@@ -241,7 +247,7 @@ public class StarClient : ApiHttpClient, ICommandClient
             if (reg != null)
             {
                 var str = reg.GetValue("Version") + "";
-                if (!str.IsNullOrEmpty()) di.Runtime = str;
+                if (!str.IsNullOrEmpty()) di.Framework = str;
             }
         }
 
@@ -254,13 +260,57 @@ public class StarClient : ApiHttpClient, ICommandClient
             di.Resolution = $"{screen.Bounds.Width}*{screen.Bounds.Height}";
         }
         catch { }
-#else
-        di.Architecture = RuntimeInformation.ProcessArchitecture + "";
 #endif
 
         if (Runtime.Linux) di.MaxOpenFiles = Execute("bash", "-c \"ulimit -n\"")?.Trim().ToInt() ?? 0;
 
         return di;
+    }
+
+    private static Version GetNetCore()
+    {
+        var dir = "";
+        if (Environment.OSVersion.Platform <= PlatformID.WinCE)
+        {
+            dir = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+            if (String.IsNullOrEmpty(dir)) return null;
+            dir += "\\dotnet\\shared";
+        }
+        else if (Runtime.Linux)
+            dir = "/usr/share/dotnet/shared";
+
+        if (!Directory.Exists(dir)) return null;
+
+        Version ver = null;
+        foreach (var item in dir.AsDirectory().GetDirectories())
+        {
+            foreach (var elm in item.GetDirectories())
+            {
+                if (Version.TryParse(elm.Name, out var v) && (ver == null || ver < v))
+                    ver = v;
+            }
+        }
+
+        if (ver != null) return ver;
+
+        // 各平台通用处理
+        {
+            var infs = Execute("dotnet", "--list-runtimes")?.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            if (infs != null)
+            {
+                foreach (var line in infs)
+                {
+                    var ss = line.Split(' ');
+                    if (ss.Length >= 2)
+                    {
+                        if (Version.TryParse(ss[1], out var v) && (ver == null || ver < v))
+                            ver = v;
+                    }
+                }
+            }
+        }
+
+        return ver;
     }
 
     private static String Execute(String cmd, String arguments = null)
@@ -341,7 +391,7 @@ public class StarClient : ApiHttpClient, ICommandClient
     /// <summary>获取心跳信息</summary>
     public PingInfo GetHeartInfo()
     {
-        var exs = _excludes.Where(e => e.Contains("*")).ToArray();
+        var exs = _excludes.Where(e => e.Contains('*')).ToArray();
 
         var ps = Process.GetProcesses();
         var pcs = new List<String>();
@@ -420,46 +470,62 @@ public class StarClient : ApiHttpClient, ICommandClient
         {
             var inf = GetHeartInfo();
 
-            var rs = await PingAsync(inf);
-            if (rs != null)
+            PingResponse rs = null;
+            try
             {
-                // 由服务器改变采样频率
-                if (rs.Period > 0) _timer.Period = rs.Period * 1000;
-
-                var dt = rs.Time.ToDateTime();
-                if (dt.Year > 2000)
+                rs = await PingAsync(inf);
+                if (rs != null)
                 {
-                    // 计算延迟
-                    var ts = DateTime.UtcNow - dt;
-                    var ms = (Int32)Math.Round(ts.TotalMilliseconds);
-                    if (Delay > 0)
-                        Delay = (Delay + ms) / 2;
-                    else
-                        Delay = ms;
+                    // 由服务器改变采样频率
+                    if (rs.Period > 0) _timer.Period = rs.Period * 1000;
+
+                    var dt = rs.Time.ToDateTime();
+                    if (dt.Year > 2000)
+                    {
+                        // 计算延迟
+                        var ts = DateTime.UtcNow - dt;
+                        var ms = (Int32)Math.Round(ts.TotalMilliseconds);
+                        if (Delay > 0)
+                            Delay = (Delay + ms) / 2;
+                        else
+                            Delay = ms;
+                    }
+
+                    // 令牌
+                    if (!rs.Token.IsNullOrEmpty())
+                    {
+                        Token = rs.Token;
+                    }
+
+                    //// 推队列
+                    //if (rs.Commands != null && rs.Commands.Length > 0)
+                    //{
+                    //    foreach (var item in rs.Commands)
+                    //    {
+                    //        //CommandQueue.Publish(item.Command, item);
+                    //        await OnReceiveCommand(item);
+                    //    }
+                    //}
+
+                    //// 应用服务
+                    //if (rs.Services != null && rs.Services.Length > 0)
+                    //{
+                    //    Manager.Add(rs.Services);
+                    //    Manager.CheckService();
+                    //}
                 }
+            }
+            catch
+            {
+                if (_fails.Count < MaxFails) _fails.Enqueue(inf);
 
-                // 令牌
-                if (!rs.Token.IsNullOrEmpty())
-                {
-                    Token = rs.Token;
-                }
+                throw;
+            }
 
-                //// 推队列
-                //if (rs.Commands != null && rs.Commands.Length > 0)
-                //{
-                //    foreach (var item in rs.Commands)
-                //    {
-                //        //CommandQueue.Publish(item.Command, item);
-                //        await OnReceiveCommand(item);
-                //    }
-                //}
-
-                //// 应用服务
-                //if (rs.Services != null && rs.Services.Length > 0)
-                //{
-                //    Manager.Add(rs.Services);
-                //    Manager.CheckService();
-                //}
+            // 上报正常，处理历史，失败则丢弃
+            while (_fails.TryDequeue(out var info))
+            {
+                await PingAsync(info);
             }
 
             return rs;
@@ -467,14 +533,14 @@ public class StarClient : ApiHttpClient, ICommandClient
         catch (Exception ex)
         {
             var ex2 = ex.GetTrue();
-            if (ex2 is ApiException aex && (aex.Code == 402 || aex.Code == 403))
+            if (ex2 is ApiException aex && (aex.Code == 401 || aex.Code == 403))
             {
                 XTrace.WriteLine("重新登录");
                 return Login();
             }
 
             //XTrace.WriteLine(inf.ToJson());
-            XTrace.WriteLine("心跳异常 {0}", (String)ex.GetTrue().Message);
+            XTrace.WriteLine("心跳异常 {0}", ex.GetTrue().Message);
 
             throw;
         }
@@ -498,6 +564,92 @@ public class StarClient : ApiHttpClient, ICommandClient
         _trace = new TraceService();
         //_trace.Attach(CommandQueue);
     }
+    #endregion
+
+    #region 上报
+    private readonly ConcurrentQueue<EventModel> _events = new();
+    private readonly ConcurrentQueue<EventModel> _failEvents = new();
+    private TimerX _eventTimer;
+    private String _eventTraceId;
+
+    /// <summary>批量上报事件</summary>
+    /// <param name="events"></param>
+    /// <returns></returns>
+    public async Task<Int32> PostEvents(params EventModel[] events) => await PostAsync<Int32>("Node/PostEvents", events);
+
+    async Task DoPostEvent(Object state)
+    {
+        DefaultSpan.Current = null;
+        var tid = _eventTraceId;
+        _eventTraceId = null;
+
+        // 正常队列为空，异常队列有数据，给它一次机会
+        if (_events.IsEmpty && !_failEvents.IsEmpty)
+        {
+            while (_failEvents.TryDequeue(out var ev))
+            {
+                _events.Enqueue(ev);
+            }
+        }
+
+        while (!_events.IsEmpty)
+        {
+            var max = 100;
+            var list = new List<EventModel>();
+            while (_events.TryDequeue(out var model) && max-- > 0) list.Add(model);
+
+            using var span = Tracer?.NewSpan("PostEvent", list.Count);
+            span?.Detach(tid);
+            try
+            {
+                if (list.Count > 0) await PostEvents(list.ToArray());
+
+                // 成功后读取本地缓存
+                while (_failEvents.TryDequeue(out var ev))
+                {
+                    _events.Enqueue(ev);
+                }
+            }
+            catch (Exception ex)
+            {
+                span?.SetError(ex, null);
+
+                // 失败后进入本地缓存
+                foreach (var item in list)
+                {
+                    _failEvents.Enqueue(item);
+                }
+            }
+        }
+    }
+
+    /// <summary>写事件</summary>
+    /// <param name="type"></param>
+    /// <param name="name"></param>
+    /// <param name="remark"></param>
+    public virtual Boolean WriteEvent(String type, String name, String remark)
+    {
+        // 记录追踪标识，上报的时候带上，尽可能让源头和下游串联起来
+        _eventTraceId = DefaultSpan.Current?.ToString();
+
+        var now = DateTime.UtcNow;
+        var ev = new EventModel { Time = now.ToLong(), Type = type, Name = name, Remark = remark };
+        _events.Enqueue(ev);
+
+        _eventTimer?.SetNext(1000);
+
+        return true;
+    }
+
+    ///// <summary>写信息事件</summary>
+    ///// <param name="name"></param>
+    ///// <param name="remark"></param>
+    //public virtual void WriteInfoEvent(String name, String remark) => WriteEvent("info", name, remark);
+
+    ///// <summary>写错误事件</summary>
+    ///// <param name="name"></param>
+    ///// <param name="remark"></param>
+    //public virtual void WriteErrorEvent(String name, String remark) => WriteEvent("error", name, remark);
 
     /// <summary>上报命令结果，如截屏、抓日志</summary>
     /// <param name="id"></param>
@@ -519,10 +671,8 @@ public class StarClient : ApiHttpClient, ICommandClient
         {
             lock (this)
             {
-                if (_timer == null)
-                {
-                    _timer = new TimerX(DoPing, null, 1_000, 60_000, "Device") { Async = true };
-                }
+                _timer ??= new TimerX(DoPing, null, 1_000, 60_000, "Device") { Async = true };
+                _eventTimer = new TimerX(DoPostEvent, null, 3_000, 60_000, "Device") { Async = true };
             }
         }
     }
@@ -636,7 +786,7 @@ public class StarClient : ApiHttpClient, ICommandClient
         XTrace.WriteLine("检查更新：{0}", channel);
 
         // 清理
-        var ug = new Upgrade { Log = XTrace.Log };
+        var ug = new Stardust.Web.Upgrade { Log = XTrace.Log };
         ug.DeleteBackup(".");
 
         var rs = await UpgradeAsync(channel);
@@ -663,5 +813,24 @@ public class StarClient : ApiHttpClient, ICommandClient
     /// <param name="services"></param>
     /// <returns></returns>
     public async Task<Int32> UploadDeploy(ServiceInfo[] services) => await PostAsync<Int32>("Deploy/Upload", services);
+    #endregion
+
+    #region 辅助
+    /// <summary>
+    /// 把Url相对路径格式化为绝对路径。常用于文件下载
+    /// </summary>
+    /// <param name="url"></param>
+    /// <returns></returns>
+    public String BuildUrl(String url)
+    {
+        if (!url.StartsWithIgnoreCase("http://", "https://"))
+        {
+            var svr = Services.FirstOrDefault(e => e.Name == Source) ?? Services.FirstOrDefault();
+            if (svr != null && svr.Address != null)
+                url = new Uri(svr.Address, url) + "";
+        }
+
+        return url;
+    }
     #endregion
 }
