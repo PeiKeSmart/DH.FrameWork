@@ -24,13 +24,29 @@ public partial interface IDHStartup
     /// 配置添加的中间件的使用
     /// </summary>
     /// <param name="application">用于配置应用程序的请求管道的生成器</param>
-    void Configure(IApplicationBuilder application);
+    /// <param name="typeFinder">类型处理器</param>
+    void Configure(IApplicationBuilder application, ITypeFinder typeFinder);
 
     /// <summary>
     /// 配置虚拟文件系统
     /// </summary>
     /// <param name="options">虚拟文件配置</param>
     void ConfigureVirtualFileSystem(DHVirtualFileSystemOptions options);
+
+    /// <summary>
+    /// 将区域路由写入数据库
+    /// </summary>
+    void ConfigureArea();
+
+    /// <summary>
+    /// 调整菜单
+    /// </summary>
+    void ChangeMenu();
+
+    /// <summary>
+    /// 升级处理逻辑
+    /// </summary>
+    void Update();
 
     /// <summary>
     /// 获取此启动配置实现的顺序

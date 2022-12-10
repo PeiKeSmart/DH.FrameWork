@@ -36,15 +36,11 @@ namespace DH.Web.Framework.Infrastructure;
 public partial class DHStartup : IDHStartup
 {
     /// <summary>
-    /// 获取此启动配置实现的顺序
-    /// </summary>
-    public int Order => 2000;
-
-    /// <summary>
     /// 文件提供程序
     /// </summary>
     /// <param name="application">用于配置应用程序的请求管道的生成器</param>
-    public void Configure(IApplicationBuilder application)
+    /// <param name="typeFinder">类型处理器</param>
+    public void Configure(IApplicationBuilder application, ITypeFinder typeFinder)
     {
     }
 
@@ -170,4 +166,32 @@ public partial class DHStartup : IDHStartup
     {
     }
 
+    /// <summary>
+    /// 将区域路由写入数据库
+    /// </summary>
+    public void ConfigureArea()
+    {
+
+    }
+
+    /// <summary>
+    /// 调整菜单
+    /// </summary>
+    public void ChangeMenu()
+    {
+
+    }
+
+    /// <summary>
+    /// 升级处理逻辑
+    /// </summary>
+    public void Update()
+    {
+
+    }
+
+    /// <summary>
+    /// 获取此启动配置实现的顺序
+    /// </summary>
+    public int Order => 2000;
 }

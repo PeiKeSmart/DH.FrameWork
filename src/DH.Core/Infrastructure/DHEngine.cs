@@ -155,7 +155,7 @@ public partial class DHEngine : IEngine
 
         // 配置请求管道
         foreach (var instance in instances)
-            instance.Configure(application);
+            instance.Configure(application, typeFinder);
     }
 
     /// <summary>
