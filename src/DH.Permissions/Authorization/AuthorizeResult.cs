@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace DG.Permissions.Authorization;
+namespace DH.Permissions.Authorization;
 
 /// <summary>
 /// 授权结果

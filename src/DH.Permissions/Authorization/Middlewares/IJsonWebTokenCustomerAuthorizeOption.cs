@@ -1,6 +1,6 @@
 ﻿using DH.Security;
 
-namespace DG.Permissions.Authorization.Middlewares;
+namespace DH.Permissions.Authorization.Middlewares;
 
 /// <summary>
 /// JWT客户授权配置

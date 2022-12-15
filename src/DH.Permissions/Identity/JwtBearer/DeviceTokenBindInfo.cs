@@ -1,6 +1,6 @@
 ﻿using DH.Models;
 
-namespace DG.Permissions.Identity.JwtBearer;
+namespace DH.Permissions.Identity.JwtBearer;
 
 /// <summary>
 /// 设备令牌绑定信息

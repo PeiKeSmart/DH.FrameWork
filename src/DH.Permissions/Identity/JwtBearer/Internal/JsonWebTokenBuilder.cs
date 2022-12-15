@@ -12,7 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
-namespace DG.Permissions.Identity.JwtBearer.Internal;
+namespace DH.Permissions.Identity.JwtBearer.Internal;
 
 /// <summary>
 /// Jwt构建器

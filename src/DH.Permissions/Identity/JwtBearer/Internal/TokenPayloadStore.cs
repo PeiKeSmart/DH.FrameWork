@@ -3,7 +3,7 @@ using DH.Core.Infrastructure;
 
 using NewLife.Caching;
 
-namespace DG.Permissions.Identity.JwtBearer.Internal;
+namespace DH.Permissions.Identity.JwtBearer.Internal;
 
 /// <summary>
 /// 令牌Payload存储器

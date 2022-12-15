@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 
-namespace DG.Permissions.Authorization.Policies;
+namespace DH.Permissions.Authorization.Policies;
 
 /// <summary>
 /// Jwt授权

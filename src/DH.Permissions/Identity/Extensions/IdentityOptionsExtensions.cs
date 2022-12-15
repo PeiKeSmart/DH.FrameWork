@@ -1,8 +1,8 @@
-﻿using DG.Permissions.Identity.Options;
+﻿using DH.Permissions.Identity.Options;
 
 using Microsoft.AspNetCore.Identity;
 
-namespace DG.Permissions.Identity.Extensions;
+namespace DH.Permissions.Identity.Extensions;
 
 /// <summary>
 /// 授权配置(<see cref="IdentityOptions"/>) 扩展

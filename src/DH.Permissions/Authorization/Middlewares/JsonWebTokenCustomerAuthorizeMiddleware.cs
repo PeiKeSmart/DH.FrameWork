@@ -1,10 +1,10 @@
-﻿using DG.Permissions.Identity.JwtBearer;
+﻿using DH.Permissions.Identity.JwtBearer;
 
 using DH.Security;
 
 using Microsoft.Extensions.Options;
 
-namespace DG.Permissions.Authorization.Middlewares;
+namespace DH.Permissions.Authorization.Middlewares;
 
 /// <summary>
 /// JWT客户授权中间件

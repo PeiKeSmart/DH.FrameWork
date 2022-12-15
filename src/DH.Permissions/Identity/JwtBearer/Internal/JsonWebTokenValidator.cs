@@ -6,7 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace DG.Permissions.Identity.JwtBearer.Internal;
+namespace DH.Permissions.Identity.JwtBearer.Internal;
 
 /// <summary>
 /// Jwt令牌校验器

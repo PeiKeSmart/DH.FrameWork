@@ -4,7 +4,7 @@ using DH.Models;
 
 using NewLife.Caching;
 
-namespace DG.Permissions.Identity.JwtBearer.Internal;
+namespace DH.Permissions.Identity.JwtBearer.Internal;
 
 /// <summary>
 /// Jwt令牌存储器

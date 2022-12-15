@@ -1,7 +1,7 @@
 ﻿using DH.Models;
 using DH.Security;
 
-namespace DG.Permissions.Identity.JwtBearer;
+namespace DH.Permissions.Identity.JwtBearer;
 
 /// <summary>
 /// Jwt令牌构建器

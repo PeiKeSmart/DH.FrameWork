@@ -1,4 +1,4 @@
-﻿namespace DG.Permissions.Identity.JwtBearer;
+﻿namespace DH.Permissions.Identity.JwtBearer;
 
 /// <summary>
 /// 刷新Token信息

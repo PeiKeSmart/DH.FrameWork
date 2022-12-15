@@ -1,7 +1,7 @@
 ﻿using DH.Extensions;
 using DH.Security;
 
-namespace DG.Permissions.Authorization.Middlewares;
+namespace DH.Permissions.Authorization.Middlewares;
 
 /// <summary>
 /// Jwt客户授权配置

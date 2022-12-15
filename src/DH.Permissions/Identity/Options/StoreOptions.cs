@@ -1,4 +1,4 @@
-﻿namespace DG.Permissions.Identity.Options;
+﻿namespace DH.Permissions.Identity.Options;
 
 /// <summary>
 /// 存储配置

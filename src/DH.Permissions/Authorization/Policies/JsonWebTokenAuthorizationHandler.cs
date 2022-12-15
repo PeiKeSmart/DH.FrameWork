@@ -1,4 +1,4 @@
-﻿using DG.Permissions.Identity.JwtBearer;
+﻿using DH.Permissions.Identity.JwtBearer;
 
 using DH.Helpers;
 using DH.Security;
@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
-namespace DG.Permissions.Authorization.Policies;
+namespace DH.Permissions.Authorization.Policies;
 
 /// <summary>
 /// Jwt授权处理器

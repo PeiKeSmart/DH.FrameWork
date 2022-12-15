@@ -1,6 +1,6 @@
 ﻿using DH.Security;
 
-namespace DG.Permissions.Authorization.Policies;
+namespace DH.Permissions.Authorization.Policies;
 
 /// <summary>
 /// JWT授权请求

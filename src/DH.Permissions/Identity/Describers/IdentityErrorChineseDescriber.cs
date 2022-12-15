@@ -2,7 +2,7 @@
 
 using Microsoft.AspNetCore.Identity;
 
-namespace DG.Permissions.Identity.Describers;
+namespace DH.Permissions.Identity.Describers;
 
 /// <summary>
 /// Identity中文错误描述

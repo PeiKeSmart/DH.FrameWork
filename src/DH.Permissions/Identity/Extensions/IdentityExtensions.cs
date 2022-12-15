@@ -5,7 +5,7 @@ using DH.Helpers;
 using System.Security.Claims;
 using System.Security.Principal;
 
-namespace DG.Permissions.Identity.Extensions;
+namespace DH.Permissions.Identity.Extensions;
 
 /// <summary>
 /// 标识(<see cref="IIdentity"/>) 扩展

@@ -1,6 +1,6 @@
 ﻿using DH.Models;
 
-namespace DG.Permissions.Identity.JwtBearer;
+namespace DH.Permissions.Identity.JwtBearer;
 
 /// <summary>
 /// Jwt令牌存储器

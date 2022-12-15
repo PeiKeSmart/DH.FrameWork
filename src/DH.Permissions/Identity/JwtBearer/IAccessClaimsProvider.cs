@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 
-namespace DG.Permissions.Identity.JwtBearer;
+namespace DH.Permissions.Identity.JwtBearer;
 
 /// <summary>
 /// 访问令牌用户声明提供程序

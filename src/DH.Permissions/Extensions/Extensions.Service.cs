@@ -1,7 +1,7 @@
-﻿using DG.Permissions.Authorization.Middlewares;
-using DG.Permissions.Authorization.Policies;
-using DG.Permissions.Identity.JwtBearer;
-using DG.Permissions.Identity.JwtBearer.Internal;
+﻿using DH.Permissions.Authorization.Middlewares;
+using DH.Permissions.Authorization.Policies;
+using DH.Permissions.Identity.JwtBearer;
+using DH.Permissions.Identity.JwtBearer.Internal;
 
 using DH.Security;
 
@@ -12,7 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 
 using System.Text;
 
-namespace DG.Permissions.Extensions;
+namespace DH.Permissions.Extensions;
 
 /// <summary>
 /// 扩展服务

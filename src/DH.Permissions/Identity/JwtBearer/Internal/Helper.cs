@@ -6,7 +6,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace DG.Permissions.Identity.JwtBearer.Internal;
+namespace DH.Permissions.Identity.JwtBearer.Internal;
 
 /// <summary>
 /// JwtBearer帮助类

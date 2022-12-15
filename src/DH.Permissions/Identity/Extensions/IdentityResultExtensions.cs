@@ -2,7 +2,7 @@
 
 using Microsoft.AspNetCore.Identity;
 
-namespace DG.Permissions.Identity.Extensions;
+namespace DH.Permissions.Identity.Extensions;
 
 /// <summary>
 /// 授权结果(<see cref="IdentityResult"/>) 扩展

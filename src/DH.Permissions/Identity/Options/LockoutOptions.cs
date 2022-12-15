@@ -1,4 +1,4 @@
-﻿namespace DG.Permissions.Identity.Options;
+﻿namespace DH.Permissions.Identity.Options;
 
 /// <summary>
 /// 登录锁定配置

@@ -1,4 +1,4 @@
-﻿namespace DG.Permissions.Identity.Purposes;
+﻿namespace DH.Permissions.Identity.Purposes;
 
 /// <summary>
 /// 令牌用途
