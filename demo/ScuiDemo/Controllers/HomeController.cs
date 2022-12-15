@@ -1,4 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DH.Core.Domain.Localization;
+using DH.Core.Infrastructure;
+using DH.Web.Framework.Themes;
+
+using Microsoft.AspNetCore.Mvc;
+
+using NewLife.Log;
 
 using ScuiDemo.Models;
 
@@ -17,6 +23,12 @@ namespace ScuiDemo.Controllers
 
         public IActionResult Index()
         {
+            var localizationSettings = EngineContext.Current.Resolve<LocalizationSettings>();
+            XTrace.WriteLine($"测试获取数据：{localizationSettings.SeoFriendlyUrlsForLanguagesEnabled}");
+
+            var ThemeContext = EngineContext.Current.Resolve<IThemeContext>();
+            XTrace.WriteLine($"测试获取数据：{ThemeContext.GetWorkingThemeNameAsync().Result}");
+
             return View();
         }
 

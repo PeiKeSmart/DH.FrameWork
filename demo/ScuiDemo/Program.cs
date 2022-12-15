@@ -1,36 +1,36 @@
-namespace ScuiDemo
+using DH;
+using DH.Core.Domain;
+using DH.Entity;
+using DH.Web.Framework;
+
+using NewLife.Log;
+
+var set = DHSetting.Current;
+if (set.Debug)
 {
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            var builder = WebApplication.CreateBuilder(args);
-
-            // Add services to the container.
-            builder.Services.AddControllersWithViews();
-
-            var app = builder.Build();
-
-            // Configure the HTTP request pipeline.
-            if (!app.Environment.IsDevelopment())
-            {
-                app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
-
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
-
-            app.UseRouting();
-
-            app.UseAuthorization();
-
-            app.MapControllerRoute(
-                name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
-
-            app.Run();
-        }
-    }
+    XTrace.UseConsole();
 }
+
+if (!set.IsInstalled)
+{
+    set.IsInstalled = true;
+
+    Setting.SaveSetting(new StoreInformationSettings
+    {
+        DefaultStoreTheme = "DefaultClean",
+    });
+
+    set.Save();
+}
+
+var builder = WebApplication.CreateBuilder(args);
+
+// 使用基类
+builder.AddCube(builder.Configuration, builder.Environment);
+
+var app = builder.Build();
+
+// 使用基类
+app.UseCube(builder.Configuration, builder.Environment);
+
+app.Run();
