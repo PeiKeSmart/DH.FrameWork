@@ -1,10 +1,7 @@
-﻿using System;
+﻿namespace DH.Pdu.Decoder;
 
-namespace DG.Pdu.Decoder
+class UnknownSMSTypeException : Exception
 {
-    class UnknownSMSTypeException : Exception
-    {
-        public UnknownSMSTypeException(byte pduType) : base(string.Format("未知短信类型。 PDU类型二进制: {0}.", Convert.ToString(pduType, 2)))
-        { }
-    }
+    public UnknownSMSTypeException(byte pduType) : base(string.Format("未知短信类型。 PDU类型二进制: {0}.", Convert.ToString(pduType, 2)))
+    { }
 }

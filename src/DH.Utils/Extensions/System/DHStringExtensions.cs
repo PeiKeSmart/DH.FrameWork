@@ -1,17 +1,20 @@
 ﻿using DH;
+
 using JetBrains.Annotations;
+
+using NewLife;
+
 using System.Globalization;
 using System.Security.Cryptography;
-using System.Text.RegularExpressions;
 using System.Text;
-using NewLife;
+using System.Text.RegularExpressions;
 
 namespace System;
 
 /// <summary>
-/// String类的扩展方法。
+/// 字符串(<see cref="string"/>) 扩展
 /// </summary>
-public static class DHStringExtensions
+public static partial class DHStringExtensions
 {
     /// <summary>
     /// 如果给定字符串的结尾不以字符结尾，则将字符添加到该字符串的结尾。
