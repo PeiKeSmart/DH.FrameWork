@@ -23,6 +23,8 @@
 11、支持客如云、银豹平台、微信相关、又拍云相关对接SDK  
 12、支持动态C#类型库，可以像在JavaScript或其他动态语言中一样定义Dynamic对象  
 13、支持Vue集成框架开发，目前支持两种模式：1是只能使用Vue，2是可以Vue和Mvc共存。其中VueDemo为全局Vue Demo，VueDemo1为Vue和Mvc共存
+14、支持SMS短信PDU格式转换类库
+15、JWT权限类库
 
 
 
