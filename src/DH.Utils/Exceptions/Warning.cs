@@ -1,10 +1,9 @@
-﻿using DH.Properties;
+﻿using DH.Extension;
+using DH.Properties;
 
 using NewLife.Log;
 
 using System.Text;
-
-using DH.Extensions;
 
 namespace DH.Exceptions;
 

@@ -3,7 +3,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 
-namespace DH.Extensions;
+namespace DH.Extension;
 
 /// <summary>
 /// 字符串(<see cref="string"/>) 扩展 - 安全

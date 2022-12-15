@@ -6,8 +6,17 @@ using DH.Webs;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Hosting;
+
+using NewLife.Caching;
+using NewLife.Log;
+
+using System.Reflection;
+using System.Text;
 
 namespace DH.Web.Framework;
 
@@ -24,6 +33,9 @@ public static class CubeService
     public static IServiceCollection AddCube(this WebApplicationBuilder builder,
         IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
     {
+        XTrace.WriteLine("{0} Start 配置系统 {0}", new String('=', 32));
+        Assembly.GetExecutingAssembly().WriteVersion();
+
         builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
         builder.Configuration.AddJsonFile(DHConfigurationDefaults.AppSettingsFilePath, true, true);
         if (!string.IsNullOrEmpty(builder.Environment?.EnvironmentName))
@@ -33,9 +45,23 @@ public static class CubeService
         }
         builder.Configuration.AddEnvironmentVariables();
 
+        // https跳转
+        if (DHSetting.Current.AllSslEnabled)
+        {
+            builder.Services.AddHttpsRedirection(options =>
+            {
+                options.RedirectStatusCode = StatusCodes.Status301MovedPermanently;
+            });
+        }
+
+
+
+
         // 向应用程序添加服务并配置服务提供商
         builder.Services.ConfigureApplicationServices(builder, builder.Environment);
 
+
+        XTrace.WriteLine("{0} End   配置系统 {0}", new String('=', 32));
 
         return builder.Services;
     }
@@ -51,6 +77,22 @@ public static class CubeService
     public static IApplicationBuilder UseCube(this IApplicationBuilder app,
         IConfiguration configuration, IWebHostEnvironment env = null)
     {
+        var provider = app.ApplicationServices;
+
+        XTrace.WriteLine("{0} Start 初始化系统 {0}", new String('=', 32));
+
+        var set = DHSetting.Current;
+
+        if (set.AllSslEnabled)
+        {
+            // HSTS的默认值为30天。 您可能要针对生产方案更改此设置，请参见https://aka.ms/aspnetcore-hsts。
+            app.UseHsts();
+            app.UseHttpsRedirection();
+        }
+
+
+
+
         // 配置静态Http上下文访问器
         app.UseStaticHttpContext();
 

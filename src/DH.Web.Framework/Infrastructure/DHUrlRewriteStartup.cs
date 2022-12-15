@@ -32,6 +32,7 @@ public partial class DHUrlRewriteStartup : IDHStartup
     /// <param name="typeFinder">类型处理器</param>
     public void Configure(IApplicationBuilder application, ITypeFinder typeFinder)
     {
+        // 重定向
         var options = new RewriteOptions();
 
         var RewriteList = RouteRewrite.GetAll();

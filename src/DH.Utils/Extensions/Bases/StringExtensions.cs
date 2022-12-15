@@ -1,4 +1,6 @@
-﻿using NewLife;
+﻿using DH.Extensions;
+
+using NewLife;
 
 using System.Collections;
 using System.Collections.Specialized;
@@ -7,7 +9,7 @@ using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace DH.Extensions;
+namespace DH.Extension;
 
 /// <summary>
 /// 字符串(<see cref="string"/>) 扩展

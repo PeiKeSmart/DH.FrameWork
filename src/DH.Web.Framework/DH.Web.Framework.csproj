@@ -63,6 +63,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DH.NRedis\DH.NRedis.csproj" />
     <ProjectReference Include="..\DH.Services\DH.Services.csproj" />
     <ProjectReference Include="..\DH.Core\DH.Core.csproj" />
   </ItemGroup>

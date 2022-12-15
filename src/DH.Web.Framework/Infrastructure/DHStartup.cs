@@ -100,8 +100,18 @@ public partial class DHStartup : IDHStartup
 
 
 
-        // 缓存
-        services.TryAddSingleton(Cache.Default);
+        // 系统应用缓存，小于10000数据的可以考虑直接使用Cache.Default
+        if (UtilSetting.Current.RedisEnabled)
+        {
+            var redisConn = new FullRedis(UtilSetting.Current.RedisConnectionString, UtilSetting.Current.RedisPassWord, UtilSetting.Current.RedisDatabaseId);
+
+            services.TryAddSingleton<ICache>(redisConn);
+            services.TryAddSingleton(redisConn);
+        }
+        else
+        {
+            services.TryAddSingleton<ICache>(Cache.Default);
+        }
 
         services.AddScoped<IGenericAttributeService, GenericAttributeService>();
         services.AddScoped<ICustomerService, CustomerService>();

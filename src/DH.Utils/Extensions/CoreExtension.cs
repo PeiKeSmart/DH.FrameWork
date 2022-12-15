@@ -6,12 +6,10 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Net;
 using System.Reflection;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace DH.Extension;
+namespace DH.Extensions;
 
 public static class CoreExtension
 {
