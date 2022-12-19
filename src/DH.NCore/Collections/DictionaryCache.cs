@@ -245,7 +245,7 @@ namespace NewLife.Collections
                     {
                         value = item.Visit();
                         item.Set(value, Expire);
-                        ThreadPool.QueueUserWorkItem(s => value = func(key));
+                        ThreadPoolX.QueueUserWorkItem(() => value = func(key));
                     }
                     else
                     {
