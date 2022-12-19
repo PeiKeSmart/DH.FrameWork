@@ -1,4 +1,5 @@
 ﻿using DH;
+
 using JetBrains.Annotations;
 
 namespace System;
@@ -8,20 +9,6 @@ public static class DHTypeExtensions
     public static string GetFullNameWithAssemblyName(this Type type)
     {
         return type.FullName + ", " + type.Assembly.GetName().Name;
-    }
-
-    /// <summary>
-    /// 确定是否可以将此类型的实例分配给
-    /// <typeparamref name="TTarget"></typeparamref>的实例。
-    ///
-    /// 内部使用<see cref="Type.IsAssignableFrom"/>.
-    /// </summary>
-    /// <typeparam name="TTarget">目标类型</typeparam> (相反).
-    public static bool IsAssignableTo<TTarget>([NotNull] this Type type)
-    {
-        Check.NotNull(type, nameof(type));
-
-        return type.IsAssignableTo(typeof(TTarget));
     }
 
     /// <summary>

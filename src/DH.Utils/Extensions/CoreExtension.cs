@@ -2908,8 +2908,6 @@ public static class CoreExtension
     /// <returns>@this as a byte[].</returns>
     public static byte[] ToByteArray([NotNull] this string @this, Encoding encoding) => encoding.GetBytes(@this);
 
-    public static byte[] GetBytes([NotNull] this string str) => str.GetBytes(Encoding.UTF8);
-
     public static byte[] GetBytes([NotNull] this string str, Encoding encoding) => encoding.GetBytes(str);
 
     /// <summary>
