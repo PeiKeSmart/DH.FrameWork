@@ -174,6 +174,44 @@ public class ServiceManager : DisposeBase
         SaveDb();
     }
 
+    /// <summary>
+    /// 启动所有应用
+    /// </summary>
+    public void StartAll()
+    {
+        var svcs = _controllers;
+        for (var i = svcs.Count - 1; i >= 0; i--)
+        {
+            var ctrl = svcs[i];
+            if (!ctrl.Running)
+            {
+                ctrl.Check();
+            }
+        }
+
+        SaveDb();
+    }
+
+    /// <summary>
+    /// 停止所有应用
+    /// </summary>
+    /// <param name="reason"></param>
+    public void StopAll(String reason)
+    {
+        var svcs = _controllers;
+        for (var i = svcs.Count - 1; i >= 0; i--)
+        {
+            var ctrl = svcs[i];
+            if (ctrl.Running)
+            {
+                ctrl.Stop(reason);
+                svcs.RemoveAt(i);
+            }
+        }
+
+        SaveDb();
+    }
+
     /// <summary>保存应用状态到数据库</summary>
     private void SaveDb()
     {
@@ -349,7 +387,7 @@ public class ServiceManager : DisposeBase
                 old.Arguments = svc.Arguments;
                 old.WorkingDirectory = svc.WorkingDirectory;
                 old.Enable = svc.Enable;
-                old.AutoStart = svc.AutoStart;
+                //old.AutoStart = svc.AutoStart;
                 //svc.AutoStop = item.AutoStop;
                 old.MaxMemory = svc.MaxMemory;
             }
@@ -454,6 +492,12 @@ public class ServiceManager : DisposeBase
             if (service == null || !service.Enable)
             {
                 controller.Stop("配置停止");
+                controllers.RemoveAt(i);
+                changed = true;
+            }
+            else if (controller.Running && service.ToJson() != controller.Info.ToJson())
+            {
+                controller.Stop("配置改变");
                 controllers.RemoveAt(i);
                 changed = true;
             }
