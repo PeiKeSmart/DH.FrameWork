@@ -4,21 +4,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SKIT.FlurlHttpClient.Baidu.SmartApp.Settings
+namespace SKIT.FlurlHttpClient.Baidu.SmartApp
 {
-    public class Credentials
+    /// <summary>
+    /// 一个用于构造 <see cref="SmartAppThirdPartyClient"/> 时使用的配置项。
+    /// </summary>
+    public class SmartAppClientOptions
     {
-        internal Credentials(SmartAppClientOptions options)
-        {
-            if (options == null)
-                throw new ArgumentNullException(nameof(options));
+        /// <summary>
+        /// 获取或设置请求超时时间（单位：毫秒）。
+        /// <para>默认值：30000</para>
+        /// </summary>
+        public int Timeout { get; set; } = 30 * 1000;
 
-            this.AppId = options.AppId;
-            this.AppKey = options.AppKey;
-            this.AppSecret = options.AppSecret;
-            this.VerifyToken = options.VerifyToken;
-            this.EncryptKey = options.EncryptKey;
-        }
+        /// <summary>
+        /// 获取或设置百度 API 域名。
+        /// <para>默认值：<see cref="SmartAppEndpoints.DEFAULT"/></para>
+        /// </summary>
+        public string Endpoints { get; set; } = SmartAppEndpoints.DEFAULT;
 
         /// <summary>
         /// 第三方平台ID
