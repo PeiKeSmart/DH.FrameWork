@@ -8,9 +8,9 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Xml;
 
-namespace SKIT.FlurlHttpClient.Wechat.Work.Utilities
+namespace SKIT.FlurlHttpClient.Wechat.Api.Utilities
 {
-    internal static class WechatEventDataCryptor
+    internal static class WxMsgCryptor
     {
         private const int AES_KEY_SIZE = 256;
         private const int AES_BLOCK_SIZE = 128;
@@ -127,28 +127,28 @@ namespace SKIT.FlurlHttpClient.Wechat.Work.Utilities
             using (var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
             {
                 cs.Write(msgBytes, 0, msgBytes.Length);
-                byte[] chiperBytes = ms.ToArray();
-                return Convert.ToBase64String(chiperBytes);
+                byte[] cipherBytes = ms.ToArray();
+                return Convert.ToBase64String(cipherBytes);
             }
         }
 
         /// <summary>
-        /// AES 解密企业微信加密数据。
+        /// AES 解密微信回调加密数据。
         /// </summary>
-        /// <param name="cipherText">企业微信推送来的加密文本内容（即 `Encrypt` 字段的值）。</param>
-        /// <param name="encodingAESKey">企业微信后台设置的 EncodingAESKey。</param>
-        /// <param name="corpOrSuiteId">企业微信 CorpId 或第三方应用的 SuiteId。</param>
+        /// <param name="cipherText">微信推送来的加密文本内容（即 `Encrypt` 字段的值）。</param>
+        /// <param name="encodingAESKey">微信后台设置的 EncodingAESKey。</param>
+        /// <param name="appId">微信 AppId。</param>
         /// <returns>解密后的文本内容。</returns>
-        public static string AESDecrypt(string cipherText, string encodingAESKey, out string corpOrSuiteId)
+        public static string AESDecrypt(string cipherText, string encodingAESKey, out string appId)
         {
             if (cipherText == null) throw new ArgumentNullException(nameof(cipherText));
             if (encodingAESKey == null) throw new ArgumentNullException(nameof(encodingAESKey));
 
-            byte[] chiperBytes = Convert.FromBase64String(cipherText);
+            byte[] cipherBytes = Convert.FromBase64String(cipherText);
             byte[] keyBytes = Convert.FromBase64String(encodingAESKey + "=");
             byte[] ivBytes = new byte[16];
             Array.Copy(keyBytes, ivBytes, 16);
-            byte[] btmpMsg = AESDecrypt(cipherBytes: chiperBytes, ivBytes: ivBytes, keyBytes: keyBytes);
+            byte[] btmpMsg = AESDecrypt(cipherBytes: cipherBytes, ivBytes: ivBytes, keyBytes: keyBytes);
 
             int len = BitConverter.ToInt32(btmpMsg, 16);
             len = IPAddress.NetworkToHostOrder(len);
@@ -158,22 +158,22 @@ namespace SKIT.FlurlHttpClient.Wechat.Work.Utilities
             Array.Copy(btmpMsg, 20, bMsg, 0, len);
             Array.Copy(btmpMsg, 20 + len, bCorpId, 0, btmpMsg.Length - 20 - len);
 
-            corpOrSuiteId = Encoding.UTF8.GetString(bCorpId);
+            appId = Encoding.UTF8.GetString(bCorpId);
             return Encoding.UTF8.GetString(bMsg);
         }
 
         /// <summary>
-        /// AES 加密企业微信敏感数据。
+        /// AES 加密微信回调敏感数据。
         /// </summary>
-        /// <param name="plainText">返回给企业微信的原始文本内容。</param>
-        /// <param name="encodingAESKey">企业微信后台设置的 EncodingAESKey。</param>
-        /// <param name="corpOrSuiteId">企业微信 CorpId 或第三方应用的 SuiteId。</param>
+        /// <param name="plainText">返回给微信的原始文本内容。</param>
+        /// <param name="encodingAESKey">微信后台设置的 EncodingAESKey。</param>
+        /// <param name="appId">微信 AppId。</param>
         /// <returns>加密后的文本内容。</returns>
-        public static string AESEncrypt(string plainText, string encodingAESKey, string corpOrSuiteId)
+        public static string AESEncrypt(string plainText, string encodingAESKey, string appId)
         {
             if (plainText == null) throw new ArgumentNullException(nameof(plainText));
             if (encodingAESKey == null) throw new ArgumentNullException(nameof(encodingAESKey));
-            if (corpOrSuiteId == null) throw new ArgumentNullException(nameof(corpOrSuiteId));
+            if (appId == null) throw new ArgumentNullException(nameof(appId));
 
             byte[] keyBytes = Convert.FromBase64String(encodingAESKey + "=");
             byte[] ivBytes = new byte[16];
@@ -181,7 +181,7 @@ namespace SKIT.FlurlHttpClient.Wechat.Work.Utilities
 
             string randCode = CreateRandCode(16);
             byte[] bRand = Encoding.UTF8.GetBytes(randCode);
-            byte[] bCorpId = Encoding.UTF8.GetBytes(corpOrSuiteId);
+            byte[] bCorpId = Encoding.UTF8.GetBytes(appId);
             byte[] bMsgTmp = Encoding.UTF8.GetBytes(plainText);
             byte[] bMsgLen = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(bMsgTmp.Length));
             byte[] bMsg = new byte[bRand.Length + bMsgLen.Length + bCorpId.Length + bMsgTmp.Length];
@@ -195,12 +195,12 @@ namespace SKIT.FlurlHttpClient.Wechat.Work.Utilities
         }
 
         /// <summary>
-        /// 验证企业微信回调签名。
+        /// 验证微信回调签名。
         /// </summary>
-        /// <param name="sToken">企业微信后台设置的 Token。</param>
-        /// <param name="sTimestamp">企业微信推送来的时间戳字符串。</param>
-        /// <param name="sNonce">企业微信推送来的随机字符串。</param>
-        /// <param name="sMsgEncrypt">企业微信推送来的加密文本内容（即 `Encrypt` 字段的值）。</param>
+        /// <param name="sToken">微信后台设置的 Token。</param>
+        /// <param name="sTimestamp">微信推送来的时间戳字符串。</param>
+        /// <param name="sNonce">微信推送来的随机字符串。</param>
+        /// <param name="sMsgEncrypt">微信推送来的加密文本内容（即 `Encrypt` 字段的值）。</param>
         /// <param name="sMsgSign">待验证的签名。</param>
         /// <returns>验证结果。</returns>
         public static bool VerifySignature(string sToken, string sTimestamp, string sNonce, string sMsgEncrypt, string sMsgSign)
@@ -216,12 +216,12 @@ namespace SKIT.FlurlHttpClient.Wechat.Work.Utilities
         }
 
         /// <summary>
-        /// 生成企业微信回调签名。
+        /// 生成微信回调签名。
         /// </summary>
-        /// <param name="sToken">企业微信后台设置的 Token。</param>
-        /// <param name="sTimestamp">返回给企业微信的时间戳字符串。</param>
-        /// <param name="sNonce">返回给企业微信的随机字符串。</param>
-        /// <param name="sMsgEncrypt">返回给企业微信的加密文本内容。</param>
+        /// <param name="sToken">微信后台设置的 Token。</param>
+        /// <param name="sTimestamp">返回给微信的时间戳字符串。</param>
+        /// <param name="sNonce">返回给微信的随机字符串。</param>
+        /// <param name="sMsgEncrypt">返回给微信的加密文本内容。</param>
         /// <returns>签名。</returns>
         public static string GenerateSignature(string sToken, string sTimestamp, string sNonce, string sMsgEncrypt)
         {
@@ -242,32 +242,29 @@ namespace SKIT.FlurlHttpClient.Wechat.Work.Utilities
         }
 
         /// <summary>
-        /// 尝试解析企业微信推送过来的 XML 数据。
+        /// 尝试解析微信推送过来的 XML 数据（仅适用于兼容模式或安全模式）。
         /// </summary>
-        /// <param name="xml">企业微信推送来的 XML 数据。</param>
+        /// <param name="xml">微信推送来的 XML 数据。</param>
         /// <param name="encryptedMsg">如果解析成功，将返回解析后的 `Encrypt` 字段的值。</param>
         /// <returns>指示是否是有效的 XML 内容。</returns>
         public static bool TryParseXml(string xml, out string encryptedMsg)
         {
-            return TryParseXml(xml, out encryptedMsg, out _, out _);
+            return TryParseXml(xml, out encryptedMsg, out _);
         }
 
         /// <summary>
-        /// 尝试解析企业微信推送过来的 XML 数据。
+        /// 尝试解析微信推送过来的 XML 数据（仅适用于兼容模式或安全模式）。
         /// </summary>
-        /// <param name="xml">企业微信推送来的 XML 数据。</param>
-        /// <param name="encryptedMsg">如果解析成功，将返回解析后的 `Encrypt` 字段的值。</param>
+        /// <param name="xml">微信推送来的 XML 数据。</param>
         /// <param name="toUserName">如果解析成功，将返回解析后的 `ToUserName` 字段的值。</param>
-        /// <param name="agentId">如果解析成功，将返回解析后的 `AgentId` 字段的值。</param>
+        /// <param name="encryptedMsg">如果解析成功，将返回解析后的 `Encrypt` 字段的值。</param>
         /// <returns>指示是否是有效的 XML 内容。</returns>
-        /// <returns></returns>
-        public static bool TryParseXml(string xml, out string encryptedMsg, out string toUserName, out string agentId)
+        public static bool TryParseXml(string xml, out string encryptedMsg, out string toUserName)
         {
             if (xml == null) throw new ArgumentNullException(nameof(xml));
 
             encryptedMsg = string.Empty;
             toUserName = string.Empty;
-            agentId = string.Empty;
 
             try
             {
@@ -281,7 +278,6 @@ namespace SKIT.FlurlHttpClient.Wechat.Work.Utilities
 
                 encryptedMsg = xmlRoot["Encrypt"]?.InnerText?.ToString() ?? string.Empty;
                 toUserName = xmlRoot["ToUserName"]?.InnerText?.ToString() ?? string.Empty;
-                agentId = xmlRoot["AgentID"]?.InnerText?.ToString() ?? string.Empty;
 
                 return !string.IsNullOrEmpty(encryptedMsg);
             }
@@ -292,9 +288,9 @@ namespace SKIT.FlurlHttpClient.Wechat.Work.Utilities
         }
 
         /// <summary>
-        /// 将返回给企业微信的加密文本内容包装成 XML 格式。
+        /// 将返回给微信的加密文本内容包装成 XML 格式（仅适用于安全模式）。
         /// </summary>
-        /// <param name="sToken">企业微信后台设置的 Token。</param>
+        /// <param name="sToken">微信后台设置的 Token。</param>
         /// <param name="sMsgEncrypt">返回给微信的加密文本内容。</param>
         /// <returns></returns>
         public static string WrapXml(string sToken, string sMsgEncrypt)
@@ -309,7 +305,7 @@ namespace SKIT.FlurlHttpClient.Wechat.Work.Utilities
         }
 
         /// <summary>
-        /// 将返回给企业微信的加密文本内容包装成 XML 格式（仅适用于安全模式）。
+        /// 将返回给微信的加密文本内容包装成 XML 格式（仅适用于安全模式）。
         /// </summary>
         /// <param name="sTimestamp">返回给微信的时间戳字符串。</param>
         /// <param name="sNonce">返回给微信的随机字符串。</param>
