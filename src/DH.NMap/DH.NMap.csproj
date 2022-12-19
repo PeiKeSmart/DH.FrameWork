@@ -65,6 +65,7 @@
 	
   <ItemGroup>
     <ProjectReference Include="..\DH.NCore\DH.NCore.csproj" />
+    <ProjectReference Include="..\DH.NStardust\DH.NStardust.csproj" />
   </ItemGroup>
 
   <ItemGroup>
