@@ -26,4 +26,11 @@ public interface IJsonWebTokenBuilder
     /// </summary>
     /// <param name="refreshToken">刷新令牌</param>
     JsonWebToken Refresh(string refreshToken);
+
+    /// <summary>
+    /// 刷新令牌，延时清理数据
+    /// </summary>
+    /// <param name="refreshToken">刷新令牌</param>
+    /// <param name="expire">延时时间。秒</param>
+    JsonWebToken Refresh(string refreshToken, Int32 expire);
 }

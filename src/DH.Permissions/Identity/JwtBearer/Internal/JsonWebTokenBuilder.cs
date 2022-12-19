@@ -1,5 +1,4 @@
-﻿using DH;
-using DH.Exceptions;
+﻿using DH.Exceptions;
 using DH.Extensions;
 using DH.Helpers;
 using DH.Models;
@@ -160,6 +159,45 @@ internal sealed class JsonWebTokenBuilder : IJsonWebTokenBuilder
         {
             _tokenStore.RemoveRefreshToken(refreshToken);
             _tokenPayloadStore.Remove(refreshToken);
+        }
+        return result;
+    }
+
+
+    /// <summary>
+    /// 刷新令牌，延时清理数据
+    /// </summary>
+    /// <param name="refreshToken">刷新令牌</param>
+    /// <param name="expire">延时时间。秒</param>
+    public JsonWebToken Refresh(String refreshToken, Int32 expire)
+    {
+        if (string.IsNullOrWhiteSpace(refreshToken))
+            throw new ArgumentNullException(nameof(refreshToken));
+        var parameters = new TokenValidationParameters()
+        {
+            ValidIssuer = _options.Issuer,
+            ValidAudience = _options.Audience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.Secret)),
+        };
+        var tokenModel = _tokenStore.GetRefreshToken(refreshToken);
+        if (tokenModel == null || tokenModel.Value != refreshToken || tokenModel.EndUtcTime <= DateTime.UtcNow)
+        {
+            if (tokenModel != null && tokenModel.EndUtcTime <= DateTime.UtcNow)
+            {
+                _tokenStore.RemoveRefreshToken(refreshToken);
+                _tokenPayloadStore.Remove(refreshToken);
+            }
+
+            throw new Warning("刷新令牌不存在或已过期");
+        }
+
+        var principal = _tokenHandler.ValidateToken(refreshToken, parameters, out var securityToken);
+        var payload = _tokenPayloadStore.Get(refreshToken);
+        var result = Create(payload, _options);
+        if (result != null)
+        {
+            _tokenStore.RemoveRefreshToken(refreshToken, expire);
+            _tokenPayloadStore.Remove(refreshToken, expire);
         }
         return result;
     }

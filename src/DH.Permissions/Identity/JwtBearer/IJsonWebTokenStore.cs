@@ -26,6 +26,13 @@ public interface IJsonWebTokenStore
     void RemoveRefreshToken(string token);
 
     /// <summary>
+    /// 延时移除刷新令牌
+    /// </summary>
+    /// <param name="token">刷新令牌</param>
+    /// <param name="expire">延时时间。秒</param>
+    void RemoveRefreshToken(string token, Int32 expire);
+
+    /// <summary>
     /// 获取访问令牌
     /// </summary>
     /// <param name="token">访问令牌</param>
@@ -36,6 +43,13 @@ public interface IJsonWebTokenStore
     /// </summary>
     /// <param name="token">访问令牌</param>
     void RemoveToken(string token);
+
+    /// <summary>
+    /// 延时移除访问令牌
+    /// </summary>
+    /// <param name="token">访问令牌</param>
+    /// <param name="expire">延时时间。秒</param>
+    void RemoveToken(string token, Int32 expire);
 
     /// <summary>
     /// 保存访问令牌

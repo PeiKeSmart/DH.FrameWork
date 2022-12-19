@@ -1,5 +1,4 @@
-﻿using DH;
-using DH.Core.Infrastructure;
+﻿using DH.Core.Infrastructure;
 using DH.Models;
 
 using NewLife.Caching;
@@ -62,6 +61,28 @@ internal sealed class JsonWebTokenStore : IJsonWebTokenStore
     }
 
     /// <summary>
+    /// 移除刷新令牌
+    /// </summary>
+    /// <param name="token">刷新令牌</param>
+    /// <param name="expire">延时时间。秒</param>
+    public void RemoveRefreshToken(string token, Int32 expire)
+    {
+        var key = GetRefreshTokenKey(token);
+        var key1 = GetBindRefreshTokenKey(token);
+
+        if (!_cache.ContainsKey(key))
+            return;
+        _cache.SetExpire(key, TimeSpan.FromSeconds(expire));
+
+        if (!_cache.ContainsKey(key1))
+            return;
+        _cache.SetExpire(key1, TimeSpan.FromSeconds(expire));
+
+        var accessToken = _cache.Get<JsonWebToken>(key1);
+        RemoveToken(accessToken.AccessToken, expire);
+    }
+
+    /// <summary>
     /// 获取访问令牌
     /// </summary>
     /// <param name="token">访问令牌</param>
@@ -76,6 +97,20 @@ internal sealed class JsonWebTokenStore : IJsonWebTokenStore
         if (!_cache.ContainsKey(GetTokenKey(token)))
             return;
         _cache.Remove(GetTokenKey(token));
+    }
+
+    /// <summary>
+    /// 移除访问令牌
+    /// </summary>
+    /// <param name="token">访问令牌</param>
+    public void RemoveToken(string token, Int32 expire)
+    {
+        var key = GetTokenKey(token);
+
+        if (!_cache.ContainsKey(key))
+            return;
+
+        _cache.SetExpire(key, TimeSpan.FromSeconds(expire));
     }
 
     /// <summary>

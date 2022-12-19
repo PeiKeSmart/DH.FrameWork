@@ -1,5 +1,4 @@
-﻿using DH;
-using DH.Core.Infrastructure;
+﻿using DH.Core.Infrastructure;
 
 using NewLife.Caching;
 
@@ -49,6 +48,21 @@ internal sealed class TokenPayloadStore : ITokenPayloadStore
         if (!_cache.ContainsKey(GetPayloadKey(token)))
             return;
         _cache.Remove(GetPayloadKey(token));
+    }
+
+    /// <summary>
+    /// 延时移除
+    /// </summary>
+    /// <param name="token">令牌</param>
+    /// <param name="expire">延时时间。秒</param>
+    public void Remove(string token, Int32 expire)
+    {
+        var key = GetPayloadKey(token);
+
+        if (!_cache.ContainsKey(key))
+            return;
+
+        _cache.SetExpire(key, TimeSpan.FromSeconds(expire));
     }
 
     /// <summary>
