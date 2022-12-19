@@ -23,7 +23,7 @@ internal sealed class JsonWebTokenStore : IJsonWebTokenStore
     {
         if (UtilSetting.Current.RedisEnabled)
         {
-            _cache = EngineContext.Current.Resolve<FullRedis>();
+            _cache = EngineContext.Current.Resolve<ICache>();
         }
         else
         {

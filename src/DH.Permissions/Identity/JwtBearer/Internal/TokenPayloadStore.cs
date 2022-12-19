@@ -22,7 +22,7 @@ internal sealed class TokenPayloadStore : ITokenPayloadStore
     {
         if (UtilSetting.Current.RedisEnabled)
         {
-            _cache = EngineContext.Current.Resolve<FullRedis>();
+            _cache = EngineContext.Current.Resolve<ICache>();
         }
         else
         {

@@ -70,7 +70,6 @@
 	<PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.25.1" />
 	<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.25.1" />
 	<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.1" />
-	<PackageReference Include="DH.NRedis" Version="1.1.2022.1214-beta00016" />
   </ItemGroup>
 	
   <ItemGroup>
