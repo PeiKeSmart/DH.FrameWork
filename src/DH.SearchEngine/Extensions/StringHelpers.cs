@@ -26,4 +26,33 @@ public static class StringHelpers
         strText = Regex.Replace(strText, "&[^;]+;", "");
         return strText;
     }
+
+    /// <summary>
+    /// 添加多个元素
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="this"></param>
+    /// <param name="values"></param>
+    public static void AddRange<T>(this ICollection<T> @this, IEnumerable<T> values)
+    {
+        foreach (var obj in values)
+        {
+            @this.Add(obj);
+        }
+    }
+
+    /// <summary>
+    /// 移除符合条件的元素
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="this"></param>
+    /// <param name="where"></param>
+    public static void RemoveWhere<T>(this ICollection<T> @this, Func<T, bool> @where)
+    {
+        foreach (var obj in @this.Where(where).ToList())
+        {
+            @this.Remove(obj);
+        }
+    }
+
 }
