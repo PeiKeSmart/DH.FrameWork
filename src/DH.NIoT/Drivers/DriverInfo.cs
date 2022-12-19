@@ -1,6 +1,5 @@
 ﻿using System.Runtime.Serialization;
 using System.Xml.Serialization;
-using NewLife.IoT.ThingModels;
 using NewLife.IoT.ThingSpecification;
 
 namespace NewLife.IoT.Drivers;
@@ -15,9 +14,8 @@ public class DriverInfo
     /// <summary>显示名</summary>
     public String DisplayName { get; set; }
 
-    /// <summary>类型</summary>
-    [XmlIgnore, IgnoreDataMember]
-    public Type Type { get; set; }
+    /// <summary>类型。编程语言等，例如.NET</summary>
+    public String Type { get; set; }
 
     /// <summary>类型名</summary>
     public String ClassName { get; set; }
@@ -37,4 +35,8 @@ public class DriverInfo
     /// <summary>产品物模型。如果设备有固定点位属性、服务和事件，则直接返回，否则返回空</summary>
     public ThingSpec Specification { get; set; }
     #endregion
+
+    /// <summary>友好显示名称</summary>
+    /// <returns></returns>
+    public override String ToString() => !DisplayName.IsNullOrEmpty() ? DisplayName : Name;
 }
