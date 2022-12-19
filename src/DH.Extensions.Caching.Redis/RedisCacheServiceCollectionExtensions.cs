@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.DependencyInjection;
-
 using NewLife.Caching;
 
 namespace NewLife.Extensions.Caching.Redis;
