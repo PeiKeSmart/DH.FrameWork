@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Serialization;
+using Newtonsoft.Json;
 
 namespace SKIT.FlurlHttpClient.Wechat.OpenAI.Utilities
 {
@@ -71,6 +72,13 @@ namespace SKIT.FlurlHttpClient.Wechat.OpenAI.Utilities
            where T : class
         {
             return (T)Deserialize(typeof(T), xml);
+        }
+
+        public static string ConvertFromJson(string json)
+        {
+            XmlDocument xmlDocument = JsonConvert.DeserializeXmlNode(json, "xml")!;
+            string xml = xmlDocument.InnerXml;
+            return xml;
         }
     }
 }
