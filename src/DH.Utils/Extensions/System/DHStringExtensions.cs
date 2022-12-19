@@ -1,4 +1,5 @@
 ﻿using DH;
+using DH.Extension;
 
 using JetBrains.Annotations;
 
@@ -44,23 +45,6 @@ public static partial class DHStringExtensions
         }
 
         return c + str;
-    }
-
-    /// <summary>
-    /// 从字符串的开头获取字符串的子字符串。
-    /// </summary>
-    /// <exception cref="ArgumentNullException">如果<paramref name="str"/>为空，则引发</exception>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="len"/> is bigger that string's length</exception>
-    public static string Left(this string str, int len)
-    {
-        Check.NotNull(str, nameof(str));
-
-        if (str.Length < len)
-        {
-            throw new ArgumentException("len参数不能大于给定字符串的长度！");
-        }
-
-        return str.Substring(0, len);
     }
 
     /// <summary>
@@ -195,23 +179,6 @@ public static partial class DHStringExtensions
         }
 
         return str.Substring(0, pos) + replace + str.Substring(pos + search.Length);
-    }
-
-    /// <summary>
-    /// 从字符串末尾获取字符串的子字符串。
-    /// </summary>
-    /// <exception cref="ArgumentNullException">如果<paramref name="str"/>为空，则引发</exception>
-    /// <exception cref="ArgumentException">如果<paramref name="len"/>大于字符串长度，则引发</exception>
-    public static string Right(this string str, int len)
-    {
-        Check.NotNull(str, nameof(str));
-
-        if (str.Length < len)
-        {
-            throw new ArgumentException("len argument can not be bigger than given string's length!");
-        }
-
-        return str.Substring(str.Length - len, len);
     }
 
     /// <summary>
