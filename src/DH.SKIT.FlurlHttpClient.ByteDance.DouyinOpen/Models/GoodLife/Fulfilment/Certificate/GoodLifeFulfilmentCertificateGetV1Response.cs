@@ -42,7 +42,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen.Models
                             public class SKU
                             {
                                 /// <summary>
-                                /// 获取或设置团购 SKU ID。
+                                /// 获取或设置 SKU ID。
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("sku_id")]
                                 [System.Text.Json.Serialization.JsonPropertyName("sku_id")]
@@ -77,14 +77,14 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen.Models
                                 public long StartTimestamp { get; set; }
 
                                 /// <summary>
-                                /// 获取或设置商家团购账号 ID。
+                                /// 获取或设置商家 ID。
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("account_id")]
                                 [System.Text.Json.Serialization.JsonPropertyName("account_id")]
                                 public string? AccountId { get; set; }
 
                                 /// <summary>
-                                /// 获取或设置商家自定义团购 SKU ID。
+                                /// 获取或设置 SKU 外部 ID。
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("third_sku_id")]
                                 [System.Text.Json.Serialization.JsonPropertyName("third_sku_id")]
