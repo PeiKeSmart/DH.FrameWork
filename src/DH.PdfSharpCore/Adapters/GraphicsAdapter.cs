@@ -1,5 +1,7 @@
 using DH.Adapters;
 using DH.Adapters.Entities;
+using DH.Core.Utils;
+using DH.PdfSharp.Utilities;
 
 using PdfSharpCore.Drawing;
 

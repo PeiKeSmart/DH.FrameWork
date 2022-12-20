@@ -1,4 +1,5 @@
 using DH.Adapters.Entities;
+using DH.Core.Utils;
 
 namespace DH.Adapters;
 
