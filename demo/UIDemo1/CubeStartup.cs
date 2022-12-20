@@ -35,6 +35,14 @@ namespace UIDemo1
         }
 
         /// <summary>
+        /// 注册路由
+        /// </summary>
+        /// <param name="endpoints">路由生成器</param>
+        public void UseDHEndpoints(IEndpointRouteBuilder endpoints)
+        {
+        }
+
+        /// <summary>
         /// 将区域路由写入数据库
         /// </summary>
         public void ConfigureArea()

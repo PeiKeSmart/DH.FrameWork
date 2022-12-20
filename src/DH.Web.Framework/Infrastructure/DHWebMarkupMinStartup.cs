@@ -4,6 +4,7 @@ using DH.Web.Framework.Infrastructure.Extensions;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -42,6 +43,14 @@ public partial class DHWebMarkupMinStartup : IDHStartup
     /// </summary>
     /// <param name="options">虚拟文件配置</param>
     public void ConfigureVirtualFileSystem(DHVirtualFileSystemOptions options)
+    {
+    }
+
+    /// <summary>
+    /// 注册路由
+    /// </summary>
+    /// <param name="endpoints">路由生成器</param>
+    public void UseDHEndpoints(IEndpointRouteBuilder endpoints)
     {
     }
 

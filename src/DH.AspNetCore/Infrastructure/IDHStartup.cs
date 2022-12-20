@@ -2,6 +2,7 @@
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -32,6 +33,12 @@ public partial interface IDHStartup
     /// </summary>
     /// <param name="options">虚拟文件配置</param>
     void ConfigureVirtualFileSystem(DHVirtualFileSystemOptions options);
+
+    /// <summary>
+    /// 注册路由
+    /// </summary>
+    /// <param name="endpoints">路由生成器</param>
+    void UseDHEndpoints(IEndpointRouteBuilder endpoints);
 
     /// <summary>
     /// 将区域路由写入数据库

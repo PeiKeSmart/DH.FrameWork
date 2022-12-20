@@ -436,7 +436,7 @@ namespace DH.Web.Framework.Infrastructure.Extensions
         /// 配置端点路由
         /// </summary>
         /// <param name="application">用于配置应用程序的请求管道的生成器</param>
-        public static void UseDHEndpoints(this IApplicationBuilder application)
+        public static void UseDHEndpoints(this IApplicationBuilder application, ITypeFinder typeFinder)
         {
             // 执行路由中间件选择的端点
             application.UseEndpoints(endpoints =>
@@ -445,6 +445,18 @@ namespace DH.Web.Framework.Infrastructure.Extensions
 
                 // 注册所有路由
                 EngineContext.Current.Resolve<IRoutePublisher>().RegisterRoutes(endpoints);
+
+                var DGConfigure = typeFinder.FindClassesOfType<IDHStartup>();
+                var instances = DGConfigure
+                    .Select(startup => (IDHStartup)Activator.CreateInstance(startup));
+                foreach (var instance in instances)
+                {
+                    if (!instance.GetType().IsAbstract)
+                    {
+                        instance.UseDHEndpoints(endpoints);
+                    }
+                }
+
             });
         }
 

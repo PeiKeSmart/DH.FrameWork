@@ -3,6 +3,7 @@ using DH.VirtualFileSystem;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -43,6 +44,14 @@ public partial class AuthorizationStartup : IDHStartup
     }
 
     /// <summary>
+    /// 注册路由
+    /// </summary>
+    /// <param name="endpoints">路由生成器</param>
+    public void UseDHEndpoints(IEndpointRouteBuilder endpoints)
+    {
+    }
+
+    /// <summary>
     /// 将区域路由写入数据库
     /// </summary>
     public void ConfigureArea()
@@ -69,5 +78,5 @@ public partial class AuthorizationStartup : IDHStartup
     /// <summary>
     /// 获取此启动配置实现的顺序
     /// </summary>
-    public int Order => 600; // 应在端点之前和身份验证之后加载授权
+    public int Order => 700; // 应在端点之前和身份验证之后加载授权
 }

@@ -40,7 +40,14 @@ public partial class DHStartup : IDHStartup
     /// <param name="options">虚拟文件配置</param>
     public void ConfigureVirtualFileSystem(DHVirtualFileSystemOptions options)
     {
+    }
 
+    /// <summary>
+    /// 注册路由
+    /// </summary>
+    /// <param name="endpoints">路由生成器</param>
+    public void UseDHEndpoints(IEndpointRouteBuilder endpoints)
+    {
     }
 
     /// <summary>

@@ -4,6 +4,7 @@ using DH.Web.Framework.Infrastructure.Extensions;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -37,6 +38,14 @@ public partial class DHMvcStartup : IDHStartup
     /// <param name="application">用于配置应用程序的请求管道的生成器</param>
     /// <param name="typeFinder">类型处理器</param>
     public void Configure(IApplicationBuilder application, ITypeFinder typeFinder)
+    {
+    }
+
+    /// <summary>
+    /// 注册路由
+    /// </summary>
+    /// <param name="endpoints">路由生成器</param>
+    public void UseDHEndpoints(IEndpointRouteBuilder endpoints)
     {
     }
 
