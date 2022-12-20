@@ -10,4 +10,8 @@ public class Xmsekect<TModel>
     public TModel value { get; set; }
 
     public bool disabled { get; set; } = false;
+
+    public Boolean selected { get; set; }
+
+    public String mutex { get; set; }
 }
