@@ -1,0 +1,438 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>FytApi.MUI</title>
+    <link href="/fytapiui/element-ui/index.css" rel="stylesheet"/>
+    <link href="/fytapiui/element-ui/api.css" rel="stylesheet"/>
+    <script src="/fytapiui/vue/vue.js"></script>
+    <script src="/fytapiui/element-ui/index.js"></script>
+    <script src="/fytapiui/vue/axios.min.js"></script>
+    <script src="/fytapiui/vue/utils.min.js"></script>
+</head>
+<body>
+<div id="app">
+    <el-container>
+        <el-header>
+            <div class="headmenus">
+                <el-button-group>
+                    <el-button size="mini" icon="el-icon-setting" @click="openSetting">全局设置</el-button>
+                    <el-button size="mini" icon="el-icon-share" @click="openGlobalSetting">全局参数配置</el-button>
+                    <el-button size="mini" icon="el-icon-delete">归档管理</el-button>
+                </el-button-group>
+            </div>
+            <div class="head-tool">
+                暗黑：
+                <el-switch v-model="theme">
+                </el-switch>
+            </div>
+        </el-header>
+        <el-container class="fyt-api-container">
+            <el-aside class="group-wall" width="70px">
+                <div class="btn-bar" v-for="(item,index) in version.list" :key="index"
+                     :class="index==version.index?'active':''" @click="versionBar(item,index)">
+                    <span>{{item.version}}</span>
+                    <div class="group-name">{{item.name}}</div>
+                </div>
+            </el-aside>
+            <el-aside class="api-scale" width="300px">
+                <div class="api-search">
+                    <el-input class="input-search" v-model="menuKey" clearable placeholder="支持中/英文搜索" size="small"
+                              prefix-icon="el-icon-search">
+                    </el-input>
+                    <el-button type="success" icon="el-icon-finished" size="small" circle @click="openMenu"></el-button>
+                </div>
+                <el-menu class="api-menu" default-active="0" :default-openeds="openeds">
+                    <el-submenu v-for="(item,index) in api.menu" :index="index.toString()" :key="index">
+                        <template slot="title">
+                            <i class="el-icon-folder"></i>
+                            <span>{{item.group}} {{item.summary}}</span>
+                        </template>
+                        <el-menu-item v-for="(row,rowIndex) in item.api" :index="index.toString()" :key="rowIndex"
+                                      @click="menuClick(row)">
+                            <span class="method" :class="row.method.toLowerCase()">{{row.method}}</span>
+                            {{row.summary ? row.summary : row.url}}
+                        </el-menu-item>
+                    </el-submenu>
+                </el-menu>
+            </el-aside>
+            <el-container>
+                <el-main class="api-main">
+                    <el-tabs style="display:none;" v-model="editableTabsValue" type="card" closable
+                             @tab-remove="removeTab">
+                        <el-tab-pane v-for="(item, index) in editableTabs" :key="item.name" :label="item.title"
+                                     :name="item.name">
+                            <span slot="label"><span class="method get">GET</span> {{item.title}}</span>
+                        </el-tab-pane>
+                    </el-tabs>
+                    <div class="api-header">
+                        <el-alert :title="api.tips" type="success" :closable="false">
+                        </el-alert>
+                        <div class="api-post-wall">
+                            <div class="api-post-bg">
+                                <el-select class="select" v-model="methodVal" placeholder="请选择" size="medium">
+                                    <el-option v-for="item in methodArr" :key="item.value" :label="item.value"
+                                               :value="item.value">
+                                    </el-option>
+                                </el-select>
+                                <el-input class="input" size="medium" v-model="apiVal" placeholder=""></el-input>
+                            </div>
+                            <el-button type="primary" :disabled="!apiVal?true:false" @click="send">发送请求</el-button>
+                        </div>
+                    </div>
+                    <el-tabs class="api-request" v-model="activeName" @tab-click="tabsClick">
+                        <el-tab-pane name="first">
+                            <span slot="label" v-if="!api.isParam">Params</span>
+                            <span slot="label" v-if="api.isParam">
+            <el-badge is-dot>Params</el-badge>
+        </span>
+                            <el-table :data="paramTable" border size="small" :height="tableHeight+55">
+                                <el-table-column prop="key" width="60" align="center">
+                                    <template slot="header" slot-scope="scope">
+                                        <el-button type="primary" icon="el-icon-plus" circle size="mini"
+                                                   @click="addParams">
+                                        </el-button>
+                                    </template>
+                                    <template slot-scope="scope">
+                                        <el-button type="danger" icon="el-icon-delete" circle size="mini"
+                                                   @click="removeParams(scope.$index)">
+                                        </el-button>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column prop="key" width="50" align="center">
+                                    <template slot-scope="scope">
+                                        <el-checkbox v-model="scope.row.status" size="small" placeholder="Key">
+                                        </el-checkbox>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column prop="type" label="数据类型" width="150">
+                                    <template slot-scope="scope">
+                                        {{scope.row.type}}
+                                    </template>
+                                </el-table-column>
+                                <el-table-column prop="key" label="KEY" width="300">
+                                    <template slot-scope="scope">
+                                        <el-input v-model="scope.row.key" size="small" placeholder="Key">
+                                        </el-input>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column prop="value" label="VALUE">
+                                    <template slot-scope="scope">
+                                        <el-input v-model="scope.row.value" size="small" placeholder="Value">
+                                        </el-input>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column prop="summary" label="描述" width="300">
+                                    <template slot-scope="scope">
+                                        <el-input v-model="scope.row.summary" size="small" placeholder="描述">
+                                        </el-input>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                        </el-tab-pane>
+                        <el-tab-pane label="Authorization" name="second">
+                            <el-table :data="authorizTable" border size="small" :height="tableHeight+55">
+                                <el-table-column prop="key" width="60" align="center">
+                                    <template slot="header" slot-scope="scope">
+                                        <el-button type="primary" icon="el-icon-plus" circle size="mini"
+                                                   @click="addAuthoriz">
+                                        </el-button>
+                                    </template>
+                                    <template slot-scope="scope">
+                                        <el-button type="danger" icon="el-icon-delete" circle size="mini"
+                                                   @click="removeAuthoriz(scope.$index)">
+                                        </el-button>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column prop="key" label="KEY" width="300">
+                                    <template slot-scope="scope">
+                                        <el-input v-model="scope.row.key" size="small" placeholder="Key">
+                                        </el-input>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column prop="value" label="VALUE">
+                                    <template slot-scope="scope">
+                                        <el-input v-model="scope.row.value" size="small" placeholder="Value">
+                                        </el-input>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                        </el-tab-pane>
+                        <el-tab-pane label="Headers" name="third">
+                            <el-table :data="headerTable" border size="small" :height="tableHeight+55">
+                                <el-table-column prop="key" width="60" align="center">
+                                    <template slot="header" slot-scope="scope">
+                                        <el-button type="primary" icon="el-icon-plus" circle size="mini"
+                                                   @click="addHeader">
+                                        </el-button>
+                                    </template>
+                                    <template slot-scope="scope">
+                                        <el-button type="danger" icon="el-icon-delete" circle size="mini"
+                                                   @click="removeHeader(scope.$index)">
+                                        </el-button>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column prop="key" label="KEY" width="300">
+                                    <template slot-scope="scope">
+                                        <el-input v-model="scope.row.key" size="small" placeholder="Key">
+                                        </el-input>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column prop="value" label="VALUE">
+                                    <template slot-scope="scope">
+                                        <el-input v-model="scope.row.value" size="small" placeholder="Value">
+                                        </el-input>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                        </el-tab-pane>
+                        <el-tab-pane name="fourth">
+                            <span slot="label" v-if="!api.isBody">Body</span>
+                            <span slot="label" v-if="api.isBody">
+            <el-badge is-dot>Body</el-badge>
+        </span>
+                            <div class="body-raw">
+                                <el-radio-group v-model="api.radio" size="small">
+                                    <el-radio :label="1">none</el-radio>
+                                    <el-radio :label="2">form-data</el-radio>
+                                    <el-radio :label="3">x-www-form-urlencoded</el-radio>
+                                    <el-radio :label="4">raw</el-radio>
+                                </el-radio-group>
+                                <el-dropdown v-show="api.radio==4" class="raw-select" size="small"
+                                             @command="apiTypeCommand">
+                <span class="el-dropdown-link">
+                    {{api.type}} <i class="el-icon-arrow-down el-icon--right"></i>
+                </span>
+                                    <el-dropdown-menu slot="dropdown">
+                                        <el-dropdown-item command="application/json">
+                                            application/json
+                                        </el-dropdown-item>
+                                        <el-dropdown-item command="application/xml">
+                                            application/xml
+                                        </el-dropdown-item>
+                                        <el-dropdown-item command="application/javascropt">
+                                            application/javascropt
+                                        </el-dropdown-item>
+                                        <el-dropdown-item command="text/plain">text/plain</el-dropdown-item>
+                                        <el-dropdown-item command="text/html">text/html</el-dropdown-item>
+                                    </el-dropdown-menu>
+                                </el-dropdown>
+                            </div>
+                            <div class="body-main">
+                                <el-table v-if="api.radio==2 || api.radio==3" :data="formTable"
+                                          border size="small" :height="tableHeight">
+                                    <el-table-column prop="key" width="60" align="center">
+                                        <template slot="header" slot-scope="scope">
+                                            <el-button type="primary" icon="el-icon-plus" circle size="mini"
+                                                       @click="addForm">
+                                            </el-button>
+                                        </template>
+                                        <template slot-scope="scope">
+                                            <el-button type="danger" icon="el-icon-delete" circle size="mini"
+                                                       @click="removeForm(scope.$index)">
+                                            </el-button>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column prop="key" label="KEY" width="300">
+                                        <template slot-scope="scope">
+                                            <el-input v-model="scope.row.key" size="small" placeholder="Key">
+                                            </el-input>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column prop="value" label="VALUE">
+                                        <template slot-scope="scope">
+                                            <el-input v-model="scope.row.value" size="small" placeholder="Value">
+                                            </el-input>
+                                        </template>
+                                    </el-table-column>
+                                </el-table>
+                                <div v-if="api.radio==4" class="body-json">
+                                    <div class="source">
+                                        <el-input type="textarea" :autosize="{ minRows:10, maxRows: 10}"
+                                                  placeholder="" v-model="api.body">
+                                        </el-input>
+                                    </div>
+                                    <div style="width: 40%;">
+                                        <el-table :data="requestTable" row-key="id" border default-expand-all
+                                                  size="small" :height="tableHeight">
+                                            <el-table-column
+                                                    prop="key"
+                                                    label="字段名"
+                                                    width="200">
+                                            </el-table-column>
+                                            <el-table-column
+                                                    prop="type"
+                                                    label="类型"
+                                                    width="100">
+                                            </el-table-column>
+                                            <el-table-column
+                                                    prop="summary"
+                                                    label="描述">
+                                            </el-table-column>
+                                        </el-table>
+                                    </div>
+                                </div>
+
+                                <p v-if="api.radio==1" class="empty">此方式请求没有正文</p>
+                            </div>
+                        </el-tab-pane>
+                    </el-tabs>
+
+                </el-main>
+                <el-footer>
+                    <el-tabs class="api-request" v-model="activeFooterName">
+                        <el-tab-pane label="Response Body" name="first">
+                            <div class="return-main">
+                                <el-input v-model="response.data" class="textarea-body" type="textarea" placeholder="">
+                                </el-input>
+                                <div class="return-summary">
+                                    <el-table :data="returnTable" row-key="id" border default-expand-all size="small"
+                                              height="100%">
+                                        <el-table-column
+                                                prop="key"
+                                                label="字段名"
+                                                width="200">
+                                        </el-table-column>
+                                        <el-table-column
+                                                prop="type"
+                                                label="类型"
+                                                width="100">
+                                        </el-table-column>
+                                        <el-table-column
+                                                prop="summary"
+                                                label="描述">
+                                        </el-table-column>
+                                    </el-table>
+                                </div>
+                            </div>
+                        </el-tab-pane>
+                        <el-tab-pane label="Headers" name="two" class="response-headers">
+                            <el-descriptions title="响应头" :column="1" size="small" border>
+                                <el-descriptions-item v-for="(val, key, index) in responseHeader" :key="index"
+                                                      :label="key">
+                                    {{val}}
+                                </el-descriptions-item>
+                            </el-descriptions>
+                            <el-descriptions title="请求标头" :column="1" size="small" border>
+                                <el-descriptions-item v-for="(val, key, index) in requestHeader" :key="index"
+                                                      :label="key">{{val}}
+                                </el-descriptions-item>
+                            </el-descriptions>
+                        </el-tab-pane>
+                    </el-tabs>
+                    <div class="response-status" v-if="response.status!=0">
+                        <div>响应码：<span :class="response.status!=200?'red':''">{{response.status}}</span></div>
+                        <div>
+                            <i class="el-icon-time"></i><span>{{response.time}}ms</span>
+                        </div>
+                    </div>
+                </el-footer>
+            </el-container>
+        </el-container>
+    </el-container>
+    <el-dialog
+            title="全局参数设置"
+            :visible.sync="globalDig.visible"
+            width="50%">
+        <el-tabs class="api-request" v-model="globalDig.tabsName">
+            <el-tab-pane label="全局认证" name="first">
+                <el-table :data="globalDig.authoriz"
+                          border size="small" style="width: 100%">
+                    <el-table-column prop="key" width="60" align="center">
+                        <template slot="header" slot-scope="scope">
+                            <el-button type="primary" icon="el-icon-plus" circle size="mini"
+                                       @click="addGlobalAuthoriz">
+                            </el-button>
+                        </template>
+                        <template slot-scope="scope">
+                            <el-button type="danger" icon="el-icon-delete" circle size="mini"
+                                       @click="removeGlobalAuthoriz(scope.$index)">
+                            </el-button>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="key" width="50" align="center">
+                        <template slot-scope="scope">
+                            <el-checkbox v-model="scope.row.status" size="small">
+                            </el-checkbox>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="key" label="KEY" width="200">
+                        <template slot-scope="scope">
+                            <el-input v-model="scope.row.key" size="small" placeholder="Key">
+                            </el-input>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="value" label="VALUE">
+                        <template slot-scope="scope">
+                            <el-input v-model="scope.row.value" size="small" placeholder="Value">
+                            </el-input>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </el-tab-pane>
+            <el-tab-pane label="全局Header" name="two">
+                <el-table :data="globalDig.header"
+                          border size="small" style="width: 100%">
+                    <el-table-column prop="key" width="60" align="center">
+                        <template slot="header" slot-scope="scope">
+                            <el-button type="primary" icon="el-icon-plus" circle size="mini"
+                                       @click="addGlobalHeader">
+                            </el-button>
+                        </template>
+                        <template slot-scope="scope">
+                            <el-button type="danger" icon="el-icon-delete" circle size="mini"
+                                       @click="removeGlobalHeader(scope.$index)">
+                            </el-button>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="key" width="50" align="center">
+                        <template slot-scope="scope">
+                            <el-checkbox v-model="scope.row.status" size="small">
+                            </el-checkbox>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="key" label="KEY" width="200">
+                        <template slot-scope="scope">
+                            <el-input v-model="scope.row.key" size="small" placeholder="Key">
+                            </el-input>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="value" label="VALUE">
+                        <template slot-scope="scope">
+                            <el-input v-model="scope.row.value" size="small" placeholder="Value">
+                            </el-input>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </el-tab-pane>
+        </el-tabs>
+        <span slot="footer" class="dialog-footer">
+        <el-button size="small" @click="globalDig.visible = false">取 消</el-button>
+        <el-button type="primary" size="small" @click="saveGlobalSetting">确 定</el-button>
+    </span>
+    </el-dialog>
+    <el-dialog
+            title="全局设置"
+            :visible.sync="settingDig.visible"
+            width="40%">
+        <el-form :model="settingDig.settingForm" label-width="120px">
+            <el-form-item label="请求地址大小写">
+                <el-switch v-model="settingDig.settingForm.urlChar"></el-switch>
+                <p style="font-size:12px;">默认设置为请求地址为全部小写</p>
+            </el-form-item>
+            <el-form-item label="GET参数设置">
+                <el-switch v-model="settingDig.settingForm.getSelect"></el-switch>
+                <p style="font-size:12px;">默认Params参数复选框为不选中，打开后则选中</p>
+            </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+            <el-button type="primary" size="small" @click="onSettingSubmit">保存</el-button>
+            <el-button size="small" @click="settingDig.visible=false">取消</el-button>
+        </span>
+    </el-dialog>
+</div>
+<script src="/fytapiui/vue/fytapi.js"></script>
+</body>
+</html>
