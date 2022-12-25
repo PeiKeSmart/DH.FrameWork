@@ -1,9 +1,10 @@
-﻿using JiebaNet.Segmenter.Common;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
+using JiebaNet.Segmenter.Common;
 
 namespace JiebaNet.Segmenter.PosSeg
 {
@@ -255,7 +256,7 @@ namespace JiebaNet.Segmenter.PosSeg
                             {
                                 tokens.Add(new Pair(x, "m"));
                             }
-                            else if (RegexEnglishWords.IsMatch(x))
+                            else if(RegexEnglishWords.IsMatch(x))
                             {
                                 tokens.Add(new Pair(x, "eng"));
                             }

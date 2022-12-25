@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace JiebaNet.Segmenter
+﻿namespace JiebaNet.Segmenter
 {
     public class Token
     {

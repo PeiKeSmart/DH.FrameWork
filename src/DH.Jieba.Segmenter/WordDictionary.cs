@@ -1,12 +1,12 @@
-﻿using JiebaNet.Segmenter.Common;
-using Microsoft.Extensions.FileProviders;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
+using JiebaNet.Segmenter.Common;
+using Microsoft.Extensions.FileProviders;
+using System.Reflection;
 
 namespace JiebaNet.Segmenter
 {
@@ -42,7 +42,7 @@ namespace JiebaNet.Segmenter
                 var stopWatch = new Stopwatch();
                 stopWatch.Start();
                 var filePath = ConfigManager.MainDictFile;
-                var provider = new EmbeddedFileProvider(GetType().GetTypeInfo().Assembly, "JiebaNet.Segmenter");
+                var provider = new EmbeddedFileProvider(GetType().GetTypeInfo().Assembly);
                 var fileInfo = provider.GetFileInfo(filePath);
                 using (var sr = new StreamReader(fileInfo.CreateReadStream(), Encoding.UTF8))
                 {

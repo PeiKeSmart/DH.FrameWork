@@ -1,37 +1,78 @@
-﻿using JiebaNet.Segmenter;
+﻿using System;
 using Lucene.Net.Analysis.TokenAttributes;
-using System;
-using System.Collections.Generic;
+using Lucene.Net.Analysis;
+using JiebaNet.Segmenter;
 using System.IO;
-
-namespace Lucene.Net.Analysis.JieBa
+using System.Collections.Generic;
+using System.Reflection;
+using JiebaNet.Segmenter.Common;
+using System.Text.RegularExpressions;
+using Token = JiebaNet.Segmenter.Token;
+namespace jieba.NET
 {
     public class JieBaTokenizer : Tokenizer
     {
-        private List<JiebaNet.Segmenter.Token> _WordList = new List<JiebaNet.Segmenter.Token>();
-        private String _InputText;
-        private ICharTermAttribute termAtt;
-        private IOffsetAttribute offsetAtt;
-        private IPositionIncrementAttribute posIncrAtt;
-        private ITypeAttribute typeAtt;
-        private JiebaSegmenter segmenter;
-        private IEnumerator<JiebaNet.Segmenter.Token> iter;
-        private Int32 start;
-        private TokenizerMode mode;
+        private string _inputText;
+        private readonly string _dictPath = "Resources/dict.txt";
 
-        public JieBaTokenizer(TextReader input, TokenizerMode Mode) : base(AttributeFactory.DEFAULT_ATTRIBUTE_FACTORY, input)
+        private readonly JiebaSegmenter _segmenter;
+        private TokenizerMode _mode;
+        private ICharTermAttribute _termAtt;
+        private IOffsetAttribute _offsetAtt;
+        //private IPositionIncrementAttribute _posIncrAtt;
+        private ITypeAttribute _typeAtt;
+        private readonly List<Token> _wordList = new List<Token>();
+
+        private IEnumerator<Token> _iter;
+
+        public List<string> StopWords { get; } = new List<string>();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="Mode"></param>
+        /// <param name="defaultUserDict">致敬习大大用</param>
+        public JieBaTokenizer(TextReader input, TokenizerMode Mode, bool defaultUserDict = false)
+            : base(AttributeFactory.DEFAULT_ATTRIBUTE_FACTORY, input)
         {
-            segmenter = new JiebaSegmenter();
-            mode = Mode;
+
+            _segmenter = new JiebaSegmenter();
+            _mode = Mode;
+            if (defaultUserDict)
+            {
+                _segmenter.LoadUserDictForEmbedded(Assembly.GetCallingAssembly(), _dictPath);
+            }
+
+            if (!string.IsNullOrEmpty(Settings.IgnoreDictFile))
+            {
+                var list = FileExtension.ReadAllLines(Settings.IgnoreDictFile);
+                foreach (var item in list)
+                {
+                    if (string.IsNullOrEmpty(item))
+                        continue;
+                    if (StopWords.Contains(item))
+                        continue;
+                    StopWords.Add(item);
+                }
+            }
+
+            if (!string.IsNullOrEmpty(Settings.UserDictFile))
+            {
+                _segmenter.LoadUserDict(Settings.UserDictFile);
+            }
+
             Init();
         }
 
+        #region private func
         private void Init()
         {
-            termAtt = AddAttribute<ICharTermAttribute>();
-            offsetAtt = AddAttribute<IOffsetAttribute>();
-            posIncrAtt = AddAttribute<IPositionIncrementAttribute>();
-            typeAtt = AddAttribute<ITypeAttribute>();
+            _termAtt = AddAttribute<ICharTermAttribute>();
+            _offsetAtt = AddAttribute<IOffsetAttribute>();
+            //_posIncrAtt = AddAttribute<IPositionIncrementAttribute>();
+            _typeAtt = AddAttribute<ITypeAttribute>();
+            AddAttribute<IPositionIncrementAttribute>();
         }
 
         private string ReadToEnd(TextReader input)
@@ -39,49 +80,70 @@ namespace Lucene.Net.Analysis.JieBa
             return input.ReadToEnd();
         }
 
+
+        private Lucene.Net.Analysis.Token Next()
+        {
+            var res = _iter.MoveNext();
+            if (res)
+            {
+                var word = _iter.Current;
+                var token = new Lucene.Net.Analysis.Token(word.Word, word.StartIndex, word.EndIndex);
+                if (Settings.Log)
+                {
+                    //chinese char
+                    var zh = new Regex(@"[\u4e00-\u9fa5]|[^\x00-\xff]");
+                    var offset = zh.Matches(word.Word).Count;
+                    var len = 10;
+                    offset = offset > len ? 0 : offset;
+                    Console.WriteLine($"==分词：{ word.Word.PadRight(len - offset, '=') }==起始位置：{ word.StartIndex.ToString().PadLeft(3, '=') }==结束位置{ word.EndIndex.ToString().PadLeft(3, '=') }");
+                }
+                return token;
+            }
+            return null;
+        }
+        #endregion
+
         public sealed override bool IncrementToken()
         {
             ClearAttributes();
-            Token token = Next();
-            if (token != null)
+
+            var word = Next();
+            if (word != null)
             {
-                string s = token.ToString();
-                termAtt.SetEmpty().Append(s);
-                offsetAtt.SetOffset(CorrectOffset(token.StartOffset), CorrectOffset(token.EndOffset));
-                typeAtt.Type = token.Type;
+                var buffer = word.ToString();
+                _termAtt.SetEmpty().Append(buffer);
+                _offsetAtt.SetOffset(CorrectOffset(word.StartOffset), CorrectOffset(word.EndOffset));
+                _typeAtt.Type = word.Type;
                 return true;
             }
+
             End();
             Dispose();
             return false;
         }
 
-        public Token Next()
-        {
-            int num = 0;
-            if (iter.MoveNext())
-            {
-                JiebaNet.Segmenter.Token token = iter.Current;
-                Token result = new Token(token.Word, token.StartIndex, token.EndIndex);
-                start += num;
-                return result;
-            }
-            return null;
-        }
 
         public override void Reset()
         {
             base.Reset();
-            _InputText = ReadToEnd(m_input);
-            IEnumerable<JiebaNet.Segmenter.Token> enumerable = segmenter.Tokenize(_InputText, mode, true);
-            _WordList.Clear();
-            foreach (JiebaNet.Segmenter.Token item in enumerable)
-            {
-                _WordList.Add(item);
-            }
-            start = 0;
-            iter = _WordList.GetEnumerator();
+
+            _inputText = ReadToEnd(base.m_input);
+            RemoveStopWords(_segmenter.Tokenize(_inputText, _mode));
+
+            _iter = _wordList.GetEnumerator();
         }
 
+        private void RemoveStopWords(IEnumerable<Token> words)
+        {
+            _wordList.Clear();
+
+            foreach (var x in words)
+            {
+                if (!StopWords.Contains(x.Word))
+                {
+                    _wordList.Add(x);
+                }
+            }
+        }
     }
 }

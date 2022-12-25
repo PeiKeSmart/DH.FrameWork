@@ -9,7 +9,7 @@
 	<RootNamespace>JiebaNet.Analyser</RootNamespace>
 	<AssemblyName>DH.JieBa.Analyser</AssemblyName>
 	<AssemblyTitle>jieba分析类</AssemblyTitle>
-	<Description>DH框架的基于JiebaNet的分析类。参考JiebaNet.Analyser</Description>
+	<Description>DH框架的基于JiebaNet的分析类。参考https://github.com/shshshdy/JIEba-netcore</Description>
 	<Company>湖北登灏科技有限公司</Company>
 	<Copyright>©2020-2022 湖北登灏科技有限公司</Copyright>
 	
@@ -55,7 +55,15 @@
   </PropertyGroup>
 	
   <ItemGroup>
+    <None Remove="Resources\*.*" />
+  </ItemGroup>
+	
+  <ItemGroup>
 	<Content Include="..\..\Doc\DH.png" Link="DH.png" PackagePath="\" />
+  </ItemGroup>
+	
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\*.*" />
   </ItemGroup>
 
   <ItemGroup>

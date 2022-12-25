@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -36,7 +37,7 @@ namespace JiebaNet.Segmenter.Common
             return (enumerable != null) && enumerable.Any();
         }
 
-        public static TValue GetValueOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> d, TKey key)
+        public static TValue DHGetValueOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> d, TKey key)
         {
             return d.ContainsKey(key) ? d[key] : default(TValue);
         }
@@ -92,7 +93,7 @@ namespace JiebaNet.Segmenter.Common
         {
             return RegexDigits.IsMatch(s);
         }
-
+        
         public static string[] SplitLines(this string s)
         {
             return RegexNewline.Split(s);

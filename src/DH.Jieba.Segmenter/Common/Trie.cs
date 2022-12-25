@@ -15,7 +15,7 @@ namespace JiebaNet.Segmenter.Common
         {
             Char = ch;
             Frequency = 0;
-
+            
             // TODO: or an empty dict?
             //Children = null;
         }

@@ -1,8 +1,8 @@
-﻿using JiebaNet.Segmenter.Common;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using JiebaNet.Segmenter.Common;
+using Newtonsoft.Json;
 
 namespace JiebaNet.Segmenter.PosSeg
 {
@@ -55,7 +55,7 @@ namespace JiebaNet.Segmenter.PosSeg
             {
                 tokens.Add(new Pair(sentence.Substring(next), posList[next].Split('-')[1]));
             }
-
+            
             return tokens;
         }
 
@@ -144,13 +144,13 @@ namespace JiebaNet.Segmenter.PosSeg
             }
 
             var vLast = v.Last();
-            var last = memPath.Last().Keys.Select(y => new { State = y, Prob = vLast[y] });
+            var last = memPath.Last().Keys.Select(y => new {State = y, Prob = vLast[y]});
             var endProb = double.MinValue;
             var endState = string.Empty;
             foreach (var endPoint in last)
             {
                 // TODO: compare two very small values;
-                if (endProb < endPoint.Prob ||
+                if (endProb < endPoint.Prob || 
                     (endProb == endPoint.Prob && String.Compare(endState, endPoint.State, StringComparison.CurrentCultureIgnoreCase) < 0))
                 {
                     endProb = endPoint.Prob;
@@ -161,7 +161,7 @@ namespace JiebaNet.Segmenter.PosSeg
             var route = new string[sentence.Length];
             var n = sentence.Length - 1;
             var curState = endState;
-            while (n >= 0)
+            while(n >= 0)
             {
                 route[n] = curState;
                 curState = memPath[n][curState];

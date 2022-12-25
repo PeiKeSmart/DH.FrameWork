@@ -1,8 +1,8 @@
-﻿using JiebaNet.Segmenter;
-using JiebaNet.Segmenter.Common;
-using JiebaNet.Segmenter.PosSeg;
 using System.Collections.Generic;
 using System.Linq;
+using JiebaNet.Segmenter;
+using JiebaNet.Segmenter.Common;
+using JiebaNet.Segmenter.PosSeg;
 
 namespace JiebaNet.Analyser
 {
@@ -18,9 +18,9 @@ namespace JiebaNet.Analyser
 
         public int Span { get; set; }
 
-        public bool PairFilter(IEnumerable<string> allowPos, Pair wp)
+        public bool PairFilter(Pair wp)
         {
-            return allowPos.Contains(wp.Flag)
+            return DefaultPosFilter.Contains(wp.Flag)
                    && wp.Word.Trim().Length >= 2
                    && !StopWords.Contains(wp.Word.ToLower());
         }
@@ -51,8 +51,7 @@ namespace JiebaNet.Analyser
             if (count <= 0) { count = 20; }
             return rank.OrderByDescending(p => p.Value).Select(p => new WordWeightPair()
             {
-                Word = p.Key,
-                Weight = p.Value
+                Word = p.Key, Weight = p.Value
             }).Take(count);
         }
 
@@ -72,7 +71,7 @@ namespace JiebaNet.Analyser
             for (var i = 0; i < words.Count(); i++)
             {
                 var wp = words[i];
-                if (PairFilter(allowPos, wp))
+                if (PairFilter(wp))
                 {
                     for (var j = i + 1; j < i + Span; j++)
                     {
@@ -80,7 +79,7 @@ namespace JiebaNet.Analyser
                         {
                             break;
                         }
-                        if (!PairFilter(allowPos, words[j]))
+                        if (!PairFilter(words[j]))
                         {
                             continue;
                         }

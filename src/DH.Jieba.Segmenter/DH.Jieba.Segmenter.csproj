@@ -9,7 +9,7 @@
 	<RootNamespace>JiebaNet.Segmenter</RootNamespace>
 	<AssemblyName>DH.Jieba.Segmenter</AssemblyName>
 	<AssemblyTitle>JiebaNet分词类</AssemblyTitle>
-	<Description>DH框架基于JiebaNet的分词类。参考JiebaNet.Segmenter</Description>
+	<Description>DH框架基于JiebaNet的分词类。参考https://github.com/shshshdy/JIEba-netcore</Description>
 	<Company>湖北登灏科技有限公司</Company>
 	<Copyright>©2020-2022 湖北登灏科技有限公司</Copyright>
 	

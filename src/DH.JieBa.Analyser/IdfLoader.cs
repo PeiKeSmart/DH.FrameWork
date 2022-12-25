@@ -1,6 +1,8 @@
-﻿using JiebaNet.Segmenter.Common;
+using JiebaNet.Segmenter.Common;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace JiebaNet.Analyser

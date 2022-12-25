@@ -1,10 +1,11 @@
-﻿using JiebaNet.Segmenter.Common;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
+using JiebaNet.Segmenter.Common;
+using Newtonsoft.Json;
 
 namespace JiebaNet.Segmenter.FinalSeg
 {
@@ -14,7 +15,7 @@ namespace JiebaNet.Segmenter.FinalSeg
         private static readonly char[] States = { 'B', 'M', 'E', 'S' };
 
         private static readonly Regex RegexChinese = new Regex(@"([\u4E00-\u9FD5]+)", RegexOptions.Compiled);
-        private static readonly Regex RegexSkip = new Regex(@"([a-zA-Z0-9]+(?:\.\d+)?%?)", RegexOptions.Compiled);
+        private static readonly Regex RegexSkip = new Regex(@"(\d+\.\d+|[a-zA-Z0-9]+)", RegexOptions.Compiled);
 
         private static IDictionary<char, IDictionary<char, double>> _emitProbs;
         private static IDictionary<char, double> _startProbs;
