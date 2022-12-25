@@ -1,22 +1,22 @@
 <Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
   <Import Project="../../version.props" />
-
+	
   <PropertyGroup>
 	<LangVersion>latest</LangVersion>
-	<OutputType>Library</OutputType>
-	<TargetFramework>net7.0</TargetFramework>
-	<ImplicitUsings>enable</ImplicitUsings>
-	<RootNamespace>DH.Clay</RootNamespace>
-	<AssemblyName>DH.Clay</AssemblyName>
-	<AssemblyTitle>动态C#类型库</AssemblyTitle>
-	<Description>DH框架服务库的一种动态C#类型，它将使您能够像在JavaScript或其他动态语言中一样轻松地雕刻任何形状的对象。参考自https://github.com/bleroy/clay</Description>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+	<RootNamespace>DH.FileZilla.Api</RootNamespace>
+	<AssemblyName>DH.FileZilla.Api</AssemblyName>
+	<AssemblyTitle>ileZilla FTP 服务器的托管 API库</AssemblyTitle>
+	<Description>DH框架的ileZilla FTP 服务器的托管 API。参考https://github.com/PolarbearDK/Miracle.FileZilla.Api</Description>
 	<Company>湖北登灏科技有限公司</Company>
 	<Copyright>©2020-2022 湖北登灏科技有限公司</Copyright>
-
+	
 	<OutputPath>..\Bin</OutputPath>
 	<DocumentationFile>$(OutputPath)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
 	<GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
-
+	  
 	<!--将此参数设置为true，以获取从NuGet缓存复制到项目输出的dll。
      如果您的插件具有nuget包，则需要将此参数设置为true
      确保从NuGet缓存复制的dll到项目的输出-->
@@ -27,7 +27,7 @@
 	<!--禁止生成launchSettings.json-->
 	<NoDefaultLaunchSettingsFile>True</NoDefaultLaunchSettingsFile>
   </PropertyGroup>
-
+	
   <PropertyGroup>
 	<IsPackable>true</IsPackable>
 	<PackageId>$(AssemblyName)</PackageId>
@@ -37,7 +37,7 @@
 	<RepositoryUrl>https://gitee.com/chuangchu/DH.FrameWork</RepositoryUrl>
 	<RepositoryType>Git</RepositoryType>
 	<PackageTags>湖北登灏科技有限公司;DH组件;DH;$(AssemblyName)</PackageTags>
-	<PackageReleaseNotes>DH框架服务库的一种动态C#类型，它将使您能够像在JavaScript或其他动态语言中一样轻松地雕刻任何形状的对象。</PackageReleaseNotes>
+	<PackageReleaseNotes>DH框架的ileZilla FTP 服务器的托管 API。</PackageReleaseNotes>
 	<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 	<PublishRepositoryUrl>true</PublishRepositoryUrl>
 	<EmbedUntrackedSources>true</EmbedUntrackedSources>
@@ -46,21 +46,19 @@
 	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-
+	
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
 	<DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
 	<DebugType>full</DebugType>
 	<Optimize>false</Optimize>
 	<WarningLevel>3</WarningLevel>
   </PropertyGroup>
-
+	
   <ItemGroup>
 	<Content Include="..\..\Doc\DH.png" Link="DH.png" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup>
-	<PackageReference Include="Castle.Core" Version="5.1.0" />
-	<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
 	<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
 		<PrivateAssets>all</PrivateAssets>
 		<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
