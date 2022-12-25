@@ -3,7 +3,6 @@
 using JiebaNet.Segmenter;
 
 using Lucene.Net.Analysis;
-using Lucene.Net.Analysis.JieBa;
 using Lucene.Net.Store;
 
 using Microsoft.Extensions.DependencyInjection;
