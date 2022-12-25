@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 
-namespace DH.Api.MUI.Extensions;
+namespace DH.Api.MUI;
 
 public static class DHApiUIExtension
 {

@@ -25,6 +25,9 @@
 	<AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
 	<!--如果为 true，则在发布项目时编译并发出 Razor 程序集-->
     <RazorCompileOnPublish>false</RazorCompileOnPublish>
+	  
+	<NoWarn>$(NoWarn);1591</NoWarn>
+	<GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 	
   <ItemGroup>
