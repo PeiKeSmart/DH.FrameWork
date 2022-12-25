@@ -22,11 +22,15 @@ public class ModbusParameter : IDriverParameter
     [Description("网络超时。发起请求后等待响应的超时时间，默认3000ms")]
     public Int32 Timeout { get; set; } = 3000;
 
+    /// <summary>批间隔。两个点位地址小于等于该值时凑为一批，默认1</summary>
+    [Description("批间隔。两个点位地址小于等于该值时凑为一批，默认1")]
+    public Int32 BatchStep { get; set; } = 1;
+
     /// <summary>批大小。凑批请求时，每批最多点位个数</summary>
     [Description("批大小。凑批请求时，每批最多点位个数")]
     public Int32 BatchSize { get; set; }
 
-    /// <summary>延迟。相邻请求之间的延迟时间，单位毫秒</summary>
-    [Description("延迟。相邻请求之间的延迟时间，单位毫秒")]
-    public Int32 Delay { get; set; }
+    /// <summary>批延迟。相邻请求之间的延迟时间，单位毫秒</summary>
+    [Description("批延迟。相邻请求之间的延迟时间，单位毫秒")]
+    public Int32 BatchDelay { get; set; }
 }
