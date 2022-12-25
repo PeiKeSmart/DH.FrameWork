@@ -1,4 +1,5 @@
 ﻿using DH.SearchEngine.Interfaces;
+using DH.SearchEngine.JiebaAnalyzer;
 
 using JiebaNet.Segmenter;
 
