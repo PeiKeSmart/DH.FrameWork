@@ -1,4 +1,31 @@
+using DH;
 using DH.Api.MUI;
+using DH.Core.Domain;
+using DH.Entity;
+
+using DH.Web.Framework;
+
+using NewLife.Log;
+
+var set = DHSetting.Current;
+if (set.Debug)
+{
+    XTrace.UseConsole();
+}
+
+if (!set.IsInstalled)
+{
+    set.IsInstalled = true;
+
+    Setting.SaveSetting(new StoreInformationSettings
+    {
+        DefaultStoreTheme = "DefaultClean",
+    });
+
+    set.Save();
+}
+
+DHSetting.Current.IsApiItem = true;
 
 var builder = WebApplication.CreateBuilder(args);
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -24,6 +51,9 @@ builder.Services.AddSwaggerGen(options =>
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "DHApiMUIDemo.xml"), true);
 });
 
+// 使用基类
+builder.AddCube(builder.Configuration, builder.Environment);
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -44,6 +74,9 @@ app.UseStaticFiles();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// 使用基类
+app.UseCube(builder.Configuration, builder.Environment);
 
 
 app.Run();

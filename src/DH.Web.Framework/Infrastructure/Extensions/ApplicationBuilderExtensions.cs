@@ -235,19 +235,24 @@ namespace DH.Web.Framework.Infrastructure.Extensions
             var fileProvider = EngineContext.Current.Resolve<IDHFileProvider>();
             var webHostEnvironment = EngineContext.Current.Resolve<IWebHostEnvironment>();
 
-            application.UseWebOptimizer(webHostEnvironment, new[]
+            var list = new List<FileProviderOptions>();
+
+            list.Add(new FileProviderOptions
             {
-                new FileProviderOptions
-                {
-                    RequestPath =  new PathString("/Plugins"),
-                    FileProvider = new PhysicalFileProvider(fileProvider.MapPath(@"Plugins"))
-                },
-                new FileProviderOptions
-                {
-                    RequestPath =  new PathString("/Themes"),
-                    FileProvider = new PhysicalFileProvider(fileProvider.MapPath(@"Themes"))
-                }
+                RequestPath = new PathString("/Plugins"),
+                FileProvider = new PhysicalFileProvider(fileProvider.MapPath(@"Plugins"))
             });
+
+            if (!DHSetting.Current.IsApiItem)
+            {
+                list.Add(new FileProviderOptions
+                {
+                    RequestPath = new PathString("/Themes"),
+                    FileProvider = new PhysicalFileProvider(fileProvider.MapPath(@"Themes"))
+                });
+            }
+
+            application.UseWebOptimizer(webHostEnvironment, list.ToArray());
         }
 
         /// <summary>
@@ -266,32 +271,38 @@ namespace DH.Web.Framework.Infrastructure.Extensions
             }
 
             // 如果站点地图，则添加处理
-            application.UseStaticFiles(new StaticFileOptions
+            if (!DHSetting.Current.IsApiItem)
             {
-                FileProvider = new PhysicalFileProvider(fileProvider.GetAbsolutePath(DHSeoDefaults.SitemapXmlDirectory)),
-                RequestPath = new PathString($"/{DHSeoDefaults.SitemapXmlDirectory}"),
-                OnPrepareResponse = context =>
+                application.UseStaticFiles(new StaticFileOptions
                 {
-                    if (!DHSetting.Current.IsInstalled ||
-                        !EngineContext.Current.Resolve<SitemapXmlSettings>().SitemapXmlEnabled)
+                    FileProvider = new PhysicalFileProvider(fileProvider.GetAbsolutePath(DHSeoDefaults.SitemapXmlDirectory)),
+                    RequestPath = new PathString($"/{DHSeoDefaults.SitemapXmlDirectory}"),
+                    OnPrepareResponse = context =>
                     {
-                        context.Context.Response.StatusCode = StatusCodes.Status403Forbidden;
-                        context.Context.Response.ContentLength = 0;
-                        context.Context.Response.Body = Stream.Null;
+                        if (!DHSetting.Current.IsInstalled ||
+                            !EngineContext.Current.Resolve<SitemapXmlSettings>().SitemapXmlEnabled)
+                        {
+                            context.Context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                            context.Context.Response.ContentLength = 0;
+                            context.Context.Response.Body = Stream.Null;
+                        }
                     }
-                }
-            });
+                });
+            }
 
             // 通用静态文件
             application.UseStaticFiles(new StaticFileOptions { OnPrepareResponse = staticFileResponse });
 
             // 主题静态文件
-            application.UseStaticFiles(new StaticFileOptions
+            if (!DHSetting.Current.IsApiItem)
             {
-                FileProvider = new PhysicalFileProvider(fileProvider.MapPath(@"Themes")),
-                RequestPath = new PathString("/Themes"),
-                OnPrepareResponse = staticFileResponse
-            });
+                application.UseStaticFiles(new StaticFileOptions
+                {
+                    FileProvider = new PhysicalFileProvider(fileProvider.MapPath(@"Themes")),
+                    RequestPath = new PathString("/Themes"),
+                    OnPrepareResponse = staticFileResponse
+                });
+            }
 
             // 插件静态文件
             var staticFileOptions = new StaticFileOptions
@@ -320,40 +331,44 @@ namespace DH.Web.Framework.Infrastructure.Extensions
 
             application.UseStaticFiles(staticFileOptions);
 
-            // 添加对备份的支持
-            var provider = new FileExtensionContentTypeProvider
-            {
-                Mappings = { [".bak"] = MimeTypes.ApplicationOctetStream }
-            };
+            var provider = new FileExtensionContentTypeProvider();
 
-            application.UseStaticFiles(new StaticFileOptions
+            // 添加对备份的支持
+            if (!DHSetting.Current.IsApiItem)
             {
-                FileProvider = new PhysicalFileProvider(fileProvider.GetAbsolutePath(DHCommonDefaults.DbBackupsPath)),
-                RequestPath = new PathString("/db_backups"),
-                ContentTypeProvider = provider,
-                OnPrepareResponse = context =>
+                provider.Mappings[".bak"] = MimeTypes.ApplicationOctetStream;
+
+                application.UseStaticFiles(new StaticFileOptions
                 {
-                    if (!DHSetting.Current.IsInstalled ||
-                        !UserDetail.IsSuperAdmin())
+                    FileProvider = new PhysicalFileProvider(fileProvider.GetAbsolutePath(DHCommonDefaults.DbBackupsPath)),
+                    RequestPath = new PathString("/db_backups"),
+                    ContentTypeProvider = provider,
+                    OnPrepareResponse = context =>
                     {
-                        context.Context.Response.StatusCode = StatusCodes.Status404NotFound;
-                        context.Context.Response.ContentLength = 0;
-                        context.Context.Response.Body = Stream.Null;
+                        if (!DHSetting.Current.IsInstalled ||
+                            !UserDetail.IsSuperAdmin())
+                        {
+                            context.Context.Response.StatusCode = StatusCodes.Status404NotFound;
+                            context.Context.Response.ContentLength = 0;
+                            context.Context.Response.Body = Stream.Null;
+                        }
                     }
-                }
-            });
+                });
+            }
 
             // 添加对webmanifest文件的支持
-            provider.Mappings[".webmanifest"] = MimeTypes.ApplicationManifestJson;
-
-            application.UseStaticFiles(new StaticFileOptions
+            if (!DHSetting.Current.IsApiItem)
             {
-                FileProvider = new PhysicalFileProvider(fileProvider.GetAbsolutePath("icons")),
-                RequestPath = "/icons",
-                ContentTypeProvider = provider
-            });
+                provider.Mappings[".webmanifest"] = MimeTypes.ApplicationManifestJson;
+                application.UseStaticFiles(new StaticFileOptions
+                {
+                    FileProvider = new PhysicalFileProvider(fileProvider.GetAbsolutePath("icons")),
+                    RequestPath = "/icons",
+                    ContentTypeProvider = provider
+                });
+            }
 
-            if (DHSetting.Current.IsInstalled)
+            if (!DHSetting.Current.IsApiItem && DHSetting.Current.IsInstalled)
             {
                 application.UseStaticFiles(new StaticFileOptions
                 {

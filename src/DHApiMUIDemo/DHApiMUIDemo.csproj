@@ -19,4 +19,8 @@
     <ProjectReference Include="..\DH.Web.Framework\DH.Web.Framework.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
 </Project>
