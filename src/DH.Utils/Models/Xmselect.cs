@@ -3,7 +3,7 @@
 /// <summary>
 /// 下拉选项
 /// </summary>
-public class Xmsekect<TModel>
+public class Xmselect<TModel>
 {
     public string name { get; set; }
 

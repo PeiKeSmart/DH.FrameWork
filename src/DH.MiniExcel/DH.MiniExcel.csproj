@@ -63,7 +63,7 @@
 		<PrivateAssets>all</PrivateAssets>
 		<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	</PackageReference>
-	<PackageReference Include="MiniExcel" Version="1.29.0" />
+	<PackageReference Include="MiniExcel" Version="1.30.0" />
   </ItemGroup>
 
 </Project>
