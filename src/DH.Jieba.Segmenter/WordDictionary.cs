@@ -7,6 +7,8 @@ using System.Text;
 using JiebaNet.Segmenter.Common;
 using Microsoft.Extensions.FileProviders;
 using System.Reflection;
+using NewLife.Log;
+using NewLife.Serialization;
 
 namespace JiebaNet.Segmenter
 {
@@ -41,9 +43,11 @@ namespace JiebaNet.Segmenter
             {
                 var stopWatch = new Stopwatch();
                 stopWatch.Start();
+
                 var filePath = ConfigManager.MainDictFile;
-                var provider = new EmbeddedFileProvider(GetType().GetTypeInfo().Assembly);
+                var provider = new EmbeddedFileProvider(GetType().GetTypeInfo().Assembly, "JiebaNet.Segmenter");
                 var fileInfo = provider.GetFileInfo(filePath);
+
                 using (var sr = new StreamReader(fileInfo.CreateReadStream(), Encoding.UTF8))
                 {
                     string line = null;
