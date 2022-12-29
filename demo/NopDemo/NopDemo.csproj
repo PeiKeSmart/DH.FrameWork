@@ -17,6 +17,7 @@
     <Copyright>版权所有 © 湖北登灏科技有限公司 2020-2022</Copyright>
 	<Version>1.0.0.0</Version>
 	<OutputPath>..\..\BinWeb</OutputPath>
+	  
 	<!--从. net 6 SDK,[Appname].runtimesettings.dev.json文件不再是在编译时生成的默认。如果你仍然想要这个文件生成,设置GenerateRuntimeConfigDevFile属性为true。-->
     <GenerateRuntimeConfigDevFile>true</GenerateRuntimeConfigDevFile>
 	<!--这个参数设置为true的dll从NuGet复制缓存的输出您的项目-->
@@ -25,6 +26,8 @@
 	<AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
 	<!--如果为 true，则在发布项目时编译并发出 Razor 程序集-->
     <RazorCompileOnPublish>false</RazorCompileOnPublish>
+	<!--不打包模板文件-->
+    <RazorCompileOnBuild>false</RazorCompileOnBuild>
 	  
 	<NoWarn>$(NoWarn);1591</NoWarn>
 	<GenerateDocumentationFile>true</GenerateDocumentationFile>
