@@ -27,8 +27,8 @@ internal sealed class JsonWebTokenValidator : IJsonWebTokenValidator
         var jwtArray = encodeJwt.Split('.');
         if (jwtArray.Length < 3)
             return false;
-        var header = JsonHelper.ToObject<Dictionary<string, string>>(Base64UrlEncoder.Decode(jwtArray[0]));
-        var payload = JsonHelper.ToObject<Dictionary<string, string>>(Base64UrlEncoder.Decode(jwtArray[1]));
+        var header = DHJsonHelper.ToObject<Dictionary<string, string>>(Base64UrlEncoder.Decode(jwtArray[0]));
+        var payload = DHJsonHelper.ToObject<Dictionary<string, string>>(Base64UrlEncoder.Decode(jwtArray[1]));
 
         // 首先验证签名是否正确
         var hs256 = new HMACSHA256(Encoding.UTF8.GetBytes(options.Secret));

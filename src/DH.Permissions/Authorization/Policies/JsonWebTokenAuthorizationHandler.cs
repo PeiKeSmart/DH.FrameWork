@@ -170,7 +170,7 @@ public class JsonWebTokenAuthorizationHandler : AuthorizationHandler<JsonWebToke
         var jwtArray = encodeJwt.Split('.');
         if (jwtArray.Length < 3)
             throw new ArgumentException($"非有效Jwt令牌");
-        var payload = JsonHelper.ToObject<Dictionary<string, string>>(Base64UrlEncoder.Decode(jwtArray[1]));
+        var payload = DHJsonHelper.ToObject<Dictionary<string, string>>(Base64UrlEncoder.Decode(jwtArray[1]));
         return payload;
     }
 }

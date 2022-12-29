@@ -1,10 +1,10 @@
 ﻿using DH.Core.Events;
 using DH.Core.Infrastructure;
+using DH.Core.Membership;
 using DH.Core.Model.EventModel;
 using DH.Entity;
 using DH.Model;
 using DH.Web.Framework.Admin;
-using DH.Web.Framework.Membership;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;

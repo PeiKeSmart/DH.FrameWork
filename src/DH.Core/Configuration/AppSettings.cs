@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using DH.Exceptions;
+
+using Newtonsoft.Json.Linq;
 
 using System.Text.Json.Serialization;
 

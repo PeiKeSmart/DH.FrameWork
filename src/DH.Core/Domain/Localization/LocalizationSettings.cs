@@ -7,6 +7,15 @@ namespace DH.Core.Domain.Localization
     /// </summary>
     public partial class LocalizationSettings : ISettings
     {
+        /// <summary>是否启用</summary>
+        public Boolean IsEnable { get; set; } = true;
+
+        /// <summary>默认语言翻译</summary>
+        public Int32 DefaultCountry { get; set; } = 1;
+
+        /// <summary>Url没有语言SEO代码时是否跳转至当前缓存语言</summary>
+        public Boolean DefaultJumpFriendlyUrls { get; set; } = false;
+
         /// <summary>
         /// 默认管理区域语言标识符
         /// </summary>

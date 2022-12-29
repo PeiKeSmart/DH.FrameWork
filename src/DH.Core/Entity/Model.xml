@@ -5,7 +5,75 @@
       <Column Name="Id" DataType="Int32" PrimaryKey="True" Description="编号" />
       <Column Name="LanguageId" DataType="Int32" Description="语言Id" />
       <Column Name="IsSuper" DataType="Boolean" Description="是否超级管理员" />
+      <Column Name="SId" DataType="Int64" Description="用户SessionId" />
+      <Column Name="TenantId" DataType="Int64" Description="用户所属租户Id" />
+      <Column Name="UType" DataType="Int16" Description="用户类型。类型自定义" />
+      <Column Name="RoleExIds" DataType="String" Length="100" Description="会员前台权限" />
+      <Column Name="OtherPermissions" DataType="String" Length="200" Description="会员其他权限" />
+      <Column Name="DepartmentIds" DataType="String" Length="200" Description="会员所在多部门" />
+      <Column Name="TrueName" DataType="String" Description="真实姓名" />
+      <Column Name="PayPwd" DataType="String" Description="支付密码" />
+      <Column Name="AuthState" DataType="Int16" Description="个人实名认证状态（0默认1审核中2未通过3已认证）" />
+      <Column Name="IdCard" DataType="String" Description="实名认证身份证号" />
+      <Column Name="IdcardImage1" DataType="String" Length="100" Description="手持身份证照" />
+      <Column Name="IdcardImage2" DataType="String" Length="100" Description="身份证正面照" />
+      <Column Name="IdcardImage3" DataType="String" Length="100" Description="身份证反面照" />
+      <Column Name="CompanyName" DataType="String" Length="100" Description="公司名称" />
+      <Column Name="CompnayAuthState" DataType="Int16" Description="企业实名认证状态（0默认1审核中2未通过3已认证）" />
+      <Column Name="CorporateName" DataType="String" Description="法人姓名" />
+      <Column Name="BusinessLicenseImage" DataType="String" Length="100" Description="营业执照图片" />
+      <Column Name="CorporateImage" DataType="String" Length="100" Description="法人手持身份证照" />
+      <Column Name="EmailBind" DataType="Boolean" Description="是否绑定邮箱" />
+      <Column Name="MobileBind" DataType="Boolean" Description="是否绑定手机" />
+      <Column Name="IsSubScribe" DataType="Boolean" Description="是否关注微信公众号" />
+      <Column Name="IsSales" DataType="Boolean" Description="是否销售人员" />
+      <Column Name="IsEngineer" DataType="Boolean" Description="是否为工程师" />
+      <Column Name="ReferrerId" DataType="Int32" Description="推荐人ID" />
+      <Column Name="KeFuId" DataType="Int32" Description="所属销售ID" />
+      <Column Name="ParentUId" DataType="Int32" Description="所属上级会员ID" />
+      <Column Name="Points" DataType="Int32" Description="会员积分" />
+      <Column Name="ExpPoints" DataType="Int32" Description="会员经验值" />
+      <Column Name="QQ" DataType="String" Description="QQ号码" />
+      <Column Name="WeiXin" DataType="String" Description="微信号码" />
+      <Column Name="WangWang" DataType="String" Description="阿里旺旺号码" />
+      <Column Name="ContactName" DataType="String" Description="联系人" />
+      <Column Name="Tel" DataType="String" Description="固话" />
+      <Column Name="CompanyInfo" DataType="String" Length="1024" Description="公司介绍" />
+      <Column Name="Address" DataType="String" Length="100" Description="详细地址" />
+      <Column Name="InformAllow" DataType="Boolean" Description="是否禁止举报" />
+      <Column Name="IsBuy" DataType="Boolean" Description="是否禁止购买" />
+      <Column Name="IsAllowTalk" DataType="Boolean" Description="是否禁止发表言论" />
+      <Column Name="AvailablePredeposit" DataType="Decimal" Description="预存款可用金额" />
+      <Column Name="FreezePredeposit" DataType="Decimal" Description="预存款冻结金额" />
+      <Column Name="AvailableRcBalance" DataType="Decimal" Description="可用充值卡余额" />
+      <Column Name="FreezeRcBalance" DataType="Decimal" Description="冻结充值卡余额" />
+      <Column Name="CountryId" DataType="Int32" Description="国家ID" />
+      <Column Name="AreaId" DataType="Int32" Description="地区ID" />
+      <Column Name="CityId" DataType="Int32" Description="城市ID" />
+      <Column Name="ProvinceId" DataType="Int32" Description="省份ID" />
+      <Column Name="AreaInfo" DataType="String" Description="地区内容" />
+      <Column Name="Question1" DataType="String" Length="100" Description="问题1" />
+      <Column Name="Answer1" DataType="String" Length="100" Description="回答1" />
+      <Column Name="Question2" DataType="String" Length="100" Description="问题2" />
+      <Column Name="Answer2" DataType="String" Length="100" Description="回答2" />
+      <Column Name="Question3" DataType="String" Length="100" Description="问题3" />
+      <Column Name="Answer3" DataType="String" Length="100" Description="回答3" />
+      <Column Name="CreateUser" DataType="String" Description="创建者" />
+      <Column Name="CreateUserID" DataType="Int32" Description="创建者" />
+      <Column Name="CreateTime" DataType="DateTime" Description="创建时间" />
+      <Column Name="CreateIP" DataType="String" Description="创建地址" />
+      <Column Name="UpdateUser" DataType="String" Description="更新者" />
+      <Column Name="UpdateUserID" DataType="Int32" Description="更新者" />
+      <Column Name="UpdateTime" DataType="DateTime" Description="更新时间" />
+      <Column Name="UpdateIP" DataType="String" Description="更新地址" />
     </Columns>
+    <Indexes>
+      <Index Columns="ReferrerId" />
+      <Index Columns="TenantId" />
+      <Index Columns="KeFuId" />
+      <Index Columns="UType" />
+      <Index Columns="ParentUId" />
+    </Indexes>
   </Table>
   <Table Name="Store" TableName="DH_Store" Description="站点信息">
     <Columns>
@@ -56,12 +124,12 @@
   <Table Name="LocaleStringResource" TableName="DH_LocaleStringResource" Description="语言包">
     <Columns>
       <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
-      <Column Name="ResourceName" DataType="String" Master="True" Length="200" Description="资源名称" />
-      <Column Name="ResourceValue" DataType="String" Length="2048" Description="资源值" />
-      <Column Name="LanguageId" DataType="Int32" Description="语言标识符" />
+      <Column Name="LanKey" DataType="String" Master="True" Length="200" Description="资源名称" />
+      <Column Name="LanValue" DataType="String" Length="2048" Description="资源值" />
+      <Column Name="CultureId" DataType="Int32" Description="语言标识符" />
     </Columns>
     <Indexes>
-      <Index Columns="ResourceName,LanguageId" Unique="True" />
+      <Index Columns="LanKey,CultureId" Unique="True" />
     </Indexes>
   </Table>
   <Table Name="Setting" TableName="DH_Setting" Description="站点配置">
@@ -294,6 +362,59 @@
     <Indexes>
       <Index Columns="PrincipalId" />
       <Index Columns="AgentId" />
+    </Indexes>
+  </Table>
+  <Table Name="UserConnect" Description="用户链接。第三方绑定" ConnName="Membership">
+    <Columns>
+      <Column Name="ID" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
+      <Column Name="Provider" DataType="String" Description="提供商" />
+      <Column Name="UserID" DataType="Int32" Description="用户。本地用户" />
+      <Column Name="OpenID" DataType="String" Description="身份标识。用户名、OpenID" />
+      <Column Name="UnionID" DataType="String" Description="全局标识。跨应用统一" />
+      <Column Name="LinkID" DataType="Int64" Description="用户编号。第三方用户编号" />
+      <Column Name="NickName" DataType="String" Description="昵称" />
+      <Column Name="DeviceId" DataType="String" Description="设备标识。企业微信用于唯一标识设备，重装后改变" />
+      <Column Name="Avatar" DataType="String" Length="200" Description="头像" />
+      <Column Name="AccessToken" DataType="String" Length="1200" Description="访问令牌" />
+      <Column Name="RefreshToken" DataType="String" Length="1200" Description="刷新令牌" />
+      <Column Name="Expire" DataType="DateTime" Description="访问令牌过期时间" />
+      <Column Name="RefreshExpire" DataType="DateTime" Description="刷新令牌过期时间" />
+      <Column Name="Enable" DataType="Boolean" Description="启用" />
+      <Column Name="CreateUserID" DataType="Int32" Description="创建用户" Category="扩展" />
+      <Column Name="CreateIP" DataType="String" Description="创建地址" Category="扩展" />
+      <Column Name="CreateTime" DataType="DateTime" Description="创建时间" Category="扩展" />
+      <Column Name="UpdateUserID" DataType="Int32" Description="更新用户" Category="扩展" />
+      <Column Name="UpdateIP" DataType="String" Description="更新地址" Category="扩展" />
+      <Column Name="UpdateTime" DataType="DateTime" Description="更新时间" Category="扩展" />
+      <Column Name="Remark" DataType="String" Length="5000" Description="备注" />
+    </Columns>
+    <Indexes>
+      <Index Columns="Provider,OpenID" Unique="True" />
+      <Index Columns="Provider,UnionID" Unique="True" />
+      <Index Columns="Provider,UserID" Unique="True" />
+      <Index Columns="UserID" />
+      <Index Columns="LinkID" />
+      <Index Columns="OpenID" />
+      <Index Columns="UnionID" />
+      <Index Columns="DeviceId" />
+    </Indexes>
+  </Table>
+  <Table Name="RoleEx" TableName="DG_RoleEx" Description="角色扩展表">
+    <Columns>
+      <Column Name="Id" DataType="Int32" PrimaryKey="True" Description="编号" />
+      <Column Name="IsAdmin" DataType="Boolean" Description="是否管理员" />
+    </Columns>
+  </Table>
+  <Table Name="RoleLan" TableName="DG_RoleLan" Description="角色翻译表">
+    <Columns>
+      <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
+      <Column Name="RId" DataType="Int32" Description="关联角色表Id" />
+      <Column Name="LId" DataType="Int32" Description="关联所属语言Id" />
+      <Column Name="Name" DataType="String" Master="True" Description="角色分组名称" />
+      <Column Name="Remark" DataType="String" Description="备注" />
+    </Columns>
+    <Indexes>
+      <Index Columns="RId,LId" Unique="True" />
     </Indexes>
   </Table>
 </Tables>

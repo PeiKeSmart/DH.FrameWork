@@ -81,6 +81,677 @@
             <td>N</td>
             <td></td>
         </tr>
+
+        <tr>
+            <td>SId</td>
+            <td>用户SessionId</td>
+            <td>Int64</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>TenantId</td>
+            <td>用户所属租户Id</td>
+            <td>Int64</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>UType</td>
+            <td>用户类型</td>
+            <td>Int16</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td>类型自定义</td>
+        </tr>
+
+        <tr>
+            <td>RoleExIds</td>
+            <td>会员前台权限</td>
+            <td>String</td>
+            <td>100</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>OtherPermissions</td>
+            <td>会员其他权限</td>
+            <td>String</td>
+            <td>200</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>DepartmentIds</td>
+            <td>会员所在多部门</td>
+            <td>String</td>
+            <td>200</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>TrueName</td>
+            <td>真实姓名</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>PayPwd</td>
+            <td>支付密码</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>AuthState</td>
+            <td>个人实名认证状态</td>
+            <td>Int16</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td>（0默认1审核中2未通过3已认证）</td>
+        </tr>
+
+        <tr>
+            <td>IdCard</td>
+            <td>实名认证身份证号</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>IdcardImage1</td>
+            <td>手持身份证照</td>
+            <td>String</td>
+            <td>100</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>IdcardImage2</td>
+            <td>身份证正面照</td>
+            <td>String</td>
+            <td>100</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>IdcardImage3</td>
+            <td>身份证反面照</td>
+            <td>String</td>
+            <td>100</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>CompanyName</td>
+            <td>公司名称</td>
+            <td>String</td>
+            <td>100</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>CompnayAuthState</td>
+            <td>企业实名认证状态</td>
+            <td>Int16</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td>（0默认1审核中2未通过3已认证）</td>
+        </tr>
+
+        <tr>
+            <td>CorporateName</td>
+            <td>法人姓名</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>BusinessLicenseImage</td>
+            <td>营业执照图片</td>
+            <td>String</td>
+            <td>100</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>CorporateImage</td>
+            <td>法人手持身份证照</td>
+            <td>String</td>
+            <td>100</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>EmailBind</td>
+            <td>是否绑定邮箱</td>
+            <td>Boolean</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>MobileBind</td>
+            <td>是否绑定手机</td>
+            <td>Boolean</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>IsSubScribe</td>
+            <td>是否关注微信公众号</td>
+            <td>Boolean</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>IsSales</td>
+            <td>是否销售人员</td>
+            <td>Boolean</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>IsEngineer</td>
+            <td>是否为工程师</td>
+            <td>Boolean</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>ReferrerId</td>
+            <td>推荐人ID</td>
+            <td>Int32</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>KeFuId</td>
+            <td>所属销售ID</td>
+            <td>Int32</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>ParentUId</td>
+            <td>所属上级会员ID</td>
+            <td>Int32</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>Points</td>
+            <td>会员积分</td>
+            <td>Int32</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>ExpPoints</td>
+            <td>会员经验值</td>
+            <td>Int32</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>QQ</td>
+            <td>QQ号码</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>WeiXin</td>
+            <td>微信号码</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>WangWang</td>
+            <td>阿里旺旺号码</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>ContactName</td>
+            <td>联系人</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>Tel</td>
+            <td>固话</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>CompanyInfo</td>
+            <td>公司介绍</td>
+            <td>String</td>
+            <td>1024</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>Address</td>
+            <td>详细地址</td>
+            <td>String</td>
+            <td>100</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>InformAllow</td>
+            <td>是否禁止举报</td>
+            <td>Boolean</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>IsBuy</td>
+            <td>是否禁止购买</td>
+            <td>Boolean</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>IsAllowTalk</td>
+            <td>是否禁止发表言论</td>
+            <td>Boolean</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>AvailablePredeposit</td>
+            <td>预存款可用金额</td>
+            <td>Decimal</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>FreezePredeposit</td>
+            <td>预存款冻结金额</td>
+            <td>Decimal</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>AvailableRcBalance</td>
+            <td>可用充值卡余额</td>
+            <td>Decimal</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>FreezeRcBalance</td>
+            <td>冻结充值卡余额</td>
+            <td>Decimal</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>CountryId</td>
+            <td>国家ID</td>
+            <td>Int32</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>AreaId</td>
+            <td>地区ID</td>
+            <td>Int32</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>CityId</td>
+            <td>城市ID</td>
+            <td>Int32</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>ProvinceId</td>
+            <td>省份ID</td>
+            <td>Int32</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>AreaInfo</td>
+            <td>地区内容</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>Question1</td>
+            <td>问题1</td>
+            <td>String</td>
+            <td>100</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>Answer1</td>
+            <td>回答1</td>
+            <td>String</td>
+            <td>100</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>Question2</td>
+            <td>问题2</td>
+            <td>String</td>
+            <td>100</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>Answer2</td>
+            <td>回答2</td>
+            <td>String</td>
+            <td>100</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>Question3</td>
+            <td>问题3</td>
+            <td>String</td>
+            <td>100</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>Answer3</td>
+            <td>回答3</td>
+            <td>String</td>
+            <td>100</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>CreateUser</td>
+            <td>创建者</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>CreateUserID</td>
+            <td>创建者</td>
+            <td>Int32</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>CreateTime</td>
+            <td>创建时间</td>
+            <td>DateTime</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>CreateIP</td>
+            <td>创建地址</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>UpdateUser</td>
+            <td>更新者</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>UpdateUserID</td>
+            <td>更新者</td>
+            <td>Int32</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>UpdateTime</td>
+            <td>更新时间</td>
+            <td>DateTime</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>UpdateIP</td>
+            <td>更新地址</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
     </tbody>
 </table>
 <br></br>
@@ -519,7 +1190,7 @@
         </tr>
 
         <tr>
-            <td>ResourceName</td>
+            <td>LanKey</td>
             <td>资源名称</td>
             <td>String</td>
             <td>200</td>
@@ -530,7 +1201,7 @@
         </tr>
 
         <tr>
-            <td>ResourceValue</td>
+            <td>LanValue</td>
             <td>资源值</td>
             <td>String</td>
             <td>2048</td>
@@ -541,7 +1212,7 @@
         </tr>
 
         <tr>
-            <td>LanguageId</td>
+            <td>CultureId</td>
             <td>语言标识符</td>
             <td>Int32</td>
             <td></td>
@@ -2415,6 +3086,365 @@
             <td>内容</td>
             <td>String</td>
             <td>500</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>
+<br></br>
+<h3>用户链接（UserConnect）</h3>
+<table>
+    <thead>
+        <tr>
+            <th>名称</th>
+            <th>显示名</th>
+            <th>类型</th>
+            <th>长度</th>
+            <th>精度</th>
+            <th>主键</th>
+            <th>允许空</th>
+            <th>备注</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>ID</td>
+            <td>编号</td>
+            <td>Int32</td>
+            <td></td>
+            <td></td>
+            <td title="自增">AI</td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>Provider</td>
+            <td>提供商</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>UserID</td>
+            <td>用户</td>
+            <td>Int32</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td>本地用户</td>
+        </tr>
+
+        <tr>
+            <td>OpenID</td>
+            <td>身份标识</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>用户名、OpenID</td>
+        </tr>
+
+        <tr>
+            <td>UnionID</td>
+            <td>全局标识</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>跨应用统一</td>
+        </tr>
+
+        <tr>
+            <td>LinkID</td>
+            <td>用户编号</td>
+            <td>Int64</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td>第三方用户编号</td>
+        </tr>
+
+        <tr>
+            <td>NickName</td>
+            <td>昵称</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>DeviceId</td>
+            <td>设备标识</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>企业微信用于唯一标识设备，重装后改变</td>
+        </tr>
+
+        <tr>
+            <td>Avatar</td>
+            <td>头像</td>
+            <td>String</td>
+            <td>200</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>AccessToken</td>
+            <td>访问令牌</td>
+            <td>String</td>
+            <td>1200</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>RefreshToken</td>
+            <td>刷新令牌</td>
+            <td>String</td>
+            <td>1200</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>Expire</td>
+            <td>访问令牌过期时间</td>
+            <td>DateTime</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>RefreshExpire</td>
+            <td>刷新令牌过期时间</td>
+            <td>DateTime</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>Enable</td>
+            <td>启用</td>
+            <td>Boolean</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>CreateUserID</td>
+            <td>创建用户</td>
+            <td>Int32</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>CreateIP</td>
+            <td>创建地址</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>CreateTime</td>
+            <td>创建时间</td>
+            <td>DateTime</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>UpdateUserID</td>
+            <td>更新用户</td>
+            <td>Int32</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>UpdateIP</td>
+            <td>更新地址</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>UpdateTime</td>
+            <td>更新时间</td>
+            <td>DateTime</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>Remark</td>
+            <td>备注</td>
+            <td>String</td>
+            <td>5000</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>
+<br></br>
+<h3>角色扩展表（DG_RoleEx）</h3>
+<table>
+    <thead>
+        <tr>
+            <th>名称</th>
+            <th>显示名</th>
+            <th>类型</th>
+            <th>长度</th>
+            <th>精度</th>
+            <th>主键</th>
+            <th>允许空</th>
+            <th>备注</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Id</td>
+            <td>编号</td>
+            <td>Int32</td>
+            <td></td>
+            <td></td>
+            <td title="主键">PK</td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>IsAdmin</td>
+            <td>是否管理员</td>
+            <td>Boolean</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>
+<br></br>
+<h3>角色翻译表（DG_RoleLan）</h3>
+<table>
+    <thead>
+        <tr>
+            <th>名称</th>
+            <th>显示名</th>
+            <th>类型</th>
+            <th>长度</th>
+            <th>精度</th>
+            <th>主键</th>
+            <th>允许空</th>
+            <th>备注</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Id</td>
+            <td>编号</td>
+            <td>Int32</td>
+            <td></td>
+            <td></td>
+            <td title="自增">AI</td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>RId</td>
+            <td>关联角色表Id</td>
+            <td>Int32</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>LId</td>
+            <td>关联所属语言Id</td>
+            <td>Int32</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>Name</td>
+            <td>角色分组名称</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>Remark</td>
+            <td>备注</td>
+            <td>String</td>
+            <td>50</td>
             <td></td>
             <td></td>
             <td></td>

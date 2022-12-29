@@ -1,4 +1,8 @@
-﻿using NewLife;
+﻿using DH.Core.Domain;
+using DH.Core.Infrastructure;
+using DH.Core.Model;
+
+using NewLife;
 using NewLife.Data;
 
 using System.Text.Json;
@@ -197,9 +201,9 @@ public partial class UserE : User
             {
                 list = list.Where(e => e.Name.Contains(name.Trim(), StringComparison.OrdinalIgnoreCase));
             }
-            if (mobile.IsNotNullOrWhiteSpace())
+            if (!mobile.IsNullOrWhiteSpace())
             {
-                list = list.Where(e => e.Mobile.IsNotNullOrWhiteSpace() && e.Mobile.Contains(mobile.Trim()));
+                list = list.Where(e => !e.Mobile.IsNullOrWhiteSpace() && e.Mobile.Contains(mobile.Trim()));
             }
 
             if (IsAdmin != null)
@@ -331,10 +335,11 @@ public partial class UserE : User
             }
         }
 
-        var SiteSettings = SiteSettingInfo.SiteSettings;
-        if (search_grade > 0 && !SiteSettings.MemberGrade.IsNullOrWhiteSpace())
+        var _storeInformationSettings = EngineContext.Current.Resolve<StoreInformationSettings>();
+
+        if (search_grade > 0 && !_storeInformationSettings.MemberGrade.IsNullOrWhiteSpace())
         {
-            var list = JsonSerializer.Deserialize<List<GradeModel>>(SiteSettings.MemberGrade);
+            var list = JsonSerializer.Deserialize<List<GradeModel>>(_storeInformationSettings.MemberGrade);
 
             if (search_grade <= list.Count)
             {

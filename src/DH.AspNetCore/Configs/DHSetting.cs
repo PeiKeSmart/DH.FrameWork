@@ -1,6 +1,7 @@
 ﻿using DH.Extensions;
 using DH.Security;
 
+using NewLife;
 using NewLife.Security;
 using NewLife.Xml;
 
@@ -38,6 +39,15 @@ public class DHSetting : XmlConfig<DHSetting>
     /// </summary>
     [Description("管理后台路由")]
     public String AdminArea { get; set; } = "Admin";
+
+    /// <summary>当前系统域名</summary>
+    [Description("当前系统域名")]
+    public String CurDomainUrl { get; set; } = "http://localhost:5000";
+
+    /// <summary>会话超时。单点登录后会话超时时间，该时间内可借助Cookie登录，默认0s</summary>
+    [Description("会话超时。单点登录后会话超时时间，该时间内可借助Cookie登录，默认0s")]
+    [Category("用户登录")]
+    public Int32 SessionTimeout { get; set; } = 0;
 
     /// <summary>
     /// 是否全站启用SSL

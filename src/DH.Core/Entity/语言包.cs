@@ -14,7 +14,7 @@ namespace DH.Entity
     [Serializable]
     [DataObject]
     [Description("语言包")]
-    [BindIndex("IU_DH_LocaleStringResource_ResourceName_LanguageId", true, "ResourceName,LanguageId")]
+    [BindIndex("IU_DH_LocaleStringResource_LanKey_CultureId", true, "LanKey,CultureId")]
     [BindTable("DH_LocaleStringResource", Description = "语言包", ConnName = "DH", DbType = DatabaseType.None)]
     public partial class LocaleStringResource
     {
@@ -27,29 +27,29 @@ namespace DH.Entity
         [BindColumn("Id", "编号", "")]
         public Int32 Id { get => _Id; set { if (OnPropertyChanging("Id", value)) { _Id = value; OnPropertyChanged("Id"); } } }
 
-        private String _ResourceName;
+        private String _LanKey;
         /// <summary>资源名称</summary>
         [DisplayName("资源名称")]
         [Description("资源名称")]
         [DataObjectField(false, false, true, 200)]
-        [BindColumn("ResourceName", "资源名称", "", Master = true)]
-        public String ResourceName { get => _ResourceName; set { if (OnPropertyChanging("ResourceName", value)) { _ResourceName = value; OnPropertyChanged("ResourceName"); } } }
+        [BindColumn("LanKey", "资源名称", "", Master = true)]
+        public String LanKey { get => _LanKey; set { if (OnPropertyChanging("LanKey", value)) { _LanKey = value; OnPropertyChanged("LanKey"); } } }
 
-        private String _ResourceValue;
+        private String _LanValue;
         /// <summary>资源值</summary>
         [DisplayName("资源值")]
         [Description("资源值")]
         [DataObjectField(false, false, true, 2048)]
-        [BindColumn("ResourceValue", "资源值", "")]
-        public String ResourceValue { get => _ResourceValue; set { if (OnPropertyChanging("ResourceValue", value)) { _ResourceValue = value; OnPropertyChanged("ResourceValue"); } } }
+        [BindColumn("LanValue", "资源值", "")]
+        public String LanValue { get => _LanValue; set { if (OnPropertyChanging("LanValue", value)) { _LanValue = value; OnPropertyChanged("LanValue"); } } }
 
-        private Int32 _LanguageId;
+        private Int32 _CultureId;
         /// <summary>语言标识符</summary>
         [DisplayName("语言标识符")]
         [Description("语言标识符")]
         [DataObjectField(false, false, false, 0)]
-        [BindColumn("LanguageId", "语言标识符", "")]
-        public Int32 LanguageId { get => _LanguageId; set { if (OnPropertyChanging("LanguageId", value)) { _LanguageId = value; OnPropertyChanged("LanguageId"); } } }
+        [BindColumn("CultureId", "语言标识符", "")]
+        public Int32 CultureId { get => _CultureId; set { if (OnPropertyChanging("CultureId", value)) { _CultureId = value; OnPropertyChanged("CultureId"); } } }
         #endregion
 
         #region 获取/设置 字段值
@@ -63,9 +63,9 @@ namespace DH.Entity
                 switch (name)
                 {
                     case "Id": return _Id;
-                    case "ResourceName": return _ResourceName;
-                    case "ResourceValue": return _ResourceValue;
-                    case "LanguageId": return _LanguageId;
+                    case "LanKey": return _LanKey;
+                    case "LanValue": return _LanValue;
+                    case "CultureId": return _CultureId;
                     default: return base[name];
                 }
             }
@@ -74,9 +74,9 @@ namespace DH.Entity
                 switch (name)
                 {
                     case "Id": _Id = value.ToInt(); break;
-                    case "ResourceName": _ResourceName = Convert.ToString(value); break;
-                    case "ResourceValue": _ResourceValue = Convert.ToString(value); break;
-                    case "LanguageId": _LanguageId = value.ToInt(); break;
+                    case "LanKey": _LanKey = Convert.ToString(value); break;
+                    case "LanValue": _LanValue = Convert.ToString(value); break;
+                    case "CultureId": _CultureId = value.ToInt(); break;
                     default: base[name] = value; break;
                 }
             }
@@ -91,13 +91,13 @@ namespace DH.Entity
             public static readonly Field Id = FindByName("Id");
 
             /// <summary>资源名称</summary>
-            public static readonly Field ResourceName = FindByName("ResourceName");
+            public static readonly Field LanKey = FindByName("LanKey");
 
             /// <summary>资源值</summary>
-            public static readonly Field ResourceValue = FindByName("ResourceValue");
+            public static readonly Field LanValue = FindByName("LanValue");
 
             /// <summary>语言标识符</summary>
-            public static readonly Field LanguageId = FindByName("LanguageId");
+            public static readonly Field CultureId = FindByName("CultureId");
 
             static Field FindByName(String name) => Meta.Table.FindByName(name);
         }
@@ -109,13 +109,13 @@ namespace DH.Entity
             public const String Id = "Id";
 
             /// <summary>资源名称</summary>
-            public const String ResourceName = "ResourceName";
+            public const String LanKey = "LanKey";
 
             /// <summary>资源值</summary>
-            public const String ResourceValue = "ResourceValue";
+            public const String LanValue = "LanValue";
 
             /// <summary>语言标识符</summary>
-            public const String LanguageId = "LanguageId";
+            public const String CultureId = "CultureId";
         }
         #endregion
     }

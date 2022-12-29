@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 
 using DH.Core.Infrastructure.Mapper;
+using DH.Exceptions;
 using DH.VirtualFileSystem;
 
 using Microsoft.AspNetCore.Builder;

@@ -1,4 +1,7 @@
-﻿using DH.Entity;
+﻿using DH.AspNetCore.Webs;
+using DH.Core.Webs;
+using DH.Entity;
+using DH.Services.Webs;
 using DH.Web.Framework.Services;
 
 using Microsoft.AspNetCore.Builder;
@@ -12,6 +15,7 @@ using NewLife.Collections;
 using NewLife.Common;
 using NewLife.Log;
 using NewLife.Model;
+using NewLife.Serialization;
 
 using System.Security.Principal;
 
@@ -21,7 +25,7 @@ using XCode.Membership;
 using IServiceCollection = Microsoft.Extensions.DependencyInjection.IServiceCollection;
 using JwtBuilder = NewLife.Web.JwtBuilder;
 
-namespace DH.Web.Framework.Membership;
+namespace DH.Core.Membership;
 
 /// <inheritdoc />
 public class ManageProvider2 : ManageProvider
@@ -120,7 +124,7 @@ public class ManageProvider2 : ManageProvider
     /// <returns></returns>
     public override IManageUser Login(String name, String password, Boolean remember)
     {
-        IManageUser? user = null;
+        IManageUser user = null;
 
         // OAuth密码模式登录
         var oauths = OAuthConfig.GetValids(GrantTypes.Password);
@@ -278,9 +282,9 @@ public class ManageProvider2 : ManageProvider
     /// <summary>根据实体类接口获取实体工厂</summary>
     /// <typeparam name="TIEntity"></typeparam>
     /// <returns></returns>
-    internal static IEntityFactory GetFactory<TIEntity>() => _factories[typeof(TIEntity)];
+    public static IEntityFactory GetFactory<TIEntity>() => _factories[typeof(TIEntity)];
 
-    internal static T Get<T>() => (T)GetFactory<T>()?.Default;
+    public static T Get<T>() => (T)GetFactory<T>()?.Default;
     #endregion
 }
 

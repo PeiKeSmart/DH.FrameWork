@@ -2,6 +2,7 @@
 using DH.Core.Domain.Catalog;
 using DH.Core.Domain.Media;
 using DH.Core.Infrastructure;
+using DH.Exceptions;
 using DH.Services.Customers;
 using DH.Services.Localization;
 

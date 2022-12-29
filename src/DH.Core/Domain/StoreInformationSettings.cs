@@ -3,15 +3,14 @@
 namespace DH.Core.Domain
 {
     /// <summary>
-    /// Store information settings
+    /// 站点信息设置
     /// </summary>
     public partial class StoreInformationSettings : ISettings
     {
         /// <summary>
-        /// Gets or sets a value indicating whether "powered by nopCommerce" text should be displayed.
-        /// Please find more info at https://www.nopcommerce.com/nopcommerce-copyright-removal-key
+        /// 获取或设置一个值，该值指示是否应显示"powered by YuanRenYi"文本。
         /// </summary>
-        public bool HidePoweredByNopCommerce { get; set; }
+        public bool HidePoweredByYuanRenYi { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether store is closed
@@ -24,14 +23,29 @@ namespace DH.Core.Domain
         public int LogoPictureId { get; set; }
 
         /// <summary>
-        /// Gets or sets a default store theme
+        /// 获取或设置默认存储主题
         /// </summary>
         public string DefaultStoreTheme { get; set; }
 
         /// <summary>
         /// 获取或设置一个值，该值指示是否允许客户选择主题
         /// </summary>
-        public bool AllowCustomerToSelectTheme { get; set; }
+        public Boolean AllowCustomerToSelectTheme { get; set; }
+
+        /// <summary>
+        /// 会员级别
+        /// </summary>
+        public String MemberGrade { get; set; }
+
+        /// <summary>
+        /// 是否使用HTTP_CLUSTER_HTTPS
+        /// </summary>
+        public Boolean UseHttpClusterHttps { get; set; }
+
+        /// <summary>
+        /// 是否使用HTTP_X_FORWARDED_PROTO
+        /// </summary>
+        public Boolean UseHttpXForwardedProto { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether we should display warnings about the new EU cookie law

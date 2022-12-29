@@ -61,9 +61,9 @@ namespace DH.Services.Localization
             var dictionary = new Dictionary<string, KeyValuePair<int, string>>();
             foreach (var locale in locales)
             {
-                var resourceName = locale.ResourceName.ToLowerInvariant();
+                var resourceName = locale.LanKey.ToLowerInvariant();
                 if (!dictionary.ContainsKey(resourceName))
-                    dictionary.Add(resourceName, new KeyValuePair<int, string>(locale.Id, locale.ResourceValue));
+                    dictionary.Add(resourceName, new KeyValuePair<int, string>(locale.Id, locale.LanValue));
             }
 
             return dictionary;

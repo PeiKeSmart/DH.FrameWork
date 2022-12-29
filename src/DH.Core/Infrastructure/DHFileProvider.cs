@@ -571,6 +571,19 @@ namespace DH.Core.Infrastructure
             return base.GetFileInfo(subpath);
         }
 
+        /// <summary>
+        /// 设置最后一次写入指定文件的日期和时间(以协调世界时(UTC))
+        /// </summary>
+        /// <param name="path">要为其设置日期和时间信息的文件</param>
+        /// <param name="lastWriteTimeUtc">
+        /// 一个System.DateTime，其中包含要为路径的最后写入日期和时间设置的值。
+        /// 该值以UTC时间表示该值以UTC时间表示
+        /// </param>
+        public virtual void SetLastWriteTimeUtc(string path, DateTime lastWriteTimeUtc)
+        {
+            File.SetLastWriteTimeUtc(path, lastWriteTimeUtc);
+        }
+
         #endregion
 
         protected string WebRootPath { get; }

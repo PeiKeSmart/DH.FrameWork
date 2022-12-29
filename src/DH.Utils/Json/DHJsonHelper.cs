@@ -12,7 +12,7 @@ namespace DH.Helpers;
 /// <summary>
 /// Json操作辅助类
 /// </summary>
-public static class JsonHelper
+public static class DHJsonHelper
 {
     #region JsonDateTimeFormat(Json时间格式化)
 

@@ -1,4 +1,5 @@
 using DH.Core;
+using DH.Core.Domain.Localization;
 using DH.Core.Infrastructure;
 
 using NewLife;
@@ -260,7 +261,9 @@ public partial class LocaleStringResource : DHEntityBase<LocaleStringResource>
 
         if (result.IsNullOrWhiteSpace())
         {
-            model = FindByLanKeyAndCultureId(resourceKey, DHSetting.Current.LanguageConfig.DefaultCountry);
+            var localizationSettings = EngineContext.Current.Resolve<LocalizationSettings>();
+
+            model = FindByLanKeyAndCultureId(resourceKey, localizationSettings.DefaultCountry);
 
             if (model != null)
             {
@@ -326,8 +329,6 @@ public partial class LocaleStringResource : DHEntityBase<LocaleStringResource>
         InitInsert("不限人数", "不限人数", "不限人數", "Unlimited", true);
         InitInsert("授权人数", "授权人数:", "授權人數:", "Authorized Number:", true);
         InitInsert("关于创楚", "关于创楚", "關於創楚", "About", true);
-        InitInsert("海凌科", "海凌科", "海凌科", "HlkTech", true);
-        InitInsert("极思灵创", "极思灵创", "極思靈創", "Gicisky", true);
         InitInsert("用户登录", "用户登录", "用戶登錄", "User Login");
         InitInsert("保存", "保存", "保存", "Save");
         InitInsert("稍候", "稍候...", "稍候...", "Loading...");
