@@ -1,4 +1,5 @@
-﻿using DH.Core;
+﻿using DH.AspNetCore.Mime;
+using DH.Core;
 using DH.Core.Configuration;
 using DH.Core.Domain.Common;
 using DH.Core.Http;
@@ -18,6 +19,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.StaticFiles;
@@ -243,7 +245,7 @@ namespace DH.Web.Framework.Infrastructure.Extensions
                 FileProvider = new PhysicalFileProvider(fileProvider.MapPath(@"Plugins"))
             });
 
-            if (!DHSetting.Current.IsApiItem)
+            if (!DHSetting.Current.IsApiOrSpaItem)
             {
                 list.Add(new FileProviderOptions
                 {
@@ -266,12 +268,12 @@ namespace DH.Web.Framework.Infrastructure.Extensions
 
             void staticFileResponse(StaticFileResponseContext context)
             {
-                if (!string.IsNullOrEmpty(appSettings.Get<CommonConfig>().StaticFilesCacheControl))
+                if (!appSettings.Get<CommonConfig>().StaticFilesCacheControl.IsNullOrWhiteSpace())
                     context.Context.Response.Headers.Append(HeaderNames.CacheControl, appSettings.Get<CommonConfig>().StaticFilesCacheControl);
             }
 
             // 如果站点地图，则添加处理
-            if (!DHSetting.Current.IsApiItem)
+            if (!DHSetting.Current.IsApiOrSpaItem)
             {
                 application.UseStaticFiles(new StaticFileOptions
                 {
@@ -290,11 +292,32 @@ namespace DH.Web.Framework.Infrastructure.Extensions
                 });
             }
 
-            // 通用静态文件
-            application.UseStaticFiles(new StaticFileOptions { OnPrepareResponse = staticFileResponse });
+            // 上传的文件目录
+            var file = DHSetting.Current.UploadPath.AsFile().FullName;
+            file.EnsureDirectory(false);
+            application.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(file),
+                RequestPath = new PathString($"/{DHSetting.Current.UploadPath}"),
+                OnPrepareResponse = staticFileResponse,
+                ContentTypeProvider = new FileExtensionContentTypeProvider(MimeMapper.MimeTypes),
+                HttpsCompression = HttpsCompressionMode.Compress
+            });
+
+            // 普通静态文件
+            application.UseDefaultFiles().UseStaticFiles(new StaticFileOptions
+            {
+                OnPrepareResponse = context =>
+                {
+                    context.Context.Response.Headers[HeaderNames.CacheControl] = "public,no-cache";
+                    context.Context.Response.Headers[HeaderNames.Expires] = DateTime.UtcNow.AddDays(7).ToString("R");
+                },
+                ContentTypeProvider = new FileExtensionContentTypeProvider(MimeMapper.MimeTypes),
+                HttpsCompression = HttpsCompressionMode.Compress
+            });
 
             // 主题静态文件
-            if (!DHSetting.Current.IsApiItem)
+            if (!DHSetting.Current.IsApiOrSpaItem)
             {
                 application.UseStaticFiles(new StaticFileOptions
                 {
@@ -334,7 +357,7 @@ namespace DH.Web.Framework.Infrastructure.Extensions
             var provider = new FileExtensionContentTypeProvider();
 
             // 添加对备份的支持
-            if (!DHSetting.Current.IsApiItem)
+            if (!DHSetting.Current.IsApiOrSpaItem)
             {
                 provider.Mappings[".bak"] = MimeTypes.ApplicationOctetStream;
 
@@ -357,7 +380,7 @@ namespace DH.Web.Framework.Infrastructure.Extensions
             }
 
             // 添加对webmanifest文件的支持
-            if (!DHSetting.Current.IsApiItem)
+            if (!DHSetting.Current.IsApiOrSpaItem)
             {
                 provider.Mappings[".webmanifest"] = MimeTypes.ApplicationManifestJson;
                 application.UseStaticFiles(new StaticFileOptions
@@ -368,7 +391,7 @@ namespace DH.Web.Framework.Infrastructure.Extensions
                 });
             }
 
-            if (!DHSetting.Current.IsApiItem && DHSetting.Current.IsInstalled)
+            if (!DHSetting.Current.IsApiOrSpaItem && DHSetting.Current.IsInstalled)
             {
                 application.UseStaticFiles(new StaticFileOptions
                 {
