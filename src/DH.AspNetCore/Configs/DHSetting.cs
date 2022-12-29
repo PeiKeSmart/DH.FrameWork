@@ -34,6 +34,12 @@ public class DHSetting : XmlConfig<DHSetting>
     public Boolean AllowRateLimter { get; set; }
 
     /// <summary>
+    /// 管理后台路由
+    /// </summary>
+    [Description("管理后台路由")]
+    public String AdminArea { get; set; } = "Admin";
+
+    /// <summary>
     /// 是否全站启用SSL
     /// </summary>
     /// <summary>是否全站启用SSL</summary>
@@ -84,6 +90,21 @@ public class DHSetting : XmlConfig<DHSetting>
     [Description("Jwt配置")]
     public JwtOptions JwtOptions { get; set; } = new JwtOptions { Secret = "5efefbv1j67uqrono0xdmx4y0il5dn5y7b72tlb3imba677ht1p1xlfcnh36mk5u3xzjktfara25podhy85apfplun7oslbe1m20c148p5d519kja5wvg7lmn5v4a5ou", Issuer = "ding_identity", Audience = "ding_client", AccessExpireMinutes = 120, RefreshExpireMinutes = 43200, ThrowEnabled = false };
 
+    /// <summary>Cookie模式。token的cookies默认模式（ -1 Unspecified，0 None，1 Lax，2 Strict）</summary>
+    [Description("Cookie模式。token的cookies默认模式（ -1 Unspecified，0 None，1 Lax，2 Strict）")]
+    [Category("通用")]
+    public Int32 SameSiteMode { get; set; } = -1;
+
+    /// <summary>
+    /// Sid缓存名称
+    /// </summary>
+    [Description("Sid缓存名称")]
+    public String SidName { get; set; } = "sid";
+
+    /// <summary>自动注册。默认true，SSO登录后，如果本地未登录，自动注册新用户。全局设置和OAuth应用设置只要有一个启用则表示使用</summary>
+    [Description("自动注册。默认true，SSO登录后，如果本地未登录，自动注册新用户。全局设置和OAuth应用设置只要有一个启用则表示使用")]
+    [Category("用户登录")]
+    public Boolean AutoRegister { get; set; } = true;
 
     #region 方法
     /// <summary>实例化</summary>

@@ -2,6 +2,7 @@
 using DH.VirtualFileSystem;
 using DH.Web.Framework.Infrastructure.Extensions;
 using DH.Web.Framework.Mvc.Routing;
+using DH.Webs;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -68,6 +69,18 @@ public partial class DHCommonStartup : IDHStartup
 
         // 使用请求本地化
         application.UseDHRequestLocalization();
+
+        if (DHSetting.Current.AllSslEnabled)
+        {
+            // HSTS的默认值为30天。 您可能要针对生产方案更改此设置，请参见https://aka.ms/aspnetcore-hsts。
+            application.UseHsts();
+            application.UseHttpsRedirection();
+        }
+
+        // 配置静态Http上下文访问器
+        application.UseStaticHttpContext();
+
+
     }
 
     /// <summary>

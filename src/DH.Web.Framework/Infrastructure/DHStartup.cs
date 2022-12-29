@@ -21,6 +21,7 @@ using DH.Web.Framework.UI;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
@@ -99,7 +100,14 @@ public partial class DHStartup : IDHStartup
         // 站点上下文
         services.AddScoped<IStoreContext, WebStoreContext>();
 
-
+        // https跳转
+        if (DHSetting.Current.AllSslEnabled)
+        {
+            services.AddHttpsRedirection(options =>
+            {
+                options.RedirectStatusCode = StatusCodes.Status301MovedPermanently;
+            });
+        }
 
         // 系统应用缓存，小于10000数据的可以考虑直接使用Cache.Default
         if (UtilSetting.Current.RedisEnabled)

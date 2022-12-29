@@ -1,4 +1,6 @@
 ﻿using DH.Core.Infrastructure;
+using DH.Web.Framework.Admin;
+
 using Microsoft.AspNetCore.Mvc.Razor;
 
 namespace DH.Web.Framework.Themes
@@ -18,18 +20,18 @@ namespace DH.Web.Framework.Themes
         public void PopulateValues(ViewLocationExpanderContext context)
         {
             // 根本不需要添加可主题化的视图位置，因为管理无论如何都不应该是可主题化
-            if (context.AreaName?.Equals(AreaNames.Admin) ?? false)
+            if (context.AreaName?.Equals(AdminArea.AreaName) ?? false)
                 return;
 
             context.Values[THEME_KEY] = EngineContext.Current.Resolve<IThemeContext>().GetWorkingThemeNameAsync().Result;
         }
 
         /// <summary>
-        /// Invoked by a Microsoft.AspNetCore.Mvc.Razor.RazorViewEngine to determine potential locations for a view.
+        /// 由Microsoft.AspNetCore.Mvc.Razor.RazorViewEngine调用以确定视图的潜在位置。
         /// </summary>
-        /// <param name="context">Context</param>
-        /// <param name="viewLocations">View locations</param>
-        /// <returns>View locations</returns>
+        /// <param name="context">上下文</param>
+        /// <param name="viewLocations">查看位置</param>
+        /// <returns>位置</returns>
         public IEnumerable<string> ExpandViewLocations(ViewLocationExpanderContext context, IEnumerable<string> viewLocations)
         {
             if (context.Values.TryGetValue(THEME_KEY, out string theme))
@@ -40,7 +42,6 @@ namespace DH.Web.Framework.Themes
                     }
                     .Concat(viewLocations);
             }
-
 
             return viewLocations;
         }

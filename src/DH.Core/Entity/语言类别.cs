@@ -10,13 +10,13 @@ using XCode.DataAccessLayer;
 
 namespace DH.Entity
 {
-    /// <summary>语言</summary>
+    /// <summary>语言类别</summary>
     [Serializable]
     [DataObject]
-    [Description("语言")]
-    [BindIndex("IU_DH_Language_UniqueSeoCode", true, "UniqueSeoCode")]
-    [BindIndex("IU_DH_Language_LanguageCulture", true, "LanguageCulture")]
-    [BindTable("DH_Language", Description = "语言", ConnName = "DH", DbType = DatabaseType.None)]
+    [Description("语言类别")]
+    [BindIndex("IU_DG_Language_UniqueSeoCode", true, "UniqueSeoCode")]
+    [BindIndex("IU_DG_Language_LanguageCulture", true, "LanguageCulture")]
+    [BindTable("DG_Language", Description = "语言类别", ConnName = "DG", DbType = DatabaseType.None)]
     public partial class Language
     {
         #region 属性
@@ -275,7 +275,7 @@ namespace DH.Entity
         #endregion
 
         #region 字段名
-        /// <summary>取得语言字段信息的快捷方式</summary>
+        /// <summary>取得语言类别字段信息的快捷方式</summary>
         public partial class _
         {
             /// <summary>编号</summary>
@@ -350,7 +350,7 @@ namespace DH.Entity
             static Field FindByName(String name) => Meta.Table.FindByName(name);
         }
 
-        /// <summary>取得语言字段名称的快捷方式</summary>
+        /// <summary>取得语言类别字段名称的快捷方式</summary>
         public partial class __
         {
             /// <summary>编号</summary>
