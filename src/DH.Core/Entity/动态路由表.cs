@@ -14,8 +14,8 @@ namespace DH.Entity
     [Serializable]
     [DataObject]
     [Description("动态路由表")]
-    [BindIndex("IU_DG_DynamicRoute_RegexInfo", true, "RegexInfo")]
-    [BindTable("DG_DynamicRoute", Description = "动态路由表", ConnName = "DH", DbType = DatabaseType.None)]
+    [BindIndex("IU_DH_DynamicRoute_RegexInfo", true, "RegexInfo")]
+    [BindTable("DH_DynamicRoute", Description = "动态路由表", ConnName = "DH", DbType = DatabaseType.None)]
     public partial class DynamicRoute
     {
         #region 属性

@@ -16,7 +16,7 @@ namespace DH.Entity
     [Description("委托代理。委托某人代理自己的用户权限，代理人下一次登录时将得到委托人的身份")]
     [BindIndex("IX_PrincipalAgent_PrincipalId", false, "PrincipalId")]
     [BindIndex("IX_PrincipalAgent_AgentId", false, "AgentId")]
-    [BindTable("PrincipalAgent", Description = "委托代理。委托某人代理自己的用户权限，代理人下一次登录时将得到委托人的身份", ConnName = "DG", DbType = DatabaseType.None)]
+    [BindTable("PrincipalAgent", Description = "委托代理。委托某人代理自己的用户权限，代理人下一次登录时将得到委托人的身份", ConnName = "DH", DbType = DatabaseType.None)]
     public partial class PrincipalAgent
     {
         #region 属性

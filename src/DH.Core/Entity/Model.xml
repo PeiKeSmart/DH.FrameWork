@@ -124,7 +124,7 @@
       <Index Columns="EntityId,KeyGroup" />
     </Indexes>
   </Table>
-  <Table Name="RouteRewrite" TableName="DG_RouteRewrite" Description="重定向表" IgnoreNameCase="False">
+  <Table Name="RouteRewrite" TableName="DH_RouteRewrite" Description="重定向表" IgnoreNameCase="False">
     <Columns>
       <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
       <Column Name="Name" DataType="String" Master="True" Length="20" Nullable="False" Description="名称" />
@@ -144,7 +144,7 @@
       <Index Columns="RegexInfo" Unique="True" />
     </Indexes>
   </Table>
-  <Table Name="DynamicRoute" TableName="DG_DynamicRoute" Description="动态路由表" IgnoreNameCase="False">
+  <Table Name="DynamicRoute" TableName="DH_DynamicRoute" Description="动态路由表" IgnoreNameCase="False">
     <Columns>
       <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
       <Column Name="RegexInfo" DataType="String" Nullable="False" Description="正则表达式" />
@@ -255,7 +255,7 @@
       <Index Columns="Date" Unique="True" />
     </Indexes>
   </Table>
-  <Table Name="SystemRout" TableName="DG_SystemRout" Description="路由管理">
+  <Table Name="SystemRout" TableName="DH_SystemRout" Description="路由管理">
     <Columns>
       <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
       <Column Name="RType" DataType="Byte" RawType="tinyint(1)" Description="类型，1为控制器，2为Razor Page" />

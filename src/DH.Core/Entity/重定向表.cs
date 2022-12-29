@@ -14,8 +14,8 @@ namespace DH.Entity
     [Serializable]
     [DataObject]
     [Description("重定向表")]
-    [BindIndex("IU_DG_RouteRewrite_RegexInfo", true, "RegexInfo")]
-    [BindTable("DG_RouteRewrite", Description = "重定向表", ConnName = "DH", DbType = DatabaseType.None)]
+    [BindIndex("IU_DH_RouteRewrite_RegexInfo", true, "RegexInfo")]
+    [BindTable("DH_RouteRewrite", Description = "重定向表", ConnName = "DH", DbType = DatabaseType.None)]
     public partial class RouteRewrite
     {
         #region 属性

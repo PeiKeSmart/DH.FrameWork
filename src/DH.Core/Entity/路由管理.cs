@@ -14,9 +14,9 @@ namespace DH.Entity
     [Serializable]
     [DataObject]
     [Description("路由管理")]
-    [BindIndex("IX_DG_SystemRout_FromUrl", false, "FromUrl")]
-    [BindIndex("IU_DG_SystemRout_Url", true, "Url")]
-    [BindTable("DG_SystemRout", Description = "路由管理", ConnName = "DG", DbType = DatabaseType.None)]
+    [BindIndex("IX_DH_SystemRout_FromUrl", false, "FromUrl")]
+    [BindIndex("IU_DH_SystemRout_Url", true, "Url")]
+    [BindTable("DH_SystemRout", Description = "路由管理", ConnName = "DH", DbType = DatabaseType.None)]
     public partial class SystemRout
     {
         #region 属性

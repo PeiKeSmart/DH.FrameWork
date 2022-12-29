@@ -15,7 +15,7 @@ namespace DH.Entity
     [DataObject]
     [Description("OAuth配置。需要连接的OAuth认证方")]
     [BindIndex("IU_OAuthConfig_Name", true, "Name")]
-    [BindTable("OAuthConfig", Description = "OAuth配置。需要连接的OAuth认证方", ConnName = "DG", DbType = DatabaseType.None)]
+    [BindTable("OAuthConfig", Description = "OAuth配置。需要连接的OAuth认证方", ConnName = "DH", DbType = DatabaseType.None)]
     public partial class OAuthConfig
     {
         #region 属性
