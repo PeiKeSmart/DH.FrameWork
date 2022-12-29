@@ -111,6 +111,7 @@ internal sealed class JsonWebTokenBuilder : IJsonWebTokenBuilder
         }, refreshExpires);
         // 存储payload
         _tokenPayloadStore.Save(refreshToken, payload, refreshExpires);
+        _tokenPayloadStore.Save(token, payload, accessExpires);
         return accessToken;
     }
 
