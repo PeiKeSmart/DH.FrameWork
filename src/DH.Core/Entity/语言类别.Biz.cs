@@ -3,6 +3,7 @@ using NewLife.Data;
 using NewLife.Log;
 
 using System.ComponentModel;
+using System.Globalization;
 
 using XCode;
 using XCode.Membership;
@@ -779,6 +780,42 @@ public partial class Language : DHEntityBase<Language>
 
         }
         return FindAll(exp, page);
+    }
+
+    /// <summary>获取所有语言</summary>
+    /// <returns>语言集合</returns>
+    public static IEnumerable<Language> GetAllLanguages(bool showHidden = false)
+    {
+        // 实体缓存
+        if (Meta.Session.Count < 1000)
+        {
+            if (showHidden) return Meta.Cache.Entities.OrderBy(l => l.DisplayOrder).ThenBy(l => l.Id);
+            else return Meta.Cache.FindAll(e => e.Status).OrderBy(l => l.DisplayOrder).ThenBy(l => l.Id);
+        }
+
+        if (showHidden)
+            return FindAll(null, new PageParameter { PageSize = 0, OrderBy = "DisplayOrder asc, Id asc" });
+
+        return FindAll(_.Status == true, new PageParameter { PageSize = 0, OrderBy = "DisplayOrder asc, Id asc" });
+    }
+
+    /// <summary>
+    /// 获取2个字母的ISO语言代码
+    /// </summary>
+    /// <param name="language">语言</param>
+    /// <returns>ISO语言代码</returns>
+    public static string GetTwoLetterIsoLanguageName(Language language)
+    {
+        if (language == null)
+            throw new ArgumentNullException(nameof(language));
+
+        if (string.IsNullOrEmpty(language.LanguageCulture))
+            return "en";
+
+        var culture = new CultureInfo(language.LanguageCulture);
+        var code = culture.TwoLetterISOLanguageName;
+
+        return string.IsNullOrEmpty(code) ? "en" : code;
     }
     #endregion
 
