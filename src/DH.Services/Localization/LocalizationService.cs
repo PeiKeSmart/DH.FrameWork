@@ -116,7 +116,7 @@ namespace DH.Services.Localization
             else
             {
                 // 逐步加载
-                var lsr = LocaleStringResource.FindByResourceNameAndLanguageId(resourceKey, languageId)?.ResourceValue;
+                var lsr = LocaleStringResource.FindByResourceNameAndLanguageId(resourceKey, languageId)?.LanValue;
 
                 if (lsr != null)
                     result = lsr;

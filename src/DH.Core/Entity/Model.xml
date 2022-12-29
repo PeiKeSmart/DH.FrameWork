@@ -96,6 +96,7 @@
       <Column Name="Name" DataType="String" RawType="varchar(30)" Master="True" Length="30" Description="语言名称" />
       <Column Name="DisplayName" DataType="String" RawType="varchar(30)" Master="True" Length="30" Description="显示名称" />
       <Column Name="EnglishName" DataType="String" RawType="varchar(50)" Description="英文名称" />
+      <Column Name="FlagImageFileName" DataType="String" RawType="varchar(50)" Description="旗帜文件名" />
       <Column Name="LanguageCulture" DataType="String" RawType="varchar(30)" Length="30" Description="本地化语言标识" />
       <Column Name="UniqueSeoCode" DataType="String" RawType="varchar(30)" Length="30" Description="Url缩写" />
       <Column Name="LangAbbreviation" DataType="String" RawType="varchar(10)" Length="10" Description="语言简写" />

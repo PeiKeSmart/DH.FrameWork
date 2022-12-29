@@ -1,4 +1,4 @@
-﻿using DH.Core;
+﻿using DH.Exceptions;
 
 using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 

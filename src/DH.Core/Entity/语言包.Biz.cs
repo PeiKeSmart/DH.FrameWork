@@ -273,6 +273,30 @@ public partial class LocaleStringResource : DHEntityBase<LocaleStringResource>
 
         return result;
     }
+
+    /// <summary>根据编号查找</summary>
+    /// <param name="resourceName">资源名称</param>
+    /// <param name="languageId">语言Id</param>
+    /// <returns>实体对象</returns>
+    public static LocaleStringResource FindByResourceNameAndLanguageId(String resourceName, Int32 languageId)
+    {
+        if (languageId <= 0 || resourceName.IsNullOrWhiteSpace()) return null;
+
+        // 实体缓存
+        if (Meta.Session.Count < 20000) return Meta.Cache.Find(e => e.CultureId == languageId && e.LanKey == resourceName);
+
+        return Find(_.CultureId == languageId & _.LanKey == resourceName);
+    }
+
+    /// <summary>获取所有语言包</summary>
+    /// <returns>语言集合</returns>
+    public static IList<LocaleStringResource> GetAll()
+    {
+        // 实体缓存
+        if (Meta.Session.Count < 20000) return Meta.Cache.Entities;
+
+        return FindAll();
+    }
     #endregion
 
     #region 高级查询

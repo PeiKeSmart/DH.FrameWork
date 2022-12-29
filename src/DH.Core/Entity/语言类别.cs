@@ -52,6 +52,14 @@ namespace DH.Entity
         [BindColumn("EnglishName", "英文名称", "varchar(50)")]
         public String EnglishName { get => _EnglishName; set { if (OnPropertyChanging("EnglishName", value)) { _EnglishName = value; OnPropertyChanged("EnglishName"); } } }
 
+        private String _FlagImageFileName;
+        /// <summary>旗帜文件名</summary>
+        [DisplayName("旗帜文件名")]
+        [Description("旗帜文件名")]
+        [DataObjectField(false, false, true, 50)]
+        [BindColumn("FlagImageFileName", "旗帜文件名", "varchar(50)")]
+        public String FlagImageFileName { get => _FlagImageFileName; set { if (OnPropertyChanging("FlagImageFileName", value)) { _FlagImageFileName = value; OnPropertyChanged("FlagImageFileName"); } } }
+
         private String _LanguageCulture;
         /// <summary>本地化语言标识</summary>
         [DisplayName("本地化语言标识")]
@@ -219,6 +227,7 @@ namespace DH.Entity
                     case "Name": return _Name;
                     case "DisplayName": return _DisplayName;
                     case "EnglishName": return _EnglishName;
+                    case "FlagImageFileName": return _FlagImageFileName;
                     case "LanguageCulture": return _LanguageCulture;
                     case "UniqueSeoCode": return _UniqueSeoCode;
                     case "LangAbbreviation": return _LangAbbreviation;
@@ -249,6 +258,7 @@ namespace DH.Entity
                     case "Name": _Name = Convert.ToString(value); break;
                     case "DisplayName": _DisplayName = Convert.ToString(value); break;
                     case "EnglishName": _EnglishName = Convert.ToString(value); break;
+                    case "FlagImageFileName": _FlagImageFileName = Convert.ToString(value); break;
                     case "LanguageCulture": _LanguageCulture = Convert.ToString(value); break;
                     case "UniqueSeoCode": _UniqueSeoCode = Convert.ToString(value); break;
                     case "LangAbbreviation": _LangAbbreviation = Convert.ToString(value); break;
@@ -289,6 +299,9 @@ namespace DH.Entity
 
             /// <summary>英文名称</summary>
             public static readonly Field EnglishName = FindByName("EnglishName");
+
+            /// <summary>旗帜文件名</summary>
+            public static readonly Field FlagImageFileName = FindByName("FlagImageFileName");
 
             /// <summary>本地化语言标识</summary>
             public static readonly Field LanguageCulture = FindByName("LanguageCulture");
@@ -364,6 +377,9 @@ namespace DH.Entity
 
             /// <summary>英文名称</summary>
             public const String EnglishName = "EnglishName";
+
+            /// <summary>旗帜文件名</summary>
+            public const String FlagImageFileName = "FlagImageFileName";
 
             /// <summary>本地化语言标识</summary>
             public const String LanguageCulture = "LanguageCulture";
