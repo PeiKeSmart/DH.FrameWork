@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace DH.Web.Framework.Infrastructure;
 
@@ -70,11 +71,15 @@ public partial class DHCommonStartup : IDHStartup
         // 使用请求本地化
         application.UseDHRequestLocalization();
 
-        if (DHSetting.Current.AllSslEnabled)
+        var webHostEnvironment = EngineContext.Current.Resolve<IWebHostEnvironment>();
+        if (!webHostEnvironment.IsDevelopment())
         {
-            // HSTS的默认值为30天。 您可能要针对生产方案更改此设置，请参见https://aka.ms/aspnetcore-hsts。
-            application.UseHsts();
-            application.UseHttpsRedirection();
+            if (DHSetting.Current.AllSslEnabled)
+            {
+                // HSTS的默认值为30天。 您可能要针对生产方案更改此设置，请参见https://aka.ms/aspnetcore-hsts。
+                application.UseHsts();
+                application.UseHttpsRedirection();
+            }
         }
 
         // 配置静态Http上下文访问器

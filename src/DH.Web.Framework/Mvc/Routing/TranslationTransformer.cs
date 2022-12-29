@@ -17,7 +17,7 @@ namespace DH.Web.Framework.Mvc.Routing
                 values = new RouteValueDictionary();
 
                 var model = DynamicRoute.FindByRegexInfo("/");
-                if (model != null)
+                if (model != null && model.Enable)
                 {
                     values["controller"] = model.Controller;
                     values["action"] = model.Action;

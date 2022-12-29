@@ -221,6 +221,7 @@
       <Column Name="Action" DataType="String" Nullable="False" Description="动作" />
       <Column Name="Area" DataType="String" Description="区域" />
       <Column Name="Other" DataType="String" Description="其他参数" />
+      <Column Name="Enable" DataType="Boolean" Description="是否启用" />
       <Column Name="CreateUser" DataType="String" Description="创建者" />
       <Column Name="CreateUserID" DataType="Int32" Description="创建者" />
       <Column Name="CreateTime" DataType="DateTime" Description="创建时间" />

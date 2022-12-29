@@ -67,6 +67,14 @@ namespace DH.Entity
         [BindColumn("Other", "其他参数", "")]
         public String Other { get => _Other; set { if (OnPropertyChanging("Other", value)) { _Other = value; OnPropertyChanged("Other"); } } }
 
+        private Boolean _Enable;
+        /// <summary>是否启用</summary>
+        [DisplayName("是否启用")]
+        [Description("是否启用")]
+        [DataObjectField(false, false, false, 0)]
+        [BindColumn("Enable", "是否启用", "")]
+        public Boolean Enable { get => _Enable; set { if (OnPropertyChanging("Enable", value)) { _Enable = value; OnPropertyChanged("Enable"); } } }
+
         private String _CreateUser;
         /// <summary>创建者</summary>
         [DisplayName("创建者")]
@@ -148,6 +156,7 @@ namespace DH.Entity
                     case "Action": return _Action;
                     case "Area": return _Area;
                     case "Other": return _Other;
+                    case "Enable": return _Enable;
                     case "CreateUser": return _CreateUser;
                     case "CreateUserID": return _CreateUserID;
                     case "CreateTime": return _CreateTime;
@@ -169,6 +178,7 @@ namespace DH.Entity
                     case "Action": _Action = Convert.ToString(value); break;
                     case "Area": _Area = Convert.ToString(value); break;
                     case "Other": _Other = Convert.ToString(value); break;
+                    case "Enable": _Enable = value.ToBoolean(); break;
                     case "CreateUser": _CreateUser = Convert.ToString(value); break;
                     case "CreateUserID": _CreateUserID = value.ToInt(); break;
                     case "CreateTime": _CreateTime = value.ToDateTime(); break;
@@ -204,6 +214,9 @@ namespace DH.Entity
 
             /// <summary>其他参数</summary>
             public static readonly Field Other = FindByName("Other");
+
+            /// <summary>是否启用</summary>
+            public static readonly Field Enable = FindByName("Enable");
 
             /// <summary>创建者</summary>
             public static readonly Field CreateUser = FindByName("CreateUser");
@@ -252,6 +265,9 @@ namespace DH.Entity
 
             /// <summary>其他参数</summary>
             public const String Other = "Other";
+
+            /// <summary>是否启用</summary>
+            public const String Enable = "Enable";
 
             /// <summary>创建者</summary>
             public const String CreateUser = "CreateUser";
