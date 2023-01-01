@@ -3,7 +3,8 @@
 #### 介绍
 基于net core的底层快速开发框架，目前主要net core 版本号为：7.0.100，支持插件模式。
 
-已上传Nuet:请搜索DH.Web.Framework
+已上传Nuet:请搜索DH.Web.Framework  
+另已制作上传简单项目模板到Nuget:请搜索DH.Templates.Mvc.Base
 
 交流请加群：774046050  
 
