@@ -11,7 +11,6 @@
 	<AssemblyTitle>WebHook消息推送</AssemblyTitle>
 	<Description>用于DH框架的支持钉钉、企业微信等自定义机器人消息推送</Description>
 	<Company>湖北登灏科技有限公司</Company>
-	<Copyright>©2020-2022 湖北登灏科技有限公司</Copyright>
 	
 	<OutputPath>..\Bin</OutputPath>
 	<DocumentationFile>$(OutputPath)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>

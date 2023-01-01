@@ -11,7 +11,6 @@
 	<AssemblyTitle>jieba分析类</AssemblyTitle>
 	<Description>DH框架的基于JiebaNet的分析类。参考https://github.com/shshshdy/JIEba-netcore</Description>
 	<Company>湖北登灏科技有限公司</Company>
-	<Copyright>©2020-2022 湖北登灏科技有限公司</Copyright>
 	
 	<OutputPath>..\Bin</OutputPath>
 	<DocumentationFile>$(OutputPath)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>

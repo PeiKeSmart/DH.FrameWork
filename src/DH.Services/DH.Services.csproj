@@ -11,7 +11,6 @@
 	<AssemblyTitle>框架服务库</AssemblyTitle>
 	<Description>DH框架服务库</Description>
 	<Company>湖北登灏科技有限公司</Company>
-	<Copyright>©2020-2022 湖北登灏科技有限公司</Copyright>
 	
 	<OutputPath>..\Bin</OutputPath>
 	<DocumentationFile>$(OutputPath)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>

@@ -11,7 +11,6 @@
 	<AssemblyTitle>Pdf处理库</AssemblyTitle>
 	<Description>DH框架的Pdf处理库。基于https://github.com/bigcat-2016/HtmlRenderCore.PdfSharpCore</Description>
 	<Company>湖北登灏科技有限公司</Company>
-	<Copyright>©2020-2022 湖北登灏科技有限公司</Copyright>
 	
 	<OutputPath>..\Bin</OutputPath>
 	<DocumentationFile>$(OutputPath)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>

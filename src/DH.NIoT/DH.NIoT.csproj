@@ -11,7 +11,6 @@
 	<AssemblyTitle>IoT标准库</AssemblyTitle>
 	<Description>DH框架的IoT标准库，定义物联网领域的各种通信协议标准规范，不含具体实现。主要用于IoT平台建设，以及统一各种硬件驱动协议。参考NewLife.IoT</Description>
 	<Company>湖北登灏科技有限公司</Company>
-	<Copyright>©2020-2022 湖北登灏科技有限公司</Copyright>
 	
 	<OutputPath>..\Bin</OutputPath>
 	<DocumentationFile>$(OutputPath)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>

@@ -11,7 +11,6 @@
 	<AssemblyTitle>Web极速后台管理开发框架</AssemblyTitle>
 	<Description>Net Core Web基础开发框架，支持模板视图重载覆盖</Description>
     <Company>湖北登灏科技有限公司</Company>
-    <Copyright>©2020-2022 湖北登灏科技有限公司</Copyright>
 	
 	<OutputPath>..\Bin</OutputPath>
 	<DocumentationFile>$(OutputPath)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>

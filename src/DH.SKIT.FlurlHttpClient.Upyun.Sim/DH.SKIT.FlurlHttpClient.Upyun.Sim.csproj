@@ -12,7 +12,6 @@
 	<AssemblyTitle>DH框架又拍云客户端</AssemblyTitle>
 	<Description>用于DH框架的一个又拍云 API HTTP 客户端，基于 Flurl.Http 的又拍云一键登录服务（SIM）API 客户端。参考https://github.com/fudiwei/DotNetCore.SKIT.FlurlHttpClient.Upyun</Description>
 	<Company>湖北登灏科技有限公司</Company>
-	<Copyright>©2020-2022 湖北登灏科技有限公司</Copyright>
 	
 	<OutputPath>..\Bin</OutputPath>
 	<DocumentationFile>$(OutputPath)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>

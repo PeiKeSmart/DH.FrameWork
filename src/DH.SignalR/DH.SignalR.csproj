@@ -11,7 +11,6 @@
 	<AssemblyTitle>SignalR实时推送</AssemblyTitle>
 	<Description>用于DH框架的基于SignalR的实时推送库</Description>
 	<Company>湖北登灏科技有限公司</Company>
-	<Copyright>©2020-2022 湖北登灏科技有限公司</Copyright>
 	
 	<OutputPath>..\Bin</OutputPath>
 	<DocumentationFile>$(OutputPath)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>

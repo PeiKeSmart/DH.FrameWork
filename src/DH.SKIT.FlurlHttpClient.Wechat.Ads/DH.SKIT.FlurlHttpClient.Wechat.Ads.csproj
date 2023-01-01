@@ -12,7 +12,6 @@
 	<AssemblyTitle>DH框架微信广告类</AssemblyTitle>
 	<Description>用于DH框架的一个微信广告类。基于 Flurl.Http 的微信广告平台（广点通）API 客户端。参考https://github.com/fudiwei/DotNetCore.SKIT.FlurlHttpClient.Wechat</Description>
 	<Company>湖北登灏科技有限公司</Company>
-	<Copyright>©2020-2022 湖北登灏科技有限公司</Copyright>
 	
 	<OutputPath>..\Bin</OutputPath>
 	<DocumentationFile>$(OutputPath)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>

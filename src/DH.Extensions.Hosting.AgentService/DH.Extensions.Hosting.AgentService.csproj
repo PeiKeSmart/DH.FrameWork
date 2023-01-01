@@ -11,7 +11,6 @@
 	<AssemblyTitle>主机服务扩展组件</AssemblyTitle>
 	<Description>DH框架的应用程序注册为系统服务，支持Windows/Linux，参考NewLife.Agent</Description>
 	<Company>湖北登灏科技有限公司</Company>
-	<Copyright>©2020-2022 湖北登灏科技有限公司</Copyright>
 	
 	<OutputPath>..\Bin</OutputPath>
 	<DocumentationFile>$(OutputPath)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>

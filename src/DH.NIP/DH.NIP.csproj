@@ -11,7 +11,6 @@
 	<AssemblyTitle>IP地址库</AssemblyTitle>
 	<Description>DH框架的IP地址解析为物理地址库，参考NewLife.IP</Description>
 	<Company>湖北登灏科技有限公司</Company>
-	<Copyright>©2020-2022 湖北登灏科技有限公司</Copyright>
 	
 	<OutputPath>..\Bin</OutputPath>
 	<DocumentationFile>$(OutputPath)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>

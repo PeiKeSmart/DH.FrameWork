@@ -11,7 +11,6 @@
 	<AssemblyTitle>ModbusRTU协议</AssemblyTitle>
 	<Description>DH框架的串口ModbusRTU协议</Description>
 	<Company>湖北登灏科技有限公司</Company>
-	<Copyright>©2020-2022 湖北登灏科技有限公司</Copyright>
 	
 	<OutputPath>..\Bin</OutputPath>
 	<DocumentationFile>$(OutputPath)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>

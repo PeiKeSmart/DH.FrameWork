@@ -11,7 +11,6 @@
 	<AssemblyTitle>星尘分布式服务框架</AssemblyTitle>
 	<Description>DH框架的星尘分布式服务框架。星尘，分布式服务框架。节点管理，监控中心，配置中心，发布中心，注册中心。参考NewLife.Stardust.Extensions组件</Description>
 	<Company>湖北登灏科技有限公司</Company>
-	<Copyright>©2020-2022 湖北登灏科技有限公司</Copyright>
 	
 	<OutputPath>..\Bin</OutputPath>
 	<DocumentationFile>$(OutputPath)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>

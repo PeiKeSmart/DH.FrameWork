@@ -11,7 +11,6 @@
 	<AssemblyTitle>RPC远程过程调用</AssemblyTitle>
 	<Description>DH框架的RPC远程过程调用，二进制封装，提供高吞吐低延迟的高性能RPC框架，参考NewLife.Remoting</Description>
 	<Company>湖北登灏科技有限公司</Company>
-	<Copyright>©2020-2022 湖北登灏科技有限公司</Copyright>
 	
 	<OutputPath>..\Bin</OutputPath>
 	<DocumentationFile>$(OutputPath)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>

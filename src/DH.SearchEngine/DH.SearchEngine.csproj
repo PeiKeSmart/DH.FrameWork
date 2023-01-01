@@ -11,7 +11,6 @@
 	<AssemblyTitle>Lucene全文检索库</AssemblyTitle>
 	<Description>用于DH框架的基于Lucene.NET实现的全文检索搜索引擎。参考Masuit.LuceneEFCore.SearchEngine</Description>
 	<Company>湖北登灏科技有限公司</Company>
-	<Copyright>©2020-2022 湖北登灏科技有限公司</Copyright>
 	
 	<OutputPath>..\Bin</OutputPath>
 	<DocumentationFile>$(OutputPath)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
