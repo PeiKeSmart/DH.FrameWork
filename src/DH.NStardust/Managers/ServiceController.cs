@@ -105,7 +105,7 @@ internal class ServiceController : DisposeBase
             _workdir = workDir;
 
             var args = service.Arguments?.Trim();
-            WriteLog("启动应用：{0} {1} workDir={2} Mode={3}", file, args, workDir, service.Mode);
+            WriteLog("启动应用：{0} {1} workDir={2} Mode={3} Times={4}", file, args, workDir, service.Mode, _error);
             if (service.MaxMemory > 0) WriteLog("内存限制：{0:n0}M", service.MaxMemory);
 
             using var span = Tracer?.NewSpan("StartService", service);
@@ -120,11 +120,12 @@ internal class ServiceController : DisposeBase
                     case ServiceModes.Default:
                         break;
                     case ServiceModes.Extract:
+                        WriteLog("解压后不运行，外部主机（如IIS）将托管应用");
                         Extract(service, ref file, workDir);
                         Running = true;
-                        WriteLog("解压完成，外部主机（如IIS）将托管应用");
                         return true;
                     case ServiceModes.ExtractAndRun:
+                        WriteLog("解压后在工作目录运行");
                         Extract(service, ref file, workDir);
                         isZip = false;
                         break;
@@ -145,9 +146,20 @@ internal class ServiceController : DisposeBase
                         Log = XTrace.Log,
                     };
 
+                    // 如果出现超过一次的重启，则打开调试模式，截取控制台输出到日志
+                    if (_error > 1) deploy.Debug = true;
+
                     if (!args.IsNullOrEmpty() && !deploy.Parse(args.Split(" "))) return false;
 
-                    if (!deploy.Execute()) return false;
+                    if (!deploy.Execute())
+                    {
+                        WriteLog("Zip包启动失败！ExitCode={0}", deploy.Process?.ExitCode);
+
+                        // 上报最后错误
+                        if (!deploy.LastError.IsNullOrEmpty()) EventProvider?.WriteErrorEvent("ServiceController", deploy.LastError);
+
+                        return false;
+                    }
 
                     _fileName = deploy.ExecuteFile;
 
@@ -167,10 +179,19 @@ internal class ServiceController : DisposeBase
                         UseShellExecute = true,
                     };
 
+                    // 如果出现超过一次的重启，则打开调试模式，截取控制台输出到日志
+                    if (_error > 1) si.RedirectStandardError = true;
+
                     p = Process.Start(si);
                     if (p.WaitForExit(3_000) && p.ExitCode != 0)
                     {
                         WriteLog("启动失败！ExitCode={0}", p.ExitCode);
+
+                        if (si.RedirectStandardError)
+                        {
+                            var rs = p.StandardError.ReadToEnd();
+                            WriteLog(rs);
+                        }
 
                         return false;
                     }
@@ -182,6 +203,7 @@ internal class ServiceController : DisposeBase
 
                 if (service.Mode == ServiceModes.RunOnce)
                 {
+                    WriteLog("单次运行完成，禁用该应用服务");
                     service.Enable = false;
                     Running = false;
 
