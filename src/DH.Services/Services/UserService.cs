@@ -57,7 +57,8 @@ public class UserService
 
     #region 用户在线
     /// <summary>设置会话状态</summary>
-    /// <param name="sessionid"></param>
+    /// <param name="sessionId"></param>
+    /// <param name="deviceId"></param>
     /// <param name="page"></param>
     /// <param name="status"></param>
     /// <param name="userAgent"></param>
@@ -65,10 +66,10 @@ public class UserService
     /// <param name="name"></param>
     /// <param name="ip"></param>
     /// <returns></returns>
-    public UserOnline SetStatus(String sessionid, String page, String status, UserAgentParser userAgent, Int32 userid = 0, String name = null, String ip = null)
+    public UserOnline SetStatus(String sessionId, String deviceId, String page, String status, UserAgentParser userAgent, Int32 userid = 0, String name = null, String ip = null)
     {
         // LastError 设计缺陷，非空设计导致无法在插入中忽略
-        var entity = UserOnline.GetOrAdd(sessionid, UserOnline.FindBySessionID, k => new UserOnline
+        var entity = UserOnline.GetOrAdd(sessionId, UserOnline.FindBySessionID, k => new UserOnline
         {
             SessionID = k,
             LastError = new DateTime(1970, 1, 2),//MSSql不能使用1973年之前的日期
@@ -77,6 +78,7 @@ public class UserService
         });
         //var entity = FindBySessionID(sessionid) ?? new UserOnline();
         //entity.SessionID = sessionid;
+        entity.DeviceId = deviceId;
         entity.Page = page;
 
         if (userAgent != null)
@@ -112,19 +114,19 @@ public class UserService
     }
 
     /// <summary>设置网页会话状态</summary>
-    /// <param name="sessionid"></param>
+    /// <param name="sessionId"></param>
     /// <param name="page"></param>
     /// <param name="status"></param>
     /// <param name="userAgent"></param>
     /// <param name="user"></param>
     /// <param name="ip"></param>
     /// <returns></returns>
-    public UserOnline SetWebStatus(String sessionid, String page, String status, UserAgentParser userAgent, IUser user, String ip)
+    public UserOnline SetWebStatus(String sessionId, String deviceId, String page, String status, UserAgentParser userAgent, IUser user, String ip)
     {
         // 网页使用一个定时器来清理过期
         StartTimer();
 
-        if (user == null) return SetStatus(sessionid, page, status, userAgent, 0, null, ip);
+        if (user == null) return SetStatus(sessionId, deviceId, page, status, userAgent, 0, null, ip);
 
         // 根据IP修正用户城市
         if (user is User user2 && (user2.AreaId == 0 || user2.AreaId % 10000 == 0))
@@ -144,7 +146,7 @@ public class UserService
             }
         }
 
-        return SetStatus(sessionid, page, status, userAgent, user.ID, user + "", ip);
+        return SetStatus(sessionId, deviceId, page, status, userAgent, user.ID, user + "", ip);
     }
 
     /// <summary>删除过期，指定过期时间</summary>

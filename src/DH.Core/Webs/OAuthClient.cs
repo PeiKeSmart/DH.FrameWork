@@ -632,6 +632,7 @@ public class OAuthClient
 
         if (dic.TryGetValue("Avatar", out str)) Avatar = str.Trim();
         if (dic.TryGetValue("headimgurl", out str)) Avatar = str.Trim();
+        if (dic.TryGetValue("DeviceId", out str)) DeviceId = str.Trim();
 
         if (dic.TryGetValue("issubscribe", out str)) IsSubScribe = str.ToBoolean();
 
