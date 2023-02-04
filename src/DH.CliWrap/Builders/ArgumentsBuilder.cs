@@ -4,7 +4,7 @@ using System.Text;
 namespace DH.CliWrap.Builders;
 
 /// <summary>
-/// Builder that helps format command line arguments into a string.
+/// Builder that helps format command-line arguments into a string.
 /// </summary>
 public partial class ArgumentsBuilder
 {
