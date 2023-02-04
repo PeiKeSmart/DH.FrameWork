@@ -277,6 +277,9 @@ internal class ServiceController : DisposeBase
         WriteLog("停止应用 PID={0}/{1} 原因：{2}", p.Id, p.ProcessName, reason);
 
         using var span = Tracer?.NewSpan("StopService", $"{Info.Name} reason={reason}");
+        _timer.TryDispose();
+        _timer = null;
+
         try
         {
             p.CloseMainWindow();
@@ -489,8 +492,8 @@ internal class ServiceController : DisposeBase
 
         if (!first && !changed.IsNullOrEmpty())
         {
-            var msg = $"文件[{changed}]发生改变";
-            XTrace.WriteLine(msg);
+            var msg = $"文件[{changed}]发生改变，停止应用，延迟{Delay}秒后启动";
+            WriteLog(msg);
 
             // 进入就绪状态
             if (!_ready)
