@@ -3,13 +3,13 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
-using DG.Payment.JDPay.Notify;
-using DG.Payment.JDPay.Parser;
-using DG.Payment.JDPay.Utility;
-using DG.Payment.Security;
+using DH.Payment.JDPay.Notify;
+using DH.Payment.JDPay.Parser;
+using DH.Payment.JDPay.Utility;
+using DH.Payment.Security;
 using Microsoft.AspNetCore.Http;
 
-namespace DG.Payment.JDPay
+namespace DH.Payment.JDPay
 {
     /// <summary>
     /// JDPay 通知解析客户端。

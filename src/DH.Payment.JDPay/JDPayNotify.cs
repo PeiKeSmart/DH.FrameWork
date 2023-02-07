@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace DG.Payment.JDPay
+namespace DH.Payment.JDPay
 {
     /// <summary>
     /// JDPay 通知。

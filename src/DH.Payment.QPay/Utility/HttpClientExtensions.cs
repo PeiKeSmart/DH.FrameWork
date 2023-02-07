@@ -3,7 +3,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DG.Payment.QPay.Utility
+namespace DH.Payment.QPay.Utility
 {
     public static class HttpClientExtensions
     {

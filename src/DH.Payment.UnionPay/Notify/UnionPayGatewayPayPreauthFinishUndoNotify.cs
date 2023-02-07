@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace DG.Payment.UnionPay.Notify
+namespace DH.Payment.UnionPay.Notify
 {
     /// <summary>
     /// 网关支付(V2.2) 预授权完成撤销 - 后台通知

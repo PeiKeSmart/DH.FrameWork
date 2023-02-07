@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Xml.Serialization;
-using DG.Payment.JDPay.Domain;
+using DH.Payment.JDPay.Domain;
 
-namespace DG.Payment.JDPay.Notify
+namespace DH.Payment.JDPay.Notify
 {
     /// <summary>
     /// 异步通知接口

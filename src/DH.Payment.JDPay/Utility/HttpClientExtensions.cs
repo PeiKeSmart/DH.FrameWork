@@ -2,7 +2,7 @@
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DG.Payment.JDPay.Utility
+namespace DH.Payment.JDPay.Utility
 {
     /// <summary>
     /// HTTP客户端扩展。

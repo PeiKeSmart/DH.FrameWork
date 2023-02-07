@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace DG.Payment.UnionPay.Response
+namespace DH.Payment.UnionPay.Response
 {
     /// <summary>
     /// 手机支付控件(V2.2) 预授权完成 - 应答报文

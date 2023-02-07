@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace DG.Payment.JDPay.Notify
+namespace DH.Payment.JDPay.Notify
 {
     /// <summary>
     /// 支付成功页面跳转

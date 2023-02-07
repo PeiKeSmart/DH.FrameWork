@@ -1,4 +1,4 @@
-﻿namespace DG.Payment.LianLianPay
+﻿namespace DH.Payment.LianLianPay
 {
     /// <summary>
     /// LianLianPay 通知。

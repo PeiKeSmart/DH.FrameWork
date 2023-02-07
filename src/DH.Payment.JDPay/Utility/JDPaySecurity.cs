@@ -4,18 +4,18 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using DG.Payment.Security;
+using DH.Payment.Security;
 using Org.BouncyCastle.Cms;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Operators;
 using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.X509.Store;
-using SHA1 = DG.Payment.Security.SHA1;
-using SHA256 = DG.Payment.Security.SHA256;
+using SHA1 = DH.Payment.Security.SHA1;
+using SHA256 = DH.Payment.Security.SHA256;
 using X509Certificate = Org.BouncyCastle.X509.X509Certificate;
 
-namespace DG.Payment.JDPay.Utility
+namespace DH.Payment.JDPay.Utility
 {
     /// <summary>
     /// JDPay 安全类。

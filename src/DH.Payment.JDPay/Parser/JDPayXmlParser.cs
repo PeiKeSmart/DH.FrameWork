@@ -2,7 +2,7 @@
 using System.IO;
 using System.Xml.Serialization;
 
-namespace DG.Payment.JDPay.Parser
+namespace DH.Payment.JDPay.Parser
 {
     /// <summary>
     /// JDPay XML 解释器。

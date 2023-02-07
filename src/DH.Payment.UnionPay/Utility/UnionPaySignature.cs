@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text;
-using DG.Payment.Security;
+using DH.Payment.Security;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.Pkix;
@@ -12,7 +12,7 @@ using Org.BouncyCastle.Utilities.Collections;
 using Org.BouncyCastle.X509;
 using Org.BouncyCastle.X509.Store;
 
-namespace DG.Payment.UnionPay.Utility
+namespace DH.Payment.UnionPay.Utility
 {
     /// <summary>
     /// UnionPay 签名类。

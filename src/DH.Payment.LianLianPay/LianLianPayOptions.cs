@@ -1,7 +1,7 @@
-﻿using DG.Payment.Security;
+﻿using DH.Payment.Security;
 using Org.BouncyCastle.Crypto;
 
-namespace DG.Payment.LianLianPay
+namespace DH.Payment.LianLianPay
 {
     /// <summary>
     /// LianLianPay 选项。

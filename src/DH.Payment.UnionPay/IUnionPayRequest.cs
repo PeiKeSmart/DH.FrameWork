@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DG.Payment.UnionPay
+namespace DH.Payment.UnionPay
 {
     /// <summary>
     /// UnionPay 请求接口。

@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace DG.Payment.JDPay.Domain
+namespace DH.Payment.JDPay.Domain
 {
     public class PayTradeDetail
     {

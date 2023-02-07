@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace DG.Payment.UnionPay.Notify
+namespace DH.Payment.UnionPay.Notify
 {
     /// <summary>
     /// 无跳转支付(V2.2) 退货接口 - 后台通知

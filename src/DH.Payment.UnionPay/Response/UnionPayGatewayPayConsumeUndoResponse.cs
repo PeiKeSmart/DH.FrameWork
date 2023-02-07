@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace DG.Payment.UnionPay.Response
+namespace DH.Payment.UnionPay.Response
 {
     /// <summary>
     /// 网关支付(V2.2) 消费撤销接口 - 应答报文

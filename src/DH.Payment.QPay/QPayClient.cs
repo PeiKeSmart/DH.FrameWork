@@ -3,10 +3,10 @@ using System.IO;
 using System.Net.Http;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
-using DG.Payment.QPay.Parser;
-using DG.Payment.QPay.Utility;
+using DH.Payment.QPay.Parser;
+using DH.Payment.QPay.Utility;
 
-namespace DG.Payment.QPay
+namespace DH.Payment.QPay
 {
     public class QPayClient : IQPayClient
     {

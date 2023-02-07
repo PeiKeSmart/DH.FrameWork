@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DG.Payment.JDPay
+namespace DH.Payment.JDPay
 {
     /// <summary>
     /// JDPay NPP10 接口请求。

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using DG.Payment.JDPay.Response;
+using DH.Payment.JDPay.Response;
 
-namespace DG.Payment.JDPay.Request
+namespace DH.Payment.JDPay.Request
 {
     /// <summary>
     /// 退款申请接口

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Xml.Serialization;
 
-namespace DG.Payment.QPay
+namespace DH.Payment.QPay
 {
     [Serializable]
     public abstract class QPayObject

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace DG.Payment.UnionPay
+namespace DH.Payment.UnionPay
 {
     /// <summary>
     /// UnionPay 通知应答

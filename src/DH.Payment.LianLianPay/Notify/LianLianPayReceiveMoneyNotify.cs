@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace DG.Payment.LianLianPay.Notify
+namespace DH.Payment.LianLianPay.Notify
 {
     /// <summary>
     /// 收款类异步通知

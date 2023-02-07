@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using DG.Payment.QPay.Response;
-using DG.Payment.QPay.Utility;
+using DH.Payment.QPay.Response;
+using DH.Payment.QPay.Utility;
 
-namespace DG.Payment.QPay.Request
+namespace DH.Payment.QPay.Request
 {
     /// <summary>
     /// 现金红包 - 对账单下载 (普通商户)

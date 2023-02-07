@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using DG.Payment.Security;
+using DH.Payment.Security;
 using Org.BouncyCastle.Crypto;
 
-namespace DG.Payment.LianLianPay.Utility
+namespace DH.Payment.LianLianPay.Utility
 {
     /// <summary>
     /// LianLianPay 安全类。

@@ -1,4 +1,4 @@
-﻿namespace DG.Payment.JDPay
+﻿namespace DH.Payment.JDPay
 {
     /// <summary>
     /// JDPay 响应。

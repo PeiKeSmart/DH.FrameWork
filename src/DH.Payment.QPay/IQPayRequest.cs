@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DG.Payment.QPay
+namespace DH.Payment.QPay
 {
     public interface IQPayRequest<T> where T : QPayResponse
     {

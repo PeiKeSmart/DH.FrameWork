@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DG.Payment.UnionPay
+namespace DH.Payment.UnionPay
 {
     /// <summary>
     /// UnionPay 异常。

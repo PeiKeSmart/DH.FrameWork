@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Xml.Serialization;
-using DG.Payment.JDPay.Utility;
+using DH.Payment.JDPay.Utility;
 
-namespace DG.Payment.JDPay.Parser
+namespace DH.Payment.JDPay.Parser
 {
     /// <summary>
     /// JDPay 字典解释器。

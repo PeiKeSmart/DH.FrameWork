@@ -1,6 +1,6 @@
-﻿using DG.Payment.Security;
+﻿using DH.Payment.Security;
 
-namespace DG.Payment.QPay
+namespace DH.Payment.QPay
 {
     public class QPayOptions
     {

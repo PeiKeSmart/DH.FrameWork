@@ -1,9 +1,9 @@
-﻿using DG.Payment.UnionPay.Utility;
+﻿using DH.Payment.UnionPay.Utility;
 using Microsoft.Extensions.Logging;
 using NewLife;
 using System.IO;
 
-namespace DG.Payment.UnionPay
+namespace DH.Payment.UnionPay
 {
     /// <summary>
     /// UnionPay 选项。

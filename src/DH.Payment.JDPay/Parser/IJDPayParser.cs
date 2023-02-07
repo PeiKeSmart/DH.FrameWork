@@ -1,4 +1,4 @@
-﻿namespace DG.Payment.JDPay.Parser
+﻿namespace DH.Payment.JDPay.Parser
 {
     /// <summary>
     /// 京东支付结果解析

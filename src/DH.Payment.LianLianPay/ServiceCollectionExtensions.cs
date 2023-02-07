@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace DG.Payment.LianLianPay
+namespace DH.Payment.LianLianPay
 {
     public static class ServiceCollectionExtensions
     {

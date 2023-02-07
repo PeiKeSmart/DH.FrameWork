@@ -1,4 +1,4 @@
-﻿namespace DG.Payment.LianLianPay.Parser
+﻿namespace DH.Payment.LianLianPay.Parser
 {
     /// <summary>
     /// LianLianPay API响应解释器接口。

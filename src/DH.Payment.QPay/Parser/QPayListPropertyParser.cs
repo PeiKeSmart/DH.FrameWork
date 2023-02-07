@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Xml.Serialization;
 
-namespace DG.Payment.QPay.Parser
+namespace DH.Payment.QPay.Parser
 {
     public static class QPayListPropertyParser
     {

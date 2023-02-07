@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace DG.Payment.LianLianPay
+namespace DH.Payment.LianLianPay
 {
     /// <summary>
     /// LianLianPay 客户端。

@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace DG.Payment.UnionPay
+namespace DH.Payment.UnionPay
 {
     /// <summary>
     /// UnionPay 客户端。

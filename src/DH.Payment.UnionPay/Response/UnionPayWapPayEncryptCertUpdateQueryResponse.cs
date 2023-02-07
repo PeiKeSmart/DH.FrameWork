@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace DG.Payment.UnionPay.Response
+namespace DH.Payment.UnionPay.Response
 {
     /// <summary>
     /// 手机网页支付(V2.2) 银联加密公钥更新查询接口

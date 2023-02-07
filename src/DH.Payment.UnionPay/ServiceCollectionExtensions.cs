@@ -1,4 +1,4 @@
-﻿using DG.Payment.UnionPay;
+﻿using DH.Payment.UnionPay;
 using System;
 
 namespace Microsoft.Extensions.DependencyInjection

@@ -2,7 +2,7 @@
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DG.Payment.LianLianPay.Utility
+namespace DH.Payment.LianLianPay.Utility
 {
     /// <summary>
     /// HTTP客户端扩展。

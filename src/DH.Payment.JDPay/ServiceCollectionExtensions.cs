@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace DG.Payment.JDPay
+namespace DH.Payment.JDPay
 {
     public static class ServiceCollectionExtensions
     {

@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace DG.Payment.JDPay.Notify
+namespace DH.Payment.JDPay.Notify
 {
     /// <summary>
     /// 代付交易 - 异步通知接口

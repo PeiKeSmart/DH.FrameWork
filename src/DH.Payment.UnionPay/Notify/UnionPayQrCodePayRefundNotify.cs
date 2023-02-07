@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace DG.Payment.UnionPay.Notify
+namespace DH.Payment.UnionPay.Notify
 {
     /// <summary>
     /// 二维码支付(V2.2) 退货类（退货）- 后台通知

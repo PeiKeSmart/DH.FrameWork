@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DG.Payment.QPay.Utility
+namespace DH.Payment.QPay.Utility
 {
     public static class QPayUtility
     {

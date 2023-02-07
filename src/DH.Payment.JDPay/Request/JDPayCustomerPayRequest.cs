@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DG.Payment.JDPay.Request
+namespace DH.Payment.JDPay.Request
 {
     /// <summary>
     /// 商户二维码支付接口

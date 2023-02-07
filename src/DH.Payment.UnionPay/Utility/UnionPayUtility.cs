@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using System.Net;
 using System.Text;
 
-namespace DG.Payment.UnionPay.Utility
+namespace DH.Payment.UnionPay.Utility
 {
     /// <summary>
     /// UnionPay 工具类。

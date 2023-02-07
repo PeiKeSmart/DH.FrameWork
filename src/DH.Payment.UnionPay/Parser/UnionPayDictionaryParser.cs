@@ -2,7 +2,7 @@
 using System.Collections;
 using Newtonsoft.Json;
 
-namespace DG.Payment.UnionPay.Parser
+namespace DH.Payment.UnionPay.Parser
 {
     /// <summary>
     /// UnionPay 字典解释器。

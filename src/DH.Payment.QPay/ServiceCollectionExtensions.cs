@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Http;
 
-namespace DG.Payment.QPay
+namespace DH.Payment.QPay
 {
     public static class ServiceCollectionExtensions
     {

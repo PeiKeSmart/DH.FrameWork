@@ -4,13 +4,13 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
-using DG.Payment.JDPay.Parser;
-using DG.Payment.JDPay.Request;
-using DG.Payment.JDPay.Utility;
-using DG.Payment.Security;
+using DH.Payment.JDPay.Parser;
+using DH.Payment.JDPay.Request;
+using DH.Payment.JDPay.Utility;
+using DH.Payment.Security;
 using Newtonsoft.Json;
 
-namespace DG.Payment.JDPay
+namespace DH.Payment.JDPay
 {
     /// <summary>
     /// JDPay 客户端。

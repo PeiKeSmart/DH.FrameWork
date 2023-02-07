@@ -1,7 +1,7 @@
 ﻿using System.Text;
-using DG.Payment.Security;
+using DH.Payment.Security;
 
-namespace DG.Payment.QPay.Utility
+namespace DH.Payment.QPay.Utility
 {
     public static class QPaySignature
     {

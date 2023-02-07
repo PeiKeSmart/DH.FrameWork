@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace DG.Payment.QPay
+namespace DH.Payment.QPay
 {
     /// <summary>
     /// QPay 通知应答。

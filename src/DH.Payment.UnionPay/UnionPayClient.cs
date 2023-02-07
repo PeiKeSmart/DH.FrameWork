@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using DG.Payment.UnionPay.Parser;
-using DG.Payment.UnionPay.Request;
-using DG.Payment.UnionPay.Utility;
+using DH.Payment.UnionPay.Parser;
+using DH.Payment.UnionPay.Request;
+using DH.Payment.UnionPay.Utility;
 
-namespace DG.Payment.UnionPay
+namespace DH.Payment.UnionPay
 {
     /// <summary>
     /// UnionPay 客户端。

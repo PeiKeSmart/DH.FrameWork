@@ -1,4 +1,4 @@
-﻿namespace DG.Payment.QPay
+﻿namespace DH.Payment.QPay
 {
     public abstract class QPayResponse : QPayObject
     {

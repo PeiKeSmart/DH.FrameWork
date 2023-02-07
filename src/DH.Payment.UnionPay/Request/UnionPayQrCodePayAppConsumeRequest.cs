@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using DG.Payment.UnionPay.Response;
+using DH.Payment.UnionPay.Response;
 
-namespace DG.Payment.UnionPay.Request
+namespace DH.Payment.UnionPay.Request
 {
     /// <summary>
     /// 二维码支付(V2.2) 二维码消费（被扫）

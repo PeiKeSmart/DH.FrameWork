@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace DG.Payment.UnionPay.Response
+namespace DH.Payment.UnionPay.Response
 {
     /// <summary>
     /// 无跳转支付(V2.2) 银联全渠道支付开通查询交易 - 应答报文

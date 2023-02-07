@@ -1,42 +1,40 @@
-﻿using System;
-using System.Net.Http;
-using DG.Payment.QPay.Utility;
-using Microsoft.Extensions.Http;
+﻿using Microsoft.Extensions.Http;
 
-namespace DG.Payment.QPay
+namespace DH.Payment.QPay;
+
+using DH.Payment.QPay.Utility;
+
+public class QPayHandlerBuilderFilter : IHttpMessageHandlerBuilderFilter
 {
-    public class QPayHandlerBuilderFilter : IHttpMessageHandlerBuilderFilter
-    {
-        private readonly QPayCertificateManager _certificateManager;
+    private readonly QPayCertificateManager _certificateManager;
 
-        public QPayHandlerBuilderFilter(QPayCertificateManager certificateManager)
+    public QPayHandlerBuilderFilter(QPayCertificateManager certificateManager)
+    {
+        _certificateManager = certificateManager;
+    }
+
+    public Action<HttpMessageHandlerBuilder> Configure(Action<HttpMessageHandlerBuilder> next)
+    {
+        if (next == null)
         {
-            _certificateManager = certificateManager;
+            throw new ArgumentNullException(nameof(next));
         }
 
-        public Action<HttpMessageHandlerBuilder> Configure(Action<HttpMessageHandlerBuilder> next)
+        return (builder) =>
         {
-            if (next == null)
-            {
-                throw new ArgumentNullException(nameof(next));
-            }
+            next(builder);
 
-            return (builder) =>
+            if (builder.PrimaryHandler is HttpClientHandler handler)
             {
-                next(builder);
-
-                if (builder.PrimaryHandler is HttpClientHandler handler)
+                if (builder.Name.Contains(QPayClient.Prefix))
                 {
-                    if (builder.Name.Contains(QPayClient.Prefix))
+                    var hash = builder.Name.RemovePreFix(QPayClient.Prefix);
+                    if (_certificateManager.TryGet(hash, out var certificate))
                     {
-                        var hash = builder.Name.RemovePreFix(QPayClient.Prefix);
-                        if (_certificateManager.TryGet(hash, out var certificate))
-                        {
-                            handler.ClientCertificates.Add(certificate);
-                        }
+                        handler.ClientCertificates.Add(certificate);
                     }
                 }
-            };
-        }
+            }
+        };
     }
 }

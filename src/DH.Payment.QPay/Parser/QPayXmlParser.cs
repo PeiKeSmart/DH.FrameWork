@@ -3,7 +3,7 @@ using System.IO;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 
-namespace DG.Payment.QPay.Parser
+namespace DH.Payment.QPay.Parser
 {
     public class QPayXmlParser<T> : IQPayParser<T> where T : QPayObject
     {

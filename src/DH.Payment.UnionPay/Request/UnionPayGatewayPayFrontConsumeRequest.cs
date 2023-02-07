@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DG.Payment.UnionPay.Request
+namespace DH.Payment.UnionPay.Request
 {
     /// <summary>
     /// 网关支付(V2.2) 消费接口

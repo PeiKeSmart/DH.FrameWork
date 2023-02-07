@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace DG.Payment.QPay
+namespace DH.Payment.QPay
 {
     public interface IQPayClient
     {

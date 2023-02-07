@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DG.Payment.QPay
+namespace DH.Payment.QPay
 {
     public class QPayException : Exception
     {

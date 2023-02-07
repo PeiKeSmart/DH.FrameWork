@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace DG.Payment.QPay.Notify
+namespace DH.Payment.QPay.Notify
 {
     /// <summary>
     /// 现金红包 - 领取结果通知 (普通商户)

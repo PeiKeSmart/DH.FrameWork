@@ -1,11 +1,11 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
-using DG.Payment.LianLianPay.Parser;
-using DG.Payment.LianLianPay.Utility;
-using DG.Payment.Security;
+using DH.Payment.LianLianPay.Parser;
+using DH.Payment.LianLianPay.Utility;
+using DH.Payment.Security;
 using Microsoft.AspNetCore.Http;
 
-namespace DG.Payment.LianLianPay
+namespace DH.Payment.LianLianPay
 {
     /// <summary>
     /// LianLianPay 通知解析客户端。

@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace DG.Payment.JDPay.Response
+namespace DH.Payment.JDPay.Response
 {
     public class JDPayTradeQueryResponse : JDPayResponse
     {

@@ -7,7 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
 
-namespace DG.Payment.JDPay.Utility
+namespace DH.Payment.JDPay.Utility
 {
     /// <summary>
     /// JDPay 工具类。

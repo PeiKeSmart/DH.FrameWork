@@ -2,11 +2,11 @@
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using DG.Payment.QPay.Parser;
-using DG.Payment.QPay.Utility;
+using DH.Payment.QPay.Parser;
+using DH.Payment.QPay.Utility;
 using Microsoft.AspNetCore.Http;
 
-namespace DG.Payment.QPay
+namespace DH.Payment.QPay
 {
     public class QPayNotifyClient : IQPayNotifyClient
     {

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using DG.Payment.LianLianPay.Domain;
+using DH.Payment.LianLianPay.Domain;
 using Newtonsoft.Json;
 
-namespace DG.Payment.LianLianPay.Response
+namespace DH.Payment.LianLianPay.Response
 {
     /// <summary>
     /// 支持银行查询

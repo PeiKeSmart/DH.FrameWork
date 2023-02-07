@@ -4,7 +4,7 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
 
-namespace DG.Payment.LianLianPay.Utility
+namespace DH.Payment.LianLianPay.Utility
 {
     /// <summary>
     /// LianLianPay 工具类。

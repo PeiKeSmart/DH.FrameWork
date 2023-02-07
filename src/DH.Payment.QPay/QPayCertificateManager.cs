@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Security.Cryptography.X509Certificates;
 
-namespace DG.Payment.QPay
+namespace DH.Payment.QPay
 {
     public class QPayCertificateManager
     {

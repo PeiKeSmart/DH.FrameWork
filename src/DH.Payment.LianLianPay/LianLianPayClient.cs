@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
-using DG.Payment.LianLianPay.Parser;
-using DG.Payment.LianLianPay.Request;
-using DG.Payment.LianLianPay.Utility;
-using DG.Payment.Security;
+using DH.Payment.LianLianPay.Parser;
+using DH.Payment.LianLianPay.Request;
+using DH.Payment.LianLianPay.Utility;
+using DH.Payment.Security;
 using Newtonsoft.Json;
 
-namespace DG.Payment.LianLianPay
+namespace DH.Payment.LianLianPay
 {
     /// <summary>
     /// LianLianPay 客户端。

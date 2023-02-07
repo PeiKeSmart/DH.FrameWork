@@ -3,7 +3,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DG.Payment.UnionPay.Utility
+namespace DH.Payment.UnionPay.Utility
 {
     /// <summary>
     /// HTTP客户端扩展。

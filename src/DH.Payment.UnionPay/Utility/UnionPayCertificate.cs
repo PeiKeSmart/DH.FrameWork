@@ -1,7 +1,7 @@
 ﻿using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.X509;
 
-namespace DG.Payment.UnionPay.Utility
+namespace DH.Payment.UnionPay.Utility
 {
     /// <summary>
     /// UnionPay 证书信息

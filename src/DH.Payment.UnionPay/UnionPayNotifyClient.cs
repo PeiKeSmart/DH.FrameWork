@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
-using DG.Payment.UnionPay.Parser;
-using DG.Payment.UnionPay.Utility;
+using DH.Payment.UnionPay.Parser;
+using DH.Payment.UnionPay.Utility;
 using Microsoft.AspNetCore.Http;
 
-namespace DG.Payment.UnionPay
+namespace DH.Payment.UnionPay
 {
     public class UnionPayNotifyClient : IUnionPayNotifyClient
     {

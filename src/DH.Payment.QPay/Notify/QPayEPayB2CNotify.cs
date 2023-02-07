@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace DG.Payment.QPay.Notify
+namespace DH.Payment.QPay.Notify
 {
     /// <summary>
     /// 企业付款 - 用户到账通知 (普通商户)

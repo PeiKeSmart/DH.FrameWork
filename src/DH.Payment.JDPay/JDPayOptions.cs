@@ -1,8 +1,8 @@
 ﻿using System;
-using DG.Payment.Security;
+using DH.Payment.Security;
 using Org.BouncyCastle.Crypto;
 
-namespace DG.Payment.JDPay
+namespace DH.Payment.JDPay
 {
     /// <summary>
     /// JDPay 选项。

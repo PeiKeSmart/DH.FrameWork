@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace DG.Payment.QPay.Domain
+namespace DH.Payment.QPay.Domain
 {
     public class RefundInfo
     {

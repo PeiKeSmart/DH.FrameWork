@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace DG.Payment.LianLianPay.Response
+namespace DH.Payment.LianLianPay.Response
 {
     /// <summary>
     /// 账户余额查询

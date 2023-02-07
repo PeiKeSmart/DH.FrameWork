@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Xml.Serialization;
-using DG.Payment.JDPay.Domain;
+using DH.Payment.JDPay.Domain;
 
-namespace DG.Payment.JDPay.Response
+namespace DH.Payment.JDPay.Response
 {
     [XmlRoot("jdpay")]
     public class JDPayQueryResponse : JDPayResponse

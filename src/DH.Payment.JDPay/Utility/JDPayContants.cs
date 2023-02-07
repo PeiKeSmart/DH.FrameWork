@@ -1,4 +1,4 @@
-﻿namespace DG.Payment.JDPay.Utility
+﻿namespace DH.Payment.JDPay.Utility
 {
     internal class JDPayContants
     {

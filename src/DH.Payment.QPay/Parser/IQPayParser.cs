@@ -1,4 +1,4 @@
-﻿namespace DG.Payment.QPay.Parser
+﻿namespace DH.Payment.QPay.Parser
 {
     public interface IQPayParser<T> where T : QPayObject
     {

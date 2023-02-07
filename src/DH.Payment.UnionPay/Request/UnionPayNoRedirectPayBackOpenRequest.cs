@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using DG.Payment.UnionPay.Response;
+using DH.Payment.UnionPay.Response;
 
-namespace DG.Payment.UnionPay.Request
+namespace DH.Payment.UnionPay.Request
 {
     /// <summary>
     /// 无跳转支付(V2.2) 银联全渠道支付开通交易(订单号申请Token)

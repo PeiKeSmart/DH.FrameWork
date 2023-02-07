@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using DG.Payment.LianLianPay.Response;
+using DH.Payment.LianLianPay.Response;
 
-namespace DG.Payment.LianLianPay.Request
+namespace DH.Payment.LianLianPay.Request
 {
     /// <summary>
     /// 用户签约银行卡列表查询

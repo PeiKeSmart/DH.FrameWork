@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Xml.Serialization;
-using DG.Payment.QPay.Domain;
-using DG.Payment.QPay.Parser;
+using DH.Payment.QPay.Domain;
+using DH.Payment.QPay.Parser;
 
-namespace DG.Payment.QPay.Response
+namespace DH.Payment.QPay.Response
 {
     [XmlRoot("xml")]
     public class QPayRefundQueryResponse : QPayResponse

@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace DG.Payment.QPay.Response
+namespace DH.Payment.QPay.Response
 {
     [XmlRoot("xml")]
     public class QPaySpDownloadStatementDownResponse : QPayResponse

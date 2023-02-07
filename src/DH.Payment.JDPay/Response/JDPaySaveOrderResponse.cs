@@ -1,4 +1,4 @@
-﻿namespace DG.Payment.JDPay.Response
+﻿namespace DH.Payment.JDPay.Response
 {
     public class JDPaySaveOrderResponse : JDPayResponse
     { }
