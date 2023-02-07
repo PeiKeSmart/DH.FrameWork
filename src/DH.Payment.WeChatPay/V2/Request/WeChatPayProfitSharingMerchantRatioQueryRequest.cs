@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DG.Payment.WeChatPay.V2.Request
+namespace DH.Payment.WeChatPay.V2.Request
 {
     /// <summary>
     /// 分账 - 查询订单最大分账比例 (服务商)

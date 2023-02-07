@@ -3,7 +3,7 @@ using System.IO;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 
-namespace DG.Payment.WeChatPay.V2.Parser
+namespace DH.Payment.WeChatPay.V2.Parser
 {
     public class WeChatPayResponseXmlParser<T> where T : WeChatPayResponse
     {

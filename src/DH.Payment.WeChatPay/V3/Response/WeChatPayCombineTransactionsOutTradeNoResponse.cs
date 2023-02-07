@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
-using DG.Payment.WeChatPay.V3.Domain;
+using DH.Payment.WeChatPay.V3.Domain;
 
-namespace DG.Payment.WeChatPay.V3.Response
+namespace DH.Payment.WeChatPay.V3.Response
 {
     /// <summary>
     /// 基础支付、基础支付(服务商) - 合单支付 - 合单查询订单 - 返回参数

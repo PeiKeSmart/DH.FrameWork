@@ -3,10 +3,10 @@ using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-using DG.Payment.Security;
-using DG.Payment.WeChatPay.V3.Domain;
+using DH.Payment.Security;
+using DH.Payment.WeChatPay.V3.Domain;
 
-namespace DG.Payment.WeChatPay.V3.Parser
+namespace DH.Payment.WeChatPay.V3.Parser
 {
     public class WeChatPayNotifyJsonParser<T> where T : WeChatPayNotify
     {

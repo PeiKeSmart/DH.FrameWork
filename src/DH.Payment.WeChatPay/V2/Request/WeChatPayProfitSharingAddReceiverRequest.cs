@@ -1,7 +1,7 @@
-﻿using DG.Payment.WeChatPay.V2.Response;
+﻿using DH.Payment.WeChatPay.V2.Response;
 using System.Collections.Generic;
 
-namespace DG.Payment.WeChatPay.V2.Request
+namespace DH.Payment.WeChatPay.V2.Request
 {
     /// <summary>
     /// 分账 - 添加分账接收方 (普通商户 / 服务商)

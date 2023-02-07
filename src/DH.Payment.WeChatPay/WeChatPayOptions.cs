@@ -3,7 +3,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 
-namespace DG.Payment.WeChatPay
+namespace DH.Payment.WeChatPay
 {
     /// <summary>
     /// WeChatPay 配置选项

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DG.Payment.WeChatPay.V2.Request
+namespace DH.Payment.WeChatPay.V2.Request
 {
     /// <summary>
     /// 微信内H5调起支付

@@ -1,7 +1,7 @@
-﻿using DG.Payment.WeChatPay.V3.Notify;
+﻿using DH.Payment.WeChatPay.V3.Notify;
 using System;
 
-namespace DG.Payment.WeChatPay
+namespace DH.Payment.WeChatPay
 {
     public class WeChatPayTransactionsNotifyEvent
     {

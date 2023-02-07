@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using DG.Payment.WeChatPay.V2.Response;
+using DH.Payment.WeChatPay.V2.Response;
 
-namespace DG.Payment.WeChatPay.V2.Request
+namespace DH.Payment.WeChatPay.V2.Request
 {
     /// <summary>
     /// 查询红包记录 (普通商户)

@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace DG.Payment.WeChatPay.V2.Notify
+namespace DH.Payment.WeChatPay.V2.Notify
 {
     /// <summary>
     /// 微信代扣 - 签约、解约结果通知 (服务商)

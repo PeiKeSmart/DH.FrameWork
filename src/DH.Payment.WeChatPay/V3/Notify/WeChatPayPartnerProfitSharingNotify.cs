@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
-using DG.Payment.WeChatPay.V3.Domain;
+using DH.Payment.WeChatPay.V3.Domain;
 
-namespace DG.Payment.WeChatPay.V3.Notify
+namespace DH.Payment.WeChatPay.V3.Notify
 {
     /// <summary>
     /// 服务商分账 - 分账动账通知

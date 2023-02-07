@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace DG.Payment.WeChatPay.V3.Domain
+namespace DH.Payment.WeChatPay.V3.Domain
 {
     /// <summary>
     /// 基础支付、基础支付(服务商) - 合单支付 - 合单APP下单 - 请求JSON参数

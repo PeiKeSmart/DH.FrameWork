@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DG.Payment.WeChatPay.V3
+namespace DH.Payment.WeChatPay.V3
 {
     /// <summary>
     /// WeChatPay V3 Sdk请求接口

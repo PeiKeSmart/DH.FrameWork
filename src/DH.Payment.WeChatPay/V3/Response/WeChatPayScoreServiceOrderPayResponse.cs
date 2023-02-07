@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace DG.Payment.WeChatPay.V3.Response
+namespace DH.Payment.WeChatPay.V3.Response
 {
     /// <summary>
     /// 微信支付分 - 商户发起催收扣款 - 返回参数

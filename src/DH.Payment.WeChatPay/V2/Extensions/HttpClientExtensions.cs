@@ -3,7 +3,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DG.Payment.WeChatPay.V2.Extensions
+namespace DH.Payment.WeChatPay.V2.Extensions
 {
     public static class HttpClientExtensions
     {

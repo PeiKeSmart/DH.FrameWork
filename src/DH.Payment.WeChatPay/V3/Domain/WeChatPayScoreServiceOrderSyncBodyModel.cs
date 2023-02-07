@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace DG.Payment.WeChatPay.V3.Domain
+namespace DH.Payment.WeChatPay.V3.Domain
 {
     /// <summary>
     /// 微信支付分 - 同步服务订单信息 - 请求JSON参数

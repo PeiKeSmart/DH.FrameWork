@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace DG.Payment.WeChatPay.V2
+namespace DH.Payment.WeChatPay.V2
 {
     /// <summary>
     /// WeChatPay 通知客户端

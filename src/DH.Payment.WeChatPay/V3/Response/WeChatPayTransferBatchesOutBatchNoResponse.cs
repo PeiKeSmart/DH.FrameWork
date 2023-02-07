@@ -1,7 +1,7 @@
-﻿using DG.Payment.WeChatPay.V3.Domain;
+﻿using DH.Payment.WeChatPay.V3.Domain;
 using System.Text.Json.Serialization;
 
-namespace DG.Payment.WeChatPay.V3.Response;
+namespace DH.Payment.WeChatPay.V3.Response;
 
 public class WeChatPayTransferBatchesOutBatchNoResponse : WeChatPayResponse
 {

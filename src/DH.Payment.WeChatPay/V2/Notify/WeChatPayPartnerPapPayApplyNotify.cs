@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Xml.Serialization;
-using DG.Payment.WeChatPay.V2.Domain;
-using DG.Payment.WeChatPay.V2.Parser;
+using DH.Payment.WeChatPay.V2.Domain;
+using DH.Payment.WeChatPay.V2.Parser;
 
-namespace DG.Payment.WeChatPay.V2.Notify
+namespace DH.Payment.WeChatPay.V2.Notify
 {
     /// <summary>
     /// 微信代扣 - 申请扣款 - 扣款结果通知 (服务商)

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Text;
-using DG.Payment.Security;
+using DH.Payment.Security;
 
-namespace DG.Payment.WeChatPay.V2
+namespace DH.Payment.WeChatPay.V2
 {
     public static class WeChatPaySignature
     {

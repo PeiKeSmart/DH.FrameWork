@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DG.Payment.WeChatPay.V2.Request
+namespace DH.Payment.WeChatPay.V2.Request
 {
     /// <summary>
     /// 小程序调起支付

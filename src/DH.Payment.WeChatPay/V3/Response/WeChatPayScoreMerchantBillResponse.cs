@@ -1,7 +1,7 @@
-﻿using DG.Payment.WeChatPay.V3.Domain;
+﻿using DH.Payment.WeChatPay.V3.Domain;
 using System.Text.Json.Serialization;
 
-namespace DG.Payment.WeChatPay.V3.Response
+namespace DH.Payment.WeChatPay.V3.Response
 {
     /// <summary>
     /// 微信支付分 - 商户申请获取对账单 - 返回参数

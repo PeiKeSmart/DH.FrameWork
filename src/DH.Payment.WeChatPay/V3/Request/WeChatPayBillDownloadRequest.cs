@@ -1,7 +1,7 @@
 ﻿using System;
-using DG.Payment.WeChatPay.V3.Response;
+using DH.Payment.WeChatPay.V3.Response;
 
-namespace DG.Payment.WeChatPay.V3.Request
+namespace DH.Payment.WeChatPay.V3.Request
 {
     /// <summary>
     /// 基础支付 - JSAPI支付、APP支付、H5支付、Native支付、小程序支付 - 下载账单

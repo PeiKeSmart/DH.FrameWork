@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
-using DG.Payment.WeChatPay.V3.Domain;
+using DH.Payment.WeChatPay.V3.Domain;
 
-namespace DG.Payment.WeChatPay.V3.Response
+namespace DH.Payment.WeChatPay.V3.Response
 {
     /// <summary>
     /// 特约商户进件 - 查询申请单状态 - 返回参数

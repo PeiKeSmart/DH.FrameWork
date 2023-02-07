@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace DG.Payment.WeChatPay.V3.Response
+namespace DH.Payment.WeChatPay.V3.Response
 {
     /// <summary>
     /// 基础支付 - JSAPI支付、小程序支付 - 统一下单 - 返回参数

@@ -1,4 +1,4 @@
-﻿namespace DG.Payment.WeChatPay.V3.Response
+﻿namespace DH.Payment.WeChatPay.V3.Response
 {
     /// <summary>
     /// 特约商户进件 - 修改结算帐号 - 返回参数

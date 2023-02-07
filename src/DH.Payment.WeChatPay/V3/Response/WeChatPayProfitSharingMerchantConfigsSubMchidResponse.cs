@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace DG.Payment.WeChatPay.V3.Response
+namespace DH.Payment.WeChatPay.V3.Response
 {
     /// <summary>
     /// 资金应用 - 分账 - 查询最大分账比例 - 返回参数

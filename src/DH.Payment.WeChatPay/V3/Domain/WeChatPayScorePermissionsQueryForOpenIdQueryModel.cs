@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace DG.Payment.WeChatPay.V3.Domain
+namespace DH.Payment.WeChatPay.V3.Domain
 {
     /// <summary>
     /// 微信支付分 - 查询用户授权记录（openid）- 请求URL参数

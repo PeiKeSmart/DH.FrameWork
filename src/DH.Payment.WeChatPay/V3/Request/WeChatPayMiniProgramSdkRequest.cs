@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using DG.Payment.Security;
+using DH.Payment.Security;
 
-namespace DG.Payment.WeChatPay.V3.Request
+namespace DH.Payment.WeChatPay.V3.Request
 {
     /// <summary>
     /// 基础支付 - 小程序支付 - 小程序调起支付

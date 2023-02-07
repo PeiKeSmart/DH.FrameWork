@@ -1,8 +1,8 @@
-﻿using DG.Payment.WeChatPay.V3.Response;
+﻿using DH.Payment.WeChatPay.V3.Response;
 
 using System.Text.Json.Serialization;
 
-namespace DG.Payment.WeChatPay.V3.Request;
+namespace DH.Payment.WeChatPay.V3.Request;
 
 /// <summary>
 /// 微信批次单号查询批次单API - 最新更新时间：2022.4.6

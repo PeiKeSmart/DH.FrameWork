@@ -1,4 +1,4 @@
-﻿namespace DG.Payment.WeChatPay.V2
+﻿namespace DH.Payment.WeChatPay.V2
 {
     public static class WeChatPayCode
     {

@@ -1,4 +1,4 @@
-﻿namespace DG.Payment.WeChatPay.V3
+﻿namespace DH.Payment.WeChatPay.V3
 {
     /// <summary>
     /// 服务订单状态

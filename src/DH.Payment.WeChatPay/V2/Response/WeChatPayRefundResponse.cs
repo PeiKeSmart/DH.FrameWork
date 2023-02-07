@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Xml.Serialization;
-using DG.Payment.WeChatPay.V2.Domain;
-using DG.Payment.WeChatPay.V2.Parser;
+using DH.Payment.WeChatPay.V2.Domain;
+using DH.Payment.WeChatPay.V2.Parser;
 
-namespace DG.Payment.WeChatPay.V2.Response
+namespace DH.Payment.WeChatPay.V2.Response
 {
     [XmlRoot("xml")]
     public class WeChatPayRefundResponse : WeChatPayResponse

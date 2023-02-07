@@ -1,13 +1,13 @@
-﻿using DG.AspNetCore.Attributes;
-using DG.Events;
-using DG.Payment.WeChatPay.V3;
-using DG.Payment.WeChatPay.V3.Notify;
+﻿using DH.AspNetCore.Attributes;
+using DH.Core.Events;
+using DH.Payment.WeChatPay.V3;
+using DH.Payment.WeChatPay.V3.Notify;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace DG.Payment.WeChatPay.Controllers
+namespace DH.Payment.WeChatPay.Controllers
 {
     [HiddenApi]
     [Route("wechatpay/v3/notify")]

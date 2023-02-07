@@ -1,6 +1,6 @@
-﻿using DG.Payment.WeChatPay.V3.Response;
+﻿using DH.Payment.WeChatPay.V3.Response;
 
-namespace DG.Payment.WeChatPay.V3.Request
+namespace DH.Payment.WeChatPay.V3.Request
 {
     /// <summary>
     /// 微信支付分 - 同步服务订单信息

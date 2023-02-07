@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Xml.Serialization;
 
-namespace DG.Payment.WeChatPay.V2.Parser
+namespace DH.Payment.WeChatPay.V2.Parser
 {
     public static class WeChatPayListPropertyParser
     {

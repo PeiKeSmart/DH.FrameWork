@@ -7,7 +7,7 @@ namespace DH.Payment.Alipay;
 /// <summary>
 /// 代表用于在应用程序启动时配置框架的对象
 /// </summary>
-public class DGStartup : IDHStartup
+public class DHStartup : IDHStartup
 {
     /// <summary>
     /// 添加并配置任何中间件

@@ -1,6 +1,6 @@
-﻿using DG.Payment.WeChatPay.V3.Response;
+﻿using DH.Payment.WeChatPay.V3.Response;
 
-namespace DG.Payment.WeChatPay.V3.Request
+namespace DH.Payment.WeChatPay.V3.Request
 {
     /// <summary>
     /// 微信支付分 - 查询用户授权记录（授权协议号）

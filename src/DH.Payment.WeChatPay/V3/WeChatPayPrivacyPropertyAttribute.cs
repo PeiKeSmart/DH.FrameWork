@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DG.Payment.WeChatPay.V3
+namespace DH.Payment.WeChatPay.V3
 {
     /// <summary>
     /// 敏感信息字段

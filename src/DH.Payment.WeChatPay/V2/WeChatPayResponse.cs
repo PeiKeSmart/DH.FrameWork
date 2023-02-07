@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace DG.Payment.WeChatPay.V2
+namespace DH.Payment.WeChatPay.V2
 {
     /// <summary>
     /// WeChatPay V2 响应对象

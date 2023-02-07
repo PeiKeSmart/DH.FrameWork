@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace DG.Payment.WeChatPay.V3.Domain
+namespace DH.Payment.WeChatPay.V3.Domain
 {
     /// <summary>
     /// 基础支付(服务商) - H5支付 - 统一下单 - 请求JSON参数

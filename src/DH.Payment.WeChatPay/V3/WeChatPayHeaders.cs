@@ -1,4 +1,4 @@
-﻿namespace DG.Payment.WeChatPay.V3
+﻿namespace DH.Payment.WeChatPay.V3
 {
     /// <summary>
     /// 微信支付的应答、通知Http头信息

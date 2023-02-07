@@ -1,5 +1,5 @@
-﻿using DG.Payment.Security;
-using DG.Payment.WeChatPay.V3.Parser;
+﻿using DH.Payment.Security;
+using DH.Payment.WeChatPay.V3.Parser;
 using System;
 using System.IO;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DG.Payment.WeChatPay.V3
+namespace DH.Payment.WeChatPay.V3
 {
     public class WeChatPayNotifyClient : IWeChatPayNotifyClient
     {

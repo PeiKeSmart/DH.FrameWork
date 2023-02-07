@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace DG.Payment.WeChatPay.V3.Notify
+namespace DH.Payment.WeChatPay.V3.Notify
 {
     /// <summary>
     /// 微信支付分 - 开启/解除授权服务回调通知

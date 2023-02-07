@@ -1,13 +1,13 @@
-﻿using DG.Payment.Security;
-using DG.Payment.WeChatPay.V2.Parser;
+﻿using DH.Payment.Security;
+using DH.Payment.WeChatPay.V2.Parser;
 using System;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using MD5 = DG.Payment.Security.MD5;
+using MD5 = DH.Payment.Security.MD5;
 
-namespace DG.Payment.WeChatPay.V2
+namespace DH.Payment.WeChatPay.V2
 {
     public class WeChatPayNotifyClient : IWeChatPayNotifyClient
     {

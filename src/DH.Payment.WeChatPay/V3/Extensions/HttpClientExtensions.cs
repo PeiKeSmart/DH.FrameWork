@@ -1,4 +1,4 @@
-﻿using DG.Payment.Security;
+﻿using DH.Payment.Security;
 
 using System.Net;
 using System.Net.Http.Headers;
@@ -7,7 +7,7 @@ using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace DG.Payment.WeChatPay.V3.Extensions;
+namespace DH.Payment.WeChatPay.V3.Extensions;
 
 public static class HttpClientExtensions
 {

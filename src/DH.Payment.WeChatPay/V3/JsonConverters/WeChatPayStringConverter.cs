@@ -3,7 +3,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 
-namespace DG.Payment.WeChatPay.V3.JsonConverters
+namespace DH.Payment.WeChatPay.V3.JsonConverters
 {
     /// <summary>
     /// 将 JsonTokenType.Number、JsonTokenType.Array 转为 JsonString

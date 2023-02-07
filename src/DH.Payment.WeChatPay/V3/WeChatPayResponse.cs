@@ -1,8 +1,8 @@
 ﻿using System.Net;
 using System.Text.Json.Serialization;
-using DG.Payment.WeChatPay.V3.Domain;
+using DH.Payment.WeChatPay.V3.Domain;
 
-namespace DG.Payment.WeChatPay.V3
+namespace DH.Payment.WeChatPay.V3
 {
     /// <summary>
     /// WeChatPay V3 响应对象

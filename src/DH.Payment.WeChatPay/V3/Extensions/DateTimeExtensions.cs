@@ -1,4 +1,4 @@
-﻿namespace DG.Payment.WeChatPay.V3.Extensions;
+﻿namespace DH.Payment.WeChatPay.V3.Extensions;
 
 public static class DateTimeExtensions
 {

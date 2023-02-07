@@ -1,11 +1,11 @@
-﻿using DG.Payment.Security;
+﻿using DH.Payment.Security;
 
 using System.Collections.Concurrent;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
-namespace DG.Payment.WeChatPay.V3
+namespace DH.Payment.WeChatPay.V3
 {
     public class WeChatPayPlatformCertificateManager
     {

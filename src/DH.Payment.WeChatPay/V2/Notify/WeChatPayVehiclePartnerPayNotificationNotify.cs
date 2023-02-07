@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace DG.Payment.WeChatPay.V2.Notify
+namespace DH.Payment.WeChatPay.V2.Notify
 {
     /// <summary>
     /// 微信代扣 - 车主平台 - 车牌状态变更通知 (普通商户 / 服务商)

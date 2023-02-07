@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using DG.Payment.Security;
-using DG.Payment.WeChatPay.V2.Response;
+using DH.Payment.Security;
+using DH.Payment.WeChatPay.V2.Response;
 
-namespace DG.Payment.WeChatPay.V2.Request
+namespace DH.Payment.WeChatPay.V2.Request
 {
     /// <summary>
     /// 企业付款到银行卡 (普通商户)

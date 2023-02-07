@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DG.Payment.WeChatPay
+namespace DH.Payment.WeChatPay
 {
     public class WeChatPayDictionary : SortedDictionary<string, string>
     {

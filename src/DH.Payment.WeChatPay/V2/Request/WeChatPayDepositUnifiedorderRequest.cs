@@ -1,7 +1,7 @@
-﻿using DG.Payment.WeChatPay.V2.Response;
+﻿using DH.Payment.WeChatPay.V2.Response;
 using System.Collections.Generic;
 
-namespace DG.Payment.WeChatPay.V2.Request
+namespace DH.Payment.WeChatPay.V2.Request
 {
     /// <summary>
     /// 酒店押金 - 支付押金 - JSAPI下单、APP支付 (服务商)

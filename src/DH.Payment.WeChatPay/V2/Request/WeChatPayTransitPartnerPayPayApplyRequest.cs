@@ -1,6 +1,6 @@
-﻿using DG.Payment.WeChatPay.V2.Response;
+﻿using DH.Payment.WeChatPay.V2.Response;
 
-namespace DG.Payment.WeChatPay.V2.Request
+namespace DH.Payment.WeChatPay.V2.Request
 {
     /// <summary>
     /// 微信代扣 - 乘车码代扣 - 申请扣款 (服务商)

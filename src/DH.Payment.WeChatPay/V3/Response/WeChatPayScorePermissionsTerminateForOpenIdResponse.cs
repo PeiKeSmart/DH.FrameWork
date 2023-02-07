@@ -1,4 +1,4 @@
-﻿namespace DG.Payment.WeChatPay.V3.Response
+﻿namespace DH.Payment.WeChatPay.V3.Response
 {
     /// <summary>
     /// 微信支付分 - 解除用户授权关系（openid）- 返回参数

@@ -1,6 +1,6 @@
-﻿using DG.Payment.WeChatPay.V2.Response;
+﻿using DH.Payment.WeChatPay.V2.Response;
 
-namespace DG.Payment.WeChatPay.V2.Request
+namespace DH.Payment.WeChatPay.V2.Request
 {
     /// <summary>
     /// 微信代扣 - 查询签约关系 (直连)

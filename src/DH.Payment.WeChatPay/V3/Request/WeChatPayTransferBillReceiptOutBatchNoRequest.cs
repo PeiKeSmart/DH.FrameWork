@@ -1,8 +1,8 @@
-﻿using DG.Payment.WeChatPay.V3.Response;
+﻿using DH.Payment.WeChatPay.V3.Response;
 
 using System.Text.Json.Serialization;
 
-namespace DG.Payment.WeChatPay.V3.Request;
+namespace DH.Payment.WeChatPay.V3.Request;
 
 /// <summary>
 /// 查询转账电子回单API - 最新更新时间：2021.10.26

@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace DG.Payment.WeChatPay.V2.Response
+namespace DH.Payment.WeChatPay.V2.Response
 {
     [XmlRoot("xml")]
     public class WeChatPayDepositConsumeResponse : WeChatPayResponse

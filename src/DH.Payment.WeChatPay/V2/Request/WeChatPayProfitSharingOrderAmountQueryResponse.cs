@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace DG.Payment.WeChatPay.V2.Request
+namespace DH.Payment.WeChatPay.V2.Request
 {
     [XmlRoot("xml")]
     public class WeChatPayProfitSharingOrderAmountQueryResponse : WeChatPayResponse

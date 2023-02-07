@@ -1,6 +1,6 @@
-﻿using DG.Payment.WeChatPay.V3.Response;
+﻿using DH.Payment.WeChatPay.V3.Response;
 
-namespace DG.Payment.WeChatPay.V3.Request
+namespace DH.Payment.WeChatPay.V3.Request
 {
     /// <summary>
     /// 特约商户进件 - 修改结算帐号

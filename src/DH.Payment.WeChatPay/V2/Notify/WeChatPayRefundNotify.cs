@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace DG.Payment.WeChatPay.V2.Notify
+namespace DH.Payment.WeChatPay.V2.Notify
 {
     /// <summary>
     /// 申请退款 - 退款结果通知 (普通商户 / 服务商)

@@ -3,7 +3,7 @@ using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace DG.Payment.WeChatPay.V2.Parser
+namespace DH.Payment.WeChatPay.V2.Parser
 {
     public class WeChatPayObjectJsonParser<T> where T : WeChatPayObject
     {

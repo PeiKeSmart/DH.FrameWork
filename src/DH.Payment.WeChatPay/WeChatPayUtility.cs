@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Text;
 
-namespace DG.Payment.WeChatPay
+namespace DH.Payment.WeChatPay
 {
     public static class WeChatPayUtility
     {

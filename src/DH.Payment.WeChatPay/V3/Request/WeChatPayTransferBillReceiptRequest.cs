@@ -1,6 +1,6 @@
-﻿using DG.Payment.WeChatPay.V3.Response;
+﻿using DH.Payment.WeChatPay.V3.Response;
 
-namespace DG.Payment.WeChatPay.V3.Request;
+namespace DH.Payment.WeChatPay.V3.Request;
 
 /// <summary>
 /// 转账电子回单申请受理API - 最新更新时间：2021.10.26

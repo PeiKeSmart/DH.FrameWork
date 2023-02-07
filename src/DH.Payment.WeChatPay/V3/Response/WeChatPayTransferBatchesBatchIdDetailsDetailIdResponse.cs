@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace DG.Payment.WeChatPay.V3.Response;
+namespace DH.Payment.WeChatPay.V3.Response;
 
 public class WeChatPayTransferBatchesBatchIdDetailsDetailIdResponse : WeChatPayResponse
 {

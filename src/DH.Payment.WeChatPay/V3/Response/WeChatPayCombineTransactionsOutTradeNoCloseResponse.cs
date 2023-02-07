@@ -1,4 +1,4 @@
-﻿namespace DG.Payment.WeChatPay.V3.Response
+﻿namespace DH.Payment.WeChatPay.V3.Response
 {
     /// <summary>
     /// 基础支付、基础支付(服务商) - 合单支付 - 合单关闭订单 - 返回参数

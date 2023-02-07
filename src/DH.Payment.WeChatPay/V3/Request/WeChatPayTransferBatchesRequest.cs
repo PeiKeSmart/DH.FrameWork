@@ -1,6 +1,6 @@
-﻿using DG.Payment.WeChatPay.V3.Response;
+﻿using DH.Payment.WeChatPay.V3.Response;
 
-namespace DG.Payment.WeChatPay.V3.Request;
+namespace DH.Payment.WeChatPay.V3.Request;
 
 /// <summary>
 /// 发起商家转账API - 最新更新时间：2022.04.24

@@ -1,10 +1,10 @@
-﻿using DG.Payment.WeChatPay.V2.Extensions;
-using DG.Payment.WeChatPay.V2.Parser;
+﻿using DH.Payment.WeChatPay.V2.Extensions;
+using DH.Payment.WeChatPay.V2.Parser;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace DG.Payment.WeChatPay.V2
+namespace DH.Payment.WeChatPay.V2
 {
     public class WeChatPayClient : IWeChatPayClient
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DG.Payment.WeChatPay.V3
+namespace DH.Payment.WeChatPay.V3
 {
     /// <summary>
     /// 获取平台证书列表

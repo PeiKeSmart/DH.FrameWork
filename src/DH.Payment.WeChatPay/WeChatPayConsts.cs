@@ -1,4 +1,4 @@
-﻿namespace DG.Payment.WeChatPay
+﻿namespace DH.Payment.WeChatPay
 {
     public class WeChatPayConsts
     {

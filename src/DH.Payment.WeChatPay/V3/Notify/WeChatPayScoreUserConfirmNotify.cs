@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
-using DG.Payment.WeChatPay.V3.Domain;
+using DH.Payment.WeChatPay.V3.Domain;
 
-namespace DG.Payment.WeChatPay.V3.Notify
+namespace DH.Payment.WeChatPay.V3.Notify
 {
     /// <summary>
     /// 微信支付分 - 确认订单回调通知

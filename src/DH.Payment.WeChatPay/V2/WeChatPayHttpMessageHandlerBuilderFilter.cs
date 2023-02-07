@@ -2,7 +2,7 @@
 using System.Net.Http;
 using Microsoft.Extensions.Http;
 
-namespace DG.Payment.WeChatPay.V2
+namespace DH.Payment.WeChatPay.V2
 {
     public class WeChatPayHttpMessageHandlerBuilderFilter : IHttpMessageHandlerBuilderFilter
     {

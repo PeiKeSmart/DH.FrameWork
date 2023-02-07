@@ -1,4 +1,4 @@
-﻿namespace DG.Payment.WeChatPay.V3
+﻿namespace DH.Payment.WeChatPay.V3
 {
     /// <summary>
     /// WeChatPay V3 Post敏感信息请求接口

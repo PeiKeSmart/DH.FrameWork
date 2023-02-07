@@ -7,16 +7,16 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static void AddWeChatPay(this IServiceCollection services)
         {
-            services.AddHttpClient(DG.Payment.WeChatPay.V2.WeChatPayClient.Name);
-            services.TryAddEnumerable(ServiceDescriptor.Singleton<IHttpMessageHandlerBuilderFilter, DG.Payment.WeChatPay.V2.WeChatPayHttpMessageHandlerBuilderFilter>());
-            services.AddSingleton<DG.Payment.WeChatPay.V2.WeChatPayClientCertificateManager>();
-            services.AddSingleton<DG.Payment.WeChatPay.V2.IWeChatPayClient, DG.Payment.WeChatPay.V2.WeChatPayClient>();
-            services.AddSingleton<DG.Payment.WeChatPay.V2.IWeChatPayNotifyClient, DG.Payment.WeChatPay.V2.WeChatPayNotifyClient>();
+            services.AddHttpClient(DH.Payment.WeChatPay.V2.WeChatPayClient.Name);
+            services.TryAddEnumerable(ServiceDescriptor.Singleton<IHttpMessageHandlerBuilderFilter, DH.Payment.WeChatPay.V2.WeChatPayHttpMessageHandlerBuilderFilter>());
+            services.AddSingleton<DH.Payment.WeChatPay.V2.WeChatPayClientCertificateManager>();
+            services.AddSingleton<DH.Payment.WeChatPay.V2.IWeChatPayClient, DH.Payment.WeChatPay.V2.WeChatPayClient>();
+            services.AddSingleton<DH.Payment.WeChatPay.V2.IWeChatPayNotifyClient, DH.Payment.WeChatPay.V2.WeChatPayNotifyClient>();
 
-            services.AddHttpClient(DG.Payment.WeChatPay.V3.WeChatPayClient.Name);
-            services.AddSingleton<DG.Payment.WeChatPay.V3.WeChatPayPlatformCertificateManager>();
-            services.AddSingleton<DG.Payment.WeChatPay.V3.IWeChatPayClient, DG.Payment.WeChatPay.V3.WeChatPayClient>();
-            services.AddSingleton<DG.Payment.WeChatPay.V3.IWeChatPayNotifyClient, DG.Payment.WeChatPay.V3.WeChatPayNotifyClient>();
+            services.AddHttpClient(DH.Payment.WeChatPay.V3.WeChatPayClient.Name);
+            services.AddSingleton<DH.Payment.WeChatPay.V3.WeChatPayPlatformCertificateManager>();
+            services.AddSingleton<DH.Payment.WeChatPay.V3.IWeChatPayClient, DH.Payment.WeChatPay.V3.WeChatPayClient>();
+            services.AddSingleton<DH.Payment.WeChatPay.V3.IWeChatPayNotifyClient, DH.Payment.WeChatPay.V3.WeChatPayNotifyClient>();
         }
     }
 }

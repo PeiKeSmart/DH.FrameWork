@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using DG.Payment.WeChatPay.V2.Response;
+using DH.Payment.WeChatPay.V2.Response;
 
-namespace DG.Payment.WeChatPay.V2.Request
+namespace DH.Payment.WeChatPay.V2.Request
 {
     /// <summary>
     /// 撤销订单 (普通商户 / 服务商)
