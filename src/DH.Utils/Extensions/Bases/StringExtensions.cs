@@ -1282,4 +1282,124 @@ public static partial class StringExtensions
     }
 
     #endregion
+
+    #region IP地址
+
+    /// <summary>
+    /// 校验IP地址的正确性，同时支持IPv4和IPv6
+    /// </summary>
+    /// <param name="s">源字符串</param>
+    /// <param name="isMatch">是否匹配成功，若返回true，则会得到一个Match对象，否则为null</param>
+    /// <returns>匹配对象</returns>
+    public static IPAddress MatchInetAddress(this string s, out bool isMatch)
+    {
+        isMatch = IPAddress.TryParse(s, out var ip);
+        return ip;
+    }
+
+    /// <summary>
+    /// 校验IP地址的正确性，同时支持IPv4和IPv6
+    /// </summary>
+    /// <param name="s">源字符串</param>
+    /// <returns>是否匹配成功</returns>
+    public static bool MatchInetAddress(this string s)
+    {
+        MatchInetAddress(s, out var success);
+        return success;
+    }
+
+    /// <summary>
+    /// IP地址转换成数字
+    /// </summary>
+    /// <param name="addr">IP地址</param>
+    /// <returns>数字,输入无效IP地址返回0</returns>
+    public static uint IPToID(this string addr)
+    {
+        if (!IPAddress.TryParse(addr, out var ip))
+        {
+            return 0;
+        }
+
+        byte[] bInt = ip.GetAddressBytes();
+        if (BitConverter.IsLittleEndian)
+        {
+            Array.Reverse(bInt);
+        }
+
+        return BitConverter.ToUInt32(bInt, 0);
+    }
+
+    /// <summary>
+    /// 判断IP是否是私有地址
+    /// </summary>
+    /// <param name="ip"></param>
+    /// <returns></returns>
+    public static bool IsPrivateIP(this string ip)
+    {
+        if (MatchInetAddress(ip))
+        {
+            return IPAddress.Parse(ip).IsPrivateIP();
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// 判断IP地址在不在某个IP地址段
+    /// </summary>
+    /// <param name="input">需要判断的IP地址</param>
+    /// <param name="begin">起始地址</param>
+    /// <param name="ends">结束地址</param>
+    /// <returns></returns>
+    public static bool IpAddressInRange(this string input, string begin, string ends)
+    {
+        uint current = input.IPToID();
+        return current >= begin.IPToID() && current <= ends.IPToID();
+    }
+
+    #endregion IP地址
+
+    #region 检测字符串中是否包含列表中的关键词
+
+    /// <summary>
+    /// 检测字符串中是否包含列表中的关键词
+    /// </summary>
+    /// <param name="s">源字符串</param>
+    /// <param name="keys">关键词列表</param>
+    /// <param name="ignoreCase">忽略大小写</param>
+    /// <returns></returns>
+    public static bool Contains(this string s, IEnumerable<string> keys, bool ignoreCase = true)
+    {
+        if (!keys.Any() || string.IsNullOrEmpty(s))
+        {
+            return false;
+        }
+
+        if (ignoreCase)
+        {
+            return Regex.IsMatch(s, string.Join("|", keys.Select(Regex.Escape)), RegexOptions.IgnoreCase);
+        }
+
+        return Regex.IsMatch(s, string.Join("|", keys.Select(Regex.Escape)));
+    }
+
+    /// <summary>
+    /// 判断是否包含符号
+    /// </summary>
+    /// <param name="str"></param>
+    /// <param name="symbols"></param>
+    /// <returns></returns>
+    public static bool ContainsSymbol(this string str, params string[] symbols)
+    {
+        return str switch
+        {
+            null => false,
+            string a when string.IsNullOrEmpty(a) => false,
+            string a when a == string.Empty => false,
+            _ => symbols.Any(t => str.Contains(t))
+        };
+    }
+
+    #endregion 检测字符串中是否包含列表中的关键词
+
 }

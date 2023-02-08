@@ -14,8 +14,8 @@ namespace DH.Entity
     [Serializable]
     [DataObject]
     [Description("角色翻译表")]
-    [BindIndex("IU_DG_RoleLan_RId_LId", true, "RId,LId")]
-    [BindTable("DG_RoleLan", Description = "角色翻译表", ConnName = "DH", DbType = DatabaseType.None)]
+    [BindIndex("IU_DH_RoleLan_RId_LId", true, "RId,LId")]
+    [BindTable("DH_RoleLan", Description = "角色翻译表", ConnName = "DH", DbType = DatabaseType.None)]
     public partial class RoleLan
     {
         #region 属性

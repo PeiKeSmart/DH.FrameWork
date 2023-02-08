@@ -154,7 +154,11 @@ namespace DH.Web.Framework
             var detectedLanguage = GetLanguageFromRequest();
 
             // 获取当前保存的语言标识符
-            var currentLanguageId = customer.LanguageId;
+            var currentLanguageId = customer?.LanguageId;
+            if (currentLanguageId == 0)
+            {
+                currentLanguageId = Language.FindByDefault()?.Id;
+            }
 
             // 如果检测到语言，我们需要保存它
             if (detectedLanguage != null)

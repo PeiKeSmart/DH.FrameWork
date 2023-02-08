@@ -3,6 +3,7 @@
 using DH.Core.Configuration;
 using DH.Core.Infrastructure;
 using DH.Web.Framework.Infrastructure.Extensions;
+using DH.Web.Framework.WebMiddleware;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -75,7 +76,8 @@ public static class CubeService
 
 
 
-        
+
+        app.UseMiddleware<TranslateMiddleware>();  // 简繁转换
 
         // 配置应用程序HTTP请求管道
         app.ConfigureRequestPipeline();

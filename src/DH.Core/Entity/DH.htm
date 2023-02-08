@@ -3364,7 +3364,7 @@
     </tbody>
 </table>
 <br></br>
-<h3>角色扩展表（DG_RoleEx）</h3>
+<h3>角色扩展表（DH_RoleEx）</h3>
 <table>
     <thead>
         <tr>
@@ -3403,7 +3403,7 @@
     </tbody>
 </table>
 <br></br>
-<h3>角色翻译表（DG_RoleLan）</h3>
+<h3>角色翻译表（DH_RoleLan）</h3>
 <table>
     <thead>
         <tr>
@@ -3465,6 +3465,144 @@
         <tr>
             <td>Remark</td>
             <td>备注</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>
+<br></br>
+<h3>消息记录（DH_SendLog）</h3>
+<table>
+    <thead>
+        <tr>
+            <th>名称</th>
+            <th>显示名</th>
+            <th>类型</th>
+            <th>长度</th>
+            <th>精度</th>
+            <th>主键</th>
+            <th>允许空</th>
+            <th>备注</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Id</td>
+            <td>编号</td>
+            <td>Int32</td>
+            <td></td>
+            <td></td>
+            <td title="自增">AI</td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>SType</td>
+            <td>0为短信</td>
+            <td>Int16</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td>1为邮箱</td>
+        </tr>
+
+        <tr>
+            <td>Account</td>
+            <td>手机号_邮箱</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>手机号/邮箱</td>
+        </tr>
+
+        <tr>
+            <td>Msg</td>
+            <td>消息内容</td>
+            <td>String</td>
+            <td>100</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>MType</td>
+            <td>类型：1为注册</td>
+            <td>Int16</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td>2为登录，3为找回密码，4绑定手机/邮箱，5安全验证,6账号申诉，0测试</td>
+        </tr>
+
+        <tr>
+            <td>Remark</td>
+            <td>发送回复数据</td>
+            <td>String</td>
+            <td>300</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>SmsId</td>
+            <td>短信平台返回的Id</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>CreateUser</td>
+            <td>消息会员名</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>CreateUserID</td>
+            <td>消息会员ID</td>
+            <td>Int32</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td>注册为0</td>
+        </tr>
+
+        <tr>
+            <td>CreateTime</td>
+            <td>消息添加时间</td>
+            <td>DateTime</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>CreateIP</td>
+            <td>消息请求IP</td>
             <td>String</td>
             <td>50</td>
             <td></td>
