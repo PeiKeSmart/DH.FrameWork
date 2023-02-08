@@ -121,6 +121,12 @@ public class DHSetting : XmlConfig<DHSetting>
     [Category("用户登录")]
     public Boolean AutoRegister { get; set; } = true;
 
+    /// <summary>
+    /// 语言缓存名称
+    /// </summary>
+    [Description("语言缓存名称")]
+    public String LangName { get; set; } = "lang";
+
     #region 方法
     /// <summary>实例化</summary>
     public DHSetting() { }

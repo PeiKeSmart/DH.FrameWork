@@ -40,7 +40,7 @@ public class TranslateMiddleware
         }
 
         var path = context.Request.Path.Value ?? "";
-        if (path.StartsWith("/_blazor", StringComparison.OrdinalIgnoreCase) || path.StartsWith("/api", StringComparison.OrdinalIgnoreCase) || path.StartsWith("/file", StringComparison.OrdinalIgnoreCase) || path.StartsWith("/download", StringComparison.OrdinalIgnoreCase) || path.StartsWith("/captcha", StringComparison.OrdinalIgnoreCase) || context.Request.IsRobot() || path.Contains("/health", StringComparison.OrdinalIgnoreCase) || path.Contains("/Site/SiteMap", StringComparison.OrdinalIgnoreCase))
+        if (path.StartsWith("/_blazor", StringComparison.OrdinalIgnoreCase) || path.StartsWith("/api", StringComparison.OrdinalIgnoreCase) || path.StartsWith("/file", StringComparison.OrdinalIgnoreCase) || path.StartsWith("/download", StringComparison.OrdinalIgnoreCase) || path.StartsWith("/captcha", StringComparison.OrdinalIgnoreCase) || context.Request.IsRobot() || path.Contains("/health", StringComparison.OrdinalIgnoreCase) || path.Contains("/Site/SiteMap", StringComparison.OrdinalIgnoreCase) || path.StartsWith("/sso", StringComparison.OrdinalIgnoreCase))
         {
             return _next(context);
         }
@@ -53,12 +53,20 @@ public class TranslateMiddleware
             lang ??= context.Request.Cookies["tlang"];
             if (lang.IsNullOrEmpty())
             {
-                context.Response.Cookies.Append("tlang", langs.UniqueSeoCode);
-
                 if (context.Request.Location().Contains(new[] { "台湾", "香港", "澳门", "Taiwan", "TW", "HongKong", "HK" }))
                 {
+                    context.Response.Cookies.Append("tlang", "tw", new CookieOptions
+                    {
+                        Expires = DateTimeOffset.Now.AddMinutes(1),
+                    });
+
                     return Traditional(context);
                 }
+
+                context.Response.Cookies.Append("tlang", langs.UniqueSeoCode, new CookieOptions
+                {
+                    Expires = DateTimeOffset.Now.AddMinutes(1),
+                });
 
                 return _next(context);
             }
@@ -66,8 +74,6 @@ public class TranslateMiddleware
             {
                 return _next(context);
             }
-
-            context.Response.Cookies.Append("tlang", langs.UniqueSeoCode);
 
             return Traditional(context);
         }
