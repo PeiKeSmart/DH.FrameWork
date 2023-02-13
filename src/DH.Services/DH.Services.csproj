@@ -70,7 +70,7 @@
 		<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	</PackageReference>
 	<PackageReference Include="Polly" Version="7.2.3" />
-	<PackageReference Include="TimeZoneConverter" Version="6.0.1" />
+	<PackageReference Include="TimeZoneConverter" Version="6.1.0" />
   </ItemGroup>
 
 </Project>
