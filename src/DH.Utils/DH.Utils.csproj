@@ -60,7 +60,7 @@
   <ItemGroup>
 	<ProjectReference Include="..\DH.NCore\DH.NCore.csproj" />
 	<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
-	<PackageReference Include="Microsoft.Extensions.Options" Version="7.0.0" />
+	<PackageReference Include="Microsoft.Extensions.Options" Version="7.0.1" />
 	<PackageReference Include="murmurhash" Version="1.0.3" />
 	<PackageReference Include="Newtonsoft.Json" Version="13.0.3-beta1" />
 	<PackageReference Include="JetBrains.Annotations" Version="2022.3.1" />
