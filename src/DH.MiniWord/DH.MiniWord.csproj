@@ -62,7 +62,7 @@
 		<PrivateAssets>all</PrivateAssets>
 		<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	</PackageReference>
-	<PackageReference Include="MiniWord" Version="0.6.1" />
+	<PackageReference Include="MiniWord" Version="0.7.0" />
   </ItemGroup>
 
 </Project>
