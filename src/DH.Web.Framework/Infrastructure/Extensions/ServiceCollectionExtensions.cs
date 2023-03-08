@@ -1,7 +1,4 @@
-﻿using Azure.Identity;
-using Azure.Storage.Blobs;
-
-using DH.Core;
+﻿using DH.Core;
 using DH.Core.Configuration;
 using DH.Core.Domain.Common;
 using DH.Core.Http;
@@ -43,8 +40,7 @@ using WebMarkupMin.AspNetCore6;
 using WebMarkupMin.Core;
 using WebMarkupMin.NUglify;
 
-namespace DH.Web.Framework.Infrastructure.Extensions
-{
+namespace DH.Web.Framework.Infrastructure.Extensions {
     /// <summary>
     /// 表示IServiceCollection的扩展
     /// </summary>
@@ -192,32 +188,11 @@ namespace DH.Web.Framework.Infrastructure.Extensions
         /// <param name="services">服务描述符集合</param>
         public static void AddDHDataProtection(this IServiceCollection services)
         {
-            var appSettings = Singleton<AppSettings>.Instance;
-            if (appSettings.Get<AzureBlobConfig>().Enabled && appSettings.Get<AzureBlobConfig>().StoreDataProtectionKeys)
-            {
-                var blobServiceClient = new BlobServiceClient(appSettings.Get<AzureBlobConfig>().ConnectionString);
-                var blobContainerClient = blobServiceClient.GetBlobContainerClient(appSettings.Get<AzureBlobConfig>().DataProtectionKeysContainerName);
-                var blobClient = blobContainerClient.GetBlobClient(DHDataProtectionDefaults.AzureDataProtectionKeyFile);
+            var dataProtectionKeysPath = CommonHelper.DefaultFileProvider.MapPath(DHDataProtectionDefaults.DataProtectionKeysPath);
+            var dataProtectionKeysFolder = new System.IO.DirectoryInfo(dataProtectionKeysPath);
 
-                var dataProtectionBuilder = services.AddDataProtection().PersistKeysToAzureBlobStorage(blobClient);
-
-                if (!appSettings.Get<AzureBlobConfig>().DataProtectionKeysEncryptWithVault)
-                    return;
-
-                var keyIdentifier = appSettings.Get<AzureBlobConfig>().DataProtectionKeysVaultId;
-                var credentialOptions = new DefaultAzureCredentialOptions();
-                var tokenCredential = new DefaultAzureCredential(credentialOptions);
-
-                dataProtectionBuilder.ProtectKeysWithAzureKeyVault(new Uri(keyIdentifier), tokenCredential);
-            }
-            else
-            {
-                var dataProtectionKeysPath = CommonHelper.DefaultFileProvider.MapPath(DHDataProtectionDefaults.DataProtectionKeysPath);
-                var dataProtectionKeysFolder = new System.IO.DirectoryInfo(dataProtectionKeysPath);
-
-                // 将数据保护系统配置为将密钥持久化到指定目录
-                services.AddDataProtection().PersistKeysToFileSystem(dataProtectionKeysFolder);
-            }
+            // 将数据保护系统配置为将密钥持久化到指定目录
+            services.AddDataProtection().PersistKeysToFileSystem(dataProtectionKeysFolder);
         }
 
         /// <summary>
