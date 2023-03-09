@@ -39,8 +39,7 @@ public static class DHDictionaryExtensions
     /// <returns>如果找不到就用默认值。</returns>
     public static TValue GetOrDefault<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key)
     {
-        TValue obj;
-        return dictionary.TryGetValue(key, out obj) ? obj : default;
+        return dictionary.TryGetValue(key, out TValue obj) ? obj : default;
     }
 
     /// <summary>
