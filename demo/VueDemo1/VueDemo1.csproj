@@ -296,7 +296,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\DH.VueCliMiddleware\DH.VueCliMiddleware.csproj" />
-    <ProjectReference Include="..\..\src\DH.Web.Framework\DH.Web.Framework.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -16,7 +16,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DH.Api.MUI\DH.Api.MUI.csproj" />
-    <ProjectReference Include="..\DH.Web.Framework\DH.Web.Framework.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -58,10 +58,6 @@
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.2" />
     <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta15" />
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\DH.Web.Framework\DH.Web.Framework.csproj" />
-  </ItemGroup>
 	
   <!-- 此目标在“Build”目标之后执行。
     我们使用它来清理文件夹中不必要和过时库中的插件。 -->

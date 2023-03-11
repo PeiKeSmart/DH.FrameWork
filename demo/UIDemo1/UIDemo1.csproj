@@ -28,7 +28,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\DH.VirtualFileSystem\DH.VirtualFileSystem.csproj" />
-    <ProjectReference Include="..\..\src\DH.Web.Framework\DH.Web.Framework.csproj" />
   </ItemGroup>
 
 </Project>
