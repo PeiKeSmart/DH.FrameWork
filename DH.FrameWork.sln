@@ -298,6 +298,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DH.Payment.QPay", "src\DH.P
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DH.Payment.UnionPay", "src\DH.Payment.UnionPay\DH.Payment.UnionPay.csproj", "{432C6BA2-5B19-4D38-86CD-BFBACF6188B8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DH.WebOptimizer.Core", "src\DH.WebOptimizer.Core\DH.WebOptimizer.Core.csproj", "{A5AC5624-66DF-4DDB-AB57-8E8FCB9E8406}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -728,6 +730,10 @@ Global
 		{432C6BA2-5B19-4D38-86CD-BFBACF6188B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{432C6BA2-5B19-4D38-86CD-BFBACF6188B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{432C6BA2-5B19-4D38-86CD-BFBACF6188B8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5AC5624-66DF-4DDB-AB57-8E8FCB9E8406}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5AC5624-66DF-4DDB-AB57-8E8FCB9E8406}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5AC5624-66DF-4DDB-AB57-8E8FCB9E8406}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5AC5624-66DF-4DDB-AB57-8E8FCB9E8406}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -872,6 +878,7 @@ Global
 		{A0825B90-86BF-4846-A6F4-893A03E7CA2C} = {280A7E98-CCFF-4862-9150-C92A612B7261}
 		{1AE40295-7D51-4714-B920-28BC50B082ED} = {280A7E98-CCFF-4862-9150-C92A612B7261}
 		{432C6BA2-5B19-4D38-86CD-BFBACF6188B8} = {280A7E98-CCFF-4862-9150-C92A612B7261}
+		{A5AC5624-66DF-4DDB-AB57-8E8FCB9E8406} = {8ED504DD-57C1-47D3-82E7-9F7E4CDE4137}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8C334959-AE8C-42FF-B144-7B36F5C1B16A}
