@@ -4,7 +4,7 @@
   <PropertyGroup>
 	<LangVersion>latest</LangVersion>
     <OutputType>Library</OutputType>
-    <TargetFrameworks>netstandard2.1;netstandard2.0;net461</TargetFrameworks>
+    <TargetFrameworks>netstandard2.1;netstandard2.0;net45;net461</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
 	<RootNamespace>NewLife.IoT</RootNamespace>
 	<AssemblyName>DH.NIoT</AssemblyName>
@@ -58,7 +58,7 @@
     <Compile Remove="ITracerFeature.cs" />
   </ItemGroup>
 	
-  <ItemGroup Condition="'$(TargetFramework)'=='net461'">
+  <ItemGroup Condition="'$(TargetFramework)'=='net45' or '$(TargetFramework)'=='net461'">
 	<Reference Include="System.Net.Http" />
   </ItemGroup>
 	
