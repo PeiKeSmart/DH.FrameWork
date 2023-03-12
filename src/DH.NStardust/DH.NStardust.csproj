@@ -66,9 +66,10 @@
     <Compile Remove="Registry\RegistryClient.cs" />
     <Compile Remove="RpcClient.cs" />
     <Compile Remove="RpcServer.cs" />
+    <Compile Remove="Web\TracerModule.cs" />
   </ItemGroup>
 	
-  <ItemGroup Condition="'$(TargetFramework)'=='net461'">
+  <ItemGroup Condition="'$(TargetFramework)'=='net45' or '$(TargetFramework)'=='net461'">
 	<Reference Include="System.Net.Http" />
 	<Reference Include="System.Web" />
 	<Reference Include="System.Windows.Forms" />

@@ -4,7 +4,7 @@
   <PropertyGroup>
 	<LangVersion>latest</LangVersion>
     <OutputType>Library</OutputType>
-    <TargetFrameworks>net461;netstandard2.0;netstandard2.1</TargetFrameworks>
+    <TargetFrameworks>net45;net461;netstandard2.0;netstandard2.1</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
 	<RootNamespace>DH.NRemoting</RootNamespace>
 	<AssemblyName>DH.NRemoting</AssemblyName>
@@ -61,7 +61,7 @@
     <ProjectReference Include="..\DH.NCore\DH.NCore.csproj" />
   </ItemGroup>
 	
-  <ItemGroup Condition="'$(TargetFramework)'=='net461'">
+  <ItemGroup Condition="'$(TargetFramework)'=='net45' or '$(TargetFramework)'=='net461'">
 	<Reference Include="System.Net.Http" />
 	<Reference Include="System.Web" />
   </ItemGroup>
