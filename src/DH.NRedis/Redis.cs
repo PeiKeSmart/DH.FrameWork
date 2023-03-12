@@ -42,6 +42,9 @@ public class Redis : Cache, IConfigMapping, ILogFeature
     /// <summary>出错重试次数。如果出现协议解析错误，可以重试的次数，默认3</summary>
     public Int32 Retry { get; set; } = 3;
 
+    /// <summary>不可用节点的屏蔽时间。默认60秒</summary>
+    public Int32 ShieldingTime { get; set; } = 60;
+
     /// <summary>完全管道。读取操作是否合并进入管道，默认false</summary>
     public Boolean FullPipeline { get; set; }
 
@@ -164,7 +167,9 @@ public class Redis : Cache, IConfigMapping, ILogFeature
         if (config.IsNullOrEmpty()) return;
 
         if (config == _configOld) return;
-        if (!_configOld.IsNullOrEmpty()) XTrace.WriteLine("Redis[{0}]连接字符串改变！", Name);
+
+        if (!_configOld.IsNullOrEmpty() && XTrace.Log.Level <= LogLevel.Debug)
+            XTrace.WriteLine("Redis[{0}]连接字符串改变！", Name);
 
         var dic =
             config.Contains(',') && !config.Contains(';') ?
@@ -240,6 +245,33 @@ public class Redis : Cache, IConfigMapping, ILogFeature
     private Int32 _idxLast = -1;
     private DateTime _nextTrace;
 
+    /// <summary>获取解析后的地址列表</summary>
+    /// <returns></returns>
+    public NetUri[] GetServices()
+    {
+        // 初始化服务器地址列表
+        var svrs = _servers;
+        if (svrs != null) return svrs;
+
+        var ss = Server.Split(',', StringSplitOptions.RemoveEmptyEntries);
+        var uris = new NetUri[ss.Length];
+        for (var i = 0; i < ss.Length; i++)
+        {
+            var svr2 = ss[i];
+            if (!svr2.Contains("://")) svr2 = "tcp://" + svr2;
+
+            var uri = new NetUri(svr2);
+            if (uri.Port == 0) uri.Port = 6379;
+            uris[i] = uri;
+        }
+
+        return _servers = uris;
+    }
+
+    /// <summary>设置服务端地址列表</summary>
+    /// <param name="services"></param>
+    public void SetSevices(NetUri[] services) => _servers = services;
+
     /// <summary>创建连接客户端</summary>
     /// <returns></returns>
     protected virtual RedisClient OnCreate()
@@ -248,22 +280,7 @@ public class Redis : Cache, IConfigMapping, ILogFeature
         if (server.IsNullOrEmpty()) throw new ArgumentNullException(nameof(Server));
 
         // 初始化服务器地址列表
-        var svrs = _servers;
-        if (svrs == null)
-        {
-            var ss = server.Split(',', StringSplitOptions.RemoveEmptyEntries);
-            var uris = new NetUri[ss.Length];
-            for (var i = 0; i < ss.Length; i++)
-            {
-                var svr2 = ss[i];
-                if (!svr2.Contains("://")) svr2 = "tcp://" + svr2;
-
-                var uri = new NetUri(svr2);
-                if (uri.Port == 0) uri.Port = 6379;
-                uris[i] = uri;
-            }
-            svrs = _servers = uris;
-        }
+        var svrs = GetServices();
 
         // 一定时间后，切换回来主节点
         var idx = _idxServer;
@@ -281,7 +298,7 @@ public class Redis : Cache, IConfigMapping, ILogFeature
 
         if (idx != _idxLast)
         {
-            XTrace.WriteLine("Redis使用 {0}", svrs[idx % svrs.Length]);
+            WriteLog("使用Redis节点：{0}", svrs[idx % svrs.Length]);
 
             _idxLast = idx;
         }
@@ -408,6 +425,36 @@ public class Redis : Cache, IConfigMapping, ILogFeature
                 Counter?.StopCount(sw);
             }
         } while (true);
+    }
+
+    /// <summary>直接执行命令，不考虑集群读写</summary>
+    /// <typeparam name="TResult">返回类型</typeparam>
+    /// <param name="func">回调函数</param>
+    /// <returns></returns>
+    public virtual TResult Execute<TResult>(Func<RedisClient, TResult> func)
+    {
+        // 每次重试都需要重新从池里借出连接
+        var pool = Pool;
+        var client = pool.Get();
+        try
+        {
+            client.Reset();
+            return func(client);
+        }
+        catch (Exception ex)
+        {
+            if (ex is SocketException or IOException)
+            {
+                // 销毁连接
+                client.TryDispose();
+            }
+
+            throw;
+        }
+        finally
+        {
+            pool.Put(client);
+        }
     }
 
     /// <summary>异步执行命令</summary>

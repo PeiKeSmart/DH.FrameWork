@@ -1,11 +1,10 @@
 ﻿using System.Diagnostics;
 using NewLife.Caching.Common;
-using NewLife.Caching.Models;
 using NewLife.Data;
 using NewLife.Log;
 using NewLife.Serialization;
 
-namespace NewLife.Caching;
+namespace NewLife.Caching.Queues;
 
 /// <summary>Redis5.0的Stream数据结构，完整态消息队列，支持多消费组</summary>
 /// <remarks>
@@ -79,9 +78,7 @@ public class RedisStream<T> : QueueBase, IProducerConsumer<T>
 
         var gs = GetGroups();
         if (gs == null || !gs.Any(e => e.Name == group))
-        {
             return GroupCreate(group);
-        }
 
         return false;
     }
@@ -125,12 +122,8 @@ public class RedisStream<T> : QueueBase, IProducerConsumer<T>
             args.Add(value);
         }
         else if (value.GetType().IsArray)
-        {
-            foreach (var item in (value as Array))
-            {
+            foreach (var item in value as Array)
                 args.Add(item);
-            }
-        }
         else
         {
             // 在消息体内注入TraceId，用于构建调用链
@@ -169,9 +162,7 @@ public class RedisStream<T> : QueueBase, IProducerConsumer<T>
         if (values.Length <= 2)
         {
             for (var i = 0; i < values.Length; i++)
-            {
                 Add(values[i]);
-            }
             return values.Length;
         }
         if (_count == 0) Trim(MaxLength, true);
@@ -201,10 +192,8 @@ public class RedisStream<T> : QueueBase, IProducerConsumer<T>
     {
         var group = Group;
         if (!group.IsNullOrEmpty())
-        {
             // 优先处理未确认死信，避免在处理海量消息的过程中，未确认死信一直得不到处理
             _claims += RetryAck();
-        }
 
         // 抢过来的消息，优先处理，可能需要多次消费才能消耗完
         if (_claims > 0)
@@ -216,9 +205,7 @@ public class RedisStream<T> : QueueBase, IProducerConsumer<T>
                 XTrace.WriteLine("[{0}]优先处理历史：{1}", Group, rs2.Join(",", e => e.Id));
 
                 foreach (var item in rs2)
-                {
                     yield return item.GetBody<T>();
-                }
             }
             _claims = 0;
         }
@@ -284,10 +271,8 @@ public class RedisStream<T> : QueueBase, IProducerConsumer<T>
 
         var group = Group;
         if (!group.IsNullOrEmpty())
-        {
             // 优先处理未确认死信，避免在处理海量消息的过程中，未确认死信一直得不到处理
             _claims += RetryAck();
-        }
 
         // 抢过来的消息，优先处理，可能需要多次消费才能消耗完
         if (_claims > 0)
@@ -343,9 +328,7 @@ public class RedisStream<T> : QueueBase, IProducerConsumer<T>
     {
         var rs = 0;
         foreach (var item in keys)
-        {
             rs += Ack(Group, item);
-        }
         return rs;
     }
     #endregion
@@ -371,9 +354,7 @@ public class RedisStream<T> : QueueBase, IProducerConsumer<T>
                 if (list.Length == 0) break;
 
                 foreach (var item in list)
-                {
                     if (item.Idle > retry)
-                    {
                         if (item.Delivery >= MaxRetry)
                         {
                             XTrace.WriteLine("[{0}]删除多次失败死信：{1}", Group, item.ToJson());
@@ -389,28 +370,22 @@ public class RedisStream<T> : QueueBase, IProducerConsumer<T>
 
                             count++;
                         }
-                    }
-                }
 
                 // 下一个开始id
                 id = list[^1].Id;
                 var p = id.IndexOf('-');
-                if (p > 0) id = $"{(id[..p].ToLong() + 1)}-0";
+                if (p > 0) id = $"{id[..p].ToLong() + 1}-0";
             }
 
             // 清理历史消费者
             var consumers = GetConsumers(Group);
             if (consumers != null)
-            {
                 foreach (var item in consumers)
-                {
                     if (item.Pending == 0 && item.Idle > 3600_000)
                     {
                         XTrace.WriteLine("[{0}]删除空闲消费者：{1}", Group, item.ToJson());
                         GroupDeleteConsumer(Group, item.Name);
                     }
-                }
-            }
         }
 
         return count;
@@ -496,7 +471,6 @@ public class RedisStream<T> : QueueBase, IProducerConsumer<T>
 
         var rs = Execute(rc => rc.Execute<Object[]>("XREAD", args.ToArray()), true);
         if (rs != null && rs.Length == 1 && rs[0] is Object[] vs && vs.Length == 2)
-        {
             /*
 XREAD count 3 streams stream_key 0-0
 
@@ -520,7 +494,6 @@ XREAD count 3 streams stream_key 0-0
             4)      "36"
              */
             if (vs[1] is Object[] vs2) return Parse(vs2);
-        }
 
         return null;
     }
@@ -555,9 +528,7 @@ XREAD count 3 streams stream_key 0-0
 
         var rs = await ExecuteAsync(rc => rc.ExecuteAsync<Object[]>("XREAD", args.ToArray(), cancellationToken), true);
         if (rs != null && rs.Length == 1 && rs[0] is Object[] vs && vs.Length == 2)
-        {
             if (vs[1] is Object[] vs2) return Parse(vs2);
-        }
 
         return null;
     }
@@ -566,16 +537,12 @@ XREAD count 3 streams stream_key 0-0
     {
         var list = new List<Message>();
         foreach (var item in vs)
-        {
             if (item is Object[] vs3 && vs3.Length == 2 && vs3[0] is Packet pkId && vs3[1] is Object[] vs4)
-            {
                 list.Add(new Message
                 {
                     Id = pkId.ToStr(),
                     Body = vs4.Select(e => (e as Packet)?.ToStr()).ToArray(),
                 });
-            }
-        }
         return list;
     }
     #endregion
@@ -694,9 +661,7 @@ XREAD count 3 streams stream_key 0-0
             Execute(rc => rc.Execute<Object[]>("XREADGROUP", "GROUP", group, consumer, "COUNT", count, "STREAMS", Key, id), true) :
             Execute(rc => rc.Execute<Object[]>("XREADGROUP", "GROUP", group, consumer, "STREAMS", Key, id), true);
         if (rs != null && rs.Length == 1 && rs[0] is Object[] vs && vs.Length == 2)
-        {
             if (vs[1] is Object[] vs2) return Parse(vs2);
-        }
 
         return null;
     }
@@ -722,9 +687,7 @@ XREAD count 3 streams stream_key 0-0
             await ExecuteAsync(rc => rc.ExecuteAsync<Object[]>("XREADGROUP", new Object[] { "GROUP", group, consumer, "BLOCK", block, "COUNT", count, "STREAMS", Key, id }, cancellationToken), true) :
             await ExecuteAsync(rc => rc.ExecuteAsync<Object[]>("XREADGROUP", new Object[] { "GROUP", group, consumer, "BLOCK", block, "STREAMS", Key, id }, cancellationToken), true);
         if (rs != null && rs.Length == 1 && rs[0] is Object[] vs && vs.Length == 2)
-        {
             if (vs[1] is Object[] vs2) return Parse(vs2);
-        }
 
         return null;
     }
@@ -817,9 +780,7 @@ XREAD count 3 streams stream_key 0-0
 
                     var bodys = mqMsg.Body;
                     for (var i = 0; i < bodys.Length; i++)
-                    {
                         if (bodys[i].EqualIgnoreCase("traceParent") && i + 1 < bodys.Length) span.Detach(bodys[i + 1]);
-                    }
 
                     // 解码
                     var msg = mqMsg.GetBody<T>();
@@ -831,10 +792,8 @@ XREAD count 3 streams stream_key 0-0
                     Acknowledge(mqMsg.Id);
                 }
                 else
-                {
                     // 没有消息，歇一会
                     await Task.Delay(1000, cancellationToken);
-                }
             }
             catch (ThreadAbortException) { break; }
             catch (ThreadInterruptedException) { break; }
@@ -857,5 +816,79 @@ XREAD count 3 streams stream_key 0-0
     /// <param name="cancellationToken">取消令牌</param>
     /// <returns></returns>
     public async Task ConsumeAsync(Action<T> onMessage, CancellationToken cancellationToken = default) => await ConsumeAsync((m, k, t) => { onMessage(m); return Task.FromResult(0); }, cancellationToken);
+
+    /// <summary>队列消费大循环，处理消息后自动确认</summary>
+    /// <param name="onMessage">消息处理。如果处理消息时抛出异常，消息将延迟后回到队列</param>
+    /// <param name="batchSize">批大小。默认100</param>
+    /// <param name="cancellationToken">取消令牌</param>
+    /// <returns></returns>
+    public async Task ConsumeAsync(Func<T[], Message[], CancellationToken, Task> onMessage, Int32 batchSize = 100, CancellationToken cancellationToken = default)
+    {
+        await Task.Yield();
+
+        // 自动创建消费组
+        SetGroup(Group);
+
+        // 主题
+        var topic = Key;
+        if (topic.IsNullOrEmpty()) topic = GetType().Name;
+
+        // 超时时间，用于阻塞等待
+        var timeout = BlockTime;
+        if (batchSize <= 0) batchSize = 100;
+
+        while (!cancellationToken.IsCancellationRequested)
+        {
+            // 大循环之前，打断性能追踪调用链
+            DefaultSpan.Current = null;
+
+            ISpan span = null;
+            try
+            {
+                // 异步阻塞消费
+                var mqMsgs = await TakeMessagesAsync(batchSize, timeout, cancellationToken);
+                if (mqMsgs != null && mqMsgs.Count > 0)
+                {
+                    // 埋点
+                    span = Redis.Tracer?.NewSpan($"redismq:{topic}:Consumes", mqMsgs);
+
+                    var bodys = mqMsgs[0].Body;
+                    for (var i = 0; i < bodys.Length; i++)
+                        if (bodys[i].EqualIgnoreCase("traceParent") && i + 1 < bodys.Length) span.Detach(bodys[i + 1]);
+
+                    // 解码
+                    var msgs = mqMsgs.Select(e => e.GetBody<T>()).ToArray();
+
+                    // 处理消息
+                    await onMessage(msgs, mqMsgs.ToArray(), cancellationToken);
+
+                    // 确认消息
+                    Acknowledge(mqMsgs.Select(e => e.Id).ToArray());
+                }
+                else
+                    // 没有消息，歇一会
+                    await Task.Delay(1000, cancellationToken);
+            }
+            catch (ThreadAbortException) { break; }
+            catch (ThreadInterruptedException) { break; }
+            catch (Exception ex)
+            {
+                if (cancellationToken.IsCancellationRequested) break;
+
+                span?.SetError(ex, null);
+            }
+            finally
+            {
+                span?.Dispose();
+            }
+        }
+    }
+
+    /// <summary>队列消费大循环，批量处理消息后自动确认</summary>
+    /// <param name="onMessage">消息处理。如果处理消息时抛出异常，消息将延迟后回到队列</param>
+    /// <param name="batchSize">批大小。默认100</param>
+    /// <param name="cancellationToken">取消令牌</param>
+    /// <returns></returns>
+    public async Task ConsumeAsync(Action<T[]> onMessage, Int32 batchSize = 100, CancellationToken cancellationToken = default) => await ConsumeAsync((m, k, t) => { onMessage(m); return Task.FromResult(0); }, batchSize, cancellationToken);
     #endregion
 }

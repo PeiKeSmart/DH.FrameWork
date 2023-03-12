@@ -31,6 +31,9 @@ public class RedisClient : DisposeBase
     /// <summary>宿主</summary>
     public Redis Host { get; set; }
 
+    /// <summary>读写超时时间。默认为0取Host.Timeout</summary>
+    public Int32 Timeout { get; set; }
+
     /// <summary>是否已登录</summary>
     public Boolean Logined { get; private set; }
 
@@ -102,7 +105,8 @@ public class RedisClient : DisposeBase
             tc.TryDispose();
             if (!create) return null;
 
-            var timeout = Host.Timeout;
+            var timeout = Timeout;
+            if (timeout == 0) timeout = Host.Timeout;
             tc = new TcpClient
             {
                 SendTimeout = timeout,
@@ -192,7 +196,8 @@ public class RedisClient : DisposeBase
             tc.TryDispose();
             if (!create) return null;
 
-            var timeout = Host.Timeout;
+            var timeout = Timeout;
+            if (timeout == 0) timeout = Host.Timeout;
             tc = new TcpClient
             {
                 SendTimeout = timeout,
@@ -368,6 +373,7 @@ public class RedisClient : DisposeBase
         {
             // 验证登录
             CheckLogin(cmd);
+            CheckSelect(cmd);
 
             var ms = Pool.MemoryStream.Get();
             GetRequest(ms, cmd, args, oriArgs);
@@ -410,7 +416,8 @@ public class RedisClient : DisposeBase
 
         // 取巧进行异步操作，只要异步读取到第一个字节，后续同步读取
         var buf = new Byte[1];
-        if (cancellationToken == CancellationToken.None) cancellationToken = new CancellationTokenSource(Host.Timeout).Token;
+        if (cancellationToken == CancellationToken.None)
+            cancellationToken = new CancellationTokenSource(Timeout > 0 ? Timeout : Host.Timeout).Token;
         var n = await ms.ReadAsync(buf, 0, buf.Length, cancellationToken);
         if (n <= 0) return list;
 
@@ -477,6 +484,7 @@ public class RedisClient : DisposeBase
         {
             // 验证登录
             CheckLogin(cmd);
+            CheckSelect(cmd);
 
             var ms = Pool.MemoryStream.Get();
             GetRequest(ms, cmd, args, oriArgs);
@@ -499,15 +507,24 @@ public class RedisClient : DisposeBase
     private void CheckLogin(String cmd)
     {
         if (Logined) return;
-        if (cmd.EqualIgnoreCase("Auth", "Select")) return;
+        if (cmd.EqualIgnoreCase("Auth")) return;
 
         if (!Host.Password.IsNullOrEmpty() && !Auth(Host.UserName, Host.Password))
             throw new Exception("登录失败！");
 
-        if (Host.Db > 0) Select(Host.Db);
-
         Logined = true;
         LoginTime = DateTime.Now;
+    }
+
+    private Int32 _selected = -1;
+    private void CheckSelect(String cmd)
+    {
+        if (_selected >= 0 && _selected != Host.Db) return;
+        if (cmd.EqualIgnoreCase("Auth", "Select", "Info")) return;
+
+        if (Host.Db > 0 && (Host is not FullRedis rds || !rds.Mode.EqualIgnoreCase("cluster", "sentinel"))) Select(Host.Db);
+
+        _selected = Host.Db;
     }
 
     /// <summary>重置。干掉历史残留数据</summary>
@@ -536,7 +553,7 @@ public class RedisClient : DisposeBase
         // 结果集数量
         var len = ReadLine(ms).ToInt(-1);
         log?.Append(len);
-        if (len < 0) return Array.Empty<Object>();
+        if (len < 0) return new Object[0];
 
         var arr = new Object[len];
         for (var i = 0; i < len; i++)
@@ -836,6 +853,7 @@ public class RedisClient : DisposeBase
 
         // 验证登录
         CheckLogin(null);
+        CheckSelect(null);
 
         // 整体打包所有命令
         var ms = Pool.MemoryStream.Get();
