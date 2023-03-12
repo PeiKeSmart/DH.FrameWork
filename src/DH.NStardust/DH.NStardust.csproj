@@ -4,7 +4,7 @@
   <PropertyGroup>
 	<LangVersion>latest</LangVersion>
     <OutputType>Library</OutputType>
-    <TargetFrameworks>netstandard2.1;net5.0;net6.0;net7.0;netcoreapp3.1;netstandard2.0;net461</TargetFrameworks>
+	<TargetFrameworks>net45;net461;netstandard2.0;netstandard2.1;netcoreapp3.1;net5.0;net6.0;net6.0-windows;net7.0;net7.0-windows</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
 	<RootNamespace>DH.NStardust</RootNamespace>
 	<AssemblyName>DH.NStardust</AssemblyName>
@@ -52,6 +52,11 @@
     <Optimize>false</Optimize>
     <WarningLevel>3</WarningLevel>
   </PropertyGroup>
+	
+  <ItemGroup Condition="'$(TargetFramework)'=='net5.0-windows' or '$(TargetFramework)'=='net6.0-windows' or '$(TargetFramework)'=='net7.0-windows'">
+    <FrameworkReference Include="Microsoft.WindowsDesktop.App.WindowsForms" IsImplicitlyDefined="true" />
+  </ItemGroup>
+
 	
   <ItemGroup>
     <Compile Remove="Models\TokenModel.cs" />

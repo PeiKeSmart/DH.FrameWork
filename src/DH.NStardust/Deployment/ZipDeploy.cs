@@ -120,16 +120,31 @@ public class ZipDeploy
         if (fi == null || !fi.Exists)
         {
             //throw new Exception("未指定Zip文件");
-            WriteLog("未指定Zip文件 {0}", fi.FullName);
+            WriteLog("未发现Zip文件 {0}", fi.FullName);
             return false;
         }
 
         var name = Name;
         if (name.IsNullOrEmpty()) name = Name = Path.GetFileNameWithoutExtension(FileName);
 
-        var hash = fi.MD5().ToHex()[..8].ToLower();
-        var rundir = fi.Directory;
         var shadow = Shadow;
+        if (shadow.IsNullOrEmpty())
+        {
+            // 影子目录默认使用上一级的shadow目录，无权时使用临时目录
+            try
+            {
+                shadow = WorkingDirectory.CombinePath("../shadow").GetFullPath();
+                shadow.EnsureDirectory(false);
+            }
+            catch
+            {
+                shadow = Path.GetTempPath();
+            }
+            Shadow = shadow.CombinePath(name);
+        }
+
+        var hash = fi.MD5().ToHex().Substring(0, 8).ToLower();
+        var rundir = fi.Directory;
         if (shadow.IsNullOrEmpty()) return false;
 
         WriteLog("ZipDeploy {0}", name);
@@ -164,36 +179,31 @@ public class ZipDeploy
 
         WriteLog("执行 {0}", runfile);
 
-        ProcessStartInfo si = null;
+        var si = new ProcessStartInfo
+        {
+            FileName = runfile.FullName,
+            Arguments = Arguments,
+            WorkingDirectory = Path.GetDirectoryName(rundir.FullName),
+
+            // false时目前控制台合并到当前控制台，一起退出；
+            // true时目标控制台独立窗口，不会一起退出；
+            UseShellExecute = true,
+        };
         if (runfile.Extension.EqualIgnoreCase(".dll"))
         {
-            si = new ProcessStartInfo
-            {
-                FileName = "dotnet",
-                Arguments = $"{runfile.FullName} {Arguments}",
-                WorkingDirectory = rundir.FullName,
-
-                // false时目前控制台合并到当前控制台，一起退出；
-                // true时目标控制台独立窗口，不会一起退出；
-                UseShellExecute = false,
-            };
+            si.FileName = "dotnet";
+            si.Arguments = $"{runfile.FullName} {Arguments}";
         }
-        else
+        else if (runfile.Extension.EqualIgnoreCase(".jar"))
         {
-            si = new ProcessStartInfo
-            {
-                FileName = runfile.FullName,
-                Arguments = Arguments,
-                WorkingDirectory = rundir.FullName,
-
-                // false时目前控制台合并到当前控制台，一起退出；
-                // true时目标控制台独立窗口，不会一起退出；
-                UseShellExecute = false,
-            };
+            si.FileName = "java";
+            si.Arguments = $"{runfile.FullName} {Arguments}";
         }
 
         if (Debug)
         {
+            // UseShellExecute 必须 false，以便于后续重定向输出流
+            si.UseShellExecute = false;
             si.RedirectStandardError = true;
         }
 
@@ -256,6 +266,7 @@ public class ZipDeploy
             {
                 if (item.Extension.EndsWithIgnoreCase(".json", ".config", ".xml"))
                 {
+                    // 注意，appsettings.json 也可能覆盖
                     item.CopyTo(rundir.FullName.CombinePath(item.Name), true);
                 }
             }
@@ -265,6 +276,9 @@ public class ZipDeploy
 
             di = shadow.CombinePath("Data").AsDirectory();
             if (di.Exists) di.CopyTo(rundir.FullName.CombinePath("Data"));
+
+            di = shadow.CombinePath("Plugins").AsDirectory();
+            if (di.Exists) di.CopyTo(rundir.FullName.CombinePath("Plugins"));
         }
     }
 
@@ -274,11 +288,28 @@ public class ZipDeploy
     public virtual FileInfo FindExeFile(String shadow)
     {
         var fis = shadow.AsDirectory().GetFiles();
+
         var runfile = fis.FirstOrDefault(e => e.Name.EqualIgnoreCase(Name));
         if (runfile == null && Runtime.Windows)
         {
+            // 包名的后缀改为exe，即为启动文件
             var name = $"{Name}.exe";
             runfile = fis.FirstOrDefault(e => e.Name.EqualIgnoreCase(name));
+
+            // 第一个参数可能就是exe
+            if (runfile == null)
+            {
+                var ss = Arguments?.Split(" ");
+                if (ss != null && ss.Length > 0 && ss[0].EndsWithIgnoreCase(".exe"))
+                {
+                    runfile = fis.FirstOrDefault(e => e.Name.EqualIgnoreCase(ss[0]));
+                    if (runfile != null)
+                    {
+                        // 调整参数
+                        Arguments = ss.Skip(1).Join(" ");
+                    }
+                }
+            }
 
             // 如果当前目录有唯一exe文件，选择它作为启动文件
             if (runfile == null)
@@ -295,7 +326,7 @@ public class ZipDeploy
             var cfg = fis.FirstOrDefault(e => e.Name.EndsWithIgnoreCase(ext));
             if (cfg != null)
             {
-                var name = $"{cfg.Name[..^ext.Length]}.dll";
+                var name = $"{cfg.Name.Substring(0, cfg.Name.Length - ext.Length)}.dll";
                 runfile = fis.FirstOrDefault(e => e.Name.EqualIgnoreCase(name));
             }
         }

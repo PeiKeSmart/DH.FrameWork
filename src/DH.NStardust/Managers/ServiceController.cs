@@ -118,6 +118,7 @@ internal class ServiceController : DisposeBase
                 switch (service.Mode)
                 {
                     case ServiceModes.Default:
+                    case ServiceModes.Multiple:
                         break;
                     case ServiceModes.Extract:
                         WriteLog("解压后不运行，外部主机（如IIS）将托管应用");
@@ -143,7 +144,7 @@ internal class ServiceController : DisposeBase
                         FileName = file,
                         WorkingDirectory = workDir,
 
-                        Log = XTrace.Log,
+                        Log = new ActionLog(WriteLog),
                     };
 
                     // 如果出现超过一次的重启，则打开调试模式，截取控制台输出到日志
@@ -167,7 +168,7 @@ internal class ServiceController : DisposeBase
                 }
                 else
                 {
-                    WriteLog("拉起进程");
+                    WriteLog("拉起进程：{0} {1}", file, args);
                     var si = new ProcessStartInfo
                     {
                         FileName = file,
@@ -185,6 +186,7 @@ internal class ServiceController : DisposeBase
                         // UseShellExecute 必须 false，以便于后续重定向输出流
                         si.UseShellExecute = false;
                         si.RedirectStandardError = true;
+                        si.RedirectStandardOutput = true;
                     }
 
                     p = Process.Start(si);
@@ -194,8 +196,11 @@ internal class ServiceController : DisposeBase
 
                         if (si.RedirectStandardError)
                         {
-                            var rs = p.StandardError.ReadToEnd();
-                            WriteLog(rs);
+                            var rs = p.StandardOutput.ReadToEnd();
+                            if (!rs.IsNullOrEmpty()) WriteLog(rs);
+
+                            rs = p.StandardError.ReadToEnd();
+                            if (!rs.IsNullOrEmpty()) WriteLog(rs);
                         }
 
                         return false;
@@ -250,7 +255,7 @@ internal class ServiceController : DisposeBase
             FileName = file,
             WorkingDirectory = workDir,
 
-            Log = XTrace.Log,
+            Log = new ActionLog(WriteLog),
         };
 
         var args = service.Arguments?.Trim();
@@ -369,14 +374,14 @@ internal class ServiceController : DisposeBase
         }
 
         // 进程不存在，但名称存在
-        if (p == null && !ProcessName.IsNullOrEmpty())
+        if (p == null && !ProcessName.IsNullOrEmpty() && Info.Mode != ServiceModes.Multiple)
         {
             if (ProcessName.EqualIgnoreCase("dotnet", "java"))
             {
-                var target = _fileName ?? Info?.FileName;
+                var target = _fileName ?? Info.FileName;
                 if (target.EqualIgnoreCase("dotnet", "java"))
                 {
-                    var ss = Info?.Arguments.Split(' ');
+                    var ss = Info.Arguments.Split(' ');
                     if (ss != null) target = ss.FirstOrDefault(e => e.EndsWithIgnoreCase(".dll", ".jar"));
                 }
                 if (!target.IsNullOrEmpty())
@@ -545,10 +550,11 @@ internal class ServiceController : DisposeBase
     {
         Log?.Info($"[{Id}/{Name}]{format}", args);
 
+        var msg = (args == null || args.Length == 0) ? format : String.Format(format, args);
         if (format.Contains("错误") || format.Contains("失败"))
-            EventProvider?.WriteErrorEvent("ServiceController", String.Format(format, args));
+            EventProvider?.WriteErrorEvent(nameof(ServiceController), msg);
         else
-            EventProvider?.WriteInfoEvent("ServiceController", String.Format(format, args));
+            EventProvider?.WriteInfoEvent(nameof(ServiceController), msg);
     }
     #endregion
 }

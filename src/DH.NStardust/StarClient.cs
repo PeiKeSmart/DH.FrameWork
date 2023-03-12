@@ -1,7 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Net.NetworkInformation;
-using System.Net.WebSockets;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
@@ -14,7 +13,11 @@ using NewLife.Serialization;
 using NewLife.Threading;
 using Stardust.Models;
 using Stardust.Services;
+using System.Threading.Tasks;
+#if NET45_OR_GREATER || NETCOREAPP || NETSTANDARD
+using System.Net.WebSockets;
 using WebSocket = System.Net.WebSockets.WebSocket;
+#endif
 
 namespace Stardust;
 
@@ -49,7 +52,7 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
     /// <summary>最大失败数。超过该数时，新的数据将被抛弃，默认120</summary>
     public Int32 MaxFails { get; set; } = 120;
 
-    private ConcurrentDictionary<String, Delegate> _commands = new(StringComparer.OrdinalIgnoreCase);
+    private readonly ConcurrentDictionary<String, Delegate> _commands = new(StringComparer.OrdinalIgnoreCase);
     /// <summary>命令集合</summary>
     public IDictionary<String, Delegate> Commands => _commands;
 
@@ -112,7 +115,7 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
         catch (Exception ex)
         {
             var ex2 = ex.GetTrue();
-            if (ex2 is ApiException aex && (aex.Code == 401 || aex.Code == 403) && !action.EqualIgnoreCase("Node/Login", "Node/Logout"))
+            if (Logined && ex2 is ApiException aex && (aex.Code == 401 || aex.Code == 403) && !action.EqualIgnoreCase("Node/Login", "Node/Logout"))
             {
                 Log?.Debug("{0}", ex);
                 //XTrace.WriteException(ex);
@@ -185,9 +188,7 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
         var mi = MachineInfo.Current ?? _task.Result;
 
         var asm = AssemblyX.Entry ?? AssemblyX.Create(Assembly.GetExecutingAssembly());
-        //var ps = System.IO.Ports.SerialPort.GetPortNames();
         var mcs = NetHelper.GetMacs().Select(e => e.ToHex("-")).Where(e => e != "00-00-00-00-00-00").OrderBy(e => e).Join(",");
-        //var driveInfo = new DriveInfo(Path.GetPathRoot(".".GetFullPath()));
         var path = ".".GetFullPath();
         var drives = GetDrives();
         var driveInfo = DriveInfo.GetDrives().FirstOrDefault(e => path.StartsWithIgnoreCase(e.Name));
@@ -198,7 +199,6 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
 
             OSName = mi.OSName,
             OSVersion = mi.OSVersion,
-            //Architecture = RuntimeInformation.ProcessArchitecture,
 
             MachineName = Environment.MachineName,
             UserName = Environment.UserName,
@@ -209,11 +209,10 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
             AvailableMemory = mi.AvailableMemory,
             TotalSize = (UInt64)driveInfo?.TotalSize,
             AvailableFreeSpace = (UInt64)driveInfo?.AvailableFreeSpace,
-            DriveInfo = drives.Join(",", e => $"{e.Name}[{e.DriveFormat}]={e.AvailableFreeSpace}/{e.TotalSize}"),
+            DriveInfo = drives.Join(",", e => $"{e.Name}[{e.DriveFormat}]={e.AvailableFreeSpace.ToGMK()}/{e.TotalSize.ToGMK()}"),
 
             Product = mi.Product,
             Processor = mi.Processor,
-            //CpuID = mi.CpuID,
             CpuRate = mi.CpuRate,
             UUID = mi.UUID,
             MachineGuid = mi.Guid,
@@ -222,7 +221,6 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
             DiskID = mi.DiskID,
 
             Macs = mcs,
-            //COMs = ps.Join(","),
 
             InstallPath = ".".GetFullPath(),
             Runtime = Environment.Version + "",
@@ -230,9 +228,14 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
             Time = DateTime.UtcNow,
         };
 
-#if NETCOREAPP || NETSTANDARD
         // 目标框架
-        di.Framework = GetNetCore()?.ToString();
+        var vers = new List<NetRuntime.VerInfo>();
+        vers.AddRange(NetRuntime.Get1To45VersionFromRegistry());
+        vers.AddRange(NetRuntime.Get45PlusFromRegistry());
+        vers.AddRange(NetRuntime.GetNetCore(false));
+        di.Framework = vers.Join(",", e => e.Name.TrimStart('v'));
+
+#if NETCOREAPP || NETSTANDARD
         di.Framework ??= RuntimeInformation.FrameworkDescription?.TrimStart(".NET Framework", ".NET Core", ".NET Native", ".NET").Trim();
 
         di.Architecture = RuntimeInformation.ProcessArchitecture + "";
@@ -241,20 +244,11 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
         var tar = asm.Asm.GetCustomAttribute<TargetFrameworkAttribute>();
         if (tar != null) ver = !tar.FrameworkDisplayName.IsNullOrEmpty() ? tar.FrameworkDisplayName : tar.FrameworkName;
 
-        di.Framework = ver?.TrimStart(".NET Framework", ".NET Core", ".NET Native", ".NET").Trim();
+        di.Framework ??= ver?.TrimStart(".NET Framework", ".NET Core", ".NET Native", ".NET").Trim();
         di.Architecture = IntPtr.Size == 8 ? "X64" : "X86";
+#endif
 
-        // .NET45以上运行时
-        if (Runtime.Windows && Environment.Version >= new Version("4.0.30319.42000"))
-        {
-            var reg = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full");
-            if (reg != null)
-            {
-                var str = reg.GetValue("Version") + "";
-                if (!str.IsNullOrEmpty()) di.Framework = str;
-            }
-        }
-
+#if NETFRAMEWORK || WINDOWS
         try
         {
             // 收集屏幕相关信息。Mono+Linux无法获取
@@ -264,12 +258,40 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
             di.Resolution = $"{screen.Bounds.Width}*{screen.Bounds.Height}";
         }
         catch { }
+#else
+        if (Runtime.Windows) FixGdi(di);
 #endif
 
         if (Runtime.Linux) di.MaxOpenFiles = Execute("bash", "-c \"ulimit -n\"")?.Trim().ToInt() ?? 0;
 
         return di;
     }
+
+#if NETCOREAPP || NETSTANDARD
+    private void FixGdi(NodeInfo di)
+    {
+        try
+        {
+            var graphics = IntPtr.Zero;
+            var num = NativeMethods.GdipCreateFromHWND(new HandleRef(null, IntPtr.Zero), out graphics);
+            if (num == 0)
+            {
+                var xx = new Single[1];
+                var numx = NativeMethods.GdipGetDpiX(new HandleRef(this, graphics), xx);
+
+                var yy = new Single[1];
+                var numy = NativeMethods.GdipGetDpiY(new HandleRef(this, graphics), yy);
+
+                if (numx == 0 && numy == 0) di.Dpi = $"{xx[0]}*{yy[0]}";
+            }
+
+            var w = NativeMethods.GetSystemMetrics(0);
+            var h = NativeMethods.GetSystemMetrics(1);
+            if (w > 0 && h > 0) di.Resolution = $"{w}*{h}";
+        }
+        catch { }
+    }
+#endif
 
     /// <summary>获取驱动器信息</summary>
     /// <returns></returns>
@@ -279,7 +301,7 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
         foreach (var di in DriveInfo.GetDrives())
         {
             if (!di.IsReady) continue;
-            if (di.DriveType != DriveType.Fixed && di.DriveType != DriveType.Removable) continue;
+            if (di.DriveType is not DriveType.Fixed and not DriveType.Removable) continue;
             if (di.Name != "/" && di.DriveFormat.EqualIgnoreCase("overlay", "squashfs")) continue;
             if (di.Name.Contains("container") && di.Name.EndsWithIgnoreCase("/overlay")) continue;
             if (di.TotalSize <= 0) continue;
@@ -288,52 +310,6 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
         }
 
         return list;
-    }
-
-    private static Version GetNetCore()
-    {
-        var dir = "";
-        if (Environment.OSVersion.Platform <= PlatformID.WinCE)
-        {
-            dir = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
-            if (String.IsNullOrEmpty(dir)) return null;
-            dir += "\\dotnet\\shared";
-        }
-        else if (Runtime.Linux)
-            dir = "/usr/share/dotnet/shared";
-
-        if (!Directory.Exists(dir)) return null;
-
-        Version ver = null;
-        foreach (var item in dir.AsDirectory().GetDirectories())
-        {
-            foreach (var elm in item.GetDirectories())
-            {
-                if (Version.TryParse(elm.Name, out var v) && (ver == null || ver < v))
-                    ver = v;
-            }
-        }
-
-        if (ver != null) return ver;
-
-        // 各平台通用处理
-        {
-            var infs = Execute("dotnet", "--list-runtimes")?.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-            if (infs != null)
-            {
-                foreach (var line in infs)
-                {
-                    var ss = line.Split(' ');
-                    if (ss.Length >= 2)
-                    {
-                        if (Version.TryParse(ss[1], out var v) && (ver == null || ver < v))
-                            ver = v;
-                    }
-                }
-            }
-        }
-
-        return ver;
     }
 
     private static String Execute(String cmd, String arguments = null)
@@ -369,6 +345,7 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
     {
         if (!Logined) return null;
 
+        Logined = false;
         XTrace.WriteLine("注销：{0} {1}", Code, reason);
 
         try
@@ -406,9 +383,7 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
     #endregion
 
     #region 心跳
-    private readonly String[] _excludes = new[] { "Idle", "System", "Registry", "smss", "csrss", "lsass", "wininit", "services", "winlogon", "LogonUI", "SearchUI", "fontdrvhost", "dwm", "svchost", "dllhost", "conhost", "taskhostw", "explorer", "ctfmon", "ChsIME", "WmiPrvSE", "WUDFHost", "TabTip*", "igfxCUIServiceN", "igfxEMN", "smartscreen", "sihost", "RuntimeBroker", "StartMenuExperienceHost", "SecurityHealthSystray", "SecurityHealthService", "ShellExperienceHost", "PerfWatson2", "audiodg", "spoolsv",
-        "*ServiceHub*",
-        "systemd*", "cron", "rsyslogd", "sudo", "dbus*", "bash", "login", "networkd*", "kworker*", "ksoftirqd*", "migration*", "auditd", "polkitd", "atd"
+    private readonly String[] _excludes = new[] { "Idle", "System", "Registry", "smss", "csrss", "lsass", "wininit", "services", "winlogon", "LogonUI", "SearchUI", "fontdrvhost", "dwm", "svchost", "dllhost", "conhost", "taskhostw", "explorer", "ctfmon", "ChsIME", "WmiPrvSE", "WUDFHost", "TabTip*", "igfxCUIServiceN", "igfxEMN", "smartscreen", "sihost", "RuntimeBroker", "StartMenuExperienceHost", "SecurityHealthSystray", "SecurityHealthService", "ShellExperienceHost", "PerfWatson2", "audiodg", "spoolsv", "*ServiceHub*", "systemd*", "cron", "rsyslogd", "sudo", "dbus*", "bash", "login", "networkd*", "kworker*", "ksoftirqd*", "migration*", "auditd", "polkitd", "atd"
     };
 
     /// <summary>获取心跳信息</summary>
@@ -456,7 +431,6 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
             Uptime = Environment.TickCount / 1000,
 
             Macs = mcs,
-            //COMs = ps.Join(","),
             IP = ip,
 
             Processes = pcs.Join(),
@@ -508,10 +482,7 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
                         // 计算延迟
                         var ts = DateTime.UtcNow - dt;
                         var ms = (Int32)Math.Round(ts.TotalMilliseconds);
-                        if (Delay > 0)
-                            Delay = (Delay + ms) / 2;
-                        else
-                            Delay = ms;
+                        Delay = Delay > 0 ? (Delay + ms) / 2 : ms;
                     }
 
                     // 令牌
@@ -528,13 +499,6 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
                             await ReceiveCommand(model);
                         }
                     }
-
-                    //// 应用服务
-                    //if (rs.Services != null && rs.Services.Length > 0)
-                    //{
-                    //    Manager.Add(rs.Services);
-                    //    Manager.CheckService();
-                    //}
                 }
             }
             catch
@@ -561,7 +525,6 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
                 return Login();
             }
 
-            //XTrace.WriteLine(inf.ToJson());
             XTrace.WriteLine("心跳异常 {0}", ex.GetTrue().Message);
 
             throw;
@@ -577,14 +540,8 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
     /// <summary>使用追踪服务</summary>
     public void UseTrace()
     {
-        //_trace = new TraceService
-        //{
-        //    Queue = CommandQueue,
-        //    Callback = (id, data) => ReportAsync(id, data).Wait(),
-        //};
-        //_trace.Init();
         _trace = new TraceService();
-        //_trace.Attach(CommandQueue);
+        _trace.Attach(this);
     }
     #endregion
 
@@ -704,15 +661,15 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
         _timer.TryDispose();
         _timer = null;
 
+#if NET45_OR_GREATER || NETCOREAPP || NETSTANDARD
         if (_websocket != null && _websocket.State == WebSocketState.Open) _websocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "finish", default).Wait(1_000);
         _source?.Cancel();
 
         //_websocket.TryDispose();
         _websocket = null;
+#endif
     }
 
-    private WebSocket _websocket;
-    private CancellationTokenSource _source;
     private async Task DoPing(Object state)
     {
         DefaultSpan.Current = null;
@@ -720,6 +677,7 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
         {
             await Ping();
 
+#if NET45_OR_GREATER || NETCOREAPP || NETSTANDARD
             var svc = _currentService;
             if (svc == null || Token == null) return;
 
@@ -736,6 +694,7 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
                 _source = new CancellationTokenSource();
                 _ = Task.Run(() => DoPull(client, _source.Token));
             }
+#endif
         }
         catch (Exception ex)
         {
@@ -743,6 +702,9 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
         }
     }
 
+#if NET45_OR_GREATER || NETCOREAPP || NETSTANDARD
+    private WebSocket _websocket;
+    private CancellationTokenSource _source;
     private async Task DoPull(WebSocket socket, CancellationToken cancellationToken)
     {
         DefaultSpan.Current = null;
@@ -765,6 +727,7 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
 
         if (socket.State == WebSocketState.Open) await socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "finish", default);
     }
+#endif
 
     async Task ReceiveCommand(CommandModel model)
     {

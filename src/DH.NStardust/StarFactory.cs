@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Reflection;
 using NewLife;
+using NewLife.Common;
 using NewLife.Configuration;
 using NewLife.Http;
 using NewLife.Log;
@@ -14,6 +15,9 @@ using Stardust.Models;
 using Stardust.Monitors;
 using Stardust.Registry;
 using Stardust.Services;
+#if NET45_OR_GREATER || NETCOREAPP || NETSTANDARD
+using TaskEx = System.Threading.Tasks.Task;
+#endif
 
 namespace Stardust;
 
@@ -174,6 +178,11 @@ public class StarFactory : DisposeBase
         // 生成ClientId，用于唯一标识当前实例，默认IP@pid
         try
         {
+            // 从SysConfig读取系统名称，其受到命令行参数-Name和环境变量Name影响，方便单应用多部署（参数区分应用名）
+            var sys = SysConfig.Current;
+            if (AppId.IsNullOrEmpty()) AppId = sys.Name;
+            if (AppName.IsNullOrEmpty()) AppName = sys.DisplayName;
+
             var executing = AssemblyX.Create(Assembly.GetExecutingAssembly());
             var asm = AssemblyX.Entry ?? executing;
             if (asm != null)
@@ -366,7 +375,7 @@ public class StarFactory : DisposeBase
     /// <param name="serviceName"></param>
     /// <param name="tag"></param>
     /// <returns></returns>
-    public IApiClient CreateForService(String serviceName, String tag = null) => Task.Run(() => CreateForServiceAsync(serviceName, tag)).Result;
+    public IApiClient CreateForService(String serviceName, String tag = null) => TaskEx.Run(() => CreateForServiceAsync(serviceName, tag)).Result;
 
     /// <summary>为指定服务创建客户端，从星尘注册中心获取服务地址。单例，应避免频繁创建客户端</summary>
     /// <param name="serviceName"></param>
