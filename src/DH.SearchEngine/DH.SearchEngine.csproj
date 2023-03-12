@@ -64,13 +64,16 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\dict.txt" />
   </ItemGroup>
+	
+  <ItemGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
 
   <ItemGroup>
 	<PackageReference Include="Lucene.Net.QueryParser" Version="4.8.0-beta00016" />
-	<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
-		<PrivateAssets>all</PrivateAssets>
-		<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-	</PackageReference>
   </ItemGroup>
 	
   <ItemGroup>

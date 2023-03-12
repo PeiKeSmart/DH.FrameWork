@@ -56,13 +56,16 @@
   <ItemGroup>
 	<Content Include="..\..\Doc\DH.png" Link="DH.png" PackagePath="\" />
   </ItemGroup>
+	
+  <ItemGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
 
   <ItemGroup>
 	<PackageReference Include="DH.VirtualFileSystem" Version="1.3.2023.31128" />
-	<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
-		<PrivateAssets>all</PrivateAssets>
-		<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-	</PackageReference>
 	<PackageReference Include="NUglify" Version="1.20.5" />
   </ItemGroup>
 

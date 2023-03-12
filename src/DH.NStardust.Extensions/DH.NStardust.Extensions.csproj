@@ -4,12 +4,12 @@
   <PropertyGroup>
 	<LangVersion>latest</LangVersion>
     <OutputType>Library</OutputType>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFrameworks>netcoreapp3.1;net5.0;net6.0;net7.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
 	<RootNamespace>Stardust.Extensions</RootNamespace>
 	<AssemblyName>DH.NStardust.Extensions</AssemblyName>
 	<AssemblyTitle>星尘分布式服务框架</AssemblyTitle>
-	<Description>DH框架的星尘分布式服务框架。星尘，分布式服务框架。节点管理，监控中心，配置中心，发布中心，注册中心。参考NewLife.Stardust.Extensions组件</Description>
+	<Description>DH框架的星尘分布式服务框架。分布式服务框架。节点管理，监控中心，配置中心，发布中心，注册中心。参考NewLife.Stardust.Extensions组件</Description>
 	<Company>湖北登灏科技有限公司</Company>
 	
 	<OutputPath>..\Bin</OutputPath>
@@ -63,12 +63,12 @@
 	<Content Include="..\..\Doc\DH.png" Link="DH.png" PackagePath="\" />
   </ItemGroup>	
 
-  <ItemGroup>
-	<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
-		<PrivateAssets>all</PrivateAssets>
-		<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-	</PackageReference>
-  </ItemGroup>	
+  <ItemGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\DH.NStardust\DH.NStardust.csproj" />

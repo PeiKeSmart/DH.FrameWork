@@ -60,15 +60,18 @@
   <ItemGroup>
 	<Content Include="..\..\Doc\DH.png" Link="DH.png" PackagePath="\" />
   </ItemGroup>
+	
+  <ItemGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
 
   <ItemGroup>
 	<PackageReference Include="HtmlSanitizer" Version="8.0.645" />
 	<PackageReference Include="IP2Region" Version="1.2.0" />
 	<PackageReference Include="MaxMind.GeoIP2" Version="5.1.0" />
-	<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
-		<PrivateAssets>all</PrivateAssets>
-		<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-	</PackageReference>
 	<PackageReference Include="Polly" Version="7.2.3" />
 	<PackageReference Include="TimeZoneConverter" Version="6.1.0" />
   </ItemGroup>
