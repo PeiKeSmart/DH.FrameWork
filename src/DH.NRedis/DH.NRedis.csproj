@@ -4,7 +4,7 @@
   <PropertyGroup>
 	<LangVersion>latest</LangVersion>
     <OutputType>Library</OutputType>
-    <TargetFrameworks>net461;netstandard2.0;netstandard2.1</TargetFrameworks>
+    <TargetFrameworks>net45;net461;netstandard2.0;netstandard2.1</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
 	<RootNamespace>DH.Caching</RootNamespace>
 	<AssemblyName>DH.NRedis</AssemblyName>
@@ -53,11 +53,7 @@
     <WarningLevel>3</WarningLevel>
   </PropertyGroup>
 	
-  <ItemGroup>
-    <Compile Remove="DependencyInjectionExtensions.cs" />
-  </ItemGroup>
-	
-  <ItemGroup Condition="'$(TargetFramework)'=='net461'">
+  <ItemGroup Condition="'$(TargetFramework)'=='net45' or '$(TargetFramework)'=='net461'">
 	<Reference Include="System.Net.Http" />
   </ItemGroup>
 	
