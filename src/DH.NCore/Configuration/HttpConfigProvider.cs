@@ -155,10 +155,19 @@ public class HttpConfigProvider : ConfigProvider
             foreach (var item in ns)
             {
                 var action = $"/configfiles/json/{AppId}/default/{item}";
-                var rs = client.Get<IDictionary<String, Object>>(action);
-                foreach (var elm in rs)
+                try
                 {
-                    if (!dic.ContainsKey(elm.Key)) dic[elm.Key] = elm.Value;
+                    var rs = client.Get<IDictionary<String, Object>>(action);
+                    foreach (var elm in rs)
+                    {
+                        if (!dic.ContainsKey(elm.Key)) dic[elm.Key] = elm.Value;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    if (XTrace.Log.Level <= LogLevel.Debug) XTrace.WriteException(ex);
+
+                    return null;
                 }
             }
             Info = dic;
@@ -169,30 +178,37 @@ public class HttpConfigProvider : ConfigProvider
         {
             ValidClientId();
 
-            var rs = client.Post<IDictionary<String, Object>>(Action, new
+            try
             {
-                appId = AppId,
-                secret = Secret,
-                clientId = ClientId,
-                scope = Scope,
-                version = _version,
-                usedKeys = UsedKeys.Join(),
-                missedKeys = MissedKeys.Join(),
-            });
-            Info = rs;
+                var rs = client.Post<IDictionary<String, Object>>(Action, new
+                {
+                    appId = AppId,
+                    secret = Secret,
+                    clientId = ClientId,
+                    scope = Scope,
+                    version = _version,
+                    usedKeys = UsedKeys.Join(),
+                    missedKeys = MissedKeys.Join(),
+                });
+                Info = rs;
 
-            // 增强版返回
-            if (rs.TryGetValue("configs", out var obj))
-            {
-                var ver = rs["version"].ToInt(-1);
-                if (ver > 0) _version = ver;
+                // 增强版返回
+                if (rs.TryGetValue("configs", out var obj))
+                {
+                    var ver = rs["version"].ToInt(-1);
+                    if (ver > 0) _version = ver;
 
-                if (obj is not IDictionary<String, Object> configs) return null;
+                    if (obj is IDictionary<String, Object> configs) return configs;
+                }
 
-                return configs;
+                return rs;
             }
+            catch (Exception ex)
+            {
+                if (XTrace.Log.Level <= LogLevel.Debug) XTrace.WriteException(ex);
 
-            return rs;
+                return null;
+            }
         }
     }
 
@@ -398,21 +414,21 @@ public class HttpConfigProvider : ConfigProvider
         var dic = GetAll();
         if (dic == null) return;
 
-        var keys = new List<String>();
+        var changed = new Dictionary<String, Object>();
         if (_cache != null)
         {
             foreach (var item in dic)
             {
                 if (!_cache.TryGetValue(item.Key, out var v) || v + "" != item.Value + "")
                 {
-                    keys.Add(item.Key);
+                    changed.Add(item.Key, item.Value);
                 }
             }
         }
 
-        if (keys.Count > 0)
+        if (changed.Count > 0)
         {
-            XTrace.WriteLine("[{0}]配置改变，重新加载如下键：{1}", AppId, keys.Join());
+            XTrace.WriteLine("[{0}]配置改变，重新加载如下键：{1}", AppId, changed.ToJson());
 
             Root = Build(dic);
 

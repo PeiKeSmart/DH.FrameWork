@@ -83,7 +83,11 @@ public class DefaultSpan : ISpan
     /// <summary>错误信息</summary>
     public String Error { get; set; }
 
+#if NET45
+    private static readonly ThreadLocal<ISpan> _Current = new();
+#else
     private static readonly AsyncLocal<ISpan> _Current = new();
+#endif
     /// <summary>当前线程正在使用的上下文</summary>
     public static ISpan Current { get => _Current.Value; set => _Current.Value = value; }
 
@@ -114,7 +118,7 @@ public class DefaultSpan : ISpan
         {
             ip = IPAddress.Loopback;
         }
-        if (ip == null) ip = IPAddress.Parse("127.0.0.1");
+        ip ??= IPAddress.Parse("127.0.0.1");
         _myip = ip.GetAddressBytes().ToHex().ToLower().PadLeft(8, '0');
         var pid = Process.GetCurrentProcess().Id;
         _pid = (pid & 0xFFFF).ToString("x4").PadLeft(4, '0');
@@ -212,6 +216,13 @@ public class DefaultSpan : ISpan
     public virtual void SetError(Exception ex, Object tag)
     {
         Error = ex?.GetMessage();
+
+        if (ex != null)
+        {
+            // 所有异常，独立记录埋点，便于按异常分类统计
+            using var span = Builder?.Tracer?.NewSpan("ex:" + ex.GetType().Name, tag ?? ex.ToString());
+            if (span != null) span.StartTime = StartTime;
+        }
 
         SetTag(tag);
     }

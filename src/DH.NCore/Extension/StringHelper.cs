@@ -88,7 +88,7 @@ namespace NewLife
         public static String[] Split(this String? value, params String[] separators)
         {
             //!! netcore3.0中新增Split(String? separator, StringSplitOptions options = StringSplitOptions.None)，优先于StringHelper扩展
-            if (value == null || String.IsNullOrEmpty(value)) return Array.Empty<String>();
+            if (value == null || String.IsNullOrEmpty(value)) return new String[0];
             if (separators == null || separators.Length <= 0 || separators.Length == 1 && separators[0].IsNullOrEmpty()) separators = new String[] { ",", ";" };
 
             return value.Split(separators, StringSplitOptions.RemoveEmptyEntries);
@@ -101,7 +101,7 @@ namespace NewLife
         /// <returns></returns>
         public static Int32[] SplitAsInt(this String? value, params String[] separators)
         {
-            if (value == null || String.IsNullOrEmpty(value)) return Array.Empty<Int32>();
+            if (value == null || String.IsNullOrEmpty(value)) return new Int32[0];
             if (separators == null || separators.Length <= 0) separators = new String[] { ",", ";" };
 
             var ss = value.Split(separators, StringSplitOptions.RemoveEmptyEntries);
@@ -285,7 +285,7 @@ namespace NewLife
         public static Byte[] GetBytes(this String? value, Encoding? encoding = null)
         {
             //if (value == null) return null;
-            if (String.IsNullOrEmpty(value)) return Array.Empty<Byte>();
+            if (String.IsNullOrEmpty(value)) return new Byte[0];
 
             if (encoding == null) encoding = Encoding.UTF8;
             return encoding.GetBytes(value);
@@ -461,6 +461,25 @@ namespace NewLife
             return str;
         }
 
+        /// <summary>修剪不可见字符。仅修剪ASCII，不包含Unicode</summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static String TrimInvisible(this String value)
+        {
+            if (String.IsNullOrEmpty(value)) return value;
+
+            var builder = new StringBuilder();
+
+            for (var i = 0; i < value.Length; i++)
+            {
+                // 可见字符。ASCII码中，第0～31号及第127号(共33个)是控制字符或通讯专用字符
+                if (value[i] is > (Char)31 and not (Char)127)
+                    builder.Append(value[i]);
+            }
+
+            return builder.ToString();
+        }
+
         /// <summary>从字符串中检索子字符串，在指定头部字符串之后，指定尾部字符串之前</summary>
         /// <remarks>常用于截取xml某一个元素等操作</remarks>
         /// <param name="str">目标字符串</param>
@@ -575,7 +594,7 @@ namespace NewLife
         /// <returns></returns>
         public static String[] LevenshteinSearch(String key, String[] words)
         {
-            if (IsNullOrWhiteSpace(key)) return Array.Empty<String>();
+            if (IsNullOrWhiteSpace(key)) return new String[0];
 
             var keys = key.Split(new Char[] { ' ', '　' }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -646,12 +665,12 @@ namespace NewLife
         /// <returns></returns>
         public static String[] LCSSearch(String key, String[] words)
         {
-            if (IsNullOrWhiteSpace(key) || words == null || words.Length == 0) return Array.Empty<String>();
+            if (IsNullOrWhiteSpace(key) || words == null || words.Length == 0) return new String[0];
 
             var keys = key
-                                .Split(new Char[] { ' ', '\u3000' }, StringSplitOptions.RemoveEmptyEntries)
-                                .OrderBy(s => s.Length)
-                                .ToArray();
+                .Split(new Char[] { ' ', '\u3000' }, StringSplitOptions.RemoveEmptyEntries)
+                .OrderBy(s => s.Length)
+                .ToArray();
 
             //var q = from sentence in items.AsParallel()
             var q = from word in words

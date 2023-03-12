@@ -206,7 +206,7 @@ public static class NetHelper
 
     /// <summary>获取所有Tcp连接，带进程Id</summary>
     /// <returns></returns>
-    public static TcpConnectionInformation2[] GetAllTcpConnections() => !Runtime.Windows ? Array.Empty<TcpConnectionInformation2>() : TcpConnectionInformation2.GetAllTcpConnections();
+    public static TcpConnectionInformation2[] GetAllTcpConnections() => !Runtime.Windows ? new TcpConnectionInformation2[0] : TcpConnectionInformation2.GetAllTcpConnections();
     #endregion
 
     #region 本机信息
@@ -230,7 +230,10 @@ public static class NetHelper
     {
         var list = new List<IPAddress>();
         foreach (var item in GetActiveInterfaces())
-            if (item != null && item.DhcpServerAddresses.Count > 0)
+        {
+#if NET5_0_OR_GREATER
+            if (item != null && !OperatingSystem.IsMacOS() && item.DhcpServerAddresses.Count > 0)
+            {
                 foreach (var elm in item.DhcpServerAddresses)
                 {
                     if (list.Contains(elm)) continue;
@@ -238,6 +241,20 @@ public static class NetHelper
 
                     yield return elm;
                 }
+            }
+#else
+            if (item != null && item.DhcpServerAddresses.Count > 0)
+            {
+                foreach (var elm in item.DhcpServerAddresses)
+                {
+                    if (list.Contains(elm)) continue;
+                    list.Add(elm);
+
+                    yield return elm;
+                }
+            }
+#endif
+        }
     }
 
     /// <summary>获取可用的DNS地址</summary>
@@ -288,11 +305,15 @@ public static class NetHelper
                 var gw = ipp.GatewayAddresses.Count;
                 foreach (var elm in ipp.UnicastAddresses)
                 {
+#if NET5_0_OR_GREATER
                     try
                     {
-                        if (elm.DuplicateAddressDetectionState != DuplicateAddressDetectionState.Preferred) continue;
+                        if (OperatingSystem.IsWindows() &&
+                            elm.DuplicateAddressDetectionState != DuplicateAddressDetectionState.Preferred)
+                            continue;
                     }
                     catch { }
+#endif
 
                     dic.Add(elm, gw);
                 }

@@ -56,7 +56,6 @@
   <ItemGroup Condition="'$(TargetFramework)'=='net5.0-windows' or '$(TargetFramework)'=='net6.0-windows' or '$(TargetFramework)'=='net7.0-windows'">
     <FrameworkReference Include="Microsoft.WindowsDesktop.App.WindowsForms" IsImplicitlyDefined="true" />
   </ItemGroup>
-
 	
   <ItemGroup>
     <Compile Remove="Models\TokenModel.cs" />
@@ -65,6 +64,8 @@
     <Compile Remove="Monitors\MySpan.cs" />
     <Compile Remove="Monitors\MyTraceModel.cs" />
     <Compile Remove="Registry\RegistryClient.cs" />
+    <Compile Remove="RpcClient.cs" />
+    <Compile Remove="RpcServer.cs" />
   </ItemGroup>
 	
   <ItemGroup Condition="'$(TargetFramework)'=='net461'">

@@ -9,9 +9,12 @@ using NewLife.Log;
 using NewLife.Model;
 using NewLife.Reflection;
 using NewLife.Serialization;
+using System.Runtime.Versioning;
 #if NETFRAMEWORK
 using System.Management;
 using Microsoft.VisualBasic.Devices;
+#endif
+#if NETFRAMEWORK || NET6_0_OR_GREATER
 using Microsoft.Win32;
 #endif
 
@@ -109,18 +112,18 @@ public class MachineInfo
 
         return _task = Task.Factory.StartNew(() =>
         {
-            //var set = Setting.Current;
-            //var dataPath = set.DataPath;
-            //if (dataPath.IsNullOrEmpty()) dataPath = "Data";
+            var set = Setting.Current;
+            var dataPath = set.DataPath;
+            if (dataPath.IsNullOrEmpty()) dataPath = "Data";
 
-            // 文件缓存，加快机器信息获取
+            // 文件缓存，加快机器信息获取。在Linux下，可能StarAgent以root权限写入缓存文件，其它应用以普通用户访问
             var file = Path.GetTempPath().CombinePath("machine_info.json");
-            //var file2 = dataPath.CombinePath("machine_info.json").GetBasePath();
+            var file2 = dataPath.CombinePath("machine_info.json").GetBasePath();
             var json = "";
             if (Current == null)
             {
                 var f = file;
-                //if (!File.Exists(f)) f = file2;
+                if (!File.Exists(f)) f = file2;
                 if (File.Exists(f))
                 {
                     try
@@ -148,8 +151,10 @@ public class MachineInfo
             {
                 var json2 = mi.ToJson(true);
                 if (json != json2)
+                {
+                    File.WriteAllText(file2.EnsureDirectory(true), json2);
                     File.WriteAllText(file.EnsureDirectory(true), json2);
-                //File.WriteAllText(file2.EnsureDirectory(true), json);
+                }
             }
             catch (Exception ex)
             {
@@ -180,17 +185,35 @@ public class MachineInfo
 
         try
         {
+#if NET5_0_OR_GREATER
+            if (OperatingSystem.IsWindows())
+                LoadWindowsInfo();
+            else if (OperatingSystem.IsLinux())
+                LoadLinuxInfo();
+#else
             if (Runtime.Windows)
                 LoadWindowsInfo();
             else if (Runtime.Linux)
                 LoadLinuxInfo();
+#endif
         }
         catch (Exception ex)
         {
             if (XTrace.Log.Level <= LogLevel.Debug) XTrace.WriteException(ex);
         }
 
-        // window+netcore 不方便读取注册表，随机生成一个guid，借助文件缓存确保其不变
+        // 裁剪不可见字符，顺带去掉两头空白
+        OSName = OSName.TrimInvisible()?.Trim();
+        OSVersion = OSVersion.TrimInvisible()?.Trim();
+        Product = Product.TrimInvisible()?.Trim();
+        Processor = Processor.TrimInvisible()?.Trim();
+        UUID = UUID.TrimInvisible()?.Trim();
+        Guid = Guid.TrimInvisible()?.Trim();
+        Serial = Serial.TrimInvisible()?.Trim();
+        Board = Board.TrimInvisible()?.Trim();
+        DiskID = DiskID.TrimInvisible()?.Trim();
+
+        // 无法读取系统标识时，随机生成一个guid，借助文件缓存确保其不变
         if (Guid.IsNullOrEmpty()) Guid = "0-" + System.Guid.NewGuid().ToString();
         if (UUID.IsNullOrEmpty()) UUID = "0-" + System.Guid.NewGuid().ToString();
 
@@ -204,20 +227,50 @@ public class MachineInfo
         }
     }
 
-#if NETFRAMEWORK
+#if NET5_0_OR_GREATER
+    [SupportedOSPlatform("windows")]
+#endif
     private void LoadWindowsInfo()
     {
-        var machine_guid = "";
+        var str = "";
 
+        // 从注册表读取 MachineGuid
+#if NETFRAMEWORK || NET6_0_OR_GREATER
         var reg = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Cryptography");
-        if (reg != null) machine_guid = reg.GetValue("MachineGuid") + "";
-        if (machine_guid.IsNullOrEmpty())
+        if (reg != null) str = reg.GetValue("MachineGuid") + "";
+        if (str.IsNullOrEmpty())
         {
             reg = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
-            if (reg != null) machine_guid = reg.GetValue("MachineGuid") + "";
+            if (reg != null) str = reg.GetValue("MachineGuid") + "";
         }
 
-        var ci = new ComputerInfo();
+        if (!str.IsNullOrEmpty()) Guid = str;
+
+        reg = Registry.LocalMachine.OpenSubKey(@"SYSTEM\HardwareConfig");
+        if (reg != null) str = (reg.GetValue("LastConfig") + "")?.Trim('{', '}').ToUpper();
+
+        // UUID取不到时返回 FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF
+        if (!str.IsNullOrEmpty() && !str.EqualIgnoreCase("FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF")) UUID = str;
+
+        reg = reg.OpenSubKey("Current");
+        if (reg != null) Product = reg.GetValue("SystemProductName") + "";
+
+        reg = Registry.LocalMachine.OpenSubKey(@"HARDWARE\DESCRIPTION\System\CentralProcessor\0");
+        if (reg != null) Processor = reg.GetValue("ProcessorNameString") + "";
+#else
+        str = Execute("reg", @"query HKLM\SOFTWARE\Microsoft\Cryptography /v MachineGuid");
+        if (!str.IsNullOrEmpty() && str.Contains("REG_SZ")) Guid = str.Substring("REG_SZ", null).Trim();
+
+        var csproduct = ReadWmic("csproduct", "Name", "UUID");
+        if (csproduct != null)
+        {
+            if (csproduct.TryGetValue("Name", out str)) Product = str;
+            if (csproduct.TryGetValue("UUID", out str)) UUID = str;
+        }
+#endif
+
+#if NETFRAMEWORK || WINDOWS
+        var ci = new Microsoft.VisualBasic.Devices.ComputerInfo();
         try
         {
             Memory = ci.TotalPhysicalMemory;
@@ -228,6 +281,7 @@ public class MachineInfo
         }
         catch
         {
+#if !NET5_0
             try
             {
                 var reg2 = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
@@ -241,65 +295,28 @@ public class MachineInfo
             {
                 if (XTrace.Log.Level <= LogLevel.Debug) XTrace.WriteException(ex);
             }
+#endif
         }
-
-        Processor = GetInfo("Win32_Processor", "Name");
-        //CpuID = GetInfo("Win32_Processor", "ProcessorId");
-        var uuid = GetInfo("Win32_ComputerSystemProduct", "UUID");
-        Product = GetInfo("Win32_ComputerSystemProduct", "Name");
-        DiskID = GetInfo("Win32_DiskDrive", "SerialNumber");
-
-        var sn = GetInfo("Win32_BIOS", "SerialNumber");
-        if (!sn.IsNullOrEmpty() && !sn.EqualIgnoreCase("System Serial Number")) Serial = sn;
-        Board = GetInfo("Win32_BaseBoard", "SerialNumber");
-
-        // UUID取不到时返回 FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF
-        if (!uuid.IsNullOrEmpty() && !uuid.EqualIgnoreCase("FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF")) UUID = uuid;
-
-        //// 可能因WMI导致读取UUID失败
-        //if (UUID.IsNullOrEmpty())
-        //{
-        //    var reg3 = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
-        //    if (reg3 != null) UUID = reg3.GetValue("ProductId") + "";
-        //}
-
-        if (!machine_guid.IsNullOrEmpty()) Guid = machine_guid;
-
-        //// 读取主板温度，不太准。标准方案是ring0通过IOPort读取CPU温度，太难在基础类库实现
-        //var str = GetInfo("Win32_TemperatureProbe", "CurrentReading");
-        //if (!str.IsNullOrEmpty())
-        //{
-        //    Temperature = str.SplitAsInt().Average();
-        //}
-        //else
-        //{
-        //    str = GetInfo("MSAcpi_ThermalZoneTemperature", "CurrentTemperature", "root/wmi");
-        //    if (!str.IsNullOrEmpty()) Temperature = (str.SplitAsInt().Average() - 2732) / 10.0;
-        //}
-
-        //// 电池剩余
-        //str = GetInfo("Win32_Battery", "EstimatedChargeRemaining");
-        //if (!str.IsNullOrEmpty()) Battery = str.SplitAsInt().Average() / 100.0;
-    }
 #else
-    private void LoadWindowsInfo()
-    {
-        var str = "";
-
         var os = ReadWmic("os", "Caption", "Version");
         if (os != null)
         {
             if (os.TryGetValue("Caption", out str)) OSName = str.TrimStart("Microsoft").Trim();
             if (os.TryGetValue("Version", out str)) OSVersion = str;
         }
+#endif
 
-        var csproduct = ReadWmic("csproduct", "Name", "UUID");
-        if (csproduct != null)
-        {
-            if (csproduct.TryGetValue("Name", out str)) Product = str;
-            if (csproduct.TryGetValue("UUID", out str)) UUID = str;
-        }
+#if NETFRAMEWORK
+        //Processor = GetInfo("Win32_Processor", "Name");
+        //CpuID = GetInfo("Win32_Processor", "ProcessorId");
+        //var uuid = GetInfo("Win32_ComputerSystemProduct", "UUID");
+        //Product = GetInfo("Win32_ComputerSystemProduct", "Name");
+        DiskID = GetInfo("Win32_DiskDrive", "SerialNumber");
 
+        var sn = GetInfo("Win32_BIOS", "SerialNumber");
+        if (!sn.IsNullOrEmpty() && !sn.EqualIgnoreCase("System Serial Number")) Serial = sn;
+        Board = GetInfo("Win32_BaseBoard", "SerialNumber");
+#else
         var disk = ReadWmic("diskdrive", "serialnumber");
         if (disk != null)
         {
@@ -318,25 +335,21 @@ public class MachineInfo
             if (board.TryGetValue("serialnumber", out str)) Board = str?.Trim();
         }
 
-        // 不要在刷新里面取CPU负载，因为运行wmic会导致CPU负载很不准确，影响测量
-        var cpu = ReadWmic("cpu", "Name", "ProcessorId", "LoadPercentage");
-        if (cpu != null)
-        {
-            if (cpu.TryGetValue("Name", out str)) Processor = str;
-            //if (cpu.TryGetValue("ProcessorId", out str)) CpuID = str;
-            if (cpu.TryGetValue("LoadPercentage", out str)) CpuRate = (Single)(str.ToDouble() / 100);
-        }
-
-        // 从注册表读取 MachineGuid
-        str = Execute("reg", @"query HKLM\SOFTWARE\Microsoft\Cryptography /v MachineGuid");
-        if (!str.IsNullOrEmpty() && str.Contains("REG_SZ")) Guid = str.Substring("REG_SZ", null).Trim();
+        //// 不要在刷新里面取CPU负载，因为运行wmic会导致CPU负载很不准确，影响测量
+        //var cpu = ReadWmic("cpu", "Name", "ProcessorId", "LoadPercentage");
+        //if (cpu != null)
+        //{
+        //    if (cpu.TryGetValue("Name", out str)) Processor = str;
+        //    //if (cpu.TryGetValue("ProcessorId", out str)) CpuID = str;
+        //    if (cpu.TryGetValue("LoadPercentage", out str)) CpuRate = (Single)(str.ToDouble() / 100);
+        //}
 
         if (OSName.IsNullOrEmpty())
             OSName = RuntimeInformation.OSDescription.TrimStart("Microsoft").Trim();
         if (OSVersion.IsNullOrEmpty())
             OSVersion = Environment.OSVersion.Version.ToString();
-    }
 #endif
+    }
 
     private void LoadLinuxInfo()
     {
@@ -431,46 +444,6 @@ public class MachineInfo
         var disks = GetFiles("/dev/disk/by-id", true);
         if (disks.Count == 0) disks = GetFiles("/dev/disk/by-uuid", false);
         if (disks.Count > 0) DiskID = disks.Where(e => !e.IsNullOrEmpty()).Join(",");
-
-        //if (uuid.IsNullOrEmpty() || prd.IsNullOrEmpty())
-        //{
-        //var dmi = Execute("dmidecode");
-        //if (!dmi.IsNullOrEmpty())
-        //{
-        //    var p = dmi.IndexOf("System Information");
-        //    if (p > 0) dmi = dmi[p..];
-
-        //    dic = dmi.SplitAsDictionary(":", "\n");
-        //    //if (dmi.TryGetValue("ID", out str)) CpuID = str.Replace(" ", null);
-        //    if (dic.TryGetValue("UUID", out str)) UUID = str;
-        //    if (dic.TryGetValue("Product Name", out str))
-        //    {
-        //        // 增加制造商。如 Tencent Cloud，它的产品名只有 CVM。阿里云产品名 Alibaba Cloud ECS
-        //        if (dic.TryGetValue("Manufacturer", out var man) && !man.IsNullOrEmpty() && !man.Contains(str))
-        //        {
-        //            // 红帽KVM太流行，细化处理
-        //            if (str == "KVM" && man == "Red Hat" && dic.TryGetValue("Version", out var ver) && !ver.IsNullOrEmpty())
-        //            {
-        //                p = ver.IndexOf('(');
-        //                if (p > 0) ver = ver[..p].Trim();
-        //                str = ver;
-        //            }
-        //            else
-        //                str = $"{man} {str}";
-        //        }
-
-        //        Product = str;
-        //    }
-        //    if (dic.TryGetValue("Serial Number", out str) && !str.IsNullOrEmpty() && !str.EqualIgnoreCase("Not Specified"))
-        //        Serial = str;
-
-        //    // 在DMI信息内，没有太好的BoardID取值
-        //    if (dic.TryGetValue("SKU Number", out str) && !str.IsNullOrEmpty() && !str.EqualIgnoreCase("Not Specified"))
-        //        Board = str;
-        //    if (dic.TryGetValue("Family", out str) && !str.IsNullOrEmpty() && !str.EqualIgnoreCase("Not Specified"))
-        //        Board = str;
-        //}
-        //}
     }
 
     private readonly ICollection<String> _excludes = new List<String>();
@@ -511,43 +484,43 @@ public class MachineInfo
 
         CpuRate = total == 0 ? 0 : (Single)Math.Round((Single)(total - idle) / total, 4);
 
-#if NETCOREAPP
-        //if (!_excludes.Contains(nameof(Temperature)))
-        //{
-        //    // 读取主板温度，不太准。标准方案是ring0通过IOPort读取CPU温度，太难在基础类库实现
-        //    var str = GetInfo("Win32_TemperatureProbe", "CurrentReading");
-        //    if (!str.IsNullOrEmpty())
-        //    {
-        //        Temperature = str.SplitAsInt().Average();
-        //    }
-        //    else
-        //    {
-        //        str = GetInfo("MSAcpi_ThermalZoneTemperature", "CurrentTemperature", "root/wmi");
-        //        if (!str.IsNullOrEmpty())
-        //            Temperature = (str.SplitAsInt().Average() - 2732) / 10.0;
-        //        else
-        //        {
-        //            if (XTrace.Log.Level <= LogLevel.Debug) XTrace.WriteLine("Temperature信息无法读取");
-        //            _excludes.Add(nameof(Temperature));
-        //            Temperature = 0;
-        //        }
-        //    }
-        //}
+#if NETFRAMEWORK
+        if (!_excludes.Contains(nameof(Temperature)))
+        {
+            // 读取主板温度，不太准。标准方案是ring0通过IOPort读取CPU温度，太难在基础类库实现
+            var str = GetInfo("Win32_TemperatureProbe", "CurrentReading");
+            if (!str.IsNullOrEmpty())
+            {
+                Temperature = str.SplitAsInt().Average();
+            }
+            else
+            {
+                str = GetInfo("MSAcpi_ThermalZoneTemperature", "CurrentTemperature", "root/wmi");
+                if (!str.IsNullOrEmpty())
+                    Temperature = (str.SplitAsInt().Average() - 2732) / 10.0;
+                else
+                {
+                    if (XTrace.Log.Level <= LogLevel.Debug) XTrace.WriteLine("Temperature信息无法读取");
+                    _excludes.Add(nameof(Temperature));
+                    Temperature = 0;
+                }
+            }
+        }
 
-        //if (!_excludes.Contains(nameof(Battery)))
-        //{
-        //    // 电池剩余
-        //    var str = GetInfo("Win32_Battery", "EstimatedChargeRemaining");
-        //    if (!str.IsNullOrEmpty())
-        //        Battery = str.SplitAsInt().Average() / 100.0;
-        //    else
-        //    {
-        //        if (XTrace.Log.Level <= LogLevel.Debug) XTrace.WriteLine("Battery信息无法读取");
-        //        _excludes.Add(nameof(Battery));
-        //        Battery = 0;
-        //    }
-        //}
-#endif
+        if (!_excludes.Contains(nameof(Battery)))
+        {
+            // 电池剩余
+            var str = GetInfo("Win32_Battery", "EstimatedChargeRemaining");
+            if (!str.IsNullOrEmpty())
+                Battery = str.SplitAsInt().Average() / 100.0;
+            else
+            {
+                if (XTrace.Log.Level <= LogLevel.Debug) XTrace.WriteLine("Battery信息无法读取");
+                _excludes.Add(nameof(Battery));
+                Battery = 0;
+            }
+        }
+#else
         if (!_excludes.Contains(nameof(Temperature)))
         {
             var temp = ReadWmic(@"/namespace:\\root\wmi path MSAcpi_ThermalZoneTemperature", "CurrentTemperature");
@@ -579,6 +552,7 @@ public class MachineInfo
                 Battery = 0;
             }
         }
+#endif
     }
 
     private void RefreshLinux()
@@ -662,16 +636,21 @@ public class MachineInfo
     {
         var sent = 0L;
         var received = 0L;
-        foreach (var ni in NetworkInterface.GetAllNetworkInterfaces())
+        try
         {
-            try
+            // WSL获取网络列表时可能报错
+            foreach (var ni in NetworkInterface.GetAllNetworkInterfaces())
             {
-                var st = ni.GetIPStatistics();
-                sent += st.BytesSent;
-                received += st.BytesReceived;
+                try
+                {
+                    var st = ni.GetIPStatistics();
+                    sent += st.BytesSent;
+                    received += st.BytesReceived;
+                }
+                catch { }
             }
-            catch { }
         }
+        catch { }
 
         var now = Runtime.TickCount64;
         if (_lastTime > 0)
@@ -775,7 +754,7 @@ public class MachineInfo
                 {
                     var key = line[..p].Trim();
                     var value = line[(p + 1)..].Trim();
-                    dic[key] = value;
+                    dic[key] = value.TrimInvisible();
                 }
             }
         }
@@ -845,9 +824,9 @@ public class MachineInfo
         foreach (var item in dic)
         {
             if (item.Value.Contains(','))
-                dic2[item.Key] = item.Value.Split(',').OrderBy(e => e).Join();
+                dic2[item.Key] = item.Value.Split(',').OrderBy(e => e.TrimInvisible()).Join();
             else
-                dic2[item.Key] = item.Value;
+                dic2[item.Key] = item.Value.TrimInvisible();
         }
 
         return dic2;
@@ -1062,7 +1041,7 @@ public class MachineInfo
             foreach (var mo in moc)
             {
                 var val = mo?.Properties?[property]?.Value;
-                if (val != null) bbs.Add(val.ToString().Trim());
+                if (val != null) bbs.Add(val.ToString().TrimInvisible().Trim());
             }
         }
         catch (Exception ex)
