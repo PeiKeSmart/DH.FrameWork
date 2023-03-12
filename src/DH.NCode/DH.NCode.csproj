@@ -5,11 +5,11 @@
 	<LangVersion>latest</LangVersion>
 	<OutputType>Library</OutputType>
     <ImplicitUsings>enable</ImplicitUsings>
-	<TargetFrameworks>net461;netstandard2.0;netstandard2.1</TargetFrameworks>
+	<TargetFrameworks>net45;net461;netstandard2.0;netstandard2.1</TargetFrameworks>
 	<RootNamespace>DH.NCode</RootNamespace>
 	<AssemblyName>DH.NCode</AssemblyName>
 	<AssemblyTitle>DH组件数据中间件</AssemblyTitle>
-	<Description>DH框架的数据中间件，MySQL、SQLite、SqlServer、Oracle、Postgresql，参考X组件的XCode</Description>
+	<Description>DH框架的数据中间件，数据中间件，支持MySQL、SQLite、SqlServer、Oracle、Postgresql、TDengine、达梦，重点在缓存、性能、分表、自动建表。参考X组件的XCode</Description>
     <Company>湖北登灏科技有限公司</Company>
 	  
 	<OutputPath>..\Bin</OutputPath>
@@ -44,7 +44,7 @@
 	<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 	
-  <ItemGroup Condition="'$(TargetFramework)'=='net461'">
+  <ItemGroup Condition="'$(TargetFramework)'=='net45' or '$(TargetFramework)'=='net461'">
 	<Reference Include="System.Net.Http" />
 	<Reference Include="System.IO.Compression" />
   </ItemGroup>
@@ -82,7 +82,6 @@
     <None Remove="tools\**" />
     <None Remove="Web\**" />
   </ItemGroup>
-	
   <ItemGroup>
     <Compile Remove="DataAccessLayer\Common\ConnectionPool.cs" />
     <Compile Remove="DataAccessLayer\Database\Firebird.cs" />
@@ -103,7 +102,6 @@
     <Compile Remove="Transform\Sync.cs" />
     <Compile Remove="Transform\TimeSpanExtracter.cs" />
   </ItemGroup>
-	
   <ItemGroup>
     <None Remove="Build.tt" />
     <None Remove="install.ps1" />
@@ -117,6 +115,12 @@
       <Pack>true</Pack>
       <PackagePath>content\Entity\</PackagePath>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Readme.MD">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 	
   <ItemGroup>

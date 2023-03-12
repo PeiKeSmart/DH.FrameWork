@@ -350,7 +350,11 @@ partial class DAL
     /// <summary>数据层缓存。默认10秒</summary>
     public Int32 Expire { get; set; }
 
+#if NET45
+    private static readonly ThreadLocal<String> _SpanTag = new();
+#else
     private static readonly AsyncLocal<String> _SpanTag = new();
+#endif
 
     /// <summary>埋点上下文信息。用于附加在埋点标签后的上下文信息</summary>
     public static void SetSpanTag(String value) => _SpanTag.Value = value;
@@ -458,7 +462,7 @@ partial class DAL
 
             traceName = $"db:{ConnName}:{action}";
 
-            var tables = GetTables(sql);
+            var tables = GetTables(sql, true);
             if (tables.Length > 0) traceName += ":" + tables.Join("-");
         }
 
@@ -565,7 +569,7 @@ partial class DAL
 
             traceName = $"db:{ConnName}:{action}";
 
-            var tables = GetTables(sql);
+            var tables = GetTables(sql, true);
             if (tables.Length > 0) traceName += ":" + tables.Join("-");
         }
 
@@ -603,15 +607,26 @@ partial class DAL
 
     private static readonly Regex reg_table = new("(?:\\s+from|insert\\s+into|update|\\s+join|drop\\s+table|truncate\\s+table)\\s+[`'\"\\[]?([\\w]+)[`'\"\\[]?", RegexOptions.Compiled | RegexOptions.IgnoreCase);
     /// <summary>从Sql语句中截取表名</summary>
-    /// <param name="sql"></param>
+    /// <param name="sql">Sql语句</param>
+    /// <param name="trimShard">是否去掉表名后面的分表信息。如日期分表</param>
     /// <returns></returns>
-    public static String[] GetTables(String sql)
+    public static String[] GetTables(String sql, Boolean trimShard)
     {
         var list = new List<String>();
         var ms = reg_table.Matches(sql);
         foreach (Match item in ms)
         {
-            list.Add(item.Groups[1].Value);
+            //list.Add(item.Groups[1].Value);
+            var tableName = item.Groups[1].Value;
+            if (trimShard && tableName.Contains("_"))
+            {
+                var p = tableName.LastIndexOf('_');
+                if (p > 0 && tableName.Substring(p + 1).ToInt() > 0)
+                {
+                    tableName = tableName.Substring(0, p);
+                }
+            }
+            if (!list.Contains(tableName)) list.Add(tableName);
         }
         return list.ToArray();
     }
