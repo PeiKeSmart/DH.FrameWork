@@ -1,13 +1,14 @@
-﻿namespace DH.MockData.Abstractions.Randomizers;
-
-/// <summary>
-/// 手机号码随机生成器
-/// </summary>
-public interface IMobileRandomizer
+﻿namespace DH.MockData.Abstractions.Randomizers
 {
     /// <summary>
-    /// 生成
+    /// 手机号码随机生成器
     /// </summary>
-    /// <returns></returns>
-    string Generate();
+    public interface IMobileRandomizer
+    {
+        /// <summary>
+        /// 生成
+        /// </summary>
+        /// <returns></returns>
+        string Generate();
+    }
 }

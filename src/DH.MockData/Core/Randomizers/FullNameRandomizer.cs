@@ -3,78 +3,80 @@ using DH.MockData.Core.Options;
 using DH.MockData.Datas;
 using DH.MockData.Extensions;
 using DH.MockData.Internals.Generators;
+using System.Collections.Generic;
 
-namespace DH.MockData.Core.Randomizers;
-
-/// <summary>
-/// 全名随机生成器
-/// </summary>
-public class FullNameRandomizer : RandomizerBase<FullNameFieldOptions>, IStringRandomizer
+namespace DH.MockData.Core.Randomizers
 {
     /// <summary>
-    /// 数字生成器
+    /// 全名随机生成器
     /// </summary>
-    private readonly RandomThingsGenerator<int> _numberGenerator;
-
-    /// <summary>
-    /// 姓氏生成器
-    /// </summary>
-    private readonly RandomStringFromListGenerator _lastNameGenerator;
-
-    /// <summary>
-    /// 性别生成器
-    /// </summary>
-    private readonly List<RandomStringFromListGenerator> _genderSetGenerators =
-        new List<RandomStringFromListGenerator>();
-
-    /// <summary>
-    /// 初始化一个<see cref="FullNameRandomizer"/>类型的实例
-    /// </summary>
-    /// <param name="options">全名配置</param>
-    public FullNameRandomizer(FullNameFieldOptions options) : base(options)
+    public class FullNameRandomizer : RandomizerBase<FullNameFieldOptions>, IStringRandomizer
     {
-        _lastNameGenerator = new RandomStringFromListGenerator(CommonData.Instance.LastNames);
+        /// <summary>
+        /// 数字生成器
+        /// </summary>
+        private readonly RandomThingsGenerator<int> _numberGenerator;
 
-        if (options.Male)
+        /// <summary>
+        /// 姓氏生成器
+        /// </summary>
+        private readonly RandomStringFromListGenerator _lastNameGenerator;
+
+        /// <summary>
+        /// 性别生成器
+        /// </summary>
+        private readonly List<RandomStringFromListGenerator> _genderSetGenerators =
+            new List<RandomStringFromListGenerator>();
+
+        /// <summary>
+        /// 初始化一个<see cref="FullNameRandomizer"/>类型的实例
+        /// </summary>
+        /// <param name="options">全名配置</param>
+        public FullNameRandomizer(FullNameFieldOptions options) : base(options)
         {
-            _genderSetGenerators.Add(new RandomStringFromListGenerator(CommonData.Instance.MaleNames));
+            _lastNameGenerator = new RandomStringFromListGenerator(CommonData.Instance.LastNames);
+
+            if (options.Male)
+            {
+                _genderSetGenerators.Add(new RandomStringFromListGenerator(CommonData.Instance.MaleNames));
+            }
+
+            if (options.Female)
+            {
+                _genderSetGenerators.Add(new RandomStringFromListGenerator(CommonData.Instance.FemaleNames));
+            }
+
+            _numberGenerator = new RandomThingsGenerator<int>(0, _genderSetGenerators.Count);
         }
 
-        if (options.Female)
+        /// <summary>
+        /// 生成
+        /// </summary>
+        /// <returns></returns>
+        public string Generate()
         {
-            _genderSetGenerators.Add(new RandomStringFromListGenerator(CommonData.Instance.FemaleNames));
+            if (IsNull())
+            {
+                return null;
+            }
+
+            int maleOrFemale = _numberGenerator.Generate();
+
+            var firstNamesSet = _genderSetGenerators[maleOrFemale];
+            string firstName = firstNamesSet.Generate();
+            string lastName = _lastNameGenerator.Generate();
+
+            return $"{firstName} {lastName}";
         }
 
-        _numberGenerator = new RandomThingsGenerator<int>(0, _genderSetGenerators.Count);
-    }
-
-    /// <summary>
-    /// 生成
-    /// </summary>
-    /// <returns></returns>
-    public string Generate()
-    {
-        if (IsNull())
+        /// <summary>
+        /// 生成
+        /// </summary>
+        /// <param name="upperCase">是否大写</param>
+        /// <returns></returns>
+        public string Generate(bool upperCase)
         {
-            return null;
+            return Generate().ToCasedInvariant(upperCase);
         }
-
-        int maleOrFemale = _numberGenerator.Generate();
-
-        var firstNamesSet = _genderSetGenerators[maleOrFemale];
-        string firstName = firstNamesSet.Generate();
-        string lastName = _lastNameGenerator.Generate();
-
-        return $"{firstName} {lastName}";
-    }
-
-    /// <summary>
-    /// 生成
-    /// </summary>
-    /// <param name="upperCase">是否大写</param>
-    /// <returns></returns>
-    public string Generate(bool upperCase)
-    {
-        return Generate().ToCasedInvariant(upperCase);
     }
 }

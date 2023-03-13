@@ -1,8 +1,9 @@
-﻿namespace DH.MockData.Abstractions.Options;
-
-/// <summary>
-/// 银行卡配置
-/// </summary>
-public interface IBankCardFieldOptions
+﻿namespace DH.MockData.Abstractions.Options
 {
+    /// <summary>
+    /// 银行卡配置
+    /// </summary>
+    public interface IBankCardFieldOptions
+    {
+    }
 }

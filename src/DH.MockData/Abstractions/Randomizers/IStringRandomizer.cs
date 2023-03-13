@@ -1,20 +1,21 @@
-﻿namespace DH.MockData.Abstractions.Randomizers;
-
-/// <summary>
-/// 字符串随机生成器
-/// </summary>
-public interface IStringRandomizer
+﻿namespace DH.MockData.Abstractions.Randomizers
 {
     /// <summary>
-    /// 生成
+    /// 字符串随机生成器
     /// </summary>
-    /// <returns></returns>
-    string Generate();
+    public interface IStringRandomizer
+    {
+        /// <summary>
+        /// 生成
+        /// </summary>
+        /// <returns></returns>
+        string Generate();
 
-    /// <summary>
-    /// 生成
-    /// </summary>
-    /// <param name="upperCase">是否大写</param>
-    /// <returns></returns>
-    string Generate(bool upperCase);
+        /// <summary>
+        /// 生成
+        /// </summary>
+        /// <param name="upperCase">是否大写</param>
+        /// <returns></returns>
+        string Generate(bool upperCase);
+    }
 }

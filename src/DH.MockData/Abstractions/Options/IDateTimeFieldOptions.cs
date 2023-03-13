@@ -1,22 +1,25 @@
-﻿namespace DH.MockData.Abstractions.Options;
+﻿using System;
 
-/// <summary>
-/// 时间配置
-/// </summary>
-public interface IDateTimeFieldOptions
+namespace DH.MockData.Abstractions.Options
 {
     /// <summary>
-    /// 开始-从
+    /// 时间配置
     /// </summary>
-    DateTime From { get; set; }
+    public interface IDateTimeFieldOptions
+    {
+        /// <summary>
+        /// 开始-从
+        /// </summary>
+        DateTime From { get; set; }
 
-    /// <summary>
-    /// 结束-至
-    /// </summary>
-    DateTime To { get; set; }
+        /// <summary>
+        /// 结束-至
+        /// </summary>
+        DateTime To { get; set; }
 
-    /// <summary>
-    /// 是否包含时间
-    /// </summary>
-    bool IncludeTime { get; set; }
+        /// <summary>
+        /// 是否包含时间
+        /// </summary>
+        bool IncludeTime { get; set; }
+    }
 }

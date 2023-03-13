@@ -1,17 +1,18 @@
-﻿namespace DH.MockData.Core.Options;
-
-/// <summary>
-/// long 配置
-/// </summary>
-public class LongFieldOptions : NumberFieldOptions<long>
+﻿namespace DH.MockData.Core.Options
 {
     /// <summary>
-    /// 最小值
+    /// long 配置
     /// </summary>
-    public override long Min { get; set; }
+    public class LongFieldOptions : NumberFieldOptions<long>
+    {
+        /// <summary>
+        /// 最小值
+        /// </summary>
+        public override long Min { get; set; }
 
-    /// <summary>
-    /// 最大值
-    /// </summary>
-    public override long Max { get; set; } = long.MaxValue;
+        /// <summary>
+        /// 最大值
+        /// </summary>
+        public override long Max { get; set; } = long.MaxValue;
+    }
 }

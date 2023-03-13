@@ -1,17 +1,18 @@
-﻿namespace DH.MockData.Core.Options;
-
-/// <summary>
-/// int 配置
-/// </summary>
-public class IntFieldOptions : NumberFieldOptions<int>
+﻿namespace DH.MockData.Core.Options
 {
     /// <summary>
-    /// 最小值
+    /// int 配置
     /// </summary>
-    public override int Min { get; set; }
+    public class IntFieldOptions : NumberFieldOptions<int>
+    {
+        /// <summary>
+        /// 最小值
+        /// </summary>
+        public override int Min { get; set; }
 
-    /// <summary>
-    /// 最大值
-    /// </summary>
-    public override int Max { get; set; } = int.MaxValue;
+        /// <summary>
+        /// 最大值
+        /// </summary>
+        public override int Max { get; set; } = int.MaxValue;
+    }
 }

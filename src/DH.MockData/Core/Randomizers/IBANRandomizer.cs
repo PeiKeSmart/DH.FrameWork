@@ -4,67 +4,70 @@ using DH.MockData.Datas;
 using DH.MockData.Datas.Models;
 using DH.MockData.Extensions;
 using DH.MockData.Internals.Generators;
+using System;
+using System.Linq;
 
-namespace DH.MockData.Core.Randomizers;
-
-/// <summary>
-/// 银行账号随机生成器
-/// </summary>
-public class IBANRandomizer : RandomizerBase<IBANFieldOptions>, IStringRandomizer
+namespace DH.MockData.Core.Randomizers
 {
     /// <summary>
-    /// 项生成器
+    /// 银行账号随机生成器
     /// </summary>
-    private readonly RandomItemFromListGenerator<IBAN> _itemGenerator;
-
-    /// <summary>
-    /// 初始化一个<see cref="IBANRandomizer"/>类型的实例
-    /// </summary>
-    /// <param name="options">银行账号配置</param>
-    public IBANRandomizer(IBANFieldOptions options) : base(options)
+    public class IBANRandomizer : RandomizerBase<IBANFieldOptions>, IStringRandomizer
     {
-        Func<IBAN, bool> predicate = null;
-        if (!string.IsNullOrEmpty(options.CountryCode))
+        /// <summary>
+        /// 项生成器
+        /// </summary>
+        private readonly RandomItemFromListGenerator<IBAN> _itemGenerator;
+
+        /// <summary>
+        /// 初始化一个<see cref="IBANRandomizer"/>类型的实例
+        /// </summary>
+        /// <param name="options">银行账号配置</param>
+        public IBANRandomizer(IBANFieldOptions options) : base(options)
         {
-            predicate = (iban) => iban.CountryCode == options.CountryCode;
+            Func<IBAN, bool> predicate = null;
+            if (!string.IsNullOrEmpty(options.CountryCode))
+            {
+                predicate = (iban) => iban.CountryCode == options.CountryCode;
+            }
+
+            var list = CommonData.Instance.IBANs;
+            switch (options.Type)
+            {
+                case "BBAN":
+                    list = CommonData.Instance.BBANs;
+                    break;
+                case "BOTH":
+                    list = list.Union(CommonData.Instance.BBANs);
+                    break;
+            }
+
+            _itemGenerator = new RandomItemFromListGenerator<IBAN>(list, predicate);
         }
 
-        var list = CommonData.Instance.IBANs;
-        switch (options.Type)
+        /// <summary>
+        /// 生成
+        /// </summary>
+        /// <returns></returns>
+        public string Generate()
         {
-            case "BBAN":
-                list = CommonData.Instance.BBANs;
-                break;
-            case "BOTH":
-                list = list.Union(CommonData.Instance.BBANs);
-                break;
+            if (IsNull())
+            {
+                return null;
+            }
+
+            var iban = _itemGenerator.Generate();
+            return iban.Generator.Generate();
         }
 
-        _itemGenerator = new RandomItemFromListGenerator<IBAN>(list, predicate);
-    }
-
-    /// <summary>
-    /// 生成
-    /// </summary>
-    /// <returns></returns>
-    public string Generate()
-    {
-        if (IsNull())
+        /// <summary>
+        /// 生成
+        /// </summary>
+        /// <param name="upperCase">是否大写</param>
+        /// <returns></returns>
+        public string Generate(bool upperCase)
         {
-            return null;
+            return Generate().ToCasedInvariant(upperCase);
         }
-
-        var iban = _itemGenerator.Generate();
-        return iban.Generator.Generate();
-    }
-
-    /// <summary>
-    /// 生成
-    /// </summary>
-    /// <param name="upperCase">是否大写</param>
-    /// <returns></returns>
-    public string Generate(bool upperCase)
-    {
-        return Generate().ToCasedInvariant(upperCase);
     }
 }
