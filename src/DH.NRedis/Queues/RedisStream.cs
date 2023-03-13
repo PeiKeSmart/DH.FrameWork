@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using NewLife.Caching.Common;
 using NewLife.Data;
 using NewLife.Log;
@@ -326,10 +327,9 @@ public class RedisStream<T> : QueueBase, IProducerConsumer<T>
     /// <returns></returns>
     public Int32 Acknowledge(params String[] keys)
     {
-        var rs = 0;
-        foreach (var item in keys)
-            rs += Ack(Group, item);
-        return rs;
+        if (keys == null || keys.Length == 0) return 0;
+
+        return Ack(Group, keys);
     }
     #endregion
 
@@ -346,25 +346,37 @@ public class RedisStream<T> : QueueBase, IProducerConsumer<T>
             _nextRetry = now.AddSeconds(RetryInterval);
             var retry = RetryInterval * 1000;
 
+            var tracer = Redis.Tracer;
+            var span = tracer?.NewSpan($"redismq:{Key}:RetryAck");
+
             // 拿到死信，重新放入队列
             String id = null;
-            while (true)
+            var times = 10;
+            while (times-- > 0)
             {
                 var list = Pending(Group, id, null, 100);
                 if (list.Length == 0) break;
+
+                span?.AppendTag(list);
 
                 foreach (var item in list)
                     if (item.Idle > retry)
                         if (item.Delivery >= MaxRetry)
                         {
-                            XTrace.WriteLine("[{0}]删除多次失败死信：{1}", Group, item.ToJson());
+                            var msg = item.ToJson();
+                            tracer?.NewError($"redismq:{Key}:Delete", msg);
+
+                            XTrace.WriteLine("[{0}]删除多次失败死信：{1}", Group, msg);
                             //Delete(item.Id);
                             Claim(Group, Consumer, item.Id, retry);
                             Ack(Group, item.Id);
                         }
                         else
                         {
-                            XTrace.WriteLine("[{0}]定时回滚：{1}", Group, item.ToJson());
+                            var msg = item.ToJson();
+                            tracer?.NewError($"redismq:{Key}:Rollback", msg);
+
+                            XTrace.WriteLine("[{0}]定时回滚：{1}", Group, msg);
                             // 抢夺消息，所有者更改为当前消费者，Idle从零开始计算。这些消息需要尽快得到处理，否则会再次过期
                             Claim(Group, Consumer, item.Id, retry);
 
@@ -414,6 +426,19 @@ public class RedisStream<T> : QueueBase, IProducerConsumer<T>
     /// <param name="id">消息Id</param>
     /// <returns></returns>
     public Int32 Ack(String group, String id) => Execute(rc => rc.Execute<Int32>("XACK", Key, group, id), true);
+
+    /// <summary>批量确认消息</summary>
+    /// <param name="group">消费组名称</param>
+    /// <param name="ids">消息Id</param>
+    /// <returns></returns>
+    public Int32 Ack(String group, String[] ids)
+    {
+        var args = new List<Object> { Key, group };
+        foreach (var item in ids)
+            args.Add(item);
+
+        return Execute(rc => rc.Execute<Int32>("XACK", args.ToArray()), true);
+    }
 
     /// <summary>改变待处理消息的所有权，抢夺他人未确认消息</summary>
     /// <param name="group">消费组名称</param>
@@ -753,12 +778,14 @@ XREAD count 3 streams stream_key 0-0
         // 打断状态机，后续逻辑在其它线程执行。使用者可能直接调用ConsumeAsync且没有使用Task.Run
         await Task.Yield();
 
-        // 自动创建消费组
-        SetGroup(Group);
-
         // 主题
         var topic = Key;
         if (topic.IsNullOrEmpty()) topic = GetType().Name;
+
+        XTrace.WriteLine("开始消费[{0}]，BlockTime={1}", topic, BlockTime);
+
+        // 自动创建消费组
+        SetGroup(Group);
 
         // 超时时间，用于阻塞等待
         var timeout = BlockTime;
@@ -809,6 +836,8 @@ XREAD count 3 streams stream_key 0-0
                 span?.Dispose();
             }
         }
+
+        XTrace.WriteLine("消费[{0}]结束", topic);
     }
 
     /// <summary>队列消费大循环，处理消息后自动确认</summary>
@@ -821,7 +850,8 @@ XREAD count 3 streams stream_key 0-0
         return Task.FromResult(0);
     }, cancellationToken);
 
-    /// <summary>队列消费大循环，处理消息后自动确认</summary>
+    /// <summary>队列批量消费大循环，处理消息后自动确认</summary>
+    /// <remarks>批量消费最大的问题是部分消费成功，需要用户根据实际情况妥善处理</remarks>
     /// <param name="onMessage">消息处理。如果处理消息时抛出异常，消息将延迟后回到队列</param>
     /// <param name="batchSize">批大小。默认100</param>
     /// <param name="cancellationToken">取消令牌</param>
@@ -831,9 +861,6 @@ XREAD count 3 streams stream_key 0-0
         // 打断状态机，后续逻辑在其它线程执行。使用者可能直接调用ConsumeAsync且没有使用Task.Run
         await Task.Yield();
 
-        // 自动创建消费组
-        SetGroup(Group);
-
         // 主题
         var topic = Key;
         if (topic.IsNullOrEmpty()) topic = GetType().Name;
@@ -841,6 +868,11 @@ XREAD count 3 streams stream_key 0-0
         // 超时时间，用于阻塞等待
         var timeout = BlockTime;
         if (batchSize <= 0) batchSize = 100;
+
+        XTrace.WriteLine("开始批量消费[{0}]，BlockTime={1}，BatchSize={2}", topic, BlockTime, batchSize);
+
+        // 自动创建消费组
+        SetGroup(Group);
 
         while (!cancellationToken.IsCancellationRequested)
         {
@@ -888,9 +920,23 @@ XREAD count 3 streams stream_key 0-0
                 span?.Dispose();
             }
         }
+
+        XTrace.WriteLine("批量消费[{0}]结束", topic);
     }
 
-    /// <summary>队列消费大循环，批量处理消息后自动确认</summary>
+    /// <summary>队列批量消费大循环，批量处理消息后自动确认</summary>
+    /// <remarks>批量消费最大的问题是部分消费成功，需要用户根据实际情况妥善处理</remarks>
+    /// <param name="onMessage">消息处理。如果处理消息时抛出异常，消息将延迟后回到队列</param>
+    /// <param name="batchSize">批大小。默认100</param>
+    /// <param name="cancellationToken">取消令牌</param>
+    /// <returns></returns>
+    public async Task ConsumeAsync(Func<T[], Task> onMessage, Int32 batchSize = 100, CancellationToken cancellationToken = default) => await ConsumeAsync(async (m, k, t) =>
+    {
+        await onMessage(m);
+    }, batchSize, cancellationToken);
+
+    /// <summary>队列批量消费大循环，批量处理消息后自动确认</summary>
+    /// <remarks>批量消费最大的问题是部分消费成功，需要用户根据实际情况妥善处理</remarks>
     /// <param name="onMessage">消息处理。如果处理消息时抛出异常，消息将延迟后回到队列</param>
     /// <param name="batchSize">批大小。默认100</param>
     /// <param name="cancellationToken">取消令牌</param>
