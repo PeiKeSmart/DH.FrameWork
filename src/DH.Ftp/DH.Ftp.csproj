@@ -9,7 +9,7 @@
 	<RootNamespace>DH.Ftp</RootNamespace>
 	<AssemblyName>DH.Ftp</AssemblyName>
 	<AssemblyTitle>Ftp客户端</AssemblyTitle>
-	<Description>纯托管轻量级Ftp客户端,建议也可以参考使用FluentFTP，https://github.com/robinrodricks/FluentFTP</Description>
+	<Description>纯托管轻量级Ftp客户端,建议参考使用FluentFTP，https://github.com/robinrodricks/FluentFTP</Description>
 	<Company>湖北登灏科技有限公司</Company>
 	
 	<OutputPath>..\Bin</OutputPath>
@@ -62,6 +62,10 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>	
+
+  <ItemGroup>
+    <PackageReference Include="FluentFTP" Version="46.0.2" />
   </ItemGroup>
 
 </Project>
