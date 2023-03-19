@@ -1,5 +1,5 @@
-﻿using DH.Common.Properties;
-using DH.Extension;
+﻿using DH.Extension;
+using DH.Properties;
 
 using NewLife.Log;
 

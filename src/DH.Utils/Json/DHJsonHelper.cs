@@ -44,33 +44,6 @@ public static class DHJsonHelper
     /// <summary>
     /// 将Json字符串转换为对象
     /// </summary>
-    /// <typeparam name="T">实体类型</typeparam>
-    /// <param name="json">Json字符串</param>
-    /// <returns></returns>
-    public static T ToObject<T>(string json)
-    {
-        if (string.IsNullOrWhiteSpace(json))
-        {
-            return default(T);
-        }
-
-        return JsonConvert.DeserializeObject<T>(json);
-    }
-
-    /// <summary>
-    /// 将Json字符串转换为对象
-    /// </summary>
-    /// <param name="json">Json字符串</param>
-    /// <param name="type">实体类型</param>
-    /// <returns></returns>
-    public static object ToObject(string json, Type type)
-    {
-        return JsonConvert.DeserializeObject(json, type);
-    }
-
-    /// <summary>
-    /// 将Json字符串转换为对象
-    /// </summary>
     /// <param name="json">Json字符串</param>
     /// <returns></returns>
     public static object ToObject(string json)
@@ -164,7 +137,7 @@ public static class DHJsonHelper
             {
                 using (StreamReader sr = new StreamReader(fs, Encoding.UTF8))
                 {
-                    return ToObject<T>(sr.ReadToEnd());
+                    return JsonHelper.ToJsonEntity<T>(sr.ReadToEnd());
                 }
             }
         }

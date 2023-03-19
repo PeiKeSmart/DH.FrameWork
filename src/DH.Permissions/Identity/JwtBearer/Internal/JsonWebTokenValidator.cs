@@ -1,7 +1,8 @@
-﻿using DH.Helpers;
-using DH.Security;
+﻿using DH.Security;
 
 using Microsoft.IdentityModel.Tokens;
+
+using NewLife.Serialization;
 
 using System.Security.Cryptography;
 using System.Text;
@@ -27,8 +28,8 @@ internal sealed class JsonWebTokenValidator : IJsonWebTokenValidator
         var jwtArray = encodeJwt.Split('.');
         if (jwtArray.Length < 3)
             return false;
-        var header = DHJsonHelper.ToObject<Dictionary<string, string>>(Base64UrlEncoder.Decode(jwtArray[0]));
-        var payload = DHJsonHelper.ToObject<Dictionary<string, string>>(Base64UrlEncoder.Decode(jwtArray[1]));
+        var header = JsonHelper.ToJsonEntity<Dictionary<string, string>>(Base64UrlEncoder.Decode(jwtArray[0]));
+        var payload = JsonHelper.ToJsonEntity<Dictionary<string, string>>(Base64UrlEncoder.Decode(jwtArray[1]));
 
         // 首先验证签名是否正确
         var hs256 = new HMACSHA256(Encoding.UTF8.GetBytes(options.Secret));

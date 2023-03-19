@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using NewLife.Serialization;
+
+using Newtonsoft.Json.Linq;
 
 namespace DH.Helpers;
 
@@ -17,7 +19,7 @@ public static class JsonExtensions
     /// <returns></returns>
     public static T ToObject<T>(this string json)
     {
-        return DHJsonHelper.ToObject<T>(json);
+        return JsonHelper.ToJsonEntity<T>(json);
     }
 
     /// <summary>

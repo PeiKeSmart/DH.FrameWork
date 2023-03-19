@@ -6,7 +6,7 @@
     <OutputType>Library</OutputType>
     <TargetFramework>netstandard2.1</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-	<RootNamespace>DH.Common</RootNamespace>
+	<RootNamespace>DH</RootNamespace>
 	<AssemblyName>DH.Common</AssemblyName>
 	<AssemblyTitle>基类核心库</AssemblyTitle>
 	<Description>DH框架基类核心库</Description>

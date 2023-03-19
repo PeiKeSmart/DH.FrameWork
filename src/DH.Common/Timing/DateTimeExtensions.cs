@@ -3,7 +3,7 @@
 /// <summary>
 /// 日期时间辅助扩展操作
 /// </summary>
-public static class DateTimeExtensions
+public static partial class DateTimeExtensions
 {
     #region 字段
 
