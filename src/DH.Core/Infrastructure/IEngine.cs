@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Autofac;
+
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -54,5 +56,10 @@ namespace DH.Core.Infrastructure
         /// <returns>已解决的服务</returns>
         object ResolveUnregistered(Type type);
 
+        /// <summary>
+        /// 解决依赖关系。旧项目使用，新项目不再使用
+        /// </summary>
+        /// <param name="containerBuilder">容器制造商</param>
+        void RegisterDependencies(ContainerBuilder containerBuilder);
     }
 }

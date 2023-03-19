@@ -176,7 +176,7 @@ namespace DH.Core.Infrastructure
         /// <param name="assemblies">程序集</param>
         /// <param name="onlyConcreteClasses">指示是否仅查找具体类的值</param>
         /// <returns>结果</returns>
-        protected virtual IEnumerable<Type> FindClassesOfType(Type assignTypeFrom, IEnumerable<Assembly> assemblies, bool onlyConcreteClasses = true)
+        public virtual IEnumerable<Type> FindClassesOfType(Type assignTypeFrom, IEnumerable<Assembly> assemblies, bool onlyConcreteClasses = true)
         {
             var result = new List<Type>();
             try
@@ -262,6 +262,18 @@ namespace DH.Core.Infrastructure
         public IEnumerable<Type> FindClassesOfType(Type assignTypeFrom, bool onlyConcreteClasses = true)
         {
             return FindClassesOfType(assignTypeFrom, GetAssemblies(), onlyConcreteClasses);
+        }
+
+        /// <summary>
+        /// 查找类型的类
+        /// </summary>
+        /// <typeparam name="T">类型</typeparam>
+        /// <param name="assemblies">程序集</param>
+        /// <param name="onlyConcreteClasses">一个值，指示是否仅查找具体的类</param>
+        /// <returns>结果</returns>
+        public IEnumerable<Type> FindClassesOfType<T>(IEnumerable<Assembly> assemblies, bool onlyConcreteClasses = true)
+        {
+            return FindClassesOfType(typeof(T), assemblies, onlyConcreteClasses);
         }
 
         /// <summary>

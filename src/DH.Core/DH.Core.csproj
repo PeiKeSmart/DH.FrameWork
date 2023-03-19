@@ -6,7 +6,7 @@
     <OutputType>Library</OutputType>
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-	<RootNamespace>DH.Core</RootNamespace>
+	<RootNamespace>DH</RootNamespace>
 	<AssemblyName>DH.Core</AssemblyName>
 	<AssemblyTitle>基类核心库</AssemblyTitle>
 	<Description>DH框架基类核心库</Description>

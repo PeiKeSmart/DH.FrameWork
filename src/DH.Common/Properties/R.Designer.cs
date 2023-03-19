@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace DH.Properties {
+namespace DH.Common.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace DH.Properties {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("DH.Properties.R", typeof(R).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("DH.Common.Properties.R", typeof(R).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

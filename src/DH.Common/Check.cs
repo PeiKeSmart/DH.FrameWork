@@ -1,5 +1,5 @@
-﻿using DH.Extensions;
-using DH.Properties;
+﻿using DH.Common.Properties;
+using DH.Extensions;
 
 using JetBrains.Annotations;
 

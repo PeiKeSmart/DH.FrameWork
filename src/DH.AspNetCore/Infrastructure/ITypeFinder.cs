@@ -25,6 +25,24 @@ public interface ITypeFinder
     IEnumerable<Type> FindClassesOfType(Type assignTypeFrom, bool onlyConcreteClasses = true);
 
     /// <summary>
+    /// 查找类型的类别
+    /// </summary>
+    /// <typeparam name="T">类型</typeparam>
+    /// <param name="assemblies">装配体</param>
+    /// <param name="onlyConcreteClasses">指示是否仅查找具体类的值</param>
+    /// <returns>Result</returns>
+    IEnumerable<Type> FindClassesOfType<T>(IEnumerable<Assembly> assemblies, bool onlyConcreteClasses = true);
+
+    /// <summary>
+    /// 查找类型的类别
+    /// </summary>
+    /// <param name="assignTypeFrom">从分配类型</param>
+    /// <param name="assemblies">装配体</param>
+    /// <param name="onlyConcreteClasses">指示是否仅查找具体类的值</param>
+    /// <returns>Result</returns>
+    IEnumerable<Type> FindClassesOfType(Type assignTypeFrom, IEnumerable<Assembly> assemblies, bool onlyConcreteClasses = true);
+
+    /// <summary>
     /// 获取与当前实现相关的程序集。
     /// </summary>
     /// <returns>程序集列表</returns>

@@ -1,8 +1,10 @@
-﻿using AutoMapper;
+﻿using Autofac;
+
+using AutoMapper;
 
 using DH.Core.Infrastructure.Mapper;
 using DH.Exceptions;
-using DH.VirtualFileSystem;
+using DH.Infrastructure.DependencyManagement;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -19,6 +21,12 @@ namespace DH.Core.Infrastructure;
 /// </summary>
 public partial class DHEngine : IEngine
 {
+    #region 字段
+
+    private ITypeFinder _typeFinder;
+
+    #endregion
+
     #region 公共方法
 
     /// <summary>
@@ -55,6 +63,31 @@ public partial class DHEngine : IEngine
         // 执行任务
         foreach (var task in instances)
             task.ExecuteAsync().Wait();
+    }
+
+    /// <summary>
+    /// 注册依赖
+    /// </summary>
+    /// <param name="containerBuilder">容器制造商</param>
+    public virtual void RegisterDependencies(ContainerBuilder containerBuilder)
+    {
+        //注册引擎
+        containerBuilder.RegisterInstance(this).As<IEngine>().SingleInstance();
+
+        //寄存器类型查找器
+        containerBuilder.RegisterInstance(_typeFinder).As<ITypeFinder>().SingleInstance();
+
+        //寄存器类型查找器
+        var dependencyRegistrars = _typeFinder.FindClassesOfType<IDependencyRegistrar>();
+
+        //创建和排序依赖项注册器的实例
+        var instances = dependencyRegistrars
+            .Select(dependencyRegistrar => (IDependencyRegistrar)Activator.CreateInstance(dependencyRegistrar))
+            .OrderBy(dependencyRegistrar => dependencyRegistrar.Order);
+
+        //注册所有提供的依赖项
+        foreach (var dependencyRegistrar in instances)
+            dependencyRegistrar.Register(containerBuilder, _typeFinder);
     }
 
     /// <summary>

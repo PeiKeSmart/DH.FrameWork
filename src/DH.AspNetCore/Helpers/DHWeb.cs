@@ -441,6 +441,29 @@ public static partial class DHWeb
 
     #endregion
 
+    #region Client( Web客户端 )
+
+    /// <summary>
+    /// Web客户端，用于发送Http请求
+    /// </summary>
+    /// <returns></returns>
+    public static DH.Webs.Clients.WebClient Client()
+    {
+        return new DH.Webs.Clients.WebClient();
+    }
+
+    /// <summary>
+    /// Web客户端，用于发送Http请求
+    /// </summary>
+    /// <typeparam name="TResult">返回结果类型</typeparam>
+    /// <returns></returns>
+    public static DH.Webs.Clients.WebClient<TResult> Client<TResult>() where TResult : class
+    {
+        return new DH.Webs.Clients.WebClient<TResult>();
+    }
+
+    #endregion
+
     #region GetFiles(获取客户端文件集合)
 
     /// <summary>
