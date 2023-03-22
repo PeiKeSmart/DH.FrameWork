@@ -4,6 +4,8 @@ using DH.Core.Infrastructure;
 using NewLife;
 using NewLife.Reflection;
 
+using System.Xml.Serialization;
+
 using XCode;
 
 namespace DH.Entity
@@ -12,6 +14,29 @@ namespace DH.Entity
     /// <typeparam name="TEntity"></typeparam>
     public class DHEntityBase<TEntity> : Entity<TEntity>, BaseDHModel where TEntity : DHEntityBase<TEntity>, new()
     {
+        /// <summary>
+        /// 实例化
+        /// </summary>
+        public DHEntityBase()
+        {
+            CustomProperties = new Dictionary<string, string>();
+            PostInitialize();
+        }
+
+        /// <summary>
+        /// 对模型初始化执行其他操作
+        /// </summary>
+        /// <remarks>开发人员可以在自定义分部类中重写此方法，以便向构造函数添加一些自定义初始化代码</remarks>
+        protected virtual void PostInitialize()
+        {
+        }
+
+        /// <summary>
+        /// 获取或设置属性以存储模型的任何自定义值
+        /// </summary>
+        [XmlIgnore]
+        public Dictionary<string, string> CustomProperties { get; set; }
+
         /// <summary>
         /// 当前语言
         /// </summary>
