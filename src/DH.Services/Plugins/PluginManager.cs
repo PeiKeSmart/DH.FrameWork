@@ -71,7 +71,7 @@ namespace DH.Services.Plugins
         #region Methods
 
         /// <summary>
-        /// Load all plugins
+        /// 加载所有插件
         /// </summary>
         /// <param name="customer">Filter by customer; pass null to load all plugins</param>
         /// <param name="storeId">Filter by store; pass 0 to load all plugins</param>

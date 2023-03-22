@@ -8,24 +8,24 @@ namespace DH.Services.Cms
     public partial interface IWidgetPlugin : IPlugin
     {
         /// <summary>
-        /// Gets a value indicating whether to hide this plugin on the widget list page in the admin area
+        /// 获取一个值，该值指示是否在管理区域中的小部件列表页上隐藏此插件
         /// </summary>
         bool HideInWidgetList { get; }
 
         /// <summary>
-        /// Gets widget zones where this widget should be rendered
+        /// 获取应呈现此窗口小部件的小部件区域
         /// </summary>
         /// <returns>
-        /// A task that represents the asynchronous operation
-        /// The task result contains the widget zones
+        /// 表示异步操作的任务
+        /// 任务结果包含小组件区域
         /// </returns>
         Task<IList<string>> GetWidgetZonesAsync();
 
         /// <summary>
-        /// Gets a type of a view component for displaying widget
+        /// 获取用于显示小部件的视图组件的类型
         /// </summary>
-        /// <param name="widgetZone">Name of the widget zone</param>
-        /// <returns>View component type</returns>
+        /// <param name="widgetZone">小组件区域的名称</param>
+        /// <returns>查看组件类型</returns>
         Type GetWidgetViewComponent(string widgetZone);
     }
 }
