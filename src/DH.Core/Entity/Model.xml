@@ -438,4 +438,54 @@
       <Index Columns="SmsId" />
     </Indexes>
   </Table>
+  <Table Name="SiteInfo" TableName="DG_SiteInfo" Description="站点基础信息。目前表只启用部分字段">
+    <Columns>
+      <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
+      <Column Name="Url" DataType="String" Length="250" Description="网站域名" />
+      <Column Name="Hosts" DataType="String" Length="250" Description="网站主机集合。以,分隔且没有http(s)" />
+      <Column Name="SiteName" DataType="String" Nullable="False" Description="网站名称" />
+      <Column Name="SiteLogo" DataType="String" Length="255" Description="网站Logo" />
+      <Column Name="Summary" DataType="String" Length="500" Description="网站描述" />
+      <Column Name="SiteTel" DataType="String" Description="公司电话" />
+      <Column Name="SiteFax" DataType="String" Description="公司传真" />
+      <Column Name="SiteEmail" DataType="String" Length="100" Description="公司人事邮箱" />
+      <Column Name="QQ" DataType="String" Length="500" Description="公司客服QQ" />
+      <Column Name="SiteMobile" DataType="String" Description="公司客服手机" />
+      <Column Name="WeiXin" DataType="String" Length="255" Description="微信公众号图片" />
+      <Column Name="WeiBo" DataType="String" Length="255" Description="微博链接地址或者二维码" />
+      <Column Name="SiteAddress" DataType="String" Length="200" Description="公司地址" />
+      <Column Name="SiteCode" DataType="String" Length="2000" Description="网站备案号其它等信息" />
+      <Column Name="SeoTitle" DataType="String" Length="255" Description="网站SEO标题" />
+      <Column Name="SeoKey" DataType="String" Length="500" Description="网站SEO关键字" />
+      <Column Name="SeoDescribe" DataType="String" Length="2000" Description="网站SEO描述" />
+      <Column Name="SiteCopyright" DataType="String" Length="2000" Description="网站版权等信息" />
+      <Column Name="Status" DataType="Byte" Nullable="True" Description="网站开启关闭状态" />
+      <Column Name="CloseInfo" DataType="String" Length="2000" Description="如果状态关闭，请输入关闭网站原因" />
+      <Column Name="Registration" DataType="String" Description="备案号" />
+      <Column Name="CreateUser" DataType="String" Description="创建者" />
+      <Column Name="CreateUserID" DataType="Int32" Description="创建者" />
+      <Column Name="CreateTime" DataType="DateTime" Description="创建时间" />
+      <Column Name="CreateIP" DataType="String" Description="创建地址" />
+      <Column Name="UpdateUser" DataType="String" Description="更新者" />
+      <Column Name="UpdateUserID" DataType="Int32" Description="更新者" />
+      <Column Name="UpdateTime" DataType="DateTime" Description="更新时间" />
+      <Column Name="UpdateIP" DataType="String" Description="更新地址" />
+    </Columns>
+  </Table>
+  <Table Name="SiteInfoLan" TableName="DG_SiteInfoLan" Description="站点基础信息翻译表">
+    <Columns>
+      <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
+      <Column Name="SiteInfoId" DataType="Int32" Description="站点基础信息Id" />
+      <Column Name="LanguageId" DataType="Int32" Description="关联所属语言Id" />
+      <Column Name="SiteName" DataType="String" Description="网站名称" />
+      <Column Name="SeoTitle" DataType="String" Length="255" Description="网站SEO标题" />
+      <Column Name="SeoKey" DataType="String" Length="500" Description="网站SEO关键字" />
+      <Column Name="SeoDescribe" DataType="String" Length="2000" Description="网站SEO描述" />
+      <Column Name="Registration" DataType="String" Description="备案号" />
+      <Column Name="SiteCopyright" DataType="String" Length="2000" Description="网站版权等信息" />
+    </Columns>
+    <Indexes>
+      <Index Columns="SiteInfoId,LanguageId" Unique="True" />
+    </Indexes>
+  </Table>
 </Tables>

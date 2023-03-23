@@ -19,6 +19,23 @@ public class DHSetting : XmlConfig<DHSetting>
     [Category("通用")]
     public Boolean Debug { get; set; } = true;
 
+    /// <summary>显示运行时间</summary>
+    [Description("显示运行时间")]
+    [Category("通用")]
+    public Boolean ShowRunTime { get; set; } = true;
+
+    /// <summary>当前版本号</summary>
+    [Description("当前版本号")]
+    public String CurrentVersion { get; set; } = "1.00";
+
+    /// <summary>升级状态。版本号_是否成功(0 or 1)</summary>
+    [Description("升级状态")]
+    public String UpdateInfo { get; set; } = "";
+
+    /// <summary>站点Id</summary>
+    [Description("站点Id")]
+    public Int32 SiteId { get; set; } = 1;
+
     /// <summary>是否Api项目或者单页项目。默认false</summary>
     [Description("是否Api项目")]
     [Category("通用")]
