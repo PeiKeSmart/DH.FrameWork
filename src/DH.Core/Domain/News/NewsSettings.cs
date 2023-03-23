@@ -1,4 +1,6 @@
-﻿namespace DH.Domain.News;
+﻿using DH.Core.Configuration;
+
+namespace DH.Domain.News;
 
 /// <summary>
 /// 新闻设置
