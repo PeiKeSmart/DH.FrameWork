@@ -19,11 +19,11 @@ namespace DH.Entity
     {
         #region 属性
         private Int32 _Id;
-        /// <summary>编号</summary>
-        [DisplayName("编号")]
-        [Description("编号")]
+        /// <summary>角色编号</summary>
+        [DisplayName("角色编号")]
+        [Description("角色编号")]
         [DataObjectField(true, false, false, 0)]
-        [BindColumn("Id", "编号", "")]
+        [BindColumn("Id", "角色编号", "")]
         public Int32 Id { get => _Id; set { if (OnPropertyChanging("Id", value)) { _Id = value; OnPropertyChanged("Id"); } } }
 
         private Boolean _IsAdmin;
@@ -33,6 +33,14 @@ namespace DH.Entity
         [DataObjectField(false, false, false, 0)]
         [BindColumn("IsAdmin", "是否管理员", "")]
         public Boolean IsAdmin { get => _IsAdmin; set { if (OnPropertyChanging("IsAdmin", value)) { _IsAdmin = value; OnPropertyChanged("IsAdmin"); } } }
+
+        private String _Roles;
+        /// <summary>角色权限</summary>
+        [DisplayName("角色权限")]
+        [Description("角色权限")]
+        [DataObjectField(false, false, true, 512)]
+        [BindColumn("Roles", "角色权限", "")]
+        public String Roles { get => _Roles; set { if (OnPropertyChanging("Roles", value)) { _Roles = value; OnPropertyChanged("Roles"); } } }
         #endregion
 
         #region 获取/设置 字段值
@@ -47,6 +55,7 @@ namespace DH.Entity
                 {
                     case "Id": return _Id;
                     case "IsAdmin": return _IsAdmin;
+                    case "Roles": return _Roles;
                     default: return base[name];
                 }
             }
@@ -56,6 +65,7 @@ namespace DH.Entity
                 {
                     case "Id": _Id = value.ToInt(); break;
                     case "IsAdmin": _IsAdmin = value.ToBoolean(); break;
+                    case "Roles": _Roles = Convert.ToString(value); break;
                     default: base[name] = value; break;
                 }
             }
@@ -66,11 +76,14 @@ namespace DH.Entity
         /// <summary>取得角色扩展表字段信息的快捷方式</summary>
         public partial class _
         {
-            /// <summary>编号</summary>
+            /// <summary>角色编号</summary>
             public static readonly Field Id = FindByName("Id");
 
             /// <summary>是否管理员</summary>
             public static readonly Field IsAdmin = FindByName("IsAdmin");
+
+            /// <summary>角色权限</summary>
+            public static readonly Field Roles = FindByName("Roles");
 
             static Field FindByName(String name) => Meta.Table.FindByName(name);
         }
@@ -78,11 +91,14 @@ namespace DH.Entity
         /// <summary>取得角色扩展表字段名称的快捷方式</summary>
         public partial class __
         {
-            /// <summary>编号</summary>
+            /// <summary>角色编号</summary>
             public const String Id = "Id";
 
             /// <summary>是否管理员</summary>
             public const String IsAdmin = "IsAdmin";
+
+            /// <summary>角色权限</summary>
+            public const String Roles = "Roles";
         }
         #endregion
     }

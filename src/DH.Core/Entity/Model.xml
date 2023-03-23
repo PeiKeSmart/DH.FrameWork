@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Tables xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:schemaLocation="https://newlifex.com https://newlifex.com/Model2022.xsd" NameSpace="DH.Entity" ConnName="DH" Output="" BaseClass="DHEntityBase" Version="11.2.2022.0716" Document="https://newlifex.com/xcode/model" xmlns="https://newlifex.com/Model2022.xsd">
-  <Table Name="UserDetail" TableName="DH_UserDetail" Description="用户扩展">
+  <Table Name="UserDetail" TableName="DG_UserDetail" Description="用户扩展" ConnName="Membership">
     <Columns>
-      <Column Name="Id" DataType="Int32" PrimaryKey="True" Description="编号" />
+      <Column Name="Id" DataType="Int32" PrimaryKey="True" Description="用户Id" />
       <Column Name="LanguageId" DataType="Int32" Description="语言Id" />
       <Column Name="IsSuper" DataType="Boolean" Description="是否超级管理员" />
       <Column Name="SId" DataType="Int64" Description="用户SessionId" />
@@ -38,6 +38,7 @@
       <Column Name="WangWang" DataType="String" Description="阿里旺旺号码" />
       <Column Name="ContactName" DataType="String" Description="联系人" />
       <Column Name="Tel" DataType="String" Description="固话" />
+      <Column Name="Fax" DataType="String" Description="传真" />
       <Column Name="CompanyInfo" DataType="String" Length="1024" Description="公司介绍" />
       <Column Name="Address" DataType="String" Length="100" Description="详细地址" />
       <Column Name="InformAllow" DataType="Boolean" Description="是否禁止举报" />
@@ -403,8 +404,9 @@
   </Table>
   <Table Name="RoleEx" TableName="DH_RoleEx" Description="角色扩展表">
     <Columns>
-      <Column Name="Id" DataType="Int32" PrimaryKey="True" Description="编号" />
+      <Column Name="Id" DataType="Int32" PrimaryKey="True" Description="角色编号" />
       <Column Name="IsAdmin" DataType="Boolean" Description="是否管理员" />
+      <Column Name="Roles" DataType="String" Length="512" Description="角色权限" />
     </Columns>
   </Table>
   <Table Name="RoleLan" TableName="DH_RoleLan" Description="角色翻译表">

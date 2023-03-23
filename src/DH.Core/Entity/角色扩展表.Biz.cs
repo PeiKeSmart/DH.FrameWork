@@ -1,3 +1,8 @@
+using DH.Core;
+using DH.Core.Infrastructure;
+
+using NewLife;
+
 using System.Runtime.Serialization;
 using System.Web.Script.Serialization;
 using System.Xml.Serialization;
@@ -6,8 +11,7 @@ using XCode.Membership;
 
 namespace DH.Entity;
 
-public partial class RoleEx : DHEntityBase<RoleEx>
-{
+public partial class RoleEx : DHEntityBase<RoleEx> {
     #region 对象操作
     static RoleEx()
     {
@@ -86,6 +90,32 @@ public partial class RoleEx : DHEntityBase<RoleEx>
 
         //return Find(_.Id == id);
     }
+
+    /// <summary>根据权限名称查找</summary>
+    /// <param name="permission">权限名称</param>
+    /// <returns>布尔值</returns>
+    public static Boolean CheckRole(String permission)
+    {
+        if (permission.IsNullOrWhiteSpace()) return false;
+
+        var customer = EngineContext.Current.Resolve<IWorkContext>().GetCurrentCustomer();
+        if (customer == null) return false;
+
+        var role = customer.User?.Role;
+        if (!role.Enable) return false;
+
+        if (customer.IsSuper) return true;
+
+        var userRole = FindById(customer.User?.RoleID);
+        if (userRole == null) return false;
+
+        if (userRole.Roles.IsNullOrWhiteSpace()) return false;
+
+        if (userRole.Roles.Contains($",{permission},", StringComparison.OrdinalIgnoreCase)) return true;
+
+        return false;
+    }
+
     #endregion
 
     #region 高级查询

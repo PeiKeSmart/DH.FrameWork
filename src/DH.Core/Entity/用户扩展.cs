@@ -14,21 +14,21 @@ namespace DH.Entity
     [Serializable]
     [DataObject]
     [Description("用户扩展")]
-    [BindIndex("IX_DH_UserDetail_ReferrerId", false, "ReferrerId")]
-    [BindIndex("IX_DH_UserDetail_TenantId", false, "TenantId")]
-    [BindIndex("IX_DH_UserDetail_KeFuId", false, "KeFuId")]
-    [BindIndex("IX_DH_UserDetail_UType", false, "UType")]
-    [BindIndex("IX_DH_UserDetail_ParentUId", false, "ParentUId")]
-    [BindTable("DH_UserDetail", Description = "用户扩展", ConnName = "DH", DbType = DatabaseType.None)]
+    [BindIndex("IX_DG_UserDetail_ReferrerId", false, "ReferrerId")]
+    [BindIndex("IX_DG_UserDetail_TenantId", false, "TenantId")]
+    [BindIndex("IX_DG_UserDetail_KeFuId", false, "KeFuId")]
+    [BindIndex("IX_DG_UserDetail_UType", false, "UType")]
+    [BindIndex("IX_DG_UserDetail_ParentUId", false, "ParentUId")]
+    [BindTable("DG_UserDetail", Description = "用户扩展", ConnName = "Membership", DbType = DatabaseType.None)]
     public partial class UserDetail
     {
         #region 属性
         private Int32 _Id;
-        /// <summary>编号</summary>
-        [DisplayName("编号")]
-        [Description("编号")]
+        /// <summary>用户Id</summary>
+        [DisplayName("用户Id")]
+        [Description("用户Id")]
         [DataObjectField(true, false, false, 0)]
-        [BindColumn("Id", "编号", "")]
+        [BindColumn("Id", "用户Id", "")]
         public Int32 Id { get => _Id; set { if (OnPropertyChanging("Id", value)) { _Id = value; OnPropertyChanged("Id"); } } }
 
         private Int32 _LanguageId;
@@ -311,6 +311,14 @@ namespace DH.Entity
         [BindColumn("Tel", "固话", "")]
         public String Tel { get => _Tel; set { if (OnPropertyChanging("Tel", value)) { _Tel = value; OnPropertyChanged("Tel"); } } }
 
+        private String _Fax;
+        /// <summary>传真</summary>
+        [DisplayName("传真")]
+        [Description("传真")]
+        [DataObjectField(false, false, true, 50)]
+        [BindColumn("Fax", "传真", "")]
+        public String Fax { get => _Fax; set { if (OnPropertyChanging("Fax", value)) { _Fax = value; OnPropertyChanged("Fax"); } } }
+
         private String _CompanyInfo;
         /// <summary>公司介绍</summary>
         [DisplayName("公司介绍")]
@@ -582,6 +590,7 @@ namespace DH.Entity
                     case "WangWang": return _WangWang;
                     case "ContactName": return _ContactName;
                     case "Tel": return _Tel;
+                    case "Fax": return _Fax;
                     case "CompanyInfo": return _CompanyInfo;
                     case "Address": return _Address;
                     case "InformAllow": return _InformAllow;
@@ -653,6 +662,7 @@ namespace DH.Entity
                     case "WangWang": _WangWang = Convert.ToString(value); break;
                     case "ContactName": _ContactName = Convert.ToString(value); break;
                     case "Tel": _Tel = Convert.ToString(value); break;
+                    case "Fax": _Fax = Convert.ToString(value); break;
                     case "CompanyInfo": _CompanyInfo = Convert.ToString(value); break;
                     case "Address": _Address = Convert.ToString(value); break;
                     case "InformAllow": _InformAllow = value.ToBoolean(); break;
@@ -691,7 +701,7 @@ namespace DH.Entity
         /// <summary>取得用户扩展字段信息的快捷方式</summary>
         public partial class _
         {
-            /// <summary>编号</summary>
+            /// <summary>用户Id</summary>
             public static readonly Field Id = FindByName("Id");
 
             /// <summary>语言Id</summary>
@@ -799,6 +809,9 @@ namespace DH.Entity
             /// <summary>固话</summary>
             public static readonly Field Tel = FindByName("Tel");
 
+            /// <summary>传真</summary>
+            public static readonly Field Fax = FindByName("Fax");
+
             /// <summary>公司介绍</summary>
             public static readonly Field CompanyInfo = FindByName("CompanyInfo");
 
@@ -889,7 +902,7 @@ namespace DH.Entity
         /// <summary>取得用户扩展字段名称的快捷方式</summary>
         public partial class __
         {
-            /// <summary>编号</summary>
+            /// <summary>用户Id</summary>
             public const String Id = "Id";
 
             /// <summary>语言Id</summary>
@@ -996,6 +1009,9 @@ namespace DH.Entity
 
             /// <summary>固话</summary>
             public const String Tel = "Tel";
+
+            /// <summary>传真</summary>
+            public const String Fax = "Fax";
 
             /// <summary>公司介绍</summary>
             public const String CompanyInfo = "CompanyInfo";
