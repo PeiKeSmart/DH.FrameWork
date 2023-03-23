@@ -14,12 +14,12 @@ namespace DH.Entity
     [Serializable]
     [DataObject]
     [Description("用户扩展")]
-    [BindIndex("IX_DG_UserDetail_ReferrerId", false, "ReferrerId")]
-    [BindIndex("IX_DG_UserDetail_TenantId", false, "TenantId")]
-    [BindIndex("IX_DG_UserDetail_KeFuId", false, "KeFuId")]
-    [BindIndex("IX_DG_UserDetail_UType", false, "UType")]
-    [BindIndex("IX_DG_UserDetail_ParentUId", false, "ParentUId")]
-    [BindTable("DG_UserDetail", Description = "用户扩展", ConnName = "Membership", DbType = DatabaseType.None)]
+    [BindIndex("IX_DH_UserDetail_ReferrerId", false, "ReferrerId")]
+    [BindIndex("IX_DH_UserDetail_TenantId", false, "TenantId")]
+    [BindIndex("IX_DH_UserDetail_KeFuId", false, "KeFuId")]
+    [BindIndex("IX_DH_UserDetail_UType", false, "UType")]
+    [BindIndex("IX_DH_UserDetail_ParentUId", false, "ParentUId")]
+    [BindTable("DH_UserDetail", Description = "用户扩展", ConnName = "Membership", DbType = DatabaseType.None)]
     public partial class UserDetail
     {
         #region 属性

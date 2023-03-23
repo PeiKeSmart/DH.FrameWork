@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Tables xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:schemaLocation="https://newlifex.com https://newlifex.com/Model2022.xsd" NameSpace="DH.Entity" ConnName="DH" Output="" BaseClass="DHEntityBase" Version="11.2.2022.0716" Document="https://newlifex.com/xcode/model" xmlns="https://newlifex.com/Model2022.xsd">
-  <Table Name="UserDetail" TableName="DG_UserDetail" Description="用户扩展" ConnName="Membership">
+  <Table Name="UserDetail" TableName="DH_UserDetail" Description="用户扩展" ConnName="Membership">
     <Columns>
       <Column Name="Id" DataType="Int32" PrimaryKey="True" Description="用户Id" />
       <Column Name="LanguageId" DataType="Int32" Description="语言Id" />
@@ -440,7 +440,7 @@
       <Index Columns="SmsId" />
     </Indexes>
   </Table>
-  <Table Name="SiteInfo" TableName="DG_SiteInfo" Description="站点基础信息。目前表只启用部分字段">
+  <Table Name="SiteInfo" TableName="DH_SiteInfo" Description="站点基础信息。目前表只启用部分字段">
     <Columns>
       <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
       <Column Name="Url" DataType="String" Length="250" Description="网站域名" />
@@ -474,7 +474,7 @@
       <Column Name="UpdateIP" DataType="String" Description="更新地址" />
     </Columns>
   </Table>
-  <Table Name="SiteInfoLan" TableName="DG_SiteInfoLan" Description="站点基础信息翻译表">
+  <Table Name="SiteInfoLan" TableName="DH_SiteInfoLan" Description="站点基础信息翻译表">
     <Columns>
       <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
       <Column Name="SiteInfoId" DataType="Int32" Description="站点基础信息Id" />
