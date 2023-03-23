@@ -114,15 +114,13 @@ namespace System.Linq
         }
 
         /// <summary>
-        /// Filters the elements of an async-enumerable sequence based on an asynchronous
-        /// predicate
+        /// 基于异步筛选异步可枚举序列的谓语元素
         /// </summary>
         /// <typeparam name="TSource"></typeparam>
-        /// <param name="source">An async-enumerable sequence whose elements to filter</param>
-        /// <param name="predicate">An asynchronous predicate to test each source element for a condition</param>
+        /// <param name="source">要筛选其元素的异步可枚举序列</param>
+        /// <param name="predicate">用于测试每个源元素的条件的异步谓词</param>
         /// <returns>
-        /// An async-enumerable sequence that contains elements from the input sequence that
-        /// satisfy the condition
+        /// 一个异步可枚举序列，其中包含输入序列中满足条件的元素
         /// </returns>
         public static IAsyncEnumerable<TSource> WhereAwait<TSource>(this IEnumerable<TSource> source,
             Func<TSource, ValueTask<bool>> predicate)
