@@ -144,6 +144,18 @@ public class DHSetting : XmlConfig<DHSetting>
     [Description("语言缓存名称")]
     public String LangName { get; set; } = "lang";
 
+    /// <summary>
+    /// 是否禁用动态页面转静态页面
+    /// </summary>
+    [Description("是否禁用动态页面转静态页面")]
+    public Boolean IsHtmlStaticDevelopmentMode { get; set; } = true;
+
+    /// <summary>
+    /// 动态页面转静态页面过期时间
+    /// </summary>
+    [Description("动态页面转静态页面过期时间")]
+    public Int32 HtmlStaticExpireMinutes { get; set; } = 1;
+
     #region 方法
     /// <summary>实例化</summary>
     public DHSetting() { }
