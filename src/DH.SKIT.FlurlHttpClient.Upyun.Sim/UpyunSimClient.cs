@@ -27,13 +27,13 @@ namespace SKIT.FlurlHttpClient.Upyun.Sim
 
             Credentials = new Settings.Credentials(options);
 
-            FlurlClient.BaseUrl = options.Endpoints ?? UpyunSimEndpoints.DEFAULT;
+            FlurlClient.BaseUrl = options.Endpoint ?? UpyunSimEndpoints.DEFAULT;
             FlurlClient.WithBasicAuth(options.AppKey, options.AppSecret);
             FlurlClient.WithTimeout(TimeSpan.FromMilliseconds(options.Timeout));
         }
 
         /// <summary>
-        /// 用指定的又拍云 AppKey、又拍云 AppSecret 初始化 <see cref="UpyunSmsClient"/> 类的新实例。
+        /// 用指定的又拍云 AppKey、又拍云 AppSecret 初始化 <see cref="UpyunSimClient"/> 类的新实例。
         /// </summary>
         /// <param name="appKey">又拍云 AppKey。</param>
         /// <param name="appSecret">又拍云 AppSecret。</param>
