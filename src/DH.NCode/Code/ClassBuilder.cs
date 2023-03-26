@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Text;
+﻿using System.Text;
 using NewLife;
 using NewLife.Collections;
 using NewLife.Log;
@@ -72,6 +67,12 @@ public class ClassBuilder
             option.ConnName = atts["ConnName"];
             option.DisplayName = atts["DisplayName"];
             option.BaseClass = atts["BaseClass"];
+
+            if (atts.TryGetValue("ExtendOnData", out var str) && !str.IsNullOrEmpty())
+                option.ExtendOnData = str.ToBoolean();
+
+            if (atts.TryGetValue("ChineseFileName", out str) && !str.IsNullOrEmpty())
+                option.ChineseFileName = str.ToBoolean();
 
             option.Items = atts;
         }
@@ -203,8 +204,7 @@ public class ClassBuilder
     public virtual void Execute()
     {
         // 参数检查
-        var dt = Table;
-        if (dt == null) throw new ArgumentNullException(nameof(Table));
+        var dt = Table ?? throw new ArgumentNullException(nameof(Table));
         if (dt.Columns == null || dt.Columns.Count == 0) throw new ArgumentOutOfRangeException(nameof(Table));
 
         foreach (var dc in dt.Columns)
@@ -223,7 +223,7 @@ public class ClassBuilder
         WriteLog("生成 {0} {1} {2}", Table.Name, Table.DisplayName, new { option.ClassNameTemplate, option.BaseClass, option.ModelNameForCopy, option.Namespace }.ToJson(false, false, false));
 
         //Clear();
-        if (Writer == null) Writer = new StringWriter();
+        Writer ??= new StringWriter();
 
         OnExecuting();
 
@@ -237,7 +237,7 @@ public class ClassBuilder
     {
         // 引用命名空间
         var us = Option.Usings;
-        if (Option.Extend && !us.Contains("NewLife.Data")) us.Add("NewLife.Data");
+        if (Option.HasIndex && !us.Contains("NewLife.Data")) us.Add("NewLife.Data");
 
         us = us.Distinct().OrderBy(e => e.StartsWith("System") ? 0 : 1).ThenBy(e => e).ToArray();
         foreach (var item in us)
@@ -249,8 +249,9 @@ public class ClassBuilder
         var ns = Option.Namespace;
         if (!ns.IsNullOrEmpty())
         {
-            WriteLine("namespace {0}", ns);
-            WriteLine("{");
+            WriteLine("namespace {0};", ns);
+            WriteLine();
+            //WriteLine("{");
         }
 
         BuildClassHeader();
@@ -282,10 +283,10 @@ public class ClassBuilder
     protected virtual String GetBaseClass()
     {
         var baseClass = Option.BaseClass?.Replace("{name}", Table.Name);
-        if (Option.Extend)
+        if (Option.HasIndex)
         {
             if (!baseClass.IsNullOrEmpty()) baseClass += ", ";
-            baseClass += "IExtend";
+            baseClass += "IModel";
         }
 
         return baseClass;
@@ -318,10 +319,10 @@ public class ClassBuilder
         // 类接口
         WriteLine("}");
 
-        if (!Option.Namespace.IsNullOrEmpty())
-        {
-            Writer.Write("}");
-        }
+        //if (!Option.Namespace.IsNullOrEmpty())
+        //{
+        //    Writer.Write("}");
+        //}
     }
 
     /// <summary>生成主体</summary>
@@ -340,10 +341,10 @@ public class ClassBuilder
         }
         WriteLine("#endregion");
 
-        if (Option.Extend)
+        if (Option.HasIndex)
         {
             WriteLine();
-            BuildExtend();
+            BuildIndexItems();
         }
 
         // 生成拷贝函数。需要有基类
@@ -387,7 +388,7 @@ public class ClassBuilder
             WriteLine("public {0} {1} {{ get; set; }}", type, dc.Name);
     }
 
-    private void BuildExtend()
+    private void BuildIndexItems()
     {
         WriteLine("#region 获取/设置 字段值");
         WriteLine("/// <summary>获取/设置 字段值</summary>");
@@ -400,17 +401,18 @@ public class ClassBuilder
         WriteLine("get");
         WriteLine("{");
         {
-            WriteLine("switch (name)");
+            WriteLine("return name switch");
             WriteLine("{");
             foreach (var column in Table.Columns)
             {
                 // 跳过排除项
                 if (!ValidColumn(column)) continue;
 
-                WriteLine("case \"{0}\": return {0};", column.Name);
+                WriteLine("\"{0}\" => {0},", column.Name);
             }
-            WriteLine("default: throw new KeyNotFoundException($\"{name} not found\");");
-            WriteLine("}");
+            //WriteLine("default: throw new KeyNotFoundException($\"{name} not found\");");
+            WriteLine("_ => null");
+            WriteLine("};");
         }
         WriteLine("}");
 
@@ -478,7 +480,7 @@ public class ClassBuilder
                     }
                 }
             }
-            WriteLine("default: throw new KeyNotFoundException($\"{name} not found\");");
+            //WriteLine("default: throw new KeyNotFoundException($\"{name} not found\");");
             WriteLine("}");
         }
         WriteLine("}");

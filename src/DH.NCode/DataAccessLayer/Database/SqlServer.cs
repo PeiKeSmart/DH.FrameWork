@@ -486,7 +486,11 @@ internal class SqlServer : RemoteDb
         //        .Replace("]", "[]]")
         //        .Replace("%", "[%]")
         //        .Replace("_", "[_]");
-
+        // fix 2023.03.22
+        // LIKE 构建SQL语句 中 [ ] % 会循环转义 ,只转_比较合适
+        if (value.IndexOfAny(_likeKeys) >= 0)
+              value = value
+                   .Replace("_", "[_]");
         return base.FormatLike(column, format, value);
     }
     #endregion
@@ -561,7 +565,7 @@ internal class SqlServerSession : RemoteDbSession
     #endregion
 
     #region 批量操作
-    public override Int32 Insert(IDataTable table, IDataColumn[] columns, IEnumerable<IExtend> list)
+    public override Int32 Insert(IDataTable table, IDataColumn[] columns, IEnumerable<IModel> list)
     {
         var ps = new HashSet<String>();
         var sql = GetInsertSql(table, columns, ps);
@@ -604,7 +608,7 @@ internal class SqlServerSession : RemoteDbSession
         return sb.Put(true);
     }
 
-    public override Int32 Upsert(IDataTable table, IDataColumn[] columns, ICollection<String> updateColumns, ICollection<String> addColumns, IEnumerable<IExtend> list)
+    public override Int32 Upsert(IDataTable table, IDataColumn[] columns, ICollection<String> updateColumns, ICollection<String> addColumns, IEnumerable<IModel> list)
     {
         var ps = new HashSet<String>();
         var insert = GetInsertSql(table, columns, ps);
@@ -716,7 +720,7 @@ internal class SqlServerSession : RemoteDbSession
         });
     }
 
-    private List<IDataParameter[]> GetParametersList(IDataColumn[] columns, ICollection<String> ps, IEnumerable<IExtend> list, Boolean isInsertOrUpdate = false)
+    private List<IDataParameter[]> GetParametersList(IDataColumn[] columns, ICollection<String> ps, IEnumerable<IModel> list, Boolean isInsertOrUpdate = false)
     {
         var db = Database;
         var dpsList = new List<IDataParameter[]>();

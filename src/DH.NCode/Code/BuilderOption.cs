@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace XCode.Code;
+﻿namespace XCode.Code;
 
 /// <summary>生成器选项</summary>
 public class BuilderOption
@@ -31,8 +28,11 @@ public class BuilderOption
     /// <summary>是否分部类</summary>
     public Boolean Partial { get; set; }
 
-    /// <summary>可扩展。实现IExtend接口</summary>
-    public Boolean Extend { get; set; }
+    /// <summary>带有索引器。实现IModel接口</summary>
+    public Boolean HasIndex { get; set; }
+
+    /// <summary>在数据类上生成扩展属性</summary>
+    public Boolean ExtendOnData { get; set; }
 
     /// <summary>用于生成拷贝函数的模型类。例如{name}或I{name}</summary>
     public String ModelNameForCopy { get; set; }
@@ -51,6 +51,9 @@ public class BuilderOption
 
     /// <summary>显示名</summary>
     public String DisplayName { get; set; }
+
+    /// <summary>是否使用中文文件名。默认true</summary>
+    public Boolean ChineseFileName { get; set; } = true;
 
     /// <summary>扩展数据</summary>
     public IDictionary<String, String> Items { get; set; }

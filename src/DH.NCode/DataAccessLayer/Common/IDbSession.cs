@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using System.Data;
 using System.Data.Common;
-using System.Threading.Tasks;
 using NewLife;
 using NewLife.Data;
 
@@ -37,6 +34,11 @@ public interface IDbSession : IDisposable2
     /// <param name="callback"></param>
     /// <returns></returns>
     Task<TResult> ProcessAsync<TResult>(Func<DbConnection, Task<TResult>> callback);
+
+    /// <summary>设置是否显示SQL，退出作用域后恢复</summary>
+    /// <param name="showSql"></param>
+    /// <returns></returns>
+    IDisposable SetShowSql(Boolean showSql);
     #endregion
 
     #region 事务
@@ -140,21 +142,21 @@ public interface IDbSession : IDisposable2
     /// <param name="columns">要插入的字段，默认所有字段</param>
     /// <param name="list">实体列表</param>
     /// <returns></returns>
-    Int32 Insert(IDataTable table, IDataColumn[] columns, IEnumerable<IExtend> list);
+    Int32 Insert(IDataTable table, IDataColumn[] columns, IEnumerable<IModel> list);
 
     /// <summary>批量忽略插入</summary>
     /// <param name="table">数据表</param>
     /// <param name="columns">要插入的字段，默认所有字段</param>
     /// <param name="list">实体列表</param>
     /// <returns></returns>
-    Int32 InsertIgnore(IDataTable table, IDataColumn[] columns, IEnumerable<IExtend> list);
+    Int32 InsertIgnore(IDataTable table, IDataColumn[] columns, IEnumerable<IModel> list);
 
     /// <summary>批量替换</summary>
     /// <param name="table">数据表</param>
     /// <param name="columns">要插入的字段，默认所有字段</param>
     /// <param name="list">实体列表</param>
     /// <returns></returns>
-    Int32 Replace(IDataTable table, IDataColumn[] columns, IEnumerable<IExtend> list);
+    Int32 Replace(IDataTable table, IDataColumn[] columns, IEnumerable<IModel> list);
 
     /// <summary>批量更新</summary>
     /// <param name="table">数据表</param>
@@ -163,7 +165,7 @@ public interface IDbSession : IDisposable2
     /// <param name="addColumns">要累加更新的字段，默认累加</param>
     /// <param name="list">实体列表</param>
     /// <returns></returns>
-    Int32 Update(IDataTable table, IDataColumn[] columns, ICollection<String> updateColumns, ICollection<String> addColumns, IEnumerable<IExtend> list);
+    Int32 Update(IDataTable table, IDataColumn[] columns, ICollection<String> updateColumns, ICollection<String> addColumns, IEnumerable<IModel> list);
 
     /// <summary>批量插入或更新</summary>
     /// <param name="table">数据表</param>
@@ -172,7 +174,7 @@ public interface IDbSession : IDisposable2
     /// <param name="addColumns">主键已存在时，要累加更新的字段</param>
     /// <param name="list">实体列表</param>
     /// <returns></returns>
-    Int32 Upsert(IDataTable table, IDataColumn[] columns, ICollection<String> updateColumns, ICollection<String> addColumns, IEnumerable<IExtend> list);
+    Int32 Upsert(IDataTable table, IDataColumn[] columns, ICollection<String> updateColumns, ICollection<String> addColumns, IEnumerable<IModel> list);
     #endregion
 
     #region 高级
