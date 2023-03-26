@@ -6,33 +6,18 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
     public static class ByteDanceMicroAppEndpoints
     {
         /// <summary>
-        /// 小程序域名（默认）。
+        /// 小程序 API 域名（默认）。
         /// </summary>
         public const string API_MINIAPP = "https://developer.toutiao.com/api";
 
         /// <summary>
-        /// 小程序域名沙盒环境域名。
+        /// 小程序 API 沙盒环境域名。
         /// </summary>
         public const string API_MINIAPP_SANDBOX = "https://open-sandbox.douyin.com/api";
 
         /// <summary>
-        /// 小游戏域名。
+        /// 小游戏 API 域名。
         /// </summary>
         public const string API_MINIGAME = "https://minigame.zijieapi.com/mgplatform/api";
-
-        /// <summary>
-        /// 服务商平台接口域名。
-        /// </summary>
-        public const string API_OPENAPI = "https://open.microapp.bytedance.com";
-
-        /// <summary>
-        /// 泛知识课程接口域名。
-        /// </summary>
-        public const string API_PRODUCT = "https://developer-product.zijieapi.com/product/api";
-
-        /// <summary>
-        /// 泛知识课程接口沙盒环境域名。
-        /// </summary>
-        public const string API_PRODUCT_SANDBOX = "https://open-sandbox.douyin.com/product/api";
     }
 }

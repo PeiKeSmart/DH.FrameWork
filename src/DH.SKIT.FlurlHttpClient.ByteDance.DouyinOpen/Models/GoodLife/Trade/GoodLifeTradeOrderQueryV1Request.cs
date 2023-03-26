@@ -43,6 +43,13 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen.Models
         public string? OrderExternalId { get; set; }
 
         /// <summary>
+        /// 获取或设置用户唯一标识。
+        /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
+        [System.Text.Json.Serialization.JsonIgnore]
+        public string? OpenId { get; set; }
+
+        /// <summary>
         /// 获取或设置订单状态。
         /// </summary>
         [Newtonsoft.Json.JsonIgnore]
@@ -76,5 +83,12 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen.Models
         [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
         public long? UpdateOrderEndTimestamp { get; set; }
+
+        /// <summary>
+        /// 获取或设置是否查询用户隐私号。
+        /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
+        [System.Text.Json.Serialization.JsonIgnore]
+        public bool? RequireGetSecretNumber { get; set; }
     }
 }

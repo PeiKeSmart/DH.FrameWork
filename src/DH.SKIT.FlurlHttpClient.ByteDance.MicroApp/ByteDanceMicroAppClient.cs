@@ -27,17 +27,17 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
 
             Credentials = new Settings.Credentials(options);
 
-            FlurlClient.BaseUrl = options.Endpoints ?? ByteDanceMicroAppEndpoints.API_MINIAPP;
+            FlurlClient.BaseUrl = options.Endpoint ?? ByteDanceMicroAppEndpoints.API_MINIAPP;
             FlurlClient.WithTimeout(TimeSpan.FromMilliseconds(options.Timeout));
         }
 
         /// <summary>
-        /// 用指定的字节小程序应用 Key、字节小程序应用密钥初始化 <see cref="ByteDanceMicroAppClient"/> 类的新实例。
+        /// 用指定的字节小程序 AppId、字节小程序 AppSecret 初始化 <see cref="ByteDanceMicroAppClient"/> 类的新实例。
         /// </summary>
-        /// <param name="appKey">字节小程序应用 Key。</param>
-        /// <param name="appSecret">字节小程序 。</param>
-        public ByteDanceMicroAppClient(string appKey, string appSecret)
-            : this(new ByteDanceMicroAppClientOptions() { AppId = appKey, AppSecret = appSecret })
+        /// <param name="appId">字节小程序应用 AppId。</param>
+        /// <param name="appSecret">字节小程序 AppSecret。</param>
+        public ByteDanceMicroAppClient(string appId, string appSecret)
+            : this(new ByteDanceMicroAppClientOptions() { AppId = appId, AppSecret = appSecret })
         {
         }
 

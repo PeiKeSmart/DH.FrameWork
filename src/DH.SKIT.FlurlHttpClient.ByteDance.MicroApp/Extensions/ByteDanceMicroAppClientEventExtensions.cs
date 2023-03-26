@@ -18,19 +18,23 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
         {
             [Newtonsoft.Json.JsonProperty("Encrypt")]
             [System.Text.Json.Serialization.JsonPropertyName("Encrypt")]
+            [System.Xml.Serialization.XmlElement("Encrypt")]
             public string EncryptedData { get; set; } = default!;
 
             [Newtonsoft.Json.JsonProperty("TimeStamp")]
             [System.Text.Json.Serialization.JsonPropertyName("TimeStamp")]
             [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalStringConverter))]
+            [System.Xml.Serialization.XmlElement("TimeStamp")]
             public string TimestampString { get; set; } = default!;
 
             [Newtonsoft.Json.JsonProperty("Nonce")]
             [System.Text.Json.Serialization.JsonPropertyName("Nonce")]
+            [System.Xml.Serialization.XmlElement("Nonce")]
             public string Nonce { get; set; } = default!;
 
             [Newtonsoft.Json.JsonProperty("MsgSignature")]
             [System.Text.Json.Serialization.JsonPropertyName("MsgSignature")]
+            [System.Xml.Serialization.XmlElement("MsgSignature")]
             public string Signature { get; set; } = default!;
         }
 
@@ -117,7 +121,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
             }
             catch (Exception ex)
             {
-                throw new Exceptions.ByteDanceMicroAppEventSerializationException("Deserialize event failed. Please see the `InnerException` for more details.", ex);
+                throw new Exceptions.ByteDanceMicroAppEventSerializationException("Failed to deserialize event data. Please see the inner exception for more details.", ex);
             }
         }
 
@@ -143,7 +147,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
             }
             catch (Exception ex)
             {
-                throw new Exceptions.ByteDanceMicroAppEventSerializationException("Deserialize event failed. Please see the `InnerException` for more details.", ex);
+                throw new Exceptions.ByteDanceMicroAppEventSerializationException("Failed to deserialize event data. Please see the inner exception for more details.", ex);
             }
         }
 
@@ -200,10 +204,10 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
         /// <para>REF: https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/component/message-push-customer-service </para>
         /// </summary>
         /// <param name="client"></param>
-        /// <param name="callbackTimestamp">头条回调通知中的 timestamp 字段。</param>
-        /// <param name="callbackNonce">头条回调通知中的 nonce 字段。</param>
-        /// <param name="callbackMessage">头条回调通知中的 msg 字段。</param>
-        /// <param name="callbackSignature">头条回调通知中的 signature 字段。</param>
+        /// <param name="callbackTimestamp">头条回调通知中的 "timestamp" 查询参数。</param>
+        /// <param name="callbackNonce">头条回调通知中的 "nonce" 查询参数。</param>
+        /// <param name="callbackMessage">头条回调通知中的 "msg" 查询参数。</param>
+        /// <param name="callbackSignature">头条回调通知中的 "signature" 查询参数。</param>
         /// <returns></returns>
         public static bool VerifyEventSignatureForEcho(this ByteDanceMicroAppClient client, string callbackTimestamp, string callbackNonce, string callbackMessage, string callbackSignature)
         {
@@ -213,14 +217,16 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
             if (callbackMessage == null) throw new ArgumentNullException(nameof(callbackMessage));
             if (callbackSignature == null) throw new ArgumentNullException(nameof(callbackSignature));
 
-            ISet<string> set = new SortedSet<string>(StringComparer.Ordinal) { client.Credentials.PushToken!, callbackTimestamp, callbackNonce, callbackMessage };
-            string sign = Utilities.SHA1Utility.Hash(string.Concat(set));
+            List<string> lstParams = new List<string>() { client.Credentials.PushToken!, callbackTimestamp, callbackNonce, callbackMessage };
+            lstParams.Sort(StringComparer.Ordinal);
+
+            string sign = Utilities.SHA1Utility.Hash(string.Concat(lstParams));
             return string.Equals(sign, callbackSignature, StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>
         /// <para>验证回调通知事件签名。</para>
-        /// <para>REF: https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/thirdparty/overview-guide/encryption/ </para>
+        /// <para>REF: https://developer.open-douyin.com/docs/resource/zh-CN/thirdparty/overview-guide/smallprogram/encryption </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="callbackJson"></param>
@@ -249,7 +255,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
 
         /// <summary>
         /// <para>验证回调通知事件签名。</para>
-        /// <para>REF: https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/thirdparty/overview-guide/encryption/ </para>
+        /// <para>REF: https://developer.open-douyin.com/docs/resource/zh-CN/thirdparty/overview-guide/smallprogram/encryption </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="callbackXml"></param>
