@@ -124,7 +124,6 @@
     <Compile Remove="Caching\RedisClient.cs" />
     <Compile Remove="Caching\RedisEncoder.cs" />
     <Compile Remove="Collections\BloomFilter.cs" />
-    <Compile Remove="Collections\DictionaryCache.cs" />
     <Compile Remove="Collections\ICluster.cs" />
     <Compile Remove="Collections\QueueService.cs" />
     <Compile Remove="Data\BinaryTree.cs" />
