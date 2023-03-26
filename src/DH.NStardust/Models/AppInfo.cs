@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics;
+using System.Net.NetworkInformation;
 using NewLife;
 using NewLife.Caching;
 
@@ -18,8 +19,8 @@ public class AppInfo
     /// <summary>版本</summary>
     public String Version { get; set; }
 
-    ///// <summary>应用名</summary>
-    //public String AppName { get; set; }
+    /// <summary>应用名</summary>
+    public String AppName { get; set; }
 
     ///// <summary>实例。应用可能多实例部署，ip@proccessid</summary>
     //public String ClientId { get; set; }
@@ -37,7 +38,7 @@ public class AppInfo
     public String IP { get; set; }
 
     /// <summary>开始时间</summary>
-    public DateTime StartTime { get; set; }
+    public DateTime StartTime { get; set; } = DateTime.Now;
 
     /// <summary>处理器时间。单位ms</summary>
     public Int32 ProcessorTime { get; set; }
@@ -57,12 +58,16 @@ public class AppInfo
     /// <summary>连接数</summary>
     public Int32 Connections { get; set; }
 
+    /// <summary>网络端口监听信息</summary>
+    public String Listens { get; set; }
+
     /// <summary>GC暂停时间占比，百分之一，最大值10</summary>
     public Double GCPause { get; set; }
 
     /// <summary>采样周期内发生的二代GC次数</summary>
     public Int32 FullGC { get; set; }
 
+    static private Int32 _pid = Process.GetCurrentProcess().Id;
     private readonly Process _process;
     #endregion
 
@@ -107,11 +112,37 @@ public class AppInfo
             Threads = _process.Threads.Count;
             Handles = _process.HandleCount;
 
-            CommandLine = Environment.CommandLine;
+            if (Id == _pid)
+                CommandLine = Environment.CommandLine;
+
             UserName = Environment.UserName;
             MachineName = Environment.MachineName;
             IP = AgentInfo.GetIps();
-            StartTime = _process.StartTime;
+
+            try
+            {
+                // 调用WindowApi获取进程的连接数
+                var tcps = NetHelper.GetAllTcpConnections();
+                if (tcps != null && tcps.Length > 0)
+                {
+                    Connections = tcps.Count(e => e.ProcessId == Id);
+                    Listens = tcps.Where(e => e.ProcessId == Id && e.State == TcpState.Listen).Join(",", e => e.LocalEndPoint);
+                }
+            }
+            catch { }
+
+            // 本进程才能采集GC数据
+            if (Id == _pid)
+            {
+#if NET5_0_OR_GREATER
+                var memory = GC.GetGCMemoryInfo();
+                GCPause = memory.PauseTimePercentage;
+#endif
+                var gc2 = GC.CollectionCount(2);
+                FullGC = gc2 - _lastGC2;
+                _lastGC2 = gc2;
+            }
+
             ProcessorTime = (Int32)_process.TotalProcessorTime.TotalMilliseconds;
 
             if (_stopwatch == null)
@@ -124,22 +155,7 @@ public class AppInfo
             }
             _last = ProcessorTime;
 
-            try
-            {
-                // 调用WindowApi获取进程的连接数
-                var tcps = NetHelper.GetAllTcpConnections();
-                if (tcps != null && tcps.Length > 0)
-                    Connections = tcps.Count(e => e.ProcessId == Id);
-            }
-            catch { }
-
-#if NET5_0_OR_GREATER
-            var memory = GC.GetGCMemoryInfo();
-            GCPause = memory.PauseTimePercentage;
-#endif
-            var gc2 = GC.CollectionCount(2);
-            FullGC = gc2 - _lastGC2;
-            _lastGC2 = gc2;
+            StartTime = _process.StartTime;
         }
         catch (Win32Exception) { }
     }
