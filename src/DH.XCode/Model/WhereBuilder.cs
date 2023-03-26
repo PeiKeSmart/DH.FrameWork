@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using NewLife;
+using NewLife.Collections;
 using NewLife.Data;
 using NewLife.Reflection;
 using XCode.Configuration;
@@ -26,10 +27,10 @@ namespace XCode.Model
         public String Expression { get; set; }
 
         /// <summary>数据源。{$name}访问</summary>
-        public IExtend Data { get; set; }
+        public IDictionary<String, Object> Data { get; set; }
 
         /// <summary>第二数据源。{#name}访问</summary>
-        public IExtend Data2 { get; set; }
+        public IDictionary<String, Object> Data2 { get; set; }
         #endregion
 
         #region 构造
@@ -38,11 +39,11 @@ namespace XCode.Model
         #region 方法
         /// <summary>设置数据源</summary>
         /// <param name="dictionary"></param>
-        public void SetData(IDictionary<String, Object> dictionary) => Data = dictionary.ToExtend();
+        public void SetData(IDictionary<String, Object> dictionary) => Data = new NullableDictionary<String, Object>(dictionary, StringComparer.OrdinalIgnoreCase);
 
         /// <summary>设置第二数据源</summary>
         /// <param name="dictionary"></param>
-        public void SetData2(IDictionary<String, Object> dictionary) => Data2 = dictionary.ToExtend();
+        public void SetData2(IDictionary<String, Object> dictionary) => Data2 = new NullableDictionary<String, Object>(dictionary, StringComparer.OrdinalIgnoreCase);
         #endregion
 
         #region 表达式

@@ -638,7 +638,7 @@ namespace XCode.DataAccessLayer
             sb.Append(')');
         }
 
-        protected virtual void BuildBatchValues(StringBuilder sb, DbBase db, String action, IDataTable table, IDataColumn[] columns, IEnumerable<IExtend> list)
+        protected virtual void BuildBatchValues(StringBuilder sb, DbBase db, String action, IDataTable table, IDataColumn[] columns, IEnumerable<IModel> list)
         {
             // 优化支持DbTable
             if (list.FirstOrDefault() is DbRow)

@@ -21,7 +21,7 @@
      确保从NuGet缓存复制的dll到项目的输出-->
 	<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 	<!-- 对控制器/操作/方法没有阻止注释禁用警告 -->
-	<NoWarn>1701;1702;1705;1591</NoWarn>
+	<NoWarn>1701;1702;NU5104;NETSDK1138;CS7035</NoWarn>
 	<GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 	
@@ -61,6 +61,7 @@
 	
   <ItemGroup>
     <Compile Remove="build\**" />
+    <Compile Remove="Interfaces\**" />
     <Compile Remove="Membership\Config\**" />
     <Compile Remove="Membership\Log\**" />
     <Compile Remove="Service\**" />
@@ -68,6 +69,7 @@
     <Compile Remove="tools\**" />
     <Compile Remove="Web\**" />
     <EmbeddedResource Remove="build\**" />
+    <EmbeddedResource Remove="Interfaces\**" />
     <EmbeddedResource Remove="Membership\Config\**" />
     <EmbeddedResource Remove="Membership\Log\**" />
     <EmbeddedResource Remove="Service\**" />
@@ -75,6 +77,7 @@
     <EmbeddedResource Remove="tools\**" />
     <EmbeddedResource Remove="Web\**" />
     <None Remove="build\**" />
+    <None Remove="Interfaces\**" />
     <None Remove="Membership\Config\**" />
     <None Remove="Membership\Log\**" />
     <None Remove="Service\**" />
