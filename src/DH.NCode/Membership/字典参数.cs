@@ -60,7 +60,7 @@ public partial class Parameter : IParameter
     /// <summary>数值</summary>
     [DisplayName("数值")]
     [Description("数值")]
-    [DataObjectField(false, false, true, 100)]
+    [DataObjectField(false, false, true, 200)]
     [BindColumn("Value", "数值", "")]
     public String Value { get => _Value; set { if (OnPropertyChanging("Value", value)) { _Value = value; OnPropertyChanged("Value"); } } }
 

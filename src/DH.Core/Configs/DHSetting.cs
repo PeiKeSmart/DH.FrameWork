@@ -2,18 +2,25 @@
 using DH.Security;
 
 using NewLife;
+using NewLife.Configuration;
 using NewLife.Security;
-using NewLife.Xml;
 
 using System.ComponentModel;
+
+using XCode.Configuration;
 
 namespace DH;
 
 /// <summary>基类设置</summary>
 [DisplayName("基类设置")]
-[XmlConfigFile("Config/DHSetting.config", 10000)]
-public class DHSetting : XmlConfig<DHSetting>
+//[XmlConfigFile("Config/DHSetting.config", 10000)]
+[Config("DHSetting")]
+public class DHSetting : Config<DHSetting>
 {
+    #region 静态
+    static DHSetting() => Provider = new DbConfigProvider { UserId = 0, Category = "DH" };
+    #endregion
+
     /// <summary>是否启用调试。默认true</summary>
     [Description("调试")]
     [Category("通用")]
