@@ -9,8 +9,7 @@ namespace DH.CliWrap;
 /// <summary>
 /// Abstraction that represents an outwards-facing pipe.
 /// </summary>
-public abstract partial class PipeTarget
-{
+public abstract partial class PipeTarget {
     /// <summary>
     /// Reads the binary content from the origin stream and pushes it into the pipe.
     /// Origin stream represents the process's standard output or standard error stream.
@@ -18,8 +17,7 @@ public abstract partial class PipeTarget
     public abstract Task CopyFromAsync(Stream origin, CancellationToken cancellationToken = default);
 }
 
-file class AnonymousPipeTarget : PipeTarget
-{
+file class AnonymousPipeTarget : PipeTarget {
     private readonly Func<Stream, CancellationToken, Task> _copyFromAsync;
 
     public AnonymousPipeTarget(Func<Stream, CancellationToken, Task> copyFromAsync) =>
@@ -29,8 +27,7 @@ file class AnonymousPipeTarget : PipeTarget
         await _copyFromAsync(origin, cancellationToken).ConfigureAwait(false);
 }
 
-file class MergedPipeTarget : PipeTarget
-{
+file class MergedPipeTarget : PipeTarget {
     public IReadOnlyList<PipeTarget> Targets { get; }
 
     public MergedPipeTarget(IReadOnlyList<PipeTarget> targets) => Targets = targets;
@@ -79,8 +76,7 @@ file class MergedPipeTarget : PipeTarget
     }
 }
 
-public partial class PipeTarget
-{
+public partial class PipeTarget {
     /// <summary>
     /// Pipe target that discards all data.
     /// Functionally equivalent to a null device.
@@ -161,7 +157,7 @@ public partial class PipeTarget
         ToStringBuilder(stringBuilder, Console.OutputEncoding);
 
     /// <summary>
-    /// Creates a pipe target that invokes the specified asynchronous delegate on every line written.
+    /// Creates a pipe target that invokes the specified asynchronous delegate on every line written to the stream.
     /// </summary>
     public static PipeTarget ToDelegate(Func<string, Task> handleLineAsync, Encoding encoding) =>
         Create(async (origin, cancellationToken) =>
@@ -172,14 +168,14 @@ public partial class PipeTarget
         });
 
     /// <summary>
-    /// Creates a pipe target that invokes the specified asynchronous delegate on every line written.
+    /// Creates a pipe target that invokes the specified asynchronous delegate on every line written to the stream.
     /// Uses <see cref="Console.OutputEncoding" /> for decoding.
     /// </summary>
     public static PipeTarget ToDelegate(Func<string, Task> handleLineAsync) =>
         ToDelegate(handleLineAsync, Console.OutputEncoding);
 
     /// <summary>
-    /// Creates a pipe target that invokes the specified synchronous delegate on every line written.
+    /// Creates a pipe target that invokes the specified synchronous delegate on every line written to the stream.
     /// </summary>
     public static PipeTarget ToDelegate(Action<string> handleLine, Encoding encoding) =>
         ToDelegate(line =>
@@ -189,7 +185,7 @@ public partial class PipeTarget
         }, encoding);
 
     /// <summary>
-    /// Creates a pipe target that invokes the specified synchronous delegate on every line written.
+    /// Creates a pipe target that invokes the specified synchronous delegate on every line written to the stream.
     /// Uses <see cref="Console.OutputEncoding" /> for decoding.
     /// </summary>
     public static PipeTarget ToDelegate(Action<string> handleLine) =>
