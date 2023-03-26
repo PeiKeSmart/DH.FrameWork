@@ -28,7 +28,7 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV2
 
             Credentials = new Settings.Credentials(options);
 
-            FlurlClient.BaseUrl = options.Endpoints ?? WechatTenpayEndpoints.DEFAULT;
+            FlurlClient.BaseUrl = options.Endpoint ?? WechatTenpayEndpoints.DEFAULT;
             FlurlClient.WithTimeout(TimeSpan.FromMilliseconds(options.Timeout));
             FlurlClient.Configure((settings) =>
                 settings.HttpClientFactory = new Settings.HttpClientFactory(
@@ -110,7 +110,7 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV2
                     }
                     catch (Exception ex)
                     {
-                        throw new Exceptions.WechatTenpayRequestSignatureException("Generate signature of request failed. Please see the `InnerException` for more details.", ex);
+                        throw new Exceptions.WechatTenpayRequestSignatureException("Failed to generate signature of request. Please see the inner exception for more details.", ex);
                     }
                 }
             }

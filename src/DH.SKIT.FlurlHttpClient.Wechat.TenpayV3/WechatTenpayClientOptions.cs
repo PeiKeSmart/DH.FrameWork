@@ -15,13 +15,13 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3
         public int Timeout { get; set; } = 30 * 1000;
 
         /// <summary>
-        /// 获取或设置微信支付 API 域名。
+        /// 获取或设置微信支付 API 入口点。
         /// <para>默认值：<see cref="WechatTenpayEndpoints.DEFAULT"/></para>
         /// </summary>
-        public string Endpoints { get; set; } = WechatTenpayEndpoints.DEFAULT;
+        public string Endpoint { get; set; } = WechatTenpayEndpoints.DEFAULT;
 
         /// <summary>
-        /// 获取或设置声明应答中的错误描述使用的自然语言语种。
+        /// 获取或设置客户端用户代理。
         /// <para>默认值：<i>根据操作系统自动生成</i></para>
         /// </summary>
         public string UserAgent { get; set; } = $"OS/{Environment.OSVersion.Platform} SKIT.FlurlHttpClient.Wechat.Tenpay/{Assembly.GetExecutingAssembly().GetName().Version}";

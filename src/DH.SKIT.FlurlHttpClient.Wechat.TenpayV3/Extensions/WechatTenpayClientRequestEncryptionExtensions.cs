@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace SKIT.FlurlHttpClient.Wechat.TenpayV3
 {
@@ -22,7 +21,7 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3
                     return (false, oldValue);
 
                 if (client.PlatformCertificateManager == null)
-                    throw new Exceptions.WechatTenpayRequestEncryptionException("Encrypt request failed, because the platform certificate manager is not initialized.");
+                    throw new Exceptions.WechatTenpayRequestEncryptionException("Failed to encrypt request, because the platform certificate manager is not initialized.");
 
                 string certificate;
                 if (string.IsNullOrEmpty(request.WechatpayCertificateSerialNumber))
@@ -33,7 +32,7 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3
                         .OrderByDescending(e => e.ExpireTime);
                     if (!entries.Any())
                     {
-                        throw new Exceptions.WechatTenpayEventVerificationException("Encrypt request failed, because there is no platform certificate in the manager, please make sure you have downloaded platform certificates first.");
+                        throw new Exceptions.WechatTenpayEventVerificationException("Failed to encrypt request, because there is no platform certificate in the manager. Please make sure you have downloaded platform certificates first.");
                     }
 
                     var entry = entries.First();
@@ -46,7 +45,7 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3
                     var entry = client.PlatformCertificateManager.GetEntry(request.WechatpayCertificateSerialNumber!);
                     if (!entry.HasValue)
                     {
-                        throw new Exceptions.WechatTenpayEventVerificationException($"Encrypt request failed, because there is no platform certificate matched the serial number: \"{request.WechatpayCertificateSerialNumber}\", please make sure you have downloaded platform certificates first.");
+                        throw new Exceptions.WechatTenpayEventVerificationException($"Failed to encrypt request, because there is no platform certificate matched the serial number: \"{request.WechatpayCertificateSerialNumber}\". Please make sure you have downloaded platform certificates first.");
                     }
 
                     certificate = entry.Value.Certificate;
@@ -97,7 +96,7 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3
                     return (false, oldValue);
 
                 if (client.PlatformCertificateManager == null)
-                    throw new Exceptions.WechatTenpayRequestEncryptionException("Encrypt request failed, because the platform certificate manager is not initialized.");
+                    throw new Exceptions.WechatTenpayRequestEncryptionException("Failed to encrypt request, because the platform certificate manager is not initialized.");
 
                 string certificate;
                 if (string.IsNullOrEmpty(request.WechatpayCertificateSerialNumber))
@@ -108,7 +107,7 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3
                         .OrderByDescending(e => e.ExpireTime);
                     if (!entries.Any())
                     {
-                        throw new Exceptions.WechatTenpayEventVerificationException("Encrypt request failed, because there is no platform certificate in the manager, please make sure you have downloaded platform certificates first.");
+                        throw new Exceptions.WechatTenpayEventVerificationException("Failed to encrypt request, because there is no platform certificate in the manager. Please make sure you have downloaded platform certificates first.");
                     }
 
                     var entry = entries.First();
@@ -121,7 +120,7 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3
                     var entry = client.PlatformCertificateManager.GetEntry(request.WechatpayCertificateSerialNumber!);
                     if (!entry.HasValue)
                     {
-                        throw new Exceptions.WechatTenpayEventVerificationException($"Encrypt request failed, because there is no platform certificate matched the serial number: \"{request.WechatpayCertificateSerialNumber}\", please make sure you have downloaded platform certificates first.");
+                        throw new Exceptions.WechatTenpayEventVerificationException($"Failed to encrypt request, because there is no platform certificate matched the serial number: \"{request.WechatpayCertificateSerialNumber}\". Please make sure you have downloaded platform certificates first.");
                     }
 
                     certificate = entry.Value.Certificate;
@@ -187,7 +186,7 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3
             }
             catch (Exception ex)
             {
-                throw new Exceptions.WechatTenpayRequestEncryptionException("Encrypt request failed. Please see the `InnerException` for more details.", ex);
+                throw new Exceptions.WechatTenpayRequestEncryptionException("Failed to encrypt request. Please see the inner exception for more details.", ex);
             }
         }
     }

@@ -17,7 +17,7 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Settings
         public string AlgorithmType { get; }
 
         /// <summary>
-        /// 获取证书内容（CRT/CER 格式，即 -----BEGIN CERTIFICATE----- ... -----END CERTIFICATE）
+        /// 获取证书内容（CRT/CER PEM 格式，即 -----BEGIN CERTIFICATE----- ... -----END CERTIFICATE-----）
         /// </summary>
         public string Certificate { get; }
 
@@ -130,7 +130,7 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Settings
 
             if (AlgorithmType == null)
             {
-                throw new ArgumentException("Unrecognized certificate algorithm type, please make sure you have decrypted the certificate content first.");
+                throw new ArgumentException("Unrecognized certificate algorithm type. Please make sure you have decrypted the certificate content first.");
             }
         }
 
