@@ -1,4 +1,4 @@
-﻿namespace DH.Services.Seo;
+﻿namespace DH.Core.Seo;
 
 public enum SiteMap {
     首页 = 1,

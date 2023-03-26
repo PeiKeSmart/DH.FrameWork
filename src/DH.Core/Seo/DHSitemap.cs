@@ -1,4 +1,4 @@
-﻿namespace DH.Services.Seo;
+﻿namespace DH.Core.Seo;
 
 /// <summary>
 /// 自动生成Sitemap
