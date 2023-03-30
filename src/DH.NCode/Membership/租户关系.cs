@@ -20,7 +20,7 @@ namespace XCode.Membership;
 [BindIndex("IU_TenantUser_TenantId_UserId", true, "TenantId,UserId")]
 [BindIndex("IX_TenantUser_UserId", false, "UserId")]
 [BindTable("TenantUser", Description = "租户关系。用户选择租户进入系统后，以租户关系角色组替代自有角色组来进行鉴权", ConnName = "Membership", DbType = DatabaseType.None)]
-public partial class TenantUser : ITenantUser
+public partial class TenantUser : ITenantUser, IEntity<TenantUserModel>
 {
     #region 属性
     private Int32 _Id;
@@ -194,6 +194,33 @@ public partial class TenantUser : ITenantUser
             }
         }
     }
+    #endregion
+
+    #region 关联映射
+    /// <summary>租户</summary>
+    [XmlIgnore, IgnoreDataMember, ScriptIgnore]
+    public Tenant Tenant => Extends.Get(nameof(Tenant), k => Tenant.FindById(TenantId));
+
+    /// <summary>租户</summary>
+    [Map(nameof(TenantId), typeof(Tenant), "Id")]
+    public String TenantName => Tenant?.ToString();
+
+    /// <summary>用户</summary>
+    [XmlIgnore, IgnoreDataMember, ScriptIgnore]
+    public User User => Extends.Get(nameof(User), k => User.FindByID(UserId));
+
+    /// <summary>用户</summary>
+    [Map(nameof(UserId), typeof(User), "ID")]
+    public String UserName => User?.ToString();
+
+    /// <summary>角色</summary>
+    [XmlIgnore, IgnoreDataMember, ScriptIgnore]
+    public Role Role => Extends.Get(nameof(Role), k => Role.FindByID(RoleId));
+
+    /// <summary>角色</summary>
+    [Map(nameof(RoleId), typeof(Role), "ID")]
+    public String RoleName => Role?.Name;
+
     #endregion
 
     #region 字段名

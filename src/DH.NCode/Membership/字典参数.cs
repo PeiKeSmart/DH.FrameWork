@@ -21,7 +21,7 @@ namespace XCode.Membership;
 [BindIndex("IX_Parameter_Category_Name", false, "Category,Name")]
 [BindIndex("IX_Parameter_UpdateTime", false, "UpdateTime")]
 [BindTable("Parameter", Description = "字典参数", ConnName = "Membership", DbType = DatabaseType.None)]
-public partial class Parameter : IParameter
+public partial class Parameter : IParameter, IEntity<ParameterModel>
 {
     #region 属性
     private Int32 _ID;
@@ -52,7 +52,7 @@ public partial class Parameter : IParameter
     /// <summary>名称</summary>
     [DisplayName("名称")]
     [Description("名称")]
-    [DataObjectField(false, false, true, 200)]
+    [DataObjectField(false, false, true, 50)]
     [BindColumn("Name", "名称", "", Master = true)]
     public String Name { get => _Name; set { if (OnPropertyChanging("Name", value)) { _Name = value; OnPropertyChanged("Name"); } } }
 
@@ -319,6 +319,17 @@ public partial class Parameter : IParameter
             }
         }
     }
+    #endregion
+
+    #region 关联映射
+    /// <summary>用户</summary>
+    [XmlIgnore, IgnoreDataMember, ScriptIgnore]
+    public User User => Extends.Get(nameof(User), k => User.FindByID(UserID));
+
+    /// <summary>用户</summary>
+    [Map(nameof(UserID), typeof(User), "ID")]
+    public String UserName => User?.ToString();
+
     #endregion
 
     #region 字段名

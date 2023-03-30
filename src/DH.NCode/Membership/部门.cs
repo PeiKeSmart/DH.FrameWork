@@ -23,7 +23,7 @@ namespace XCode.Membership;
 [BindIndex("IX_Department_UpdateTime", false, "UpdateTime")]
 [BindIndex("IX_Department_TenantId", false, "TenantId")]
 [BindTable("Department", Description = "部门。组织机构，多级树状结构", ConnName = "Membership", DbType = DatabaseType.None)]
-public partial class Department : IDepartment
+public partial class Department : IDepartment, IEntity<DepartmentModel>
 {
     #region 属性
     private Int32 _ID;
@@ -354,6 +354,25 @@ public partial class Department : IDepartment
             }
         }
     }
+    #endregion
+
+    #region 关联映射
+    /// <summary>租户</summary>
+    [XmlIgnore, IgnoreDataMember, ScriptIgnore]
+    public Tenant Tenant => Extends.Get(nameof(Tenant), k => Tenant.FindById(TenantId));
+
+    /// <summary>租户</summary>
+    [Map(nameof(TenantId), typeof(Tenant), "Id")]
+    public String TenantName => Tenant?.ToString();
+
+    /// <summary>管理者</summary>
+    [XmlIgnore, IgnoreDataMember, ScriptIgnore]
+    public User Manager => Extends.Get(nameof(Manager), k => User.FindByID(ManagerId));
+
+    /// <summary>管理者</summary>
+    [Map(nameof(ManagerId), typeof(User), "ID")]
+    public String ManagerName => Manager?.ToString();
+
     #endregion
 
     #region 字段名

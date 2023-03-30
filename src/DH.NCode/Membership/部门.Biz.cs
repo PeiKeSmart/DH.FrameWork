@@ -10,7 +10,7 @@ using NewLife.Log;
 namespace XCode.Membership;
 
 /// <summary>部门。组织机构，多级树状结构</summary>
-public partial class Department : Entity<Department>
+public partial class Department : Entity<Department>, ITenantSource
 {
     #region 对象操作
     static Department()
@@ -84,21 +84,21 @@ public partial class Department : Entity<Department>
     #endregion
 
     #region 扩展属性
-    /// <summary>租户</summary>
-    [XmlIgnore, IgnoreDataMember]
-    public Tenant Tenant => Extends.Get(nameof(Tenant), k => Tenant.FindById(TenantId));
+    ///// <summary>租户</summary>
+    //[XmlIgnore, IgnoreDataMember]
+    //public Tenant Tenant => Extends.Get(nameof(Tenant), k => Tenant.FindById(TenantId));
 
-    /// <summary>租户</summary>
-    [Map(nameof(TenantId), typeof(Tenant), "Id")]
-    public String TenantName => Tenant?.Name;
+    ///// <summary>租户</summary>
+    //[Map(nameof(TenantId), typeof(Tenant), "Id")]
+    //public String TenantName => Tenant?.Name;
 
-    /// <summary>管理者</summary>
-    [XmlIgnore, ScriptIgnore, IgnoreDataMember]
-    public User Manager => Extends.Get(nameof(Manager), k => User.FindByID(ManagerId));
+    ///// <summary>管理者</summary>
+    //[XmlIgnore, ScriptIgnore, IgnoreDataMember]
+    //public User Manager => Extends.Get(nameof(Manager), k => User.FindByID(ManagerId));
 
-    /// <summary>管理者</summary>
-    [Map(__.ManagerId, typeof(User), __.ID)]
-    public String ManagerName => Manager?.ToString();
+    ///// <summary>管理者</summary>
+    //[Map(__.ManagerId, typeof(User), __.ID)]
+    //public String ManagerName => Manager?.ToString();
 
     /// <summary>父级</summary>
     [XmlIgnore, ScriptIgnore, IgnoreDataMember]

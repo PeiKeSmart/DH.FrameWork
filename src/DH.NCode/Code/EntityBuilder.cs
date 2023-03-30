@@ -255,10 +255,15 @@ public class EntityBuilder : ClassBuilder
         {
             // 有可能实现了接口拷贝
             var model = Option.ModelNameForCopy;
-            if (!model.IsNullOrEmpty() && model.StartsWith("I")) bs.Add(model);
+            if (!model.IsNullOrEmpty())
+            {
+                if (model.StartsWith("I")) bs.Add(model);
+
+                bs.Add($"IEntity<{model}>");
+            }
 
             // 数据类不要实体基类
-            bs = bs.Where(e => !e.Contains("Entity")).ToList();
+            bs = bs.Where(e => !e.StartsWithIgnoreCase("Entity<", "EntityBase<")).ToList();
             if (bs.Count > 0) name = bs.Distinct().Join(", ");
         }
 
@@ -326,6 +331,9 @@ public class EntityBuilder : ClassBuilder
 
             WriteLine();
             BuildIndexItems();
+
+            WriteLine();
+            BuildMap();
 
             if (Option.ExtendOnData)
             {
@@ -555,6 +563,82 @@ public class EntityBuilder : ClassBuilder
             if (--k > 0) WriteLine();
         }
         WriteLine("}");
+
+        WriteLine("#endregion");
+    }
+
+    /// <summary>扩展属性</summary>
+    protected virtual void BuildMap()
+    {
+        WriteLine("#region 关联映射");
+
+        foreach (var column in Table.Columns)
+        {
+            // 跳过排除项
+            if (Option.Excludes.Contains(column.Name)) continue;
+            if (Option.Excludes.Contains(column.ColumnName)) continue;
+
+            if (column.Map.IsNullOrEmpty()) continue;
+
+            // 格式：表+主键+显示字段+属性名
+            // Role@Id@Name
+            // XCode.Membership.Area@Id@Path@AreaPath
+            // Tenant@Id@$
+            // $表示用ToString()替代显示字段
+            var ss = column.Map.Split('@');
+            var fullName = ss[0];
+            var className = fullName;
+            var p = className.LastIndexOf('.');
+            if (p > 0) className = className[(p + 1)..];
+            var mapTable = AllTables.FirstOrDefault(e => className.EqualIgnoreCase(e.Name, e.TableName));
+            if (mapTable == null) continue;
+
+            var mapId = ss.Length > 1 ? mapTable.GetColumn(ss[1]) : mapTable.PrimaryKeys.FirstOrDefault();
+            if (mapId == null) continue;
+
+            var mapName = ss.Length > 2 && ss[2] != "$" ? mapTable.GetColumn(ss[2]) : null;
+            mapName ??= mapTable.Columns.FirstOrDefault(e => e.Master);
+            mapName ??= mapTable.GetColumn("Name");
+
+            if (mapTable != null)
+            {
+                // 属性名
+                var name = column.Name.TrimEnd("Id", "ID", mapId.Name);
+                if (Table.Columns.Any(e => e.Name.EqualIgnoreCase(name))) name = "My" + name;
+
+                // 备注
+                var dis = column.DisplayName;
+                if (dis.IsNullOrEmpty()) dis = mapTable.DisplayName;
+
+                WriteLine("/// <summary>{0}</summary>", dis);
+                WriteLine("[XmlIgnore, IgnoreDataMember, ScriptIgnore]");
+                WriteLine("public {0} {1} => Extends.Get(nameof({1}), k => {0}.FindBy{2}({3}));", fullName, name, mapId.Name, column.Name);
+
+                var myName = ss.Length > 3 ? ss[3] : null;
+                if (myName.IsNullOrEmpty() && mapName != null)
+                    myName = column.Name.TrimEnd("Id", "ID", mapId.Name) + mapName.Name;
+
+                // 扩展属性有可能恰巧跟已有字段同名
+                if (!myName.IsNullOrEmpty() && !Table.Columns.Any(e => e.Name.EqualIgnoreCase(myName)))
+                {
+                    WriteLine();
+                    WriteLine("/// <summary>{0}</summary>", dis);
+                    WriteLine("[Map(nameof({0}), typeof({1}), \"{2}\")]", column.Name, fullName, mapId.Name);
+                    if (column.Properties.TryGetValue("Category", out var att) && !att.IsNullOrEmpty())
+                        WriteLine("[Category(\"{0}\")]", att);
+                    if (ss.Length > 2 && ss[2] == "$")
+                        WriteLine("public String {0} => {1}?.ToString();", myName, name);
+                    else if (ss.Length > 2 && mapName.DataType == typeof(String))
+                        WriteLine("public String {0} => {1}?.{2};", myName, name, ss[2]);
+                    else if (mapName.DataType == typeof(String))
+                        WriteLine("public String {0} => {1}?.{2};", myName, name, mapName.Name);
+                    else
+                        WriteLine("public {3} {0} => {1} != null ? {1}.{2} : 0;", myName, name, mapName.Name, mapName.DataType.Name);
+                }
+
+                WriteLine();
+            }
+        }
 
         WriteLine("#endregion");
     }
@@ -821,6 +905,7 @@ public class EntityBuilder : ClassBuilder
             // 跳过排除项
             if (Option.Excludes.Contains(column.Name)) continue;
             if (Option.Excludes.Contains(column.ColumnName)) continue;
+            if (!column.Map.IsNullOrEmpty()) continue;
 
             // 找到名字映射
             var dt = AllTables.FirstOrDefault(
@@ -840,8 +925,7 @@ public class EntityBuilder : ClassBuilder
                 var pk = dt.PrimaryKeys[0];
 
                 WriteLine("/// <summary>{0}</summary>", dis);
-                WriteLine("[XmlIgnore, IgnoreDataMember]");
-                WriteLine("//[ScriptIgnore]");
+                WriteLine("[XmlIgnore, IgnoreDataMember, ScriptIgnore]");
                 WriteLine("public {1} {1} => Extends.Get({0}, k => {1}.FindBy{3}({2}));", NameOf(pname), dt.Name, column.Name, pk.Name);
 
                 // 主字段
@@ -851,9 +935,6 @@ public class EntityBuilder : ClassBuilder
                 {
                     WriteLine();
                     WriteLine("/// <summary>{0}</summary>", dis);
-                    //WriteLine("[XmlIgnore, IgnoreDataMember]");
-                    //WriteLine("//[ScriptIgnore]");
-                    //if (!dis.IsNullOrEmpty()) WriteLine("[DisplayName(\"{0}\")]", dis);
                     WriteLine("[Map(nameof({0}), typeof({1}), \"{2}\")]", column.Name, dt.Name, pk.Name);
                     if (column.Properties.TryGetValue("Category", out var att) && !att.IsNullOrEmpty())
                         WriteLine("[Category(\"{0}\")]", att);
@@ -1187,7 +1268,7 @@ public class EntityBuilder : ClassBuilder
         var toModel = Option.ModelNameForToModel;
         if (!toModel.IsNullOrEmpty() && !Option.ModelNameForCopy.IsNullOrEmpty())
         {
-            BuildEntityToModel(toModel.Replace("{name}", ClassName), Option.ModelNameForCopy.Replace("{name}", ClassName));
+            BuildToModel(toModel.Replace("{name}", ClassName), Option.ModelNameForCopy.Replace("{name}", ClassName));
             WriteLine("");
         }
         WriteLine("#endregion");

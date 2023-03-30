@@ -19,7 +19,7 @@ namespace XCode.Membership;
 [Description("租户。多租户SAAS平台，用于隔离业务数据")]
 [BindIndex("IU_Tenant_Code", true, "Code")]
 [BindTable("Tenant", Description = "租户。多租户SAAS平台，用于隔离业务数据", ConnName = "Membership", DbType = DatabaseType.None)]
-public partial class Tenant : ITenant
+public partial class Tenant : ITenant, IEntity<TenantModel>
 {
     #region 属性
     private Int32 _Id;
@@ -237,6 +237,17 @@ public partial class Tenant : ITenant
             }
         }
     }
+    #endregion
+
+    #region 关联映射
+    /// <summary>管理者</summary>
+    [XmlIgnore, IgnoreDataMember, ScriptIgnore]
+    public User Manager => Extends.Get(nameof(Manager), k => User.FindByID(ManagerId));
+
+    /// <summary>管理者</summary>
+    [Map(nameof(ManagerId), typeof(User), "ID")]
+    public String ManagerName => Manager?.ToString();
+
     #endregion
 
     #region 字段名

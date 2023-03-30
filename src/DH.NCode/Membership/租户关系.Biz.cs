@@ -44,32 +44,31 @@ public partial class TenantUser : Entity<TenantUser>
     #endregion
 
     #region 扩展属性
-    /// <summary>租户</summary>
-    [XmlIgnore, IgnoreDataMember]
-    //[ScriptIgnore]
-    public Tenant Tenant => Extends.Get(nameof(Tenant), k => Tenant.FindById(TenantId));
+    ///// <summary>租户</summary>
+    //[XmlIgnore, IgnoreDataMember]
+    ////[ScriptIgnore]
+    //public Tenant Tenant => Extends.Get(nameof(Tenant), k => Tenant.FindById(TenantId));
 
-    /// <summary>租户</summary>
-    [Map(nameof(TenantId), typeof(Tenant), "Id")]
-    public String TenantName => Tenant?.Name;
+    ///// <summary>租户</summary>
+    //[Map(nameof(TenantId), typeof(Tenant), "Id")]
+    //public String TenantName => Tenant?.Name;
 
-    /// <summary>用户</summary>
-    [XmlIgnore, IgnoreDataMember]
-    //[ScriptIgnore]
-    public User User => Extends.Get(nameof(User), k => User.FindByID(UserId));
+    ///// <summary>用户</summary>
+    //[XmlIgnore, IgnoreDataMember]
+    ////[ScriptIgnore]
+    //public User User => Extends.Get(nameof(User), k => User.FindByID(UserId));
 
-    /// <summary>用户</summary>
-    [Map(nameof(UserId), typeof(User), "ID")]
-    public String UserName => User?.Name;
-
-    /// <summary>角色</summary>
-    [XmlIgnore, IgnoreDataMember]
-    //[ScriptIgnore]
-    public IRole Role => Extends.Get(nameof(Role), k => Role.FindByID(RoleId));
+    ///// <summary>用户</summary>
+    //[Map(nameof(UserId), typeof(User), "ID")]
+    //public String UserName => User?.Name;
 
     /// <summary>角色</summary>
-    [Map(nameof(RoleId), typeof(Role), "ID")]
-    public String RoleName => Role?.Name;
+    [XmlIgnore, IgnoreDataMember]
+    IRole ITenantUser.Role => Role;
+
+    ///// <summary>角色</summary>
+    //[Map(nameof(RoleId), typeof(Role), "ID")]
+    //public String RoleName => Role?.Name;
 
     /// <summary>角色集合</summary>
     [XmlIgnore, ScriptIgnore, IgnoreDataMember]
@@ -139,17 +138,22 @@ public partial class TenantUser : Entity<TenantUser>
     /// <summary>高级查询</summary>
     /// <param name="tenantId">租户</param>
     /// <param name="userId">用户</param>
+    /// <param name="roleId"></param>
+    /// <param name="enable"></param>
     /// <param name="start">更新时间开始</param>
     /// <param name="end">更新时间结束</param>
     /// <param name="key">关键字</param>
     /// <param name="page">分页参数信息。可携带统计和数据权限扩展查询等信息</param>
     /// <returns>实体列表</returns>
-    public static IList<TenantUser> Search(Int32 tenantId, Int32 userId, DateTime start, DateTime end, String key, PageParameter page)
+    public static IList<TenantUser> Search(Int32 tenantId, Int32 userId, Int32 roleId, Boolean? enable, DateTime start, DateTime end, String key, PageParameter page)
     {
         var exp = new WhereExpression();
 
         if (tenantId >= 0) exp &= _.TenantId == tenantId;
         if (userId >= 0) exp &= _.UserId == userId;
+        if (roleId >= 0) exp &= _.RoleId == roleId;
+        if (enable != null) exp &= _.Enable == enable;
+
         exp &= _.UpdateTime.Between(start, end);
         if (!key.IsNullOrEmpty()) exp &= _.RoleIds.Contains(key) | _.CreateIP.Contains(key) | _.UpdateIP.Contains(key) | _.Remark.Contains(key);
 
