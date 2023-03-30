@@ -10,7 +10,7 @@
   </PropertyGroup>
 	
   <ItemGroup>
-    <PackageReference Include="RestSharp" Version="109.0.2-alpha.0.2" />
+    <PackageReference Include="RestSharp" Version="109.0.2-alpha.0.5" />
   </ItemGroup>
 
   <ItemGroup>
