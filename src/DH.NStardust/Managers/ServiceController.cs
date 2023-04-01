@@ -88,6 +88,7 @@ internal class ServiceController : DisposeBase
             {
                 if (_error == MaxFails) WriteLog("应用[{0}]累计错误次数{1}达到最大值{2}", Name, _error, MaxFails);
 
+                _error++;
                 return false;
             }
             _error++;
@@ -127,12 +128,12 @@ internal class ServiceController : DisposeBase
                         break;
                     case ServiceModes.Extract:
                         WriteLog("解压后不运行，外部主机（如IIS）将托管应用");
-                        Extract(file, args, workDir);
+                        Extract(file, args, workDir, false);
                         Running = true;
                         return true;
                     case ServiceModes.ExtractAndRun:
                         WriteLog("解压后在工作目录运行");
-                        var deploy = Extract(file, args, workDir);
+                        var deploy = Extract(file, args, workDir, true);
                         if (deploy == null || deploy.ExecuteFile.IsNullOrEmpty()) throw new Exception("无法找到启动文件");
 
                         file = deploy.ExecuteFile;
@@ -256,7 +257,7 @@ internal class ServiceController : DisposeBase
         }
     }
 
-    public ZipDeploy Extract(String file, String args, String workDir)
+    public ZipDeploy Extract(String file, String args, String workDir, Boolean needRun)
     {
         var isZip = file.EqualIgnoreCase("ZipDeploy") || file.EndsWithIgnoreCase(".zip");
         if (!isZip) return null;
@@ -274,6 +275,8 @@ internal class ServiceController : DisposeBase
         if (!args.IsNullOrEmpty() && !deploy.Parse(args.Split(" "))) return null;
 
         deploy.Extract(workDir);
+
+        if (!needRun) return deploy;
 
         var runfile = deploy.FindExeFile(workDir);
         if (runfile == null)
