@@ -23,11 +23,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "products", "search")
-                .SetQueryParam("app_key", client.Credentials.AppKey)
-                .SetQueryParam("access_token", request.AccessToken)
-                .SetQueryParam("timestamp", request.Timestamp)
-                .SetQueryParam("shop_id", request.ShopId);
+                .CreateRequest(request, HttpMethod.Post, "products", "search");
 
             return await client.SendRequestWithJsonAsync<Models.ProductSearchProductsResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
@@ -47,10 +43,6 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop
 
             IFlurlRequest flurlReq = client
                 .CreateRequest(request, HttpMethod.Get, "products", "details")
-                .SetQueryParam("app_key", client.Credentials.AppKey)
-                .SetQueryParam("access_token", request.AccessToken)
-                .SetQueryParam("timestamp", request.Timestamp)
-                .SetQueryParam("shop_id", request.ShopId)
                 .SetQueryParam("product_id", request.ProductId);
 
             if (request.RequireAuditVersion != null)
@@ -73,11 +65,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "products")
-                .SetQueryParam("app_key", client.Credentials.AppKey)
-                .SetQueryParam("access_token", request.AccessToken)
-                .SetQueryParam("timestamp", request.Timestamp)
-                .SetQueryParam("shop_id", request.ShopId);
+                .CreateRequest(request, HttpMethod.Post, "products");
 
             return await client.SendRequestWithJsonAsync<Models.ProductCreateProductResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
@@ -96,11 +84,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Put, "products")
-                .SetQueryParam("app_key", client.Credentials.AppKey)
-                .SetQueryParam("access_token", request.AccessToken)
-                .SetQueryParam("timestamp", request.Timestamp)
-                .SetQueryParam("shop_id", request.ShopId);
+                .CreateRequest(request, HttpMethod.Put, "products");
 
             return await client.SendRequestWithJsonAsync<Models.ProductUpdateProductResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
@@ -113,19 +97,15 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop
         /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public static async Task<Models.ProductUpdateProductStocksResponse> ExecuteProductUpdateProductStocksAsync(this TikTokShopClient client, Models.ProductUpdateProductStocksRequest request, CancellationToken cancellationToken = default)
+        public static async Task<Models.ProductUpdateProductStockResponse> ExecuteProductUpdateProductStockAsync(this TikTokShopClient client, Models.ProductUpdateProductStockRequest request, CancellationToken cancellationToken = default)
         {
             if (client is null) throw new ArgumentNullException(nameof(client));
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Put, "products", "stocks")
-                .SetQueryParam("app_key", client.Credentials.AppKey)
-                .SetQueryParam("access_token", request.AccessToken)
-                .SetQueryParam("timestamp", request.Timestamp)
-                .SetQueryParam("shop_id", request.ShopId);
+                .CreateRequest(request, HttpMethod.Put, "products", "stocks");
 
-            return await client.SendRequestWithJsonAsync<Models.ProductUpdateProductStocksResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.ProductUpdateProductStockResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -136,19 +116,15 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop
         /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public static async Task<Models.ProductUpdateProductPricesResponse> ExecuteProductUpdateProductPricesAsync(this TikTokShopClient client, Models.ProductUpdateProductPricesRequest request, CancellationToken cancellationToken = default)
+        public static async Task<Models.ProductUpdateProductPriceResponse> ExecuteProductUpdateProductPriceAsync(this TikTokShopClient client, Models.ProductUpdateProductPriceRequest request, CancellationToken cancellationToken = default)
         {
             if (client is null) throw new ArgumentNullException(nameof(client));
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Put, "products", "prices")
-                .SetQueryParam("app_key", client.Credentials.AppKey)
-                .SetQueryParam("access_token", request.AccessToken)
-                .SetQueryParam("timestamp", request.Timestamp)
-                .SetQueryParam("shop_id", request.ShopId);
+                .CreateRequest(request, HttpMethod.Put, "products", "prices");
 
-            return await client.SendRequestWithJsonAsync<Models.ProductUpdateProductPricesResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.ProductUpdateProductPriceResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -165,11 +141,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Delete, "products")
-                .SetQueryParam("app_key", client.Credentials.AppKey)
-                .SetQueryParam("access_token", request.AccessToken)
-                .SetQueryParam("timestamp", request.Timestamp)
-                .SetQueryParam("shop_id", request.ShopId);
+                .CreateRequest(request, HttpMethod.Delete, "products");
 
             return await client.SendRequestWithJsonAsync<Models.ProductDeleteProductsResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
@@ -188,11 +160,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "products", "recover")
-                .SetQueryParam("app_key", client.Credentials.AppKey)
-                .SetQueryParam("access_token", request.AccessToken)
-                .SetQueryParam("timestamp", request.Timestamp)
-                .SetQueryParam("shop_id", request.ShopId);
+                .CreateRequest(request, HttpMethod.Post, "products", "recover");
 
             return await client.SendRequestWithJsonAsync<Models.ProductRecoverProductsResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
@@ -211,11 +179,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "products", "activate")
-                .SetQueryParam("app_key", client.Credentials.AppKey)
-                .SetQueryParam("access_token", request.AccessToken)
-                .SetQueryParam("timestamp", request.Timestamp)
-                .SetQueryParam("shop_id", request.ShopId);
+                .CreateRequest(request, HttpMethod.Post, "products", "activate");
 
             return await client.SendRequestWithJsonAsync<Models.ProductActivateProductsResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
@@ -234,13 +198,28 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "products", "inactivated_products")
-                .SetQueryParam("app_key", client.Credentials.AppKey)
-                .SetQueryParam("access_token", request.AccessToken)
-                .SetQueryParam("timestamp", request.Timestamp)
-                .SetQueryParam("shop_id", request.ShopId);
+                .CreateRequest(request, HttpMethod.Post, "products", "inactivated_products");
 
             return await client.SendRequestWithJsonAsync<Models.ProductDeactivateProductsResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+        }
+
+        /// <summary>
+        /// <para>异步调用 [POST] /products/save_draft 接口。</para>
+        /// <para>REF: https://partner.tiktokshop.com/doc/page/262808 </para>
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public static async Task<Models.ProductSaveProductDraftResponse> ExecuteProductSaveProductDraftAsync(this TikTokShopClient client, Models.ProductSaveProductDraftRequest request, CancellationToken cancellationToken = default)
+        {
+            if (client is null) throw new ArgumentNullException(nameof(client));
+            if (request is null) throw new ArgumentNullException(nameof(request));
+
+            IFlurlRequest flurlReq = client
+                .CreateRequest(request, HttpMethod.Post, "products", "save_draft");
+
+            return await client.SendRequestWithJsonAsync<Models.ProductSaveProductDraftResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         #region Upload
@@ -258,11 +237,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "products", "upload_files")
-                .SetQueryParam("app_key", client.Credentials.AppKey)
-                .SetQueryParam("access_token", request.AccessToken)
-                .SetQueryParam("timestamp", request.Timestamp)
-                .SetQueryParam("shop_id", request.ShopId);
+                .CreateRequest(request, HttpMethod.Post, "products", "upload_files");
 
             return await client.SendRequestWithJsonAsync<Models.ProductUploadFileResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
@@ -281,11 +256,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "products", "upload_imgs")
-                .SetQueryParam("app_key", client.Credentials.AppKey)
-                .SetQueryParam("access_token", request.AccessToken)
-                .SetQueryParam("timestamp", request.Timestamp)
-                .SetQueryParam("shop_id", request.ShopId);
+                .CreateRequest(request, HttpMethod.Post, "products", "upload_imgs");
 
             return await client.SendRequestWithJsonAsync<Models.ProductUploadImageResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
@@ -306,11 +277,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Get, "products", "categories")
-                .SetQueryParam("app_key", client.Credentials.AppKey)
-                .SetQueryParam("access_token", request.AccessToken)
-                .SetQueryParam("timestamp", request.Timestamp)
-                .SetQueryParam("shop_id", request.ShopId);
+                .CreateRequest(request, HttpMethod.Get, "products", "categories");
 
             return await client.SendRequestWithJsonAsync<Models.ProductGetCategoryListResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
@@ -330,10 +297,6 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop
 
             IFlurlRequest flurlReq = client
                 .CreateRequest(request, HttpMethod.Get, "products", "brands")
-                .SetQueryParam("app_key", client.Credentials.AppKey)
-                .SetQueryParam("access_token", request.AccessToken)
-                .SetQueryParam("timestamp", request.Timestamp)
-                .SetQueryParam("shop_id", request.ShopId)
                 .SetQueryParam("page_number", request.PageNumber)
                 .SetQueryParam("page_size", request.PageSize);
 
@@ -364,13 +327,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop
 
             IFlurlRequest flurlReq = client
                 .CreateRequest(request, HttpMethod.Get, "products", "attributes")
-                .SetQueryParam("app_key", client.Credentials.AppKey)
-                .SetQueryParam("access_token", request.AccessToken)
-                .SetQueryParam("timestamp", request.Timestamp)
-                .SetQueryParam("shop_id", request.ShopId);
-
-            if (request.CategoryId != null)
-                flurlReq.SetQueryParam("category_id", request.CategoryId);
+                .SetQueryParam("category_id", request.CategoryId);
 
             return await client.SendRequestWithJsonAsync<Models.ProductGetAttributeListResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
@@ -390,10 +347,6 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop
 
             IFlurlRequest flurlReq = client
                 .CreateRequest(request, HttpMethod.Get, "products", "categories", "rules")
-                .SetQueryParam("app_key", client.Credentials.AppKey)
-                .SetQueryParam("access_token", request.AccessToken)
-                .SetQueryParam("timestamp", request.Timestamp)
-                .SetQueryParam("shop_id", request.ShopId)
                 .SetQueryParam("category_id", request.CategoryId);
 
             return await client.SendRequestWithJsonAsync<Models.ProductGetCategoryRulesResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
@@ -413,11 +366,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "product", "category_recommend")
-                .SetQueryParam("app_key", client.Credentials.AppKey)
-                .SetQueryParam("access_token", request.AccessToken)
-                .SetQueryParam("timestamp", request.Timestamp)
-                .SetQueryParam("shop_id", request.ShopId);
+                .CreateRequest(request, HttpMethod.Post, "product", "category_recommend");
 
             return await client.SendRequestWithJsonAsync<Models.ProductRecommendCategoryResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }

@@ -1,5 +1,4 @@
 using System;
-using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -81,8 +80,13 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop
             {
                 request.Timestamp = DateTimeOffset.Now.ToLocalTime().ToUnixTimeSeconds();
             }
-
-            return flurlRequest;
+            
+            return flurlRequest
+                .SetQueryParam("app_key", Credentials.AppKey)
+                .SetQueryParam("access_token", request.AccessToken)
+                .SetQueryParam("timestamp", request.Timestamp)
+                .SetQueryParam("shop_id", request.ShopId)
+                .SetQueryParam("version", request.ApiVersion);
         }
 
         /// <summary>
