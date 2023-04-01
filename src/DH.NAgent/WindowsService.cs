@@ -283,7 +283,7 @@ public class WindowsService : Host
         XTrace.WriteLine("{0}.Install {1}, {2}, {3}, {4}", GetType().Name, serviceName, displayName, binPath, description);
 
 #if !NETSTANDARD
-        if (!IsAdministrator()) return RunAsAdministrator("-install");
+        if (!IsAdministrator()) return RunAsAdministrator("-i");
 #endif
 
         using var manager = new SafeServiceHandle(OpenSCManager(null, null, ServiceControllerOptions.SC_MANAGER_CREATE_SERVICE));
@@ -442,6 +442,49 @@ public class WindowsService : Host
         ////if (File.Exists(filename)) File.Delete(filename);
 
         return true;
+    }
+
+    /// <summary>查询服务配置</summary>
+    /// <param name="serviceName">服务名</param>
+    public override unsafe ServiceConfig QueryConfig(String serviceName)
+    {
+        using var manager = new SafeServiceHandle(OpenSCManager(null, null, ServiceControllerOptions.SC_MANAGER_CONNECT));
+        if (manager == null || manager.IsInvalid) return null;
+
+        using var service = new SafeServiceHandle(OpenService(manager, serviceName, ServiceOptions.SERVICE_QUERY_CONFIG));
+        if (service == null || service.IsInvalid) return null;
+
+        Int32 bytesNeeded;
+        if (!QueryServiceConfig(service, IntPtr.Zero, 0, &bytesNeeded))
+        {
+            const Int32 ERROR_INSUFFICIENT_BUFFER = 122;
+            var error = Marshal.GetLastWin32Error();
+            if (error != ERROR_INSUFFICIENT_BUFFER) throw new Win32Exception(error);
+        }
+
+        var ptr = Marshal.AllocHGlobal(bytesNeeded);
+        try
+        {
+            if (!QueryServiceConfig(service, ptr, bytesNeeded, &bytesNeeded))
+                throw new Win32Exception(Marshal.GetLastWin32Error());
+
+            //SERVICE_CONFIG config = default;
+            var config = (SERVICE_CONFIG)Marshal.PtrToStructure(ptr, typeof(SERVICE_CONFIG));
+
+            var cfg = new ServiceConfig
+            {
+                Name = serviceName,
+                DisplayName = Marshal.PtrToStringUni(config.DisplayName),
+                FilePath = Marshal.PtrToStringUni(config.BinaryPathName),
+                AutoStart = config.startType == StartType.AutoStart,
+            };
+
+            return cfg;
+        }
+        finally
+        {
+            Marshal.FreeHGlobal(ptr);
+        }
     }
 
 #if !NETSTANDARD
