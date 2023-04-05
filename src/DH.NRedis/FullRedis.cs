@@ -1,7 +1,10 @@
-﻿using System.Text;
+﻿using System.Collections.Concurrent;
+using System.Net;
+using System.Text;
 using NewLife.Caching.Clusters;
 using NewLife.Caching.Models;
 using NewLife.Caching.Queues;
+using NewLife.Collections;
 using NewLife.Data;
 using NewLife.Log;
 using NewLife.Serialization;
@@ -120,37 +123,56 @@ public class FullRedis : Redis
     private void InitCluster()
     {
         if (_initCluster) return;
-        _initCluster = true;
-
-        // 访问一次info信息，解析工作模式，以判断是否集群
-        var info = Info;
-        if (info != null)
+        lock (this)
         {
-            if (info.TryGetValue("redis_mode", out var mode)) Mode = mode;
-            // 主从复制时，仅master有connected_slaves，因此Server地址必须把master节点放在第一位
-            info.TryGetValue("role", out var role);
-            info.TryGetValue("connected_slaves", out var connected_slaves);
+            if (_initCluster) return;
 
-            // 集群模式初始化节点
-            if (mode == "cluster")
+            // 访问一次info信息，解析工作模式，以判断是否集群
+            var info = Info;
+            if (info != null)
             {
-                var cluster = new RedisCluster(this);
-                cluster.StartMonitor();
-                Cluster = cluster;
+                if (info.TryGetValue("redis_mode", out var mode)) Mode = mode;
+                // 主从复制时，仅master有connected_slaves，因此Server地址必须把master节点放在第一位
+                info.TryGetValue("role", out var role);
+                info.TryGetValue("connected_slaves", out var connected_slaves);
+
+                // 集群模式初始化节点
+                if (mode == "cluster")
+                {
+                    var cluster = new RedisCluster(this);
+                    cluster.StartMonitor();
+                    Cluster = cluster;
+                }
+                else if (mode.EqualIgnoreCase("sentinel"))
+                {
+                    var cluster = new RedisSentinel(this) { SetHostServer = true };
+                    cluster.StartMonitor();
+                    Cluster = cluster;
+                }
+                else if (mode.EqualIgnoreCase("standalone") && (connected_slaves.ToInt() > 0 || role == "slave"))
+                {
+                    var cluster = new RedisReplication(this) { SetHostServer = true };
+                    cluster.StartMonitor();
+                    Cluster = cluster;
+                }
             }
-            else if (mode.EqualIgnoreCase("sentinel"))
-            {
-                var cluster = new RedisSentinel(this) { SetHostServer = true };
-                cluster.StartMonitor();
-                Cluster = cluster;
-            }
-            else if (mode.EqualIgnoreCase("standalone") && (connected_slaves.ToInt() > 0 || role == "slave"))
-            {
-                var cluster = new RedisReplication(this) { SetHostServer = true };
-                cluster.StartMonitor();
-                Cluster = cluster;
-            }
+
+            _initCluster = true;
         }
+    }
+
+    private ConcurrentDictionary<String, IPool<RedisClient>> _pools = new();
+    /// <summary>获取指定节点的连接池</summary>
+    /// <param name="node"></param>
+    /// <returns></returns>
+    public IPool<RedisClient> GetPool(IRedisNode node)
+    {
+        return _pools.GetOrAdd(node.EndPoint, k =>
+        {
+            WriteLog("使用Redis节点：{0}", k);
+
+            return CreatePool(() => new RedisClient(this, k) { Name = k.Replace(':', '-') });
+        });
     }
 
     /// <summary>重载执行，支持集群</summary>
@@ -176,7 +198,7 @@ public class FullRedis : Redis
         var i = 0;
         do
         {
-            var pool = node.Pool;
+            var pool = GetPool(node);
 
             // 每次重试都需要重新从池里借出连接
             var client = pool.Get();
@@ -186,6 +208,8 @@ public class FullRedis : Redis
                 var rs = func(client);
 
                 Counter?.StopCount(sw);
+
+                Cluster.ResetNode(node);
 
                 return rs;
             }
@@ -231,7 +255,7 @@ public class FullRedis : Redis
         var i = 0;
         do
         {
-            var pool = node.Pool;
+            var pool = GetPool(node);
 
             // 每次重试都需要重新从池里借出连接
             var client = pool.Get();

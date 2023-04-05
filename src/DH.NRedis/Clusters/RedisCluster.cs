@@ -121,25 +121,44 @@ public class RedisCluster : RedisBase, IRedisCluster, IDisposable
     {
         if (key.IsNullOrEmpty()) return null;
 
+        // 选择有效节点，剔除被屏蔽节点和未连接节点
         var now = DateTime.Now;
-        var ns = Nodes?.Where(e => e.NextTime < now && e.LinkState == 1).ToArray();
-        if (ns == null || ns.Length == 0) return null;
+        var ns = Nodes?.Where(e => e.LinkState == 1).ToArray();
 
         var slot = key.GetBytes().Crc16() % 16384;
-
-        // 找主节点
-        foreach (var node in ns)
+        ns = ns?.Where(e => e.Contain(slot)).ToArray();
+        if (ns != null && ns.Length != 0)
         {
-            if (!node.Slave && node.Contain(slot)) return node;
+            // 找主节点
+            foreach (var node in ns)
+            {
+                if (!node.Slave && node.NextTime < now) return node;
+            }
+
+            if (!write)
+            {
+                // 找从节点
+                foreach (var node in ns)
+                {
+                    if (node.NextTime < now) return node;
+                }
+            }
+
+            // 无视屏蔽情况，再来一次
+            foreach (var node in ns)
+            {
+                if (!node.Slave) return node;
+            }
+
+            if (!write)
+            {
+                // 找从节点
+                return ns[0];
+            }
         }
 
-        // 找从节点
-        foreach (var node in ns)
-        {
-            if (node.Contain(slot)) return node;
-        }
-
-        return null;
+        throw new XException($"集群[{Redis.Name}]的[{slot}]槽没有可用节点（key={key}）");
+        //return null;
     }
 
     /// <summary>根据异常重选节点</summary>
@@ -150,6 +169,8 @@ public class RedisCluster : RedisBase, IRedisCluster, IDisposable
     /// <returns></returns>
     public IRedisNode ReselectNode(String key, Boolean write, IRedisNode node, Exception exception)
     {
+        using var span = Redis.Tracer?.NewSpan("redis:ReselectNode", new { key, (node as RedisNode)?.EndPoint });
+
         // 屏蔽旧节点一段时间
         var now = DateTime.Now;
 
@@ -160,17 +181,27 @@ public class RedisCluster : RedisBase, IRedisCluster, IDisposable
             // 取出地址，找到新的节点
             var endpoint = msg.Substring(" ");
             if (!endpoint.IsNullOrEmpty())
+            {
+                span?.AppendTag(endpoint);
+
                 return Map(endpoint, key);
+            }
         }
 
         // 读取指令网络异常时，换一个节点
         if (exception is SocketException or IOException)
         {
             // 屏蔽旧节点一段时间
-            if (node is RedisNode redisNode) redisNode.NextTime = now.AddSeconds(Redis.ShieldingTime);
+            if (node is RedisNode redisNode && redisNode.Error++ > Redis.Retry)
+            {
+                redisNode.NextTime = now.AddSeconds(Redis.ShieldingTime);
+                msg = $"屏蔽 {redisNode.EndPoint} 到 {redisNode.NextTime.ToFullString()}";
+                span?.AppendTag(msg);
+                Redis.WriteLog(msg);
+            }
         }
 
-        return null;
+        return SelectNode(key, write);
     }
 
     /// <summary>把Key映射到指定地址的节点</summary>
@@ -191,6 +222,13 @@ public class RedisCluster : RedisBase, IRedisCluster, IDisposable
         return node;
     }
 
+    /// <summary>重置节点。设置成功状态</summary>
+    /// <param name="node"></param>
+    public virtual void ResetNode(IRedisNode node)
+    {
+        if (node is RedisNode redisNode) redisNode.Error = 0;
+    }
+
     /// <summary>向集群添加新节点</summary>
     /// <param name="ip"></param>
     /// <param name="port"></param>
@@ -202,7 +240,7 @@ public class RedisCluster : RedisBase, IRedisCluster, IDisposable
     /// <returns></returns>
     public virtual void AddSlots(ClusterNode node, params Int32[] slots)
     {
-        var pool = node.Pool;
+        var pool = (Redis as FullRedis).GetPool(node);
         var client = pool.Get();
         try
         {
@@ -227,7 +265,7 @@ public class RedisCluster : RedisBase, IRedisCluster, IDisposable
     /// <returns></returns>
     public virtual void DeleteSlots(ClusterNode node, params Int32[] slots)
     {
-        var pool = node.Pool;
+        var pool = (Redis as FullRedis).GetPool(node);
         var client = pool.Get();
         try
         {

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Net.Security;
 using System.Net.Sockets;
 using System.Security.Authentication;
@@ -22,6 +21,9 @@ namespace NewLife.Caching;
 public class RedisClient : DisposeBase
 {
     #region 属性
+    /// <summary>名称</summary>
+    public String Name { get; set; }
+
     /// <summary>客户端</summary>
     public TcpClient Client { get; set; }
 
@@ -47,6 +49,7 @@ public class RedisClient : DisposeBase
     /// <param name="server">服务器地址。一个redis对象可能有多服务器，例如Cluster集群</param>
     public RedisClient(Redis redis, NetUri server)
     {
+        Name = redis?.Name;
         Host = redis;
         Server = server;
     }
@@ -645,9 +648,16 @@ public class RedisClient : DisposeBase
     /// <returns></returns>
     public virtual Object Execute(String cmd, params Object[] args)
     {
-        using var span = cmd.IsNullOrEmpty() ? null : Host.Tracer?.NewSpan($"redis:{Host.Name}:{cmd}", args);
-
-        return ExecuteCommand(cmd, args?.Select(e => Host.Encoder.Encode(e)).ToArray(), args);
+        using var span = cmd.IsNullOrEmpty() ? null : Host.Tracer?.NewSpan($"redis:{Name}:{cmd}", args);
+        try
+        {
+            return ExecuteCommand(cmd, args?.Select(e => Host.Encoder.Encode(e)).ToArray(), args);
+        }
+        catch (Exception ex)
+        {
+            span?.SetError(ex, null);
+            throw;
+        }
     }
 
     /// <summary>执行命令。返回基本类型、对象、对象数组</summary>
@@ -718,9 +728,16 @@ public class RedisClient : DisposeBase
     /// <returns></returns>
     public virtual async Task<Object> ExecuteAsync(String cmd, Object[] args, CancellationToken cancellationToken = default)
     {
-        using var span = cmd.IsNullOrEmpty() ? null : Host.Tracer?.NewSpan($"redis:{Host.Name}:{cmd}", args);
-
-        return await ExecuteCommandAsync(cmd, args?.Select(e => Host.Encoder.Encode(e)).ToArray(), args, cancellationToken);
+        using var span = cmd.IsNullOrEmpty() ? null : Host.Tracer?.NewSpan($"redis:{Name}:{cmd}", args);
+        try
+        {
+            return await ExecuteCommandAsync(cmd, args?.Select(e => Host.Encoder.Encode(e)).ToArray(), args, cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            span?.SetError(ex, null);
+            throw;
+        }
     }
 
     /// <summary>异步执行命令。返回基本类型、对象、对象数组</summary>
@@ -846,38 +863,45 @@ public class RedisClient : DisposeBase
         var ns = GetStream(true);
         if (ns == null) return null;
 
-        using var span = Host.Tracer?.NewSpan($"redis:{Host.Name}:Pipeline", null);
-
-        // 验证登录
-        CheckLogin(null);
-        CheckSelect(null);
-
-        // 整体打包所有命令
-        var ms = Pool.MemoryStream.Get();
-        var cmds = new List<String>(ps.Count);
-        foreach (var item in ps)
+        using var span = Host.Tracer?.NewSpan($"redis:{Name}:Pipeline", null);
+        try
         {
-            cmds.Add(item.Name);
-            GetRequest(ms, item.Name, item.Args.Select(e => Host.Encoder.Encode(e)).ToArray(), item.Args);
+            // 验证登录
+            CheckLogin(null);
+            CheckSelect(null);
+
+            // 整体打包所有命令
+            var ms = Pool.MemoryStream.Get();
+            var cmds = new List<String>(ps.Count);
+            foreach (var item in ps)
+            {
+                cmds.Add(item.Name);
+                GetRequest(ms, item.Name, item.Args.Select(e => Host.Encoder.Encode(e)).ToArray(), item.Args);
+            }
+
+            // 设置数据标签
+            span?.SetTag(cmds);
+
+            // 整体发出
+            if (ms.Length > 0) ms.WriteTo(ns);
+            ms.Put();
+
+            if (!requireResult) return new Object[ps.Count];
+
+            // 获取响应
+            var list = GetResponse(ns, ps.Count);
+            for (var i = 0; i < list.Count; i++)
+            {
+                if (TryChangeType(list[i], ps[i].Type, out var target) && target != null) list[i] = target;
+            }
+
+            return list.ToArray();
         }
-
-        // 设置数据标签
-        span?.SetTag(cmds);
-
-        // 整体发出
-        if (ms.Length > 0) ms.WriteTo(ns);
-        ms.Put();
-
-        if (!requireResult) return new Object[ps.Count];
-
-        // 获取响应
-        var list = GetResponse(ns, ps.Count);
-        for (var i = 0; i < list.Count; i++)
+        catch (Exception ex)
         {
-            if (TryChangeType(list[i], ps[i].Type, out var target) && target != null) list[i] = target;
+            span?.SetError(ex, null);
+            throw;
         }
-
-        return list.ToArray();
     }
 
     private class Command
@@ -944,7 +968,7 @@ public class RedisClient : DisposeBase
         var rs = Execute<String>("MSET", ps.ToArray());
         if (rs != "OK")
         {
-            using var span = Host.Tracer?.NewSpan($"redis:{Host.Name}:ErrorSetAll", values);
+            using var span = Host.Tracer?.NewSpan($"redis:{Name}:ErrorSetAll", values);
             if (Host.ThrowOnFailure) throw new XException("Redis.SetAll({0})失败。{1}", values.ToJson(), rs);
         }
 
