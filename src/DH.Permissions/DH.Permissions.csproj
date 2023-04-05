@@ -65,7 +65,7 @@
   </ItemGroup>
 
   <ItemGroup>
-	<PackageReference Include="IdentityModel" Version="6.1.0-preview.5" />
+	<PackageReference Include="IdentityModel" Version="6.1.0-preview.6" />
   </ItemGroup>
 	
   <ItemGroup>
