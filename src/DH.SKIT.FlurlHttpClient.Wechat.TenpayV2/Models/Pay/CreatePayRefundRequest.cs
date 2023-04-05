@@ -1,4 +1,4 @@
-﻿namespace SKIT.FlurlHttpClient.Wechat.TenpayV2.Models
+namespace SKIT.FlurlHttpClient.Wechat.TenpayV2.Models
 {
     /// <summary>
     /// <para>表示 [POST] /secapi/pay/refund 接口的请求。</para>
@@ -59,7 +59,6 @@
         /// </summary>
         [Newtonsoft.Json.JsonProperty("total_fee")]
         [System.Text.Json.Serialization.JsonPropertyName("total_fee")]
-        [System.Text.Json.Serialization.JsonNumberHandling(System.Text.Json.Serialization.JsonNumberHandling.AllowReadingFromString)]
         public int TotalFee { get; set; }
 
         /// <summary>
@@ -67,8 +66,14 @@
         /// </summary>
         [Newtonsoft.Json.JsonProperty("refund_fee")]
         [System.Text.Json.Serialization.JsonPropertyName("refund_fee")]
-        [System.Text.Json.Serialization.JsonNumberHandling(System.Text.Json.Serialization.JsonNumberHandling.AllowReadingFromString)]
         public int RefundFee { get; set; }
+
+        /// <summary>
+        /// 获取或设置现金退款金额（单位：分）。
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("cash_refund_fee")]
+        [System.Text.Json.Serialization.JsonPropertyName("cash_refund_fee")]
+        public int? CashRefundFee { get; set; }
 
         /// <summary>
         /// 获取或设置货币类型。

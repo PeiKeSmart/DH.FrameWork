@@ -17,10 +17,26 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV2
         public static WechatTenpayEvent DeserializeEvent(this WechatTenpayClient client, string callbackXml)
         {
             if (client == null) throw new ArgumentNullException(nameof(client));
-            if (string.IsNullOrEmpty(callbackXml)) throw new ArgumentNullException(callbackXml);
+            if (callbackXml == null) throw new ArgumentNullException(callbackXml);
 
             string callbackJson = Utilities.XmlUtility.ConvertToJson(callbackXml);
             return client.JsonSerializer.Deserialize<WechatTenpayEvent>(callbackJson);
+        }
+
+        /// <summary>
+        /// <para>反序列化得到微信支付回调通知事件模型对象。</para>
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="callbackXml"></param>
+        /// <returns></returns>
+        public static TEvent DeserializeEvent<TEvent>(this WechatTenpayClient client, string callbackXml)
+            where TEvent : WechatTenpayEvent, new()
+        {
+            if (client == null) throw new ArgumentNullException(nameof(client));
+            if (callbackXml == null) throw new ArgumentNullException(callbackXml);
+
+            string callbackJson = Utilities.XmlUtility.ConvertToJson(callbackXml);
+            return client.JsonSerializer.Deserialize<TEvent>(callbackJson);
         }
 
         /// <summary>
@@ -36,11 +52,11 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV2
             if (client == null) throw new ArgumentNullException(nameof(client));
             if (callback == null) throw new ArgumentNullException(nameof(callback));
 
-            string key = Utilities.MD5Utility.Hash(client.Credentials.MerchantSecret).ToLower();
             string plainJson;
 
             try
             {
+                string key = Utilities.MD5Utility.Hash(client.Credentials.MerchantSecret).ToLower();
                 string plainXml = Utilities.AESUtility.DecryptWithECB(
                     encodingKey: Convert.ToBase64String(Encoding.UTF8.GetBytes(key)),
                     encodingCipherText: callback.EncryptedRequestInfo!

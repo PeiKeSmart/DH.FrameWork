@@ -35,7 +35,7 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Models
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("taxpayer_id")]
                         [System.Text.Json.Serialization.JsonPropertyName("taxpayer_id")]
-                        public string? TaxPayerId { get; set; }
+                        public string? TaxpayerId { get; set; }
 
                         /// <summary>
                         /// 获取或设置地址。
@@ -80,7 +80,7 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Models
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("taxpayer_id")]
                         [System.Text.Json.Serialization.JsonPropertyName("taxpayer_id")]
-                        public string TaxPayerId { get; set; } = string.Empty;
+                        public string TaxpayerId { get; set; } = string.Empty;
 
                         /// <summary>
                         /// 获取或设置地址。
@@ -135,7 +135,7 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Models
                         public string Drawer { get; set; } = string.Empty;
                     }
 
-                    public class LineItem
+                    public class Item
                     {
                         /// <summary>
                         /// 获取或设置货物或应税劳务或服务编码。
@@ -315,7 +315,7 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Models
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("items")]
                 [System.Text.Json.Serialization.JsonPropertyName("items")]
-                public IList<Types.LineItem>? LineItemList { get; set; }
+                public IList<Types.Item>? ItemList { get; set; }
 
                 /// <summary>
                 /// 获取或设置备注信息。
