@@ -58,7 +58,7 @@ public class NotifyHub : Hub<IClientNotifyHub>, IServerNotifyHub
 
     public NotifyHub(ICache cache)
     {
-        if (UtilSetting.Current.RedisEnabled)
+        if (DHUtilSetting.Current.RedisEnabled)
         {
             _cache = EngineContext.Current.Resolve<FullRedis>();
         }
@@ -80,7 +80,7 @@ public class NotifyHub : Hub<IClientNotifyHub>, IServerNotifyHub
 
         if (userId != 0)
         {
-            _cache.Increment($"{SignalRSetting.Current.SignalRPrefixUser}{UtilSetting.Current.CacheKeyPrefix}{userId}Count", 1);
+            _cache.Increment($"{SignalRSetting.Current.SignalRPrefixUser}{DHUtilSetting.Current.CacheKeyPrefix}{userId}Count", 1);
             await JoinToGroup(userId, Context.ConnectionId, dgpage, iotid);
             await DealOnLineNotify(userId, Context.ConnectionId);
         }
@@ -100,7 +100,7 @@ public class NotifyHub : Hub<IClientNotifyHub>, IServerNotifyHub
 
         if (userId != 0)
         {
-            _cache.Decrement($"{SignalRSetting.Current.SignalRPrefixUser}{UtilSetting.Current.CacheKeyPrefix}{userId}Count", 1);
+            _cache.Decrement($"{SignalRSetting.Current.SignalRPrefixUser}{DHUtilSetting.Current.CacheKeyPrefix}{userId}Count", 1);
             await DealOffLineNotify(userId, Context.ConnectionId);
         }
 
@@ -126,7 +126,7 @@ public class NotifyHub : Hub<IClientNotifyHub>, IServerNotifyHub
     /// <returns></returns>
     private async Task DealOnLineNotify(Int32 userId, string connectionId)
     {
-        var userConnectCount = _cache.Get<Int32>($"{SignalRSetting.Current.SignalRPrefixUser}{UtilSetting.Current.CacheKeyPrefix}{userId}Count");
+        var userConnectCount = _cache.Get<Int32>($"{SignalRSetting.Current.SignalRPrefixUser}{DHUtilSetting.Current.CacheKeyPrefix}{userId}Count");
         await Clients.All.OnLine(new OnLineData
         {
             UserId = userId,
@@ -143,7 +143,7 @@ public class NotifyHub : Hub<IClientNotifyHub>, IServerNotifyHub
     /// <returns></returns>
     private async Task DealOffLineNotify(Int32 userId, string connectionId)
     {
-        var userConnectCount = _cache.Get<Int32>($"{SignalRSetting.Current.SignalRPrefixUser}{UtilSetting.Current.CacheKeyPrefix}{userId}Count");
+        var userConnectCount = _cache.Get<Int32>($"{SignalRSetting.Current.SignalRPrefixUser}{DHUtilSetting.Current.CacheKeyPrefix}{userId}Count");
         await Clients.All.OffLine(new OffLineData
         {
             UserId = userId,
@@ -169,7 +169,7 @@ public class NotifyHub : Hub<IClientNotifyHub>, IServerNotifyHub
                 {
                     await Groups.AddToGroupAsync(connectionId, group);
 
-                    var dic = _cache.GetDictionary<Int32>($"{SignalRSetting.Current.SignalRPrefixGroup}{UtilSetting.Current.CacheKeyPrefix}{group}");
+                    var dic = _cache.GetDictionary<Int32>($"{SignalRSetting.Current.SignalRPrefixGroup}{DHUtilSetting.Current.CacheKeyPrefix}{group}");
                     dic.Add(connectionId, userId);
                 }
             }
@@ -192,7 +192,7 @@ public class NotifyHub : Hub<IClientNotifyHub>, IServerNotifyHub
                 {
                     await Groups.RemoveFromGroupAsync(connectionId, group);
 
-                    var dic = _cache.GetDictionary<Int32>($"{SignalRSetting.Current.SignalRPrefixGroup}{UtilSetting.Current.CacheKeyPrefix}{group}");
+                    var dic = _cache.GetDictionary<Int32>($"{SignalRSetting.Current.SignalRPrefixGroup}{DHUtilSetting.Current.CacheKeyPrefix}{group}");
                     dic.Remove(connectionId);
                 }
             }

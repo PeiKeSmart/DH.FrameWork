@@ -35,8 +35,8 @@ public class SignalRSetting : XmlConfig<SignalRSetting>
     /// <summary>加载时触发</summary>
     protected override void OnLoaded()
     {
-        SignalRPrefixUser = $"{UtilSetting.Current.CacheKeyPrefix}signalr_u_";
-        SignalRPrefixUser = $"{UtilSetting.Current.CacheKeyPrefix}signalr_g_";
+        SignalRPrefixUser = $"{DHUtilSetting.Current.CacheKeyPrefix}signalr_u_";
+        SignalRPrefixUser = $"{DHUtilSetting.Current.CacheKeyPrefix}signalr_g_";
 
         base.OnLoaded();
     }

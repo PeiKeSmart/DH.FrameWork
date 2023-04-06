@@ -20,7 +20,7 @@ internal sealed class TokenPayloadStore : ITokenPayloadStore
     /// <param name="cache"></param>
     public TokenPayloadStore(ICache cache)
     {
-        if (UtilSetting.Current.RedisEnabled)
+        if (DHUtilSetting.Current.RedisEnabled)
         {
             _cache = EngineContext.Current.Resolve<ICache>();
         }

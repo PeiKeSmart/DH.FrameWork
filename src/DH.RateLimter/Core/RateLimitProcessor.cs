@@ -59,7 +59,7 @@ public class RateLimitProcessor
 
     protected virtual string BuildCounterKey(String api, Policy policy, String policyKey, String policyValue)
     {
-        var key = $"{UtilSetting.Current.CacheKeyPrefix}:record:{policy.ToString().ToLower()}";
+        var key = $"{DHUtilSetting.Current.CacheKeyPrefix}:record:{policy.ToString().ToLower()}";
         if (!policyKey.IsNullOrWhiteSpace())
         {
             key += ":" + Common.EncryptMD5Short(policyKey);

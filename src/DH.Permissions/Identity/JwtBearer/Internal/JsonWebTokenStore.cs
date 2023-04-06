@@ -21,7 +21,7 @@ internal sealed class JsonWebTokenStore : IJsonWebTokenStore
     /// <param name="cache">缓存</param>
     public JsonWebTokenStore(ICache cache)
     {
-        if (UtilSetting.Current.RedisEnabled)
+        if (DHUtilSetting.Current.RedisEnabled)
         {
             _cache = EngineContext.Current.Resolve<ICache>();
         }

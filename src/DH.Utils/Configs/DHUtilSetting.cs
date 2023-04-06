@@ -7,7 +7,7 @@ namespace DH;
 /// <summary>工具配置</summary>
 [DisplayName("工具配置")]
 [XmlConfigFile("Config/Util.config", 10_000)]
-public class UtilSetting : XmlConfig<UtilSetting>
+public class DHUtilSetting : XmlConfig<DHUtilSetting>
 {
     /// <summary>
     /// Cache键前缀
@@ -46,7 +46,7 @@ public class UtilSetting : XmlConfig<UtilSetting>
     #region 方法
 
     /// <summary>实例化</summary>
-    public UtilSetting() { }
+    public DHUtilSetting() { }
 
     #endregion
 
