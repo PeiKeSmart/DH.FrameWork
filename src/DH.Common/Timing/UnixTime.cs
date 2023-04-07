@@ -37,7 +37,7 @@ public static class UnixTime
     /// <summary>
     /// 转换为DateTime对象
     /// </summary>
-    /// <param name="timestamp">时间戳</param>
+    /// <param name="timestamp">时间戳。毫秒</param>
     /// <returns></returns>
     public static DateTime ToDateTime(long timestamp)
     {

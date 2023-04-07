@@ -93,6 +93,12 @@ public class DHSetting : Config<DHSetting>
     public Boolean SslEnabled { get; set; }
 
     /// <summary>
+    /// 接口授权值缓存过期时间，秒
+    /// </summary>
+    [Description("接口授权值缓存过期时间，秒")]
+    public Int32 SignatureExpire { get; set; } = 300;
+
+    /// <summary>
     /// 流量统计代码
     /// </summary>
     [Description("流量统计代码")]
