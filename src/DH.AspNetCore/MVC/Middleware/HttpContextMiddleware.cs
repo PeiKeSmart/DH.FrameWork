@@ -111,12 +111,17 @@ public class HttpContextMiddleware {
                 //if (!((bool)api.RequestUrl?.Contains("PushApiLogger")))
                 //    _cacheService.Set<string>($"RequestLog:{DateTime.Now.ToString("yyyyMMddHHmmssfff") + (new Random()).Next(0, 10000)}-{api.ElapsedTime}ms", $"{JsonConvert.SerializeObject(api)}");
 
-                XTrace.WriteLine($"RequestLog:{DateTime.Now.ToString("yyyyMMddHHmmssfff") + (new Random()).Next(0, 10000)}-{api.ElapsedTime}ms", $"{JsonConvert.SerializeObject(api)}");
+                XTrace.WriteLine($"RequestLog:{DateTime.Now.ToString("yyyyMMddHHmmssfff") + (new Random()).Next(0, 10000)}-{api.ElapsedTime}ms-{JsonConvert.SerializeObject(api)}");
 
                 return Task.CompletedTask;
             });
 
             XTrace.WriteLine($"Finished handling request.{_stopwatch.ElapsedMilliseconds}ms");
+        }
+        else
+        {
+            // 或请求管道中调用下一个中间件
+            await _next(context);
         }
     }
 }
