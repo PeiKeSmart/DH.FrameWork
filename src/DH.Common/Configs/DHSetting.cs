@@ -152,6 +152,12 @@ public class DHSetting : Config<DHSetting>
     public Boolean AutoRegister { get; set; } = true;
 
     /// <summary>
+    /// 是否允许获取请求和响应内容
+    /// </summary>
+    [Description("是否允许获取请求和响应内容")]
+    public Boolean AllowRequestParams { get; set; }
+
+    /// <summary>
     /// 语言缓存名称
     /// </summary>
     [Description("语言缓存名称")]

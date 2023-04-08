@@ -77,7 +77,6 @@
 	
   <ItemGroup>
     <ProjectReference Include="..\DH.AspNetCore\DH.AspNetCore.csproj" />
-    <ProjectReference Include="..\DH.NCode\DH.NCode.csproj" />
   </ItemGroup>
 	
   <ItemGroup>
