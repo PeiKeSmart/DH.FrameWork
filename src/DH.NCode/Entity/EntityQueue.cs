@@ -3,7 +3,6 @@ using System.Diagnostics;
 using NewLife;
 using NewLife.Log;
 using NewLife.Threading;
-
 using XCode.DataAccessLayer;
 
 namespace XCode;
