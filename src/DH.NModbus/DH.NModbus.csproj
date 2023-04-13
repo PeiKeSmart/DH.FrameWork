@@ -4,7 +4,7 @@
   <PropertyGroup>
 	<LangVersion>latest</LangVersion>
     <OutputType>Library</OutputType>
-    <TargetFrameworks>netstandard2.1;netstandard2.0;net461</TargetFrameworks>
+    <TargetFrameworks>netstandard2.1;netstandard2.0;net461;net45</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
 	<RootNamespace>NewLife.IoT</RootNamespace>
 	<AssemblyName>DH.NModbus</AssemblyName>
