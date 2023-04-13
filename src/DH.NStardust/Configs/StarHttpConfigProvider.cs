@@ -5,7 +5,9 @@ using NewLife.Log;
 using NewLife.Remoting;
 using NewLife.Serialization;
 using Stardust.Models;
+using Stardust.Registry;
 using Stardust.Services;
+using static System.Net.WebRequestMethods;
 
 namespace Stardust.Configs;
 
@@ -13,6 +15,7 @@ internal class StarHttpConfigProvider : HttpConfigProvider
 {
     public ConfigInfo ConfigInfo { get; set; }
 
+    const String REGISTRY = "$Registry:";
     private Boolean _useWorkerId;
 
     protected override IDictionary<String, Object> GetAll()
@@ -62,6 +65,38 @@ internal class StarHttpConfigProvider : HttpConfigProvider
 
         return null;
     }
+
+#if !NET40
+    private readonly HashSet<String> _keys = new();
+    /// <summary>获取指定配置。拦截对注册中心的请求</summary>
+    /// <param name="key"></param>
+    /// <param name="createOnMiss"></param>
+    /// <returns></returns>
+    protected override IConfigSection Find(String key, Boolean createOnMiss)
+    {
+        if (key.StartsWithIgnoreCase(REGISTRY))
+        {
+            key = key.Substring(REGISTRY.Length);
+
+            // 从注册中心获取服务
+            if (Client is IRegistry registry)
+            {
+                var addrs = registry.ResolveAddressAsync(key).Result;
+
+                // 注册服务有改变时，通知配置系统改变
+                if (!_keys.Contains(key))
+                {
+                    _keys.Add(key);
+                    registry.Bind(key, (k, ms) => NotifyChange());
+                }
+
+                return new ConfigSection { Key = key, Value = addrs.Join() };
+            }
+        }
+
+        return base.Find(key, createOnMiss);
+    }
+#endif
 
     public void Attach(ICommandClient client) => client.RegisterCommand("config/publish", DoPublish);
 
