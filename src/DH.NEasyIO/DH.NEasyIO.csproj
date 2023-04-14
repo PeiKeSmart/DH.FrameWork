@@ -4,12 +4,12 @@
   <PropertyGroup>
 	<LangVersion>latest</LangVersion>
     <OutputType>Library</OutputType>
-	<TargetFrameworks>netstandard2.1;netstandard2.0;net45;net461;net462;net6.0;net7.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.1;netstandard2.0;net45;net461</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
-	<RootNamespace>NewLife.Serial</RootNamespace>
-	<AssemblyName>DH.NModbusRTU</AssemblyName>
-	<AssemblyTitle>ModbusRTU协议</AssemblyTitle>
-	<Description>DH框架的串口ModbusRTU协议</Description>
+	<RootNamespace>NewLife.EasyIO</RootNamespace>
+	<AssemblyName>DH.NEasyIO</AssemblyName>
+	<AssemblyTitle>EasyIO简易文件存储</AssemblyTitle>
+	<Description>DH框架的简易文件存储库，EasyIO简单文件存储，支持分布式系统中文件集中存储。参考NewLife.EasyIO</Description>
 	<Company>湖北登灏科技有限公司</Company>
 	
 	<OutputPath>..\Bin</OutputPath>
@@ -36,7 +36,7 @@
 	<RepositoryUrl>https://gitee.com/chuangchu/DH.FrameWork</RepositoryUrl>
 	<RepositoryType>Git</RepositoryType>
 	<PackageTags>湖北登灏科技有限公司;DH组件;DH;$(AssemblyName)</PackageTags>
-	<PackageReleaseNotes>DH框架的串口ModbusRTU协议</PackageReleaseNotes>
+	<PackageReleaseNotes>DH框架的简易文件存储库，EasyIO简单文件存储，支持分布式系统中文件集中存储</PackageReleaseNotes>
 	<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 	<PublishRepositoryUrl>true</PublishRepositoryUrl>
 	<EmbedUntrackedSources>true</EmbedUntrackedSources>
@@ -54,29 +54,18 @@
   </PropertyGroup>
 	
   <ItemGroup>
-    <ProjectReference Include="..\DH.NModbus\DH.NModbus.csproj" />
+    <ProjectReference Include="..\DH.NCore\DH.NCore.csproj" />
   </ItemGroup>
 	
   <ItemGroup>
 	<Content Include="..\..\Doc\DH.png" Link="DH.png" PackagePath="\" />
   </ItemGroup>
-	
+
   <ItemGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-  </ItemGroup>
-	
-  <ItemGroup Condition="'$(TargetFramework)'=='net45' or '$(TargetFramework)'=='net461'">
-	<Reference Include="System.Net.Http" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)'=='net461'">
-    <PackageReference Include="System.IO.Ports" Version="6.0.0" />
-  </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)'!='net461' and '$(TargetFramework)'!='net45'">
-    <PackageReference Include="System.IO.Ports" Version="7.0.0" />
   </ItemGroup>
 
 </Project>
