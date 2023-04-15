@@ -86,11 +86,11 @@ public class DHSetting : Config<DHSetting>
     public Boolean AllSslEnabled { get; set; }
 
     /// <summary>
-    /// API接口是否启用SSL
+    /// API接口是否启用SSL。0为不处理，1为是，2为否
     /// </summary>
     /// <summary>API接口是否启用SSL</summary>
     [Description("API接口是否启用SSL")]
-    public Boolean SslEnabled { get; set; }
+    public Int32 SslEnabled { get; set; } = 0;
 
     /// <summary>
     /// 接口授权值缓存过期时间，秒
