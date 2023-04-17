@@ -127,4 +127,75 @@ public static class ByteArrayExtensions
     }
 
     #endregion
+
+    /// <summary>
+    /// 翻转byte数组
+    /// </summary>
+    /// <param name="bytes"></param>
+    public static void ReverseBytes(this byte[] bytes)
+    {
+        byte tmp;
+        int len = bytes.Length;
+
+        for (int i = 0; i < len / 2; i++)
+        {
+            tmp = bytes[len - 1 - i];
+            bytes[len - 1 - i] = bytes[i];
+            bytes[i] = tmp;
+        }
+    }
+
+    /// <summary>
+    /// 规定转换起始位置和长度
+    /// </summary>
+    /// <param name="bytes"></param>
+    /// <param name="start"></param>
+    /// <param name="len"></param>
+    public static void ReverseBytes(this byte[] bytes, int start, int len)
+    {
+        int end = start + len - 1;
+        byte tmp;
+        int i = 0;
+        for (int index = start; index < start + len / 2; index++, i++)
+        {
+            tmp = bytes[end - i];
+            bytes[end - i] = bytes[index];
+            bytes[index] = tmp;
+        }
+    }
+
+    /// <summary>
+    /// 翻转字节顺序 (16-bit)
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static UInt16 ReverseBytes(this UInt16 value)
+    {
+        return (UInt16)((value & 0xFFU) << 8 | (value & 0xFF00U) >> 8);
+    }
+
+    /// <summary>
+    /// 翻转字节顺序 (32-bit)
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static UInt32 ReverseBytes(this UInt32 value)
+    {
+        return (value & 0x000000FFU) << 24 | (value & 0x0000FF00U) << 8 |
+               (value & 0x00FF0000U) >> 8 | (value & 0xFF000000U) >> 24;
+    }
+
+    /// <summary>
+    /// 翻转字节顺序 (64-bit)
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static UInt64 ReverseBytes(this UInt64 value)
+    {
+        return (value & 0x00000000000000FFUL) << 56 | (value & 0x000000000000FF00UL) << 40 |
+               (value & 0x0000000000FF0000UL) << 24 | (value & 0x00000000FF000000UL) << 8 |
+               (value & 0x000000FF00000000UL) >> 8 | (value & 0x0000FF0000000000UL) >> 24 |
+               (value & 0x00FF000000000000UL) >> 40 | (value & 0xFF00000000000000UL) >> 56;
+    }
+
 }
