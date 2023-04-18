@@ -72,7 +72,7 @@ namespace DH.WebHook
         /// <param name="content">文本内容</param>
         /// <param name="atMobiles">@人员电话</param>
         /// <param name="isAtAll">是否@群所有成员</param>
-        public static void OapiRobotText(string content, List<string> atMobiles, bool isAtAll)
+        public static String OapiRobotText(string content, List<string> atMobiles, bool isAtAll)
         {
             TextModel tModel = new TextModel();
             tModel.at = new atText();
@@ -86,6 +86,8 @@ namespace DH.WebHook
 
             string data = JsonConvert.SerializeObject(tModel);
             string json = Request(WebHookSetting.Current.DingTalkSendUrl, data, "POST");
+
+            return json;
         }
         /// <summary>
         /// 发送Link消息
@@ -94,7 +96,7 @@ namespace DH.WebHook
         /// <param name="text">消息内容。如果太长只会部分展示</param>
         /// <param name="messageUrl">点击消息跳转的URL</param>
         /// <param name="picUrl">图片URL</param>
-        public static void OapiRobotLink(string title, string text, string messageUrl, string picUrl)
+        public static String OapiRobotLink(string title, string text, string messageUrl, string picUrl)
         {
             LinkModel lModel = new LinkModel();
             lModel.link = new link();
@@ -106,6 +108,8 @@ namespace DH.WebHook
 
             string data = JsonConvert.SerializeObject(lModel);
             string json = Request(WebHookSetting.Current.DingTalkSendUrl, data, "POST");
+
+            return json;
         }
         /// <summary>
         /// 发送markdown类消息
@@ -114,7 +118,7 @@ namespace DH.WebHook
         /// <param name="text">消息主体</param>
         /// <param name="atMobiles">@人员电话</param>
         /// <param name="isAtAll">是否@群所有成员</param>
-        public static void OapiRobotMarkDown(string title, string text, List<string> atMobiles, bool isAtAll)
+        public static String OapiRobotMarkDown(string title, string text, List<string> atMobiles, bool isAtAll)
         {
             MarkDownModel mdModel = new MarkDownModel();
             mdModel.at = new atMarkdown();
@@ -129,6 +133,8 @@ namespace DH.WebHook
 
             string data = JsonConvert.SerializeObject(mdModel);
             string json = Request(WebHookSetting.Current.DingTalkSendUrl, data, "POST");
+
+            return json;
         }
 
         /// <summary>
@@ -140,7 +146,7 @@ namespace DH.WebHook
         /// <param name="singleURL">点击singleTitle按钮触发的URL</param>
         /// <param name="btnOrientation">0-按钮竖直排列，1-按钮横向排列</param>
         /// <param name="hideAvatar">0-正常发消息者头像,1-隐藏发消息者头像</param>
-        public static void OapiRobotActionCardOverall(string title, string text, string singleTitle, string singleURL, string btnOrientation, string hideAvatar)
+        public static String OapiRobotActionCardOverall(string title, string text, string singleTitle, string singleURL, string btnOrientation, string hideAvatar)
         {
             ActionCardOverallModel acModel = new ActionCardOverallModel();
             acModel.actionCard = new actionCard();
@@ -161,6 +167,8 @@ namespace DH.WebHook
 
             string data = JsonConvert.SerializeObject(acModel);
             string json = Request(WebHookSetting.Current.DingTalkSendUrl, data, "POST");
+
+            return json;
         }
 
         /// <summary>
@@ -171,7 +179,7 @@ namespace DH.WebHook
         /// <param name="btns"></param>
         /// <param name="btnOrientation"></param>
         /// <param name="hideAvatar"></param>
-        public static void OapiRobotActionCardSingle(string title, string text, string btns, string btnOrientation, string hideAvatar)
+        public static String OapiRobotActionCardSingle(string title, string text, string btns, string btnOrientation, string hideAvatar)
         {
             ActionCardSingleModel acModel = new ActionCardSingleModel();
             acModel.actionCard = new actionCardSingle();
@@ -189,12 +197,14 @@ namespace DH.WebHook
                 acModel.actionCard.hideAvatar = "0";
             string data = JsonConvert.SerializeObject(acModel);
             string json = Request(WebHookSetting.Current.DingTalkSendUrl, data, "POST");
+
+            return json;
         }
 
         /// <summary>
         /// 发送FeedCard类型
         /// </summary>
-        public static void OapiRobotFeedCard()
+        public static String OapiRobotFeedCard()
         {
             FeedCardModel fcModel = new FeedCardModel();
             fcModel.msgtype = "feedCard";
@@ -215,6 +225,8 @@ namespace DH.WebHook
 
             string data = JsonConvert.SerializeObject(fcModel);
             string json = Request(WebHookSetting.Current.DingTalkSendUrl, data, "POST");
+
+            return json;
         }
 
     }
