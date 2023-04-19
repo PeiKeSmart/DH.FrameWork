@@ -1,7 +1,8 @@
-﻿using System.Runtime.CompilerServices;
+﻿using NewLife.Reflection;
 
-namespace DH.Core.Infrastructure
-{
+using System.Runtime.CompilerServices;
+
+namespace DH.Core.Infrastructure {
     /// <summary>
     /// 提供对DH引擎的单例实例的访问。
     /// </summary>
@@ -16,7 +17,24 @@ namespace DH.Core.Infrastructure
         public static IEngine Create()
         {
             //创建DHEngine作为引擎
-            return Singleton<IEngine>.Instance ?? (Singleton<IEngine>.Instance = new DHEngine());
+            //return Singleton<IEngine>.Instance ?? (Singleton<IEngine>.Instance = new DHEngine());
+
+            var s = Singleton<IEngine>.Instance;
+            if (s == null)
+            {
+                var cs = typeof(IEngine).GetAllSubclasses().ToArray();
+                foreach (var item in cs)
+                {
+                    if (item.FullName?.Contains("DGEngine", StringComparison.OrdinalIgnoreCase) == true)
+                    {
+                        return Singleton<IEngine>.Instance = (IEngine)item.Assembly.CreateInstance(item.FullName);
+                    }
+                }
+
+                return Singleton<IEngine>.Instance = new DHEngine();
+            }
+
+            return s;
         }
 
         /// <summary>
@@ -31,7 +49,7 @@ namespace DH.Core.Infrastructure
 
         #endregion
 
-        #region Properties
+        #region 属性
 
         /// <summary>
         /// 获取用于访问DH服务的单例Nop引擎。
