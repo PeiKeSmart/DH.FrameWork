@@ -281,9 +281,9 @@ public class ManageProvider2 : ManageProvider {
     /// <summary>根据实体类接口获取实体工厂</summary>
     /// <typeparam name="TIEntity"></typeparam>
     /// <returns></returns>
-    internal static IEntityFactory GetFactory<TIEntity>() => _factories[typeof(TIEntity)];
+    public static IEntityFactory GetFactory<TIEntity>() => _factories[typeof(TIEntity)];
 
-    internal static T Get<T>() => (T)GetFactory<T>()?.Default;
+    public static T Get<T>() => (T)GetFactory<T>()?.Default;
     #endregion
 }
 
