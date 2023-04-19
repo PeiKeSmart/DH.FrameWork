@@ -1,12 +1,9 @@
-﻿using DH.Core;
-using DH.Core.Events;
+﻿using DH.Core.Events;
 using DH.Core.Infrastructure;
+
 using NewLife.Log;
 
-using XCode.Membership;
-
-namespace DH.Services.Events
-{
+namespace DH.Services.Events {
     /// <summary>
     /// 表示事件发布者实现
     /// </summary>
@@ -37,14 +34,8 @@ namespace DH.Services.Events
                     // 日志错误，我们放入嵌套的try-catch以防止可能的循环（如果发生错误）
                     try
                     {
-                        var webHelper = EngineContext.Current.Resolve<IWebHelper>();
-
-                        // 获取当前客户
-                        var currentCustomer = EngineContext.Current.Resolve<IWorkContext>().GetCurrentCustomer();
-
                         // 错误日志
                         XTrace.WriteException(exception);
-                        LogProvider.Provider?.WriteLog("事件消费者", "错误", false, exception.Message + " " + Environment.NewLine + exception.GetMessage(), currentCustomer.User.ID, currentCustomer.User.Name, webHelper.GetCurrentIpAddress());
                     }
                     catch
                     {
@@ -69,7 +60,7 @@ namespace DH.Services.Events
                 try
                 {
                     // 尝试处理已发布的事件
-                    consumer.HandleEvent(@event);
+                    consumer.HandleEventAsync(@event).Wait();
                 }
                 catch (Exception exception)
                 {
