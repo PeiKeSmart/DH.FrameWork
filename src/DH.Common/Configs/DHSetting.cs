@@ -192,6 +192,18 @@ public class DHSetting : Config<DHSetting>
     [Description("SignalR服务地址")]
     public String SignalRAddress { get; set; } = "https://localhost:9091";
 
+    /// <summary>
+    /// 是否检查接口检验
+    /// </summary>
+    [Description("是否检查接口检验")]
+    public Boolean IsCheckApiSignature { get; set; } = true;
+
+    /// <summary>
+    /// App接口请求的Token值
+    /// </summary>
+    [Description("App接口请求的Token值")]
+    public String ServerToken { get; set; } = "HlkTech20200429";
+
     #region 方法
     /// <summary>实例化</summary>
     public DHSetting() { }
