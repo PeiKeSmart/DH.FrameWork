@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Caching.Memory;
+﻿using NewLife.Caching;
 
 using System.Text.RegularExpressions;
 
@@ -6,11 +6,6 @@ namespace DH.Core.Webs;
 
 public class UserAgent
 {
-    private static readonly IMemoryCache Cache = new MemoryCache(new MemoryCacheOptions()
-    {
-        SizeLimit = 10000
-    });
-
     internal static readonly Dictionary<string, string> Platforms = new Dictionary<string, string>() {
             {"windows nt 10.0", "Windows 10"},
             {"windows nt 6.3", "Windows 8.1"},
@@ -317,11 +312,9 @@ public class UserAgent
 
     public static UserAgent Parse(string userAgentString)
     {
-        return Cache.GetOrCreate(userAgentString, entry =>
+        return Cache.Default.GetOrAdd(userAgentString, (entry) =>
         {
-            entry.SlidingExpiration = TimeSpan.FromHours(1);
-            entry.Size = 1;
             return new UserAgent(userAgentString);
-        });
+        }, 3600);
     }
 }
