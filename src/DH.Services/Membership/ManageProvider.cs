@@ -28,8 +28,7 @@ using JwtBuilder = NewLife.Web.JwtBuilder;
 namespace DH.Core.Membership;
 
 /// <inheritdoc />
-public class ManageProvider2 : ManageProvider
-{
+public class ManageProvider2 : ManageProvider {
     #region 静态实例
     internal static IHttpContextAccessor Context;
 
@@ -282,15 +281,14 @@ public class ManageProvider2 : ManageProvider
     /// <summary>根据实体类接口获取实体工厂</summary>
     /// <typeparam name="TIEntity"></typeparam>
     /// <returns></returns>
-    public static IEntityFactory GetFactory<TIEntity>() => _factories[typeof(TIEntity)];
+    internal static IEntityFactory GetFactory<TIEntity>() => _factories[typeof(TIEntity)];
 
-    public static T Get<T>() => (T)GetFactory<T>()?.Default;
+    internal static T Get<T>() => (T)GetFactory<T>()?.Default;
     #endregion
 }
 
 /// <summary>管理提供者助手</summary>
-public static class ManagerProviderHelper
-{
+public static class ManagerProviderHelper {
     /// <summary>设置当前用户</summary>
     /// <param name="provider">提供者</param>
     /// <param name="context">Http上下文，兼容NetCore</param>
@@ -420,8 +418,12 @@ public static class ManagerProviderHelper
         var res = context?.Response;
         if (res == null) return;
 
-        var option = new CookieOptions();
-        option.SameSite = (Microsoft.AspNetCore.Http.SameSiteMode)DHSetting.Current.SameSiteMode;
+        var set = DHSetting.Current;
+        var option = new CookieOptions
+        {
+            SameSite = (Microsoft.AspNetCore.Http.SameSiteMode)set.SameSiteMode
+        };
+        if (!set.CookieDomain.IsNullOrEmpty()) option.Domain = set.CookieDomain;
 
         var token = "";
         if (user != null)
@@ -446,6 +448,26 @@ public static class ManagerProviderHelper
         context.Items["jwtToken"] = token;
     }
     #endregion
+
+    /// <summary>改变选中的租户</summary>
+    /// <param name="context"></param>
+    /// <param name="tenantId"></param>
+    public static void ChangeTenant(HttpContext context, Int32 tenantId)
+    {
+        var res = context?.Response;
+        if (res == null) return;
+
+        var set = DHSetting.Current;
+        var option = new CookieOptions
+        {
+            SameSite = (Microsoft.AspNetCore.Http.SameSiteMode)set.SameSiteMode
+        };
+        if (!set.CookieDomain.IsNullOrEmpty()) option.Domain = set.CookieDomain;
+
+        if (tenantId <= 0) option.Expires = DateTimeOffset.MinValue;
+
+        res.Cookies.Append("TenantId", tenantId + "", option);
+    }
 
     /// <summary>
     /// 添加管理提供者

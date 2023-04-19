@@ -140,6 +140,11 @@ public class DHSetting : Config<DHSetting>
     [Category("通用")]
     public Int32 SameSiteMode { get; set; } = -1;
 
+    /// <summary>Cookie域名。可用于把Cookie写到顶级域名，默认为空写当前域。写顶级域要求https，同时会导致普通http无法在本地域写同名键值</summary>
+    [Description("Cookie域名。可用于把Cookie写到顶级域名，默认为空写当前域。写顶级域要求https，同时会导致普通http无法在本地域写同名键值")]
+    [Category("通用")]
+    public String CookieDomain { get; set; }
+
     /// <summary>
     /// Sid缓存名称
     /// </summary>
