@@ -3,6 +3,8 @@ using System.Security.Cryptography;
 using System.Text;
 using DH.Payment.Security;
 
+using NewLife.Log;
+
 namespace DH.Payment.Alipay.Utility
 {
     public static class AlipaySignature
