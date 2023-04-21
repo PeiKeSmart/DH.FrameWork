@@ -1,14 +1,21 @@
-﻿using NewLife.Xml;
+﻿using NewLife.Configuration;
 
 using System.ComponentModel;
+
+using XCode.Configuration;
 
 namespace DH;
 
 /// <summary>工具配置</summary>
 [DisplayName("工具配置")]
-[XmlConfigFile("Config/Util.config", 10_000)]
-public class DHUtilSetting : XmlConfig<DHUtilSetting>
+//[XmlConfigFile("Config/DHUtil.config", 10_000)]
+[Config("DHUtilSetting")]
+public class DHUtilSetting : Config<DHUtilSetting>
 {
+    #region 静态
+    static DHUtilSetting() => Provider = new DbConfigProvider { UserId = 0, Category = "DH" };
+    #endregion
+
     /// <summary>
     /// Cache键前缀
     /// </summary>
