@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Tables xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:schemaLocation="https://newlifex.com https://newlifex.com/Model2022.xsd" NameSpace="DH.Entity" ConnName="DH" Output="" BaseClass="DHEntityBase" Version="11.2.2022.0716" Document="https://newlifex.com/xcode/model" xmlns="https://newlifex.com/Model2022.xsd">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Tables xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:schemaLocation="https://newlifex.com https://newlifex.com/Model2022.xsd" NameSpace="DH.Entity" ConnName="DG" Output="" BaseClass="DHEntityBase" Version="11.7.2023.0327" ModelClass="{name}Model" ModelInterface="I{name}" Document="https://newlifex.com/xcode/model" DisplayName="" CubeOutput="" xmlns="https://newlifex.com/Model2022.xsd">
   <Table Name="UserDetail" TableName="DH_UserDetail" Description="用户扩展" ConnName="Membership">
     <Columns>
       <Column Name="Id" DataType="Int32" PrimaryKey="True" Description="用户Id" />
@@ -123,7 +123,7 @@
       <Index Columns="LanguageCulture" Unique="True" />
     </Indexes>
   </Table>
-  <Table Name="LocaleStringResource" TableName="DH_LocaleStringResource" Description="语言包">
+  <Table Name="LocaleStringResource" TableName="DG_LocaleStringResource" Description="语言包">
     <Columns>
       <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
       <Column Name="LanKey" DataType="String" Master="True" Length="200" Description="资源名称" />
