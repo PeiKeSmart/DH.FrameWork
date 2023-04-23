@@ -17,9 +17,9 @@ namespace DH.Entity;
 [Serializable]
 [DataObject]
 [Description("消息记录")]
-[BindIndex("IX_DH_SendLog_Account", false, "Account")]
-[BindIndex("IX_DH_SendLog_SmsId", false, "SmsId")]
-[BindTable("DH_SendLog", Description = "消息记录", ConnName = "DG", DbType = DatabaseType.None)]
+[BindIndex("IX_DG_SendLog_Account", false, "Account")]
+[BindIndex("IX_DG_SendLog_SmsId", false, "SmsId")]
+[BindTable("DG_SendLog", Description = "消息记录", ConnName = "DG", DbType = DatabaseType.None)]
 public partial class SendLog : ISendLog, IEntity<SendLogModel>
 {
     #region 属性

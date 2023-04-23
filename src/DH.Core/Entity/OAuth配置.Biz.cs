@@ -14,8 +14,7 @@ using XCode.Membership;
 namespace DH.Entity
 {
     /// <summary>OAuth2.0授权类型</summary>
-    public enum GrantTypes
-    {
+    public enum GrantTypes {
         /// <summary>
         /// 授权码
         /// </summary>
@@ -38,8 +37,7 @@ namespace DH.Entity
     }
 
     /// <summary>OAuth配置。需要连接的OAuth认证方</summary>
-    public partial class OAuthConfig : Entity<OAuthConfig>
-    {
+    public partial class OAuthConfig : Entity<OAuthConfig> {
         #region 对象操作
         static OAuthConfig()
         {
