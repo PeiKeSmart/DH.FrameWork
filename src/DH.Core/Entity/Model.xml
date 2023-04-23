@@ -202,7 +202,7 @@
       <Index Columns="EntityId,KeyGroup" />
     </Indexes>
   </Table>
-  <Table Name="RouteRewrite" TableName="DH_RouteRewrite" Description="重定向表" IgnoreNameCase="False">
+  <Table Name="RouteRewrite" TableName="DG_RouteRewrite" Description="重定向表" IgnoreNameCase="False">
     <Columns>
       <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
       <Column Name="Name" DataType="String" Master="True" Length="20" Nullable="False" Description="名称" />

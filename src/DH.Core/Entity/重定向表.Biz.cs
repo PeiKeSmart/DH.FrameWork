@@ -7,8 +7,7 @@ using System.ComponentModel;
 using XCode;
 using XCode.Membership;
 
-namespace DH.Entity
-{
+namespace DH.Entity {
     /// <summary>重定向表</summary>
     public partial class RouteRewrite : DHEntityBase<RouteRewrite>
     {
