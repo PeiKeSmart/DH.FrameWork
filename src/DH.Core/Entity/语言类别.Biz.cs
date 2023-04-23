@@ -719,9 +719,9 @@ public partial class Language : DHEntityBase<Language>
     /// <returns>实体对象</returns>
     public static Language FindByDefault()
     {
-        if (Meta.Session.Count < 1000) return Meta.Cache.Find(x => x.IsDefault == 1);
+        if (Meta.Session.Count < 1000) return Meta.Cache.Find(x => x.IsDefault == 1 && x.Status == true);
 
-        return Find(_.IsDefault == 1);
+        return Find(_.IsDefault == 1 & _.Status == true);
     }
 
     /// <summary>

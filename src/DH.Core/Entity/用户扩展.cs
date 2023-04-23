@@ -17,12 +17,12 @@ namespace DH.Entity;
 [Serializable]
 [DataObject]
 [Description("用户扩展")]
-[BindIndex("IX_DH_UserDetail_ReferrerId", false, "ReferrerId")]
-[BindIndex("IX_DH_UserDetail_TenantId", false, "TenantId")]
-[BindIndex("IX_DH_UserDetail_KeFuId", false, "KeFuId")]
-[BindIndex("IX_DH_UserDetail_UType", false, "UType")]
-[BindIndex("IX_DH_UserDetail_ParentUId", false, "ParentUId")]
-[BindTable("DH_UserDetail", Description = "用户扩展", ConnName = "Membership", DbType = DatabaseType.None)]
+[BindIndex("IX_DG_UserDetail_ReferrerId", false, "ReferrerId")]
+[BindIndex("IX_DG_UserDetail_TenantId", false, "TenantId")]
+[BindIndex("IX_DG_UserDetail_KeFuId", false, "KeFuId")]
+[BindIndex("IX_DG_UserDetail_UType", false, "UType")]
+[BindIndex("IX_DG_UserDetail_ParentUId", false, "ParentUId")]
+[BindTable("DG_UserDetail", Description = "用户扩展", ConnName = "Membership", DbType = DatabaseType.None)]
 public partial class UserDetail : IUserDetail, IEntity<UserDetailModel>
 {
     #region 属性
@@ -58,13 +58,13 @@ public partial class UserDetail : IUserDetail, IEntity<UserDetailModel>
     [BindColumn("SId", "用户SessionId", "")]
     public Int64 SId { get => _SId; set { if (OnPropertyChanging("SId", value)) { _SId = value; OnPropertyChanged("SId"); } } }
 
-    private Int64 _TenantId;
+    private Int32 _TenantId;
     /// <summary>用户所属租户Id</summary>
     [DisplayName("用户所属租户Id")]
     [Description("用户所属租户Id")]
     [DataObjectField(false, false, false, 0)]
     [BindColumn("TenantId", "用户所属租户Id", "")]
-    public Int64 TenantId { get => _TenantId; set { if (OnPropertyChanging("TenantId", value)) { _TenantId = value; OnPropertyChanged("TenantId"); } } }
+    public Int32 TenantId { get => _TenantId; set { if (OnPropertyChanging("TenantId", value)) { _TenantId = value; OnPropertyChanged("TenantId"); } } }
 
     private Int16 _UType;
     /// <summary>用户类型。类型自定义</summary>
@@ -703,7 +703,7 @@ public partial class UserDetail : IUserDetail, IEntity<UserDetailModel>
                 case "LanguageId": _LanguageId = value.ToInt(); break;
                 case "IsSuper": _IsSuper = value.ToBoolean(); break;
                 case "SId": _SId = value.ToLong(); break;
-                case "TenantId": _TenantId = value.ToLong(); break;
+                case "TenantId": _TenantId = value.ToInt(); break;
                 case "UType": _UType = Convert.ToInt16(value); break;
                 case "RoleExIds": _RoleExIds = Convert.ToString(value); break;
                 case "OtherPermissions": _OtherPermissions = Convert.ToString(value); break;

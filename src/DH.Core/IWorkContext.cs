@@ -19,5 +19,9 @@ namespace DH.Core
         /// <returns>表示异步操作的任务</returns>
         Language GetWorkingLanguage();
 
+        /// <summary>
+        /// 指示我们是否在管理区域中
+        /// </summary>
+        Boolean IsAdmin { get; set; }
     }
 }

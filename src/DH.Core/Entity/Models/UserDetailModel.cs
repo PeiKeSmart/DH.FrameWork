@@ -25,7 +25,7 @@ public partial class UserDetailModel : IModel
     public Int64 SId { get; set; }
 
     /// <summary>用户所属租户Id</summary>
-    public Int64 TenantId { get; set; }
+    public Int32 TenantId { get; set; }
 
     /// <summary>用户类型。类型自定义</summary>
     public Int16 UType { get; set; }
@@ -294,7 +294,7 @@ public partial class UserDetailModel : IModel
                 case "LanguageId": LanguageId = value.ToInt(); break;
                 case "IsSuper": IsSuper = value.ToBoolean(); break;
                 case "SId": SId = value.ToLong(); break;
-                case "TenantId": TenantId = value.ToLong(); break;
+                case "TenantId": TenantId = value.ToInt(); break;
                 case "UType": UType = Convert.ToInt16(value); break;
                 case "RoleExIds": RoleExIds = Convert.ToString(value); break;
                 case "OtherPermissions": OtherPermissions = Convert.ToString(value); break;

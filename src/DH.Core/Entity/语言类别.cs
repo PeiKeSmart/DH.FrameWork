@@ -17,9 +17,9 @@ namespace DH.Entity;
 [Serializable]
 [DataObject]
 [Description("语言类别")]
-[BindIndex("IU_DH_Language_UniqueSeoCode", true, "UniqueSeoCode")]
-[BindIndex("IU_DH_Language_LanguageCulture", true, "LanguageCulture")]
-[BindTable("DH_Language", Description = "语言类别", ConnName = "DG", DbType = DatabaseType.None)]
+[BindIndex("IU_DG_Language_UniqueSeoCode", true, "UniqueSeoCode")]
+[BindIndex("IU_DG_Language_LanguageCulture", true, "LanguageCulture")]
+[BindTable("DG_Language", Description = "语言类别", ConnName = "DG", DbType = DatabaseType.None)]
 public partial class Language : ILanguage, IEntity<LanguageModel>
 {
     #region 属性

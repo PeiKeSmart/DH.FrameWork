@@ -24,7 +24,7 @@ public partial interface IUserDetail
     Int64 SId { get; set; }
 
     /// <summary>用户所属租户Id</summary>
-    Int64 TenantId { get; set; }
+    Int32 TenantId { get; set; }
 
     /// <summary>用户类型。类型自定义</summary>
     Int16 UType { get; set; }

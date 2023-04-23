@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Tables xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:schemaLocation="https://newlifex.com https://newlifex.com/Model2022.xsd" NameSpace="DH.Entity" ConnName="DG" Output="" BaseClass="DHEntityBase" Version="11.7.2023.0327" ModelClass="{name}Model" ModelInterface="I{name}" Document="https://newlifex.com/xcode/model" DisplayName="" CubeOutput="" xmlns="https://newlifex.com/Model2022.xsd">
-  <Table Name="UserDetail" TableName="DH_UserDetail" Description="用户扩展" ConnName="Membership">
+  <Table Name="UserDetail" TableName="DG_UserDetail" Description="用户扩展" ConnName="Membership">
     <Columns>
       <Column Name="Id" DataType="Int32" PrimaryKey="True" Description="用户Id" />
       <Column Name="LanguageId" DataType="Int32" Description="语言Id" />
       <Column Name="IsSuper" DataType="Boolean" Description="是否超级管理员" />
       <Column Name="SId" DataType="Int64" Description="用户SessionId" />
-      <Column Name="TenantId" DataType="Int64" Description="用户所属租户Id" />
+      <Column Name="TenantId" DataType="Int32" Description="用户所属租户Id" />
       <Column Name="UType" DataType="Int16" Description="用户类型。类型自定义" />
       <Column Name="RoleExIds" DataType="String" Length="100" Description="会员前台权限" />
       <Column Name="OtherPermissions" DataType="String" Length="200" Description="会员其他权限" />
@@ -91,7 +91,7 @@
       <Column Name="CompanyVat" DataType="String" Length="1000" Description="公司VAT。用于欧盟国家/地区" />
     </Columns>
   </Table>
-  <Table Name="Language" TableName="DH_Language" Description="语言类别">
+  <Table Name="Language" TableName="DG_Language" Description="语言类别">
     <Columns>
       <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
       <Column Name="Name" DataType="String" RawType="varchar(30)" Master="True" Length="30" Description="语言名称" />
