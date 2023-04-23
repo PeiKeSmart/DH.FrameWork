@@ -38,7 +38,7 @@ public class ApiSignatureAttribute : ActionFilterAttribute {
 
     public override void OnActionExecuting(ActionExecutingContext context)
     {
-        if (!DHSetting.Current.Debug && DHSetting.Current.IsCheckApiSignature)
+        if (DHSetting.Current.IsCheckApiSignature)
         {
             var result = new DGResult();
 
