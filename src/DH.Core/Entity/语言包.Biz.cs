@@ -183,8 +183,8 @@ public partial class LocaleStringResource : DHEntityBase<LocaleStringResource>
     public static String GetResource(String resourceKey)
     {
         var _workContext = EngineContext.Current.Resolve<IWorkContext>();
-        if (_workContext.GetWorkingLanguage() != null)
-            return GetResource(resourceKey, _workContext.GetWorkingLanguage().Id);
+        if (_workContext.WorkingLanguage != null)
+            return GetResource(resourceKey, _workContext.WorkingLanguage.Id);
 
         return GetResource(resourceKey, Language.FindByDefault().Id);
     }

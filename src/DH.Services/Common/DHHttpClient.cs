@@ -8,8 +8,7 @@ using Microsoft.Net.Http.Headers;
 
 using System.Net;
 
-namespace DH.Services.Common
-{
+namespace DH.Services.Common {
     /// <summary>
     /// 表示请求官方网站的HTTP客户端
     /// </summary>
@@ -74,7 +73,7 @@ namespace DH.Services.Common
         public virtual async Task<string> GetCopyrightWarningAsync()
         {
             // 准备请求的URL
-            var language = Language.GetTwoLetterIsoLanguageName(_workContext.GetWorkingLanguage());
+            var language = Language.GetTwoLetterIsoLanguageName(_workContext.WorkingLanguage);
             var store = _storeContext.GetCurrentStore();
             var url = string.Format(DHCommonDefaults.DHCopyrightWarningPath,
                 store.Url,
@@ -95,7 +94,7 @@ namespace DH.Services.Common
         public virtual async Task<RssFeed> GetNewsRssAsync()
         {
             // 准备请求的URL
-            var language = Language.GetTwoLetterIsoLanguageName(_workContext.GetWorkingLanguage());
+            var language = Language.GetTwoLetterIsoLanguageName(_workContext.WorkingLanguage);
             var url = string.Format(DHCommonDefaults.DHNewsRssPath,
                 DHVersion.CURRENT_VERSION,
                 _webHelper.IsLocalRequest(_httpContextAccessor.HttpContext.Request),
@@ -146,7 +145,7 @@ namespace DH.Services.Common
         public virtual async Task<string> GetExtensionsCategoriesAsync()
         {
             // 准备请求的URL
-            var language = Language.GetTwoLetterIsoLanguageName(_workContext.GetWorkingLanguage());
+            var language = Language.GetTwoLetterIsoLanguageName(_workContext.WorkingLanguage);
             var url = string.Format(DHCommonDefaults.DHExtensionsCategoriesPath, language).ToLowerInvariant();
 
             // 获取XML响应
@@ -163,7 +162,7 @@ namespace DH.Services.Common
         public virtual async Task<string> GetExtensionsVersionsAsync()
         {
             // 准备请求的URL
-            var language = Language.GetTwoLetterIsoLanguageName(_workContext.GetWorkingLanguage());
+            var language = Language.GetTwoLetterIsoLanguageName(_workContext.WorkingLanguage);
             var url = string.Format(DHCommonDefaults.DHExtensionsVersionsPath, language).ToLowerInvariant();
 
             // 获取XML响应
@@ -188,7 +187,7 @@ namespace DH.Services.Common
             int pageIndex = 0, int pageSize = int.MaxValue)
         {
             // 准备请求的URL
-            var language = Language.GetTwoLetterIsoLanguageName(_workContext.GetWorkingLanguage());
+            var language = Language.GetTwoLetterIsoLanguageName(_workContext.WorkingLanguage);
             var url = string.Format(DHCommonDefaults.DHExtensionsPath,
                 categoryId, versionId, price, WebUtility.UrlEncode(searchTerm), pageIndex, pageSize, language).ToLowerInvariant();
 

@@ -98,7 +98,7 @@ public partial class RoleEx : DHEntityBase<RoleEx> {
     {
         if (permission.IsNullOrWhiteSpace()) return false;
 
-        var customer = EngineContext.Current.Resolve<IWorkContext>().GetCurrentCustomer();
+        var customer = EngineContext.Current.Resolve<IWorkContext>().CurrentCustomer;
         if (customer == null) return false;
 
         var role = customer.User?.Role;

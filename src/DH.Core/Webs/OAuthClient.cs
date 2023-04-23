@@ -23,8 +23,7 @@ namespace DH.Core.Webs;
 /// 3，password 密码式
 /// 4，client_credentials 凭证式
 /// </remarks>
-public class OAuthClient
-{
+public class OAuthClient {
     #region 属性
     /// <summary>名称</summary>
     public String Name { get; set; }
@@ -381,12 +380,18 @@ public class OAuthClient
 
     /// <summary>获取用户信息</summary>
     /// <returns></returns>
-    public virtual String GetUserInfo()
+    public virtual String GetUserInfo(String Provider)
     {
         var url = UserUrl;
         if (url.IsNullOrEmpty()) throw new ArgumentNullException(nameof(UserUrl), "未设置用户信息地址");
 
         url = GetUrl(url);
+
+        if (!Provider.IsNullOrWhiteSpace())
+        {
+            url += $"&name={Provider}";
+        }
+
         WriteLog("GetUserInfo {0}", url);
 
         var html = GetHtml(nameof(GetUserInfo), url);
@@ -460,7 +465,7 @@ public class OAuthClient
         if (!url.StartsWithIgnoreCase("http://", "https://", "#http://", "#https://"))
         {
             // 授权以外的连接，使用令牌服务地址
-            if (!AccessServer.IsNullOrEmpty() && !url.StartsWithIgnoreCase("auth", "sns_authorize"))
+            if (!AccessServer.IsNullOrEmpty() && !url.StartsWithIgnoreCase("auth", "sns_authorize", "logout"))
                 url = AccessServer.EnsureEnd("/") + url.TrimStart('/');
             else
                 url = Server.EnsureEnd("/") + url.TrimStart('/');
@@ -545,7 +550,7 @@ public class OAuthClient
         if (html.IsNullOrEmpty()) return null;
 
         html = html.Trim();
-        if (Log != null && Log.Enable) WriteLog(html);
+        if (Log != null && Log.Enable) WriteLog("GetHtml " + html);
 
         return html;
     }

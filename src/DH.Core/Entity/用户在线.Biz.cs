@@ -28,8 +28,7 @@ using XCode.Shards;
 namespace DH.Entity
 {
     /// <summary>用户在线</summary>
-    public partial class UserOnline : Entity<UserOnline>
-    {
+    public partial class UserOnline : Entity<UserOnline> {
         #region 对象操作
         static UserOnline()
         {

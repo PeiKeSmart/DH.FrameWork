@@ -201,7 +201,7 @@ namespace DH.Services.ScheduleTasks
                     var webHelper = EngineContext.Current.Resolve<IWebHelper>();
 
                     // 获取当前客户
-                    var currentCustomer = EngineContext.Current.Resolve<IWorkContext>().GetCurrentCustomer();
+                    var currentCustomer = EngineContext.Current.Resolve<IWorkContext>().CurrentCustomer;
 
                     // 错误日志
                     XTrace.WriteException(ex);

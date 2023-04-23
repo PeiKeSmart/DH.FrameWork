@@ -80,7 +80,7 @@ namespace DH.Services.Authentication
                     var webHelper = EngineContext.Current.Resolve<IWebHelper>();
 
                     // 获取当前客户
-                    var currentCustomer = EngineContext.Current.Resolve<IWorkContext>().GetCurrentCustomer();
+                    var currentCustomer = EngineContext.Current.Resolve<IWorkContext>().CurrentCustomer;
 
                     XTrace.WriteException(ex);
                     LogProvider.Provider?.WriteLog("系统", "错误", false, ex.Message + " " + Environment.NewLine + ex.GetMessage(), currentCustomer.User.ID, currentCustomer.User.Name, webHelper.GetCurrentIpAddress());

@@ -7,8 +7,7 @@ using NewLife.Log;
 
 using XCode.Membership;
 
-namespace DH.Services.Localization
-{
+namespace DH.Services.Localization {
     /// <summary>
     /// 提供有关本地化的信息
     /// </summary>
@@ -78,7 +77,7 @@ namespace DH.Services.Localization
         /// </returns>
         public virtual string GetResource(string resourceKey)
         {
-            var workingLanguage = _workContext.GetWorkingLanguage();
+            var workingLanguage = _workContext.WorkingLanguage;
 
             if (workingLanguage != null)
                 return GetResource(resourceKey, workingLanguage.Id);
@@ -130,7 +129,7 @@ namespace DH.Services.Localization
                 var webHelper = EngineContext.Current.Resolve<IWebHelper>();
 
                 // 获取当前客户
-                var currentCustomer = EngineContext.Current.Resolve<IWorkContext>().GetCurrentCustomer();
+                var currentCustomer = EngineContext.Current.Resolve<IWorkContext>().CurrentCustomer;
 
                 var msg = $"Resource string ({resourceKey}) is not found. Language ID = {languageId}";
                 XTrace.Log.Warn(msg);

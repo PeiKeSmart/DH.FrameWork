@@ -7,8 +7,7 @@ using XCode.Membership;
 namespace DH.Entity
 {
     /// <summary>用户统计</summary>
-    public partial class UserStat : Entity<UserStat>
-    {
+    public partial class UserStat : Entity<UserStat> {
         #region 对象操作
         static UserStat()
         {

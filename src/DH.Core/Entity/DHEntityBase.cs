@@ -45,7 +45,7 @@ namespace DH.Entity
             get
             {
                 var _workContext = EngineContext.Current.Resolve<IWorkContext>();
-                return _workContext.GetWorkingLanguage();
+                return _workContext.WorkingLanguage;
             }
         }
 

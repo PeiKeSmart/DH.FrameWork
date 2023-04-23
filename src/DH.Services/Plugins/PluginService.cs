@@ -9,12 +9,10 @@ using DH.Services.Localization;
 using Microsoft.AspNetCore.Http;
 
 using NewLife.Log;
-using NewLife.Serialization;
 
 using XCode.Membership;
 
-namespace DH.Services.Plugins
-{
+namespace DH.Services.Plugins {
     /// <summary>
     /// 表示插件服务实现
     /// </summary>
@@ -244,7 +242,7 @@ namespace DH.Services.Plugins
                     var webHelper = EngineContext.Current.Resolve<IWebHelper>();
 
                     // 获取当前客户
-                    var currentCustomer = EngineContext.Current.Resolve<IWorkContext>().GetCurrentCustomer();
+                    var currentCustomer = EngineContext.Current.Resolve<IWorkContext>().CurrentCustomer;
 
                     // 错误日志
                     XTrace.WriteException(exception);
@@ -372,7 +370,7 @@ namespace DH.Services.Plugins
                     var webHelper = EngineContext.Current.Resolve<IWebHelper>();
 
                     // 获取当前客户
-                    var currentCustomer = EngineContext.Current.Resolve<IWorkContext>().GetCurrentCustomer();
+                    var currentCustomer = EngineContext.Current.Resolve<IWorkContext>().CurrentCustomer;
 
                     // 错误日志
                     XTrace.WriteException(exception);
@@ -579,7 +577,7 @@ namespace DH.Services.Plugins
                     var webHelper = EngineContext.Current.Resolve<IWebHelper>();
 
                     // 获取当前客户
-                    var currentCustomer = EngineContext.Current.Resolve<IWorkContext>().GetCurrentCustomer();
+                    var currentCustomer = EngineContext.Current.Resolve<IWorkContext>().CurrentCustomer;
 
                     // 错误日志
                     XTrace.WriteException(exception);

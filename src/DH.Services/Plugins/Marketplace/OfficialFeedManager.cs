@@ -8,8 +8,7 @@ using System.Xml;
 
 using XCode.Membership;
 
-namespace DH.Services.Plugins.Marketplace
-{
+namespace DH.Services.Plugins.Marketplace {
     /// <summary>
     /// 表示官方提要管理器（DH.Web.FrameWrok市场的插件）
     /// </summary>
@@ -68,7 +67,7 @@ namespace DH.Services.Plugins.Marketplace
                 var webHelper = EngineContext.Current.Resolve<IWebHelper>();
 
                 // 获取当前客户
-                var currentCustomer = workContext.GetCurrentCustomer();
+                var currentCustomer = workContext.CurrentCustomer;
 
                 var message = "No access to the list of plugins. Website www.yuanrenyi.com is not available.";
                 XTrace.Log.Error(message);
@@ -106,7 +105,7 @@ namespace DH.Services.Plugins.Marketplace
                 var webHelper = EngineContext.Current.Resolve<IWebHelper>();
 
                 // 获取当前客户
-                var currentCustomer = workContext.GetCurrentCustomer();
+                var currentCustomer = workContext.CurrentCustomer;
 
                 var message = "No access to the list of plugins. Website www.nopcommerce.com is not available.";
                 XTrace.Log.Error(message);

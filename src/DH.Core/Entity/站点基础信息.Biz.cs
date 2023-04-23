@@ -151,7 +151,7 @@ namespace DH.Entity {
 
             var workContext = EngineContext.Current.Resolve<IWorkContext>();
 
-            return SiteInfoLan.FindBySIdAndLId(DHSetting.Current.SiteId, workContext.GetWorkingLanguage().Id, true);
+            return SiteInfoLan.FindBySIdAndLId(DHSetting.Current.SiteId, workContext.WorkingLanguage.Id, true);
         }
         #endregion
 
