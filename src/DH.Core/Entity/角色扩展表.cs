@@ -17,7 +17,7 @@ namespace DH.Entity;
 [Serializable]
 [DataObject]
 [Description("角色扩展表")]
-[BindTable("DH_RoleEx", Description = "角色扩展表", ConnName = "DG", DbType = DatabaseType.None)]
+[BindTable("DG_RoleEx", Description = "角色扩展表", ConnName = "DG", DbType = DatabaseType.None)]
 public partial class RoleEx : IRoleEx, IEntity<RoleExModel>
 {
     #region 属性

@@ -17,8 +17,8 @@ namespace DH.Entity;
 [Serializable]
 [DataObject]
 [Description("站点基础信息翻译表")]
-[BindIndex("IU_DH_SiteInfoLan_SiteInfoId_LanguageId", true, "SiteInfoId,LanguageId")]
-[BindTable("DH_SiteInfoLan", Description = "站点基础信息翻译表", ConnName = "DG", DbType = DatabaseType.None)]
+[BindIndex("IU_DG_SiteInfoLan_SiteInfoId_LanguageId", true, "SiteInfoId,LanguageId")]
+[BindTable("DG_SiteInfoLan", Description = "站点基础信息翻译表", ConnName = "DG", DbType = DatabaseType.None)]
 public partial class SiteInfoLan : ISiteInfoLan, IEntity<SiteInfoLanModel>
 {
     #region 属性

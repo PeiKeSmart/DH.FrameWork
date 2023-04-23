@@ -29,6 +29,30 @@ public partial class UrlRecordModel : IModel
 
     /// <summary>语言标识符</summary>
     public Int32 LanguageId { get; set; }
+
+    /// <summary>创建者</summary>
+    public String CreateUser { get; set; }
+
+    /// <summary>创建用户</summary>
+    public Int32 CreateUserID { get; set; }
+
+    /// <summary>创建地址</summary>
+    public String CreateIP { get; set; }
+
+    /// <summary>创建时间</summary>
+    public DateTime CreateTime { get; set; }
+
+    /// <summary>更新者</summary>
+    public String UpdateUser { get; set; }
+
+    /// <summary>更新用户</summary>
+    public Int32 UpdateUserID { get; set; }
+
+    /// <summary>更新地址</summary>
+    public String UpdateIP { get; set; }
+
+    /// <summary>更新时间</summary>
+    public DateTime UpdateTime { get; set; }
     #endregion
 
     #region 获取/设置 字段值
@@ -47,6 +71,14 @@ public partial class UrlRecordModel : IModel
                 "Slug" => Slug,
                 "IsActive" => IsActive,
                 "LanguageId" => LanguageId,
+                "CreateUser" => CreateUser,
+                "CreateUserID" => CreateUserID,
+                "CreateIP" => CreateIP,
+                "CreateTime" => CreateTime,
+                "UpdateUser" => UpdateUser,
+                "UpdateUserID" => UpdateUserID,
+                "UpdateIP" => UpdateIP,
+                "UpdateTime" => UpdateTime,
                 _ => null
             };
         }
@@ -60,6 +92,14 @@ public partial class UrlRecordModel : IModel
                 case "Slug": Slug = Convert.ToString(value); break;
                 case "IsActive": IsActive = value.ToBoolean(); break;
                 case "LanguageId": LanguageId = value.ToInt(); break;
+                case "CreateUser": CreateUser = Convert.ToString(value); break;
+                case "CreateUserID": CreateUserID = value.ToInt(); break;
+                case "CreateIP": CreateIP = Convert.ToString(value); break;
+                case "CreateTime": CreateTime = value.ToDateTime(); break;
+                case "UpdateUser": UpdateUser = Convert.ToString(value); break;
+                case "UpdateUserID": UpdateUserID = value.ToInt(); break;
+                case "UpdateIP": UpdateIP = Convert.ToString(value); break;
+                case "UpdateTime": UpdateTime = value.ToDateTime(); break;
             }
         }
     }
@@ -76,6 +116,14 @@ public partial class UrlRecordModel : IModel
         Slug = model.Slug;
         IsActive = model.IsActive;
         LanguageId = model.LanguageId;
+        CreateUser = model.CreateUser;
+        CreateUserID = model.CreateUserID;
+        CreateIP = model.CreateIP;
+        CreateTime = model.CreateTime;
+        UpdateUser = model.UpdateUser;
+        UpdateUserID = model.UpdateUserID;
+        UpdateIP = model.UpdateIP;
+        UpdateTime = model.UpdateTime;
     }
     #endregion
 }

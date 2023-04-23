@@ -1307,7 +1307,7 @@
     </tbody>
 </table>
 <br></br>
-<h3>SlugURL记录（DH_UrlRecord）</h3>
+<h3>SlugURL记录（DG_UrlRecord）</h3>
 <table>
     <thead>
         <tr>
@@ -1385,6 +1385,94 @@
             <td></td>
             <td></td>
             <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>CreateUser</td>
+            <td>创建者</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>CreateUserID</td>
+            <td>创建用户</td>
+            <td>Int32</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>CreateIP</td>
+            <td>创建地址</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>CreateTime</td>
+            <td>创建时间</td>
+            <td>DateTime</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>UpdateUser</td>
+            <td>更新者</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>UpdateUserID</td>
+            <td>更新用户</td>
+            <td>Int32</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>UpdateIP</td>
+            <td>更新地址</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>UpdateTime</td>
+            <td>更新时间</td>
+            <td>DateTime</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
             <td></td>
         </tr>
     </tbody>
@@ -3375,7 +3463,7 @@
     </tbody>
 </table>
 <br></br>
-<h3>角色扩展表（DH_RoleEx）</h3>
+<h3>角色扩展表（DG_RoleEx）</h3>
 <table>
     <thead>
         <tr>
@@ -3425,7 +3513,7 @@
     </tbody>
 </table>
 <br></br>
-<h3>角色翻译表（DH_RoleLan）</h3>
+<h3>角色翻译表（DG_RoleLan）</h3>
 <table>
     <thead>
         <tr>
@@ -3635,7 +3723,7 @@
     </tbody>
 </table>
 <br></br>
-<h3>站点基础信息（DH_SiteInfo）</h3>
+<h3>站点基础信息（DG_SiteInfo）</h3>
 <table>
     <thead>
         <tr>
@@ -3982,7 +4070,7 @@
     </tbody>
 </table>
 <br></br>
-<h3>站点基础信息翻译表（DH_SiteInfoLan）</h3>
+<h3>站点基础信息翻译表（DG_SiteInfoLan）</h3>
 <table>
     <thead>
         <tr>
@@ -4090,6 +4178,56 @@
             <td>网站版权等信息</td>
             <td>String</td>
             <td>2000</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>
+<br></br>
+<h3>站点设置（DG_SiteSetting）</h3>
+<table>
+    <thead>
+        <tr>
+            <th>名称</th>
+            <th>显示名</th>
+            <th>类型</th>
+            <th>长度</th>
+            <th>精度</th>
+            <th>主键</th>
+            <th>允许空</th>
+            <th>备注</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Id</td>
+            <td>编号</td>
+            <td>Int32</td>
+            <td></td>
+            <td></td>
+            <td title="自增">AI</td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>Key</td>
+            <td>键名称</td>
+            <td>String</td>
+            <td>100</td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>Value</td>
+            <td>键值</td>
+            <td>String</td>
+            <td>4000</td>
             <td></td>
             <td></td>
             <td></td>

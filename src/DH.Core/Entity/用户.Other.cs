@@ -1,6 +1,4 @@
-﻿using DH.Core.Domain;
-using DH.Core.Infrastructure;
-using DH.Core.Model;
+﻿using DH.Core.Model;
 
 using NewLife;
 using NewLife.Data;
@@ -13,8 +11,7 @@ using XCode.Membership;
 namespace DH.Entity;
 
 /// <summary>用户扩展</summary>
-public partial class UserE : User
-{
+public partial class UserE : User {
     #region 高级查询
     /// <summary>查询管理员</summary>
     /// <param name="IsManager">是否后台管理</param>
@@ -297,8 +294,13 @@ public partial class UserE : User
                 case "member_truename":
                     exp1 &= UserDetail._.TrueName.Contains(field_value);
                     break;
+
                 case "SSoID":
                     exp1 &= _.ID == UserConnect.FindByProviderAndLinkID("ChuangChu", field_value)?.UserID;
+                    break;
+
+                case "Code":
+                    exp &= _.Code.Contains(field_value);
                     break;
             }
         }
@@ -335,11 +337,10 @@ public partial class UserE : User
             }
         }
 
-        var _storeInformationSettings = EngineContext.Current.Resolve<StoreInformationSettings>();
-
-        if (search_grade > 0 && !_storeInformationSettings.MemberGrade.IsNullOrWhiteSpace())
+        var SiteSettings = SiteSettingInfo.SiteSettings;
+        if (search_grade > 0 && !SiteSettings.MemberGrade.IsNullOrWhiteSpace())
         {
-            var list = JsonSerializer.Deserialize<List<GradeModel>>(_storeInformationSettings.MemberGrade);
+            var list = JsonSerializer.Deserialize<List<GradeModel>>(SiteSettings.MemberGrade);
 
             if (search_grade <= list.Count)
             {
@@ -353,6 +354,121 @@ public partial class UserE : User
                     exp1 &= UserDetail._.ExpPoints < grade.exppoints;
                 }
             }
+        }
+
+        if (!exp1.IsEmpty)
+        {
+            exp &= _.ID.In(UserDetail.FindSQLWithKey(exp1));
+        }
+
+        return FindAll(exp, p);
+    }
+
+    /// <summary>
+    /// 根据用户名和手机号查询
+    /// </summary>
+    /// <param name="p">分页数据</param>
+    /// <param name="field_name">搜索类型</param>
+    /// <param name="field_value">搜索值</param>
+    /// <param name="search_sort">排序</param>
+    /// <param name="search_state">会员状态</param>
+    /// <param name="search_grade">会员级别</param>
+    /// <param name="search_isSales">是否业务员</param>
+    /// <returns></returns>
+    public static IEnumerable<User> Searchs(PageParameter p, String field_name, String field_value, String search_sort, String search_state, Int32 search_grade, Int32 search_isSales)
+    {
+        var exp = new WhereExpression();
+        var exp1 = new WhereExpression();
+
+        if (!field_name.IsNullOrWhiteSpace() && !field_value.IsNullOrWhiteSpace())
+        {
+            switch (field_name)
+            {
+                case "member_id":
+                    if (field_value.ToInt() > 0)
+                        exp &= _.ID == field_value;
+                    break;
+
+                case "member_name":
+                    exp &= _.Name.Contains(field_value);
+                    break;
+
+                case "member_email":
+                    exp &= _.Mail.Contains(field_value);
+                    break;
+
+                case "member_mobile":
+                    exp &= _.Mobile.Contains(field_value);
+                    break;
+
+                case "member_truename":
+                    exp1 &= UserDetail._.TrueName.Contains(field_value);
+                    break;
+
+                case "SSoID":
+                    exp1 &= _.ID == UserConnect.FindByProviderAndLinkID("ChuangChu", field_value)?.UserID;
+                    break;
+
+                case "Code":
+                    exp &= _.Code.Contains(field_value);
+                    break;
+            }
+        }
+
+        if (search_sort.IsNullOrWhiteSpace())
+        {
+            p.Sort = "Id";
+            p.Desc = true;
+        }
+        else
+        {
+            p.OrderBy = search_sort;
+        }
+
+        if (!search_state.IsNullOrWhiteSpace())
+        {
+            switch (search_state)
+            {
+                case "no_memberstate":
+                    exp &= _.Enable == false;
+                    break;
+
+                case "no_informallow":
+                    exp1 &= UserDetail._.InformAllow == true;
+                    break;
+
+                case "no_isbuy":
+                    exp1 &= UserDetail._.IsBuy == true;
+                    break;
+
+                case "no_isallowtalk":
+                    exp1 &= UserDetail._.IsAllowTalk == true;
+                    break;
+            }
+        }
+
+        var SiteSettings = SiteSettingInfo.SiteSettings;
+        if (search_grade > 0 && !SiteSettings.MemberGrade.IsNullOrWhiteSpace())
+        {
+            var list = JsonSerializer.Deserialize<List<GradeModel>>(SiteSettings.MemberGrade);
+
+            if (search_grade <= list.Count)
+            {
+                var grade = list.FirstOrDefault(e => e.level == search_grade);
+                exp1 &= UserDetail._.ExpPoints >= grade.exppoints;
+
+                if (search_grade < list.Count)
+                {
+                    var grade1 = list.FirstOrDefault(e => e.level == search_grade + 1);
+
+                    exp1 &= UserDetail._.ExpPoints < grade.exppoints;
+                }
+            }
+        }
+
+        if (search_isSales >= 0)
+        {
+            exp1 &= UserDetail._.IsSales == (search_isSales == 1);
         }
 
         if (!exp1.IsEmpty)
@@ -654,10 +770,10 @@ public partial class UserE : User
     /// <summary>
     /// 根据名字分页查询
     /// </summary>
-    /// <param name="name"></param>
-    /// <param name="p"></param>
-    /// <param name="RoleId"></param>
-    /// <param name="IsSystem"></param>
+    /// <param name="name">名称。登录用户名</param>
+    /// <param name="p">分页</param>
+    /// <param name="RoleId">角色Id</param>
+    /// <param name="IsSystem">是否系统角色</param>
     /// <returns></returns>
     public static IEnumerable<User> PageByRoleId(string name, PageParameter p, Int32 RoleId, Boolean IsSystem = false)
     {

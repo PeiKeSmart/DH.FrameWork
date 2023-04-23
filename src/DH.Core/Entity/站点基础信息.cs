@@ -17,7 +17,7 @@ namespace DH.Entity;
 [Serializable]
 [DataObject]
 [Description("站点基础信息。目前表只启用部分字段")]
-[BindTable("DH_SiteInfo", Description = "站点基础信息。目前表只启用部分字段", ConnName = "DG", DbType = DatabaseType.None)]
+[BindTable("DG_SiteInfo", Description = "站点基础信息。目前表只启用部分字段", ConnName = "DG", DbType = DatabaseType.None)]
 public partial class SiteInfo : ISiteInfo, IEntity<SiteInfoModel>
 {
     #region 属性

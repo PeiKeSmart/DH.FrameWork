@@ -17,9 +17,9 @@ namespace DH.Entity;
 [Serializable]
 [DataObject]
 [Description("SlugURL记录")]
-[BindIndex("IX_DH_UrlRecord_Slug", false, "Slug")]
-[BindIndex("IX_DH_UrlRecord_EntityId_EntityName_LanguageId", false, "EntityId,EntityName,LanguageId")]
-[BindTable("DH_UrlRecord", Description = "SlugURL记录", ConnName = "DG", DbType = DatabaseType.None)]
+[BindIndex("IX_DG_UrlRecord_Slug", false, "Slug")]
+[BindIndex("IX_DG_UrlRecord_EntityId_EntityName_LanguageId", false, "EntityId,EntityName,LanguageId")]
+[BindTable("DG_UrlRecord", Description = "SlugURL记录", ConnName = "DG", DbType = DatabaseType.None)]
 public partial class UrlRecord : IUrlRecord, IEntity<UrlRecordModel>
 {
     #region 属性
@@ -70,6 +70,70 @@ public partial class UrlRecord : IUrlRecord, IEntity<UrlRecordModel>
     [DataObjectField(false, false, false, 0)]
     [BindColumn("LanguageId", "语言标识符", "")]
     public Int32 LanguageId { get => _LanguageId; set { if (OnPropertyChanging("LanguageId", value)) { _LanguageId = value; OnPropertyChanged("LanguageId"); } } }
+
+    private String _CreateUser;
+    /// <summary>创建者</summary>
+    [DisplayName("创建者")]
+    [Description("创建者")]
+    [DataObjectField(false, false, true, 50)]
+    [BindColumn("CreateUser", "创建者", "")]
+    public String CreateUser { get => _CreateUser; set { if (OnPropertyChanging("CreateUser", value)) { _CreateUser = value; OnPropertyChanged("CreateUser"); } } }
+
+    private Int32 _CreateUserID;
+    /// <summary>创建用户</summary>
+    [DisplayName("创建用户")]
+    [Description("创建用户")]
+    [DataObjectField(false, false, false, 0)]
+    [BindColumn("CreateUserID", "创建用户", "")]
+    public Int32 CreateUserID { get => _CreateUserID; set { if (OnPropertyChanging("CreateUserID", value)) { _CreateUserID = value; OnPropertyChanged("CreateUserID"); } } }
+
+    private String _CreateIP;
+    /// <summary>创建地址</summary>
+    [DisplayName("创建地址")]
+    [Description("创建地址")]
+    [DataObjectField(false, false, true, 50)]
+    [BindColumn("CreateIP", "创建地址", "")]
+    public String CreateIP { get => _CreateIP; set { if (OnPropertyChanging("CreateIP", value)) { _CreateIP = value; OnPropertyChanged("CreateIP"); } } }
+
+    private DateTime _CreateTime;
+    /// <summary>创建时间</summary>
+    [DisplayName("创建时间")]
+    [Description("创建时间")]
+    [DataObjectField(false, false, true, 0)]
+    [BindColumn("CreateTime", "创建时间", "")]
+    public DateTime CreateTime { get => _CreateTime; set { if (OnPropertyChanging("CreateTime", value)) { _CreateTime = value; OnPropertyChanged("CreateTime"); } } }
+
+    private String _UpdateUser;
+    /// <summary>更新者</summary>
+    [DisplayName("更新者")]
+    [Description("更新者")]
+    [DataObjectField(false, false, true, 50)]
+    [BindColumn("UpdateUser", "更新者", "")]
+    public String UpdateUser { get => _UpdateUser; set { if (OnPropertyChanging("UpdateUser", value)) { _UpdateUser = value; OnPropertyChanged("UpdateUser"); } } }
+
+    private Int32 _UpdateUserID;
+    /// <summary>更新用户</summary>
+    [DisplayName("更新用户")]
+    [Description("更新用户")]
+    [DataObjectField(false, false, false, 0)]
+    [BindColumn("UpdateUserID", "更新用户", "")]
+    public Int32 UpdateUserID { get => _UpdateUserID; set { if (OnPropertyChanging("UpdateUserID", value)) { _UpdateUserID = value; OnPropertyChanged("UpdateUserID"); } } }
+
+    private String _UpdateIP;
+    /// <summary>更新地址</summary>
+    [DisplayName("更新地址")]
+    [Description("更新地址")]
+    [DataObjectField(false, false, true, 50)]
+    [BindColumn("UpdateIP", "更新地址", "")]
+    public String UpdateIP { get => _UpdateIP; set { if (OnPropertyChanging("UpdateIP", value)) { _UpdateIP = value; OnPropertyChanged("UpdateIP"); } } }
+
+    private DateTime _UpdateTime;
+    /// <summary>更新时间</summary>
+    [DisplayName("更新时间")]
+    [Description("更新时间")]
+    [DataObjectField(false, false, true, 0)]
+    [BindColumn("UpdateTime", "更新时间", "")]
+    public DateTime UpdateTime { get => _UpdateTime; set { if (OnPropertyChanging("UpdateTime", value)) { _UpdateTime = value; OnPropertyChanged("UpdateTime"); } } }
     #endregion
 
     #region 拷贝
@@ -83,6 +147,14 @@ public partial class UrlRecord : IUrlRecord, IEntity<UrlRecordModel>
         Slug = model.Slug;
         IsActive = model.IsActive;
         LanguageId = model.LanguageId;
+        CreateUser = model.CreateUser;
+        CreateUserID = model.CreateUserID;
+        CreateIP = model.CreateIP;
+        CreateTime = model.CreateTime;
+        UpdateUser = model.UpdateUser;
+        UpdateUserID = model.UpdateUserID;
+        UpdateIP = model.UpdateIP;
+        UpdateTime = model.UpdateTime;
     }
     #endregion
 
@@ -100,6 +172,14 @@ public partial class UrlRecord : IUrlRecord, IEntity<UrlRecordModel>
             "Slug" => _Slug,
             "IsActive" => _IsActive,
             "LanguageId" => _LanguageId,
+            "CreateUser" => _CreateUser,
+            "CreateUserID" => _CreateUserID,
+            "CreateIP" => _CreateIP,
+            "CreateTime" => _CreateTime,
+            "UpdateUser" => _UpdateUser,
+            "UpdateUserID" => _UpdateUserID,
+            "UpdateIP" => _UpdateIP,
+            "UpdateTime" => _UpdateTime,
             _ => base[name]
         };
         set
@@ -112,6 +192,14 @@ public partial class UrlRecord : IUrlRecord, IEntity<UrlRecordModel>
                 case "Slug": _Slug = Convert.ToString(value); break;
                 case "IsActive": _IsActive = value.ToBoolean(); break;
                 case "LanguageId": _LanguageId = value.ToInt(); break;
+                case "CreateUser": _CreateUser = Convert.ToString(value); break;
+                case "CreateUserID": _CreateUserID = value.ToInt(); break;
+                case "CreateIP": _CreateIP = Convert.ToString(value); break;
+                case "CreateTime": _CreateTime = value.ToDateTime(); break;
+                case "UpdateUser": _UpdateUser = Convert.ToString(value); break;
+                case "UpdateUserID": _UpdateUserID = value.ToInt(); break;
+                case "UpdateIP": _UpdateIP = Convert.ToString(value); break;
+                case "UpdateTime": _UpdateTime = value.ToDateTime(); break;
                 default: base[name] = value; break;
             }
         }
@@ -143,6 +231,30 @@ public partial class UrlRecord : IUrlRecord, IEntity<UrlRecordModel>
         /// <summary>语言标识符</summary>
         public static readonly Field LanguageId = FindByName("LanguageId");
 
+        /// <summary>创建者</summary>
+        public static readonly Field CreateUser = FindByName("CreateUser");
+
+        /// <summary>创建用户</summary>
+        public static readonly Field CreateUserID = FindByName("CreateUserID");
+
+        /// <summary>创建地址</summary>
+        public static readonly Field CreateIP = FindByName("CreateIP");
+
+        /// <summary>创建时间</summary>
+        public static readonly Field CreateTime = FindByName("CreateTime");
+
+        /// <summary>更新者</summary>
+        public static readonly Field UpdateUser = FindByName("UpdateUser");
+
+        /// <summary>更新用户</summary>
+        public static readonly Field UpdateUserID = FindByName("UpdateUserID");
+
+        /// <summary>更新地址</summary>
+        public static readonly Field UpdateIP = FindByName("UpdateIP");
+
+        /// <summary>更新时间</summary>
+        public static readonly Field UpdateTime = FindByName("UpdateTime");
+
         static Field FindByName(String name) => Meta.Table.FindByName(name);
     }
 
@@ -166,6 +278,30 @@ public partial class UrlRecord : IUrlRecord, IEntity<UrlRecordModel>
 
         /// <summary>语言标识符</summary>
         public const String LanguageId = "LanguageId";
+
+        /// <summary>创建者</summary>
+        public const String CreateUser = "CreateUser";
+
+        /// <summary>创建用户</summary>
+        public const String CreateUserID = "CreateUserID";
+
+        /// <summary>创建地址</summary>
+        public const String CreateIP = "CreateIP";
+
+        /// <summary>创建时间</summary>
+        public const String CreateTime = "CreateTime";
+
+        /// <summary>更新者</summary>
+        public const String UpdateUser = "UpdateUser";
+
+        /// <summary>更新用户</summary>
+        public const String UpdateUserID = "UpdateUserID";
+
+        /// <summary>更新地址</summary>
+        public const String UpdateIP = "UpdateIP";
+
+        /// <summary>更新时间</summary>
+        public const String UpdateTime = "UpdateTime";
     }
     #endregion
 }
