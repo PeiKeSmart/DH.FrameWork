@@ -2,6 +2,7 @@ using DH.Core;
 using DH.Core.Infrastructure;
 
 using NewLife;
+using NewLife.Data;
 using NewLife.Log;
 
 using System.ComponentModel;
@@ -69,6 +70,15 @@ namespace DH.Entity {
             entity.Status = 1;
             entity.Url = $"{DHSetting.Current.CurDomainUrl.TrimEnd('/')}/";
             entity.Registration = "粤ICP备10000000号";
+
+            entity.SslEnabled = false;
+            entity.Hosts = "yourstore.com,www.yourstore.com";
+            entity.DefaultLanguageId = 0;
+            entity.DisplayOrder = 1;
+            entity.CompanyName = "Your company name";
+            entity.CompanyAddress = "your company country, state, zip, street, etc";
+            entity.CompanyPhoneNumber = "(123) 456-78901";
+            entity.CompanyVat = "";
 
             var asm = Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
             if (asm != null)
@@ -139,6 +149,16 @@ namespace DH.Entity {
             return modelSite;
         }
 
+        /// <summary>获取所有站点</summary>
+        /// <returns>站点集合</returns>
+        public static IList<SiteInfo> GetAll()
+        {
+            // 实体缓存
+            if (Meta.Session.Count < 1000) return Meta.Cache.Entities;
+
+            return FindAll();
+        }
+
         /// <summary>获取默认站点SEO数据</summary>
         /// <returns>SEO元素数据</returns>
         public static (String SiteName, String SeoTitle, String SeoKey, String SeoDescribe, String Registration, String SiteCopyright) GetDefaultSeo()
@@ -152,6 +172,19 @@ namespace DH.Entity {
             var workContext = EngineContext.Current.Resolve<IWorkContext>();
 
             return SiteInfoLan.FindBySIdAndLId(DHSetting.Current.SiteId, workContext.WorkingLanguage.Id, true);
+        }
+
+        /// <summary>获取所有站点</summary>
+        /// <returns>站点集合</returns>
+        public static IEnumerable<SiteInfo> GetAllStores()
+        {
+            // 实体缓存
+            if (Meta.Session.Count < 1000)
+            {
+                return Meta.Cache.Entities.OrderBy(l => l.DisplayOrder).ThenBy(l => l.Id);
+            }
+
+            return FindAll(null, new PageParameter { PageSize = 0, OrderBy = "DisplayOrder asc, Id asc" });
         }
         #endregion
 

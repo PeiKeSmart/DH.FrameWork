@@ -21,6 +21,27 @@ public partial class SiteInfoModel : IModel
     /// <summary>网站主机集合。以,分隔且没有http(s)</summary>
     public String Hosts { get; set; }
 
+    /// <summary>是否启用SSL</summary>
+    public Boolean SslEnabled { get; set; }
+
+    /// <summary>此站点的默认语言的标识符。使用默认语言时设置0</summary>
+    public Int32 DefaultLanguageId { get; set; }
+
+    /// <summary>获取或设置显示顺序</summary>
+    public Int32 DisplayOrder { get; set; }
+
+    /// <summary>公司名称</summary>
+    public String CompanyName { get; set; }
+
+    /// <summary>公司地址</summary>
+    public String CompanyAddress { get; set; }
+
+    /// <summary>公司电话号码</summary>
+    public String CompanyPhoneNumber { get; set; }
+
+    /// <summary>公司VAT。用于欧盟国家/地区</summary>
+    public String CompanyVat { get; set; }
+
     /// <summary>网站名称</summary>
     public String SiteName { get; set; }
 
@@ -116,6 +137,13 @@ public partial class SiteInfoModel : IModel
                 "Id" => Id,
                 "Url" => Url,
                 "Hosts" => Hosts,
+                "SslEnabled" => SslEnabled,
+                "DefaultLanguageId" => DefaultLanguageId,
+                "DisplayOrder" => DisplayOrder,
+                "CompanyName" => CompanyName,
+                "CompanyAddress" => CompanyAddress,
+                "CompanyPhoneNumber" => CompanyPhoneNumber,
+                "CompanyVat" => CompanyVat,
                 "SiteName" => SiteName,
                 "SiteLogo" => SiteLogo,
                 "Summary" => Summary,
@@ -153,6 +181,13 @@ public partial class SiteInfoModel : IModel
                 case "Id": Id = value.ToInt(); break;
                 case "Url": Url = Convert.ToString(value); break;
                 case "Hosts": Hosts = Convert.ToString(value); break;
+                case "SslEnabled": SslEnabled = value.ToBoolean(); break;
+                case "DefaultLanguageId": DefaultLanguageId = value.ToInt(); break;
+                case "DisplayOrder": DisplayOrder = value.ToInt(); break;
+                case "CompanyName": CompanyName = Convert.ToString(value); break;
+                case "CompanyAddress": CompanyAddress = Convert.ToString(value); break;
+                case "CompanyPhoneNumber": CompanyPhoneNumber = Convert.ToString(value); break;
+                case "CompanyVat": CompanyVat = Convert.ToString(value); break;
                 case "SiteName": SiteName = Convert.ToString(value); break;
                 case "SiteLogo": SiteLogo = Convert.ToString(value); break;
                 case "Summary": Summary = Convert.ToString(value); break;
@@ -193,6 +228,13 @@ public partial class SiteInfoModel : IModel
         Id = model.Id;
         Url = model.Url;
         Hosts = model.Hosts;
+        SslEnabled = model.SslEnabled;
+        DefaultLanguageId = model.DefaultLanguageId;
+        DisplayOrder = model.DisplayOrder;
+        CompanyName = model.CompanyName;
+        CompanyAddress = model.CompanyAddress;
+        CompanyPhoneNumber = model.CompanyPhoneNumber;
+        CompanyVat = model.CompanyVat;
         SiteName = model.SiteName;
         SiteLogo = model.SiteLogo;
         Summary = model.Summary;

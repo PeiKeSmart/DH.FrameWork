@@ -20,6 +20,27 @@ public partial interface ISiteInfo
     /// <summary>网站主机集合。以,分隔且没有http(s)</summary>
     String Hosts { get; set; }
 
+    /// <summary>是否启用SSL</summary>
+    Boolean SslEnabled { get; set; }
+
+    /// <summary>此站点的默认语言的标识符。使用默认语言时设置0</summary>
+    Int32 DefaultLanguageId { get; set; }
+
+    /// <summary>获取或设置显示顺序</summary>
+    Int32 DisplayOrder { get; set; }
+
+    /// <summary>公司名称</summary>
+    String CompanyName { get; set; }
+
+    /// <summary>公司地址</summary>
+    String CompanyAddress { get; set; }
+
+    /// <summary>公司电话号码</summary>
+    String CompanyPhoneNumber { get; set; }
+
+    /// <summary>公司VAT。用于欧盟国家/地区</summary>
+    String CompanyVat { get; set; }
+
     /// <summary>网站名称</summary>
     String SiteName { get; set; }
 

@@ -10,8 +10,7 @@ using NewLife.Log;
 
 using XCode.Membership;
 
-namespace DH.Services.ScheduleTasks
-{
+namespace DH.Services.ScheduleTasks {
     /// <summary>
     /// 计划任务运行程序
     /// </summary>
@@ -146,7 +145,7 @@ namespace DH.Services.ScheduleTasks
             }
             catch (Exception exc)
             {
-                var store = _storeContext.GetCurrentStore();
+                var store = _storeContext.CurrentStore;
 
                 var scheduleTaskUrl = $"{store.Url}{DHTaskDefaults.ScheduleTaskPath}";
 
@@ -155,7 +154,7 @@ namespace DH.Services.ScheduleTasks
                 scheduleTask.Update();
 
                 var message = string.Format(_localizationService.GetResource("ScheduleTasks.Error"), scheduleTask.Name,
-                    exc.Message, scheduleTask.Type, store.Name, scheduleTaskUrl);
+                    exc.Message, scheduleTask.Type, store.SiteName, scheduleTaskUrl);
 
                 var webHelper = EngineContext.Current.Resolve<IWebHelper>();
 

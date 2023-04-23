@@ -289,7 +289,7 @@ public static class WebHelper2
         {
             // 不要通过构造函数注入IWorkContext，因为它将导致循环引用
 
-            storeLocation = EngineContext.Current.Resolve<IStoreContext>().GetCurrentStore()?.Url ?? $"{DHSetting.Current.CurDomainUrl}";
+            storeLocation = EngineContext.Current.Resolve<IStoreContext>().CurrentStore?.Url ?? $"{DHSetting.Current.CurDomainUrl}";
 
             storeLocation = storeLocation ?? throw new Exception("当前站点无法加载");
         }

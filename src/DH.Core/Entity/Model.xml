@@ -76,21 +76,6 @@
       <Index Columns="ParentUId" />
     </Indexes>
   </Table>
-  <Table Name="Store" TableName="DH_Store" Description="站点信息">
-    <Columns>
-      <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
-      <Column Name="Name" DataType="String" Master="True" Length="400" Description="站点名称" />
-      <Column Name="Url" DataType="String" Length="400" Description="站点Url" />
-      <Column Name="SslEnabled" DataType="Boolean" Description="是否启用SSL" />
-      <Column Name="Hosts" DataType="String" Length="1000" Description="可能的HTTP_HOST值的逗号分隔列表" />
-      <Column Name="DefaultLanguageId" DataType="Int32" Description="此站点的默认语言的标识符。使用默认语言时设置0" />
-      <Column Name="DisplayOrder" DataType="Int32" Description="获取或设置显示顺序" />
-      <Column Name="CompanyName" DataType="String" Length="1000" Description="公司名称" />
-      <Column Name="CompanyAddress" DataType="String" Length="1000" Description="公司地址" />
-      <Column Name="CompanyPhoneNumber" DataType="String" Length="1000" Description="公司电话号码" />
-      <Column Name="CompanyVat" DataType="String" Length="1000" Description="公司VAT。用于欧盟国家/地区" />
-    </Columns>
-  </Table>
   <Table Name="Language" TableName="DG_Language" Description="语言类别">
     <Columns>
       <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
@@ -453,6 +438,13 @@
       <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
       <Column Name="Url" DataType="String" Length="250" Description="网站域名" />
       <Column Name="Hosts" DataType="String" Length="250" Description="网站主机集合。以,分隔且没有http(s)" />
+      <Column Name="SslEnabled" DataType="Boolean" Description="是否启用SSL" />
+      <Column Name="DefaultLanguageId" DataType="Int32" Description="此站点的默认语言的标识符。使用默认语言时设置0" />
+      <Column Name="DisplayOrder" DataType="Int32" Description="获取或设置显示顺序" />
+      <Column Name="CompanyName" DataType="String" Length="1000" Description="公司名称" />
+      <Column Name="CompanyAddress" DataType="String" Length="1000" Description="公司地址" />
+      <Column Name="CompanyPhoneNumber" DataType="String" Length="1000" Description="公司电话号码" />
+      <Column Name="CompanyVat" DataType="String" Length="1000" Description="公司VAT。用于欧盟国家/地区" />
       <Column Name="SiteName" DataType="String" Nullable="False" Description="网站名称" />
       <Column Name="SiteLogo" DataType="String" Length="255" Description="网站Logo" />
       <Column Name="Summary" DataType="String" Length="500" Description="网站描述" />

@@ -45,6 +45,62 @@ public partial class SiteInfo : ISiteInfo, IEntity<SiteInfoModel>
     [BindColumn("Hosts", "网站主机集合。以,分隔且没有http(s)", "")]
     public String Hosts { get => _Hosts; set { if (OnPropertyChanging("Hosts", value)) { _Hosts = value; OnPropertyChanged("Hosts"); } } }
 
+    private Boolean _SslEnabled;
+    /// <summary>是否启用SSL</summary>
+    [DisplayName("是否启用SSL")]
+    [Description("是否启用SSL")]
+    [DataObjectField(false, false, false, 0)]
+    [BindColumn("SslEnabled", "是否启用SSL", "")]
+    public Boolean SslEnabled { get => _SslEnabled; set { if (OnPropertyChanging("SslEnabled", value)) { _SslEnabled = value; OnPropertyChanged("SslEnabled"); } } }
+
+    private Int32 _DefaultLanguageId;
+    /// <summary>此站点的默认语言的标识符。使用默认语言时设置0</summary>
+    [DisplayName("此站点的默认语言的标识符")]
+    [Description("此站点的默认语言的标识符。使用默认语言时设置0")]
+    [DataObjectField(false, false, false, 0)]
+    [BindColumn("DefaultLanguageId", "此站点的默认语言的标识符。使用默认语言时设置0", "")]
+    public Int32 DefaultLanguageId { get => _DefaultLanguageId; set { if (OnPropertyChanging("DefaultLanguageId", value)) { _DefaultLanguageId = value; OnPropertyChanged("DefaultLanguageId"); } } }
+
+    private Int32 _DisplayOrder;
+    /// <summary>获取或设置显示顺序</summary>
+    [DisplayName("获取或设置显示顺序")]
+    [Description("获取或设置显示顺序")]
+    [DataObjectField(false, false, false, 0)]
+    [BindColumn("DisplayOrder", "获取或设置显示顺序", "")]
+    public Int32 DisplayOrder { get => _DisplayOrder; set { if (OnPropertyChanging("DisplayOrder", value)) { _DisplayOrder = value; OnPropertyChanged("DisplayOrder"); } } }
+
+    private String _CompanyName;
+    /// <summary>公司名称</summary>
+    [DisplayName("公司名称")]
+    [Description("公司名称")]
+    [DataObjectField(false, false, true, 1000)]
+    [BindColumn("CompanyName", "公司名称", "")]
+    public String CompanyName { get => _CompanyName; set { if (OnPropertyChanging("CompanyName", value)) { _CompanyName = value; OnPropertyChanged("CompanyName"); } } }
+
+    private String _CompanyAddress;
+    /// <summary>公司地址</summary>
+    [DisplayName("公司地址")]
+    [Description("公司地址")]
+    [DataObjectField(false, false, true, 1000)]
+    [BindColumn("CompanyAddress", "公司地址", "")]
+    public String CompanyAddress { get => _CompanyAddress; set { if (OnPropertyChanging("CompanyAddress", value)) { _CompanyAddress = value; OnPropertyChanged("CompanyAddress"); } } }
+
+    private String _CompanyPhoneNumber;
+    /// <summary>公司电话号码</summary>
+    [DisplayName("公司电话号码")]
+    [Description("公司电话号码")]
+    [DataObjectField(false, false, true, 1000)]
+    [BindColumn("CompanyPhoneNumber", "公司电话号码", "")]
+    public String CompanyPhoneNumber { get => _CompanyPhoneNumber; set { if (OnPropertyChanging("CompanyPhoneNumber", value)) { _CompanyPhoneNumber = value; OnPropertyChanged("CompanyPhoneNumber"); } } }
+
+    private String _CompanyVat;
+    /// <summary>公司VAT。用于欧盟国家/地区</summary>
+    [DisplayName("公司VAT")]
+    [Description("公司VAT。用于欧盟国家/地区")]
+    [DataObjectField(false, false, true, 1000)]
+    [BindColumn("CompanyVat", "公司VAT。用于欧盟国家/地区", "")]
+    public String CompanyVat { get => _CompanyVat; set { if (OnPropertyChanging("CompanyVat", value)) { _CompanyVat = value; OnPropertyChanged("CompanyVat"); } } }
+
     private String _SiteName;
     /// <summary>网站名称</summary>
     [DisplayName("网站名称")]
@@ -270,6 +326,13 @@ public partial class SiteInfo : ISiteInfo, IEntity<SiteInfoModel>
         Id = model.Id;
         Url = model.Url;
         Hosts = model.Hosts;
+        SslEnabled = model.SslEnabled;
+        DefaultLanguageId = model.DefaultLanguageId;
+        DisplayOrder = model.DisplayOrder;
+        CompanyName = model.CompanyName;
+        CompanyAddress = model.CompanyAddress;
+        CompanyPhoneNumber = model.CompanyPhoneNumber;
+        CompanyVat = model.CompanyVat;
         SiteName = model.SiteName;
         SiteLogo = model.SiteLogo;
         Summary = model.Summary;
@@ -311,6 +374,13 @@ public partial class SiteInfo : ISiteInfo, IEntity<SiteInfoModel>
             "Id" => _Id,
             "Url" => _Url,
             "Hosts" => _Hosts,
+            "SslEnabled" => _SslEnabled,
+            "DefaultLanguageId" => _DefaultLanguageId,
+            "DisplayOrder" => _DisplayOrder,
+            "CompanyName" => _CompanyName,
+            "CompanyAddress" => _CompanyAddress,
+            "CompanyPhoneNumber" => _CompanyPhoneNumber,
+            "CompanyVat" => _CompanyVat,
             "SiteName" => _SiteName,
             "SiteLogo" => _SiteLogo,
             "Summary" => _Summary,
@@ -347,6 +417,13 @@ public partial class SiteInfo : ISiteInfo, IEntity<SiteInfoModel>
                 case "Id": _Id = value.ToInt(); break;
                 case "Url": _Url = Convert.ToString(value); break;
                 case "Hosts": _Hosts = Convert.ToString(value); break;
+                case "SslEnabled": _SslEnabled = value.ToBoolean(); break;
+                case "DefaultLanguageId": _DefaultLanguageId = value.ToInt(); break;
+                case "DisplayOrder": _DisplayOrder = value.ToInt(); break;
+                case "CompanyName": _CompanyName = Convert.ToString(value); break;
+                case "CompanyAddress": _CompanyAddress = Convert.ToString(value); break;
+                case "CompanyPhoneNumber": _CompanyPhoneNumber = Convert.ToString(value); break;
+                case "CompanyVat": _CompanyVat = Convert.ToString(value); break;
                 case "SiteName": _SiteName = Convert.ToString(value); break;
                 case "SiteLogo": _SiteLogo = Convert.ToString(value); break;
                 case "Summary": _Summary = Convert.ToString(value); break;
@@ -395,6 +472,27 @@ public partial class SiteInfo : ISiteInfo, IEntity<SiteInfoModel>
 
         /// <summary>网站主机集合。以,分隔且没有http(s)</summary>
         public static readonly Field Hosts = FindByName("Hosts");
+
+        /// <summary>是否启用SSL</summary>
+        public static readonly Field SslEnabled = FindByName("SslEnabled");
+
+        /// <summary>此站点的默认语言的标识符。使用默认语言时设置0</summary>
+        public static readonly Field DefaultLanguageId = FindByName("DefaultLanguageId");
+
+        /// <summary>获取或设置显示顺序</summary>
+        public static readonly Field DisplayOrder = FindByName("DisplayOrder");
+
+        /// <summary>公司名称</summary>
+        public static readonly Field CompanyName = FindByName("CompanyName");
+
+        /// <summary>公司地址</summary>
+        public static readonly Field CompanyAddress = FindByName("CompanyAddress");
+
+        /// <summary>公司电话号码</summary>
+        public static readonly Field CompanyPhoneNumber = FindByName("CompanyPhoneNumber");
+
+        /// <summary>公司VAT。用于欧盟国家/地区</summary>
+        public static readonly Field CompanyVat = FindByName("CompanyVat");
 
         /// <summary>网站名称</summary>
         public static readonly Field SiteName = FindByName("SiteName");
@@ -491,6 +589,27 @@ public partial class SiteInfo : ISiteInfo, IEntity<SiteInfoModel>
 
         /// <summary>网站主机集合。以,分隔且没有http(s)</summary>
         public const String Hosts = "Hosts";
+
+        /// <summary>是否启用SSL</summary>
+        public const String SslEnabled = "SslEnabled";
+
+        /// <summary>此站点的默认语言的标识符。使用默认语言时设置0</summary>
+        public const String DefaultLanguageId = "DefaultLanguageId";
+
+        /// <summary>获取或设置显示顺序</summary>
+        public const String DisplayOrder = "DisplayOrder";
+
+        /// <summary>公司名称</summary>
+        public const String CompanyName = "CompanyName";
+
+        /// <summary>公司地址</summary>
+        public const String CompanyAddress = "CompanyAddress";
+
+        /// <summary>公司电话号码</summary>
+        public const String CompanyPhoneNumber = "CompanyPhoneNumber";
+
+        /// <summary>公司VAT。用于欧盟国家/地区</summary>
+        public const String CompanyVat = "CompanyVat";
 
         /// <summary>网站名称</summary>
         public const String SiteName = "SiteName";

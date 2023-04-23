@@ -202,7 +202,7 @@ namespace DH.Core
 
             // 如果主机为空（仅当HttpContext不可用时才可能），请使用在管理区域中配置的存储实体的URL
             if (string.IsNullOrEmpty(storeHost))
-                storeLocation = _storeContext.Value.GetCurrentStore()?.Url
+                storeLocation = _storeContext.Value.CurrentStore?.Url
                                 ?? throw new Exception("Current store cannot be loaded");
 
             // 确保URL以斜杠结尾

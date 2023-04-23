@@ -766,144 +766,6 @@
     </tbody>
 </table>
 <br></br>
-<h3>站点信息（DH_Store）</h3>
-<table>
-    <thead>
-        <tr>
-            <th>名称</th>
-            <th>显示名</th>
-            <th>类型</th>
-            <th>长度</th>
-            <th>精度</th>
-            <th>主键</th>
-            <th>允许空</th>
-            <th>备注</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>Id</td>
-            <td>编号</td>
-            <td>Int32</td>
-            <td></td>
-            <td></td>
-            <td title="自增">AI</td>
-            <td>N</td>
-            <td></td>
-        </tr>
-
-        <tr>
-            <td>Name</td>
-            <td>站点名称</td>
-            <td>String</td>
-            <td>400</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-
-        <tr>
-            <td>Url</td>
-            <td>站点Url</td>
-            <td>String</td>
-            <td>400</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-
-        <tr>
-            <td>SslEnabled</td>
-            <td>是否启用SSL</td>
-            <td>Boolean</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>N</td>
-            <td></td>
-        </tr>
-
-        <tr>
-            <td>Hosts</td>
-            <td>可能的HTTP_HOST值的逗号分隔列表</td>
-            <td>String</td>
-            <td>1000</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-
-        <tr>
-            <td>DefaultLanguageId</td>
-            <td>此站点的默认语言的标识符</td>
-            <td>Int32</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>N</td>
-            <td>使用默认语言时设置0</td>
-        </tr>
-
-        <tr>
-            <td>DisplayOrder</td>
-            <td>获取或设置显示顺序</td>
-            <td>Int32</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>N</td>
-            <td></td>
-        </tr>
-
-        <tr>
-            <td>CompanyName</td>
-            <td>公司名称</td>
-            <td>String</td>
-            <td>1000</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-
-        <tr>
-            <td>CompanyAddress</td>
-            <td>公司地址</td>
-            <td>String</td>
-            <td>1000</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-
-        <tr>
-            <td>CompanyPhoneNumber</td>
-            <td>公司电话号码</td>
-            <td>String</td>
-            <td>1000</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-
-        <tr>
-            <td>CompanyVat</td>
-            <td>公司VAT</td>
-            <td>String</td>
-            <td>1000</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>用于欧盟国家/地区</td>
-        </tr>
-    </tbody>
-</table>
-<br></br>
 <h3>语言类别（DG_Language）</h3>
 <table>
     <thead>
@@ -3769,6 +3631,83 @@
             <td></td>
             <td></td>
             <td>以,分隔且没有http(s)</td>
+        </tr>
+
+        <tr>
+            <td>SslEnabled</td>
+            <td>是否启用SSL</td>
+            <td>Boolean</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>DefaultLanguageId</td>
+            <td>此站点的默认语言的标识符</td>
+            <td>Int32</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td>使用默认语言时设置0</td>
+        </tr>
+
+        <tr>
+            <td>DisplayOrder</td>
+            <td>获取或设置显示顺序</td>
+            <td>Int32</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>CompanyName</td>
+            <td>公司名称</td>
+            <td>String</td>
+            <td>1000</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>CompanyAddress</td>
+            <td>公司地址</td>
+            <td>String</td>
+            <td>1000</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>CompanyPhoneNumber</td>
+            <td>公司电话号码</td>
+            <td>String</td>
+            <td>1000</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>CompanyVat</td>
+            <td>公司VAT</td>
+            <td>String</td>
+            <td>1000</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>用于欧盟国家/地区</td>
         </tr>
 
         <tr>

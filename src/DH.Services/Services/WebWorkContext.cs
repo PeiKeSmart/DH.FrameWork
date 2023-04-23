@@ -2,6 +2,7 @@
 using DH.Core;
 using DH.Core.Domain.Localization;
 using DH.Core.Http;
+using DH.Core.Infrastructure;
 using DH.Entity;
 using DH.Services.Helpers;
 using DH.Services.Localization;
@@ -35,14 +36,13 @@ public partial class WebWorkContext : IWorkContext {
     #region 初始化
 
     public WebWorkContext(IHttpContextAccessor httpContextAccessor,
-        IStoreContext storeContext,
         IUserAgentHelper userAgentHelper,
         LocalizationSettings localizationSettings,
         ICookie cookie)
     {
         _httpContextAccessor = httpContextAccessor;
         _localizationSettings = localizationSettings;
-        _storeContext = storeContext;
+        _storeContext = EngineContext.Current.Resolve<IStoreContext>();
         _userAgentHelper = userAgentHelper;
         _cookie = cookie;
     }
@@ -158,7 +158,7 @@ public partial class WebWorkContext : IWorkContext {
                 return _cachedLanguage;
 
             var customer = CurrentCustomer;
-            var store = _storeContext.GetCurrentStore();
+            var store = _storeContext.CurrentStore;
 
             Language detectedLanguage = null;
 

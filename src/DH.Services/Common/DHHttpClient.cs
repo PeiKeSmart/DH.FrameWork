@@ -74,7 +74,7 @@ namespace DH.Services.Common {
         {
             // 准备请求的URL
             var language = Language.GetTwoLetterIsoLanguageName(_workContext.WorkingLanguage);
-            var store = _storeContext.GetCurrentStore();
+            var store = _storeContext.CurrentStore;
             var url = string.Format(DHCommonDefaults.DHCopyrightWarningPath,
                 store.Url,
                 _webHelper.IsLocalRequest(_httpContextAccessor.HttpContext.Request),

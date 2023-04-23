@@ -11,8 +11,7 @@ using NewLife.Log;
 
 using XCode.Membership;
 
-namespace DH.Services.ScheduleTasks
-{
+namespace DH.Services.ScheduleTasks {
     /// <summary>
     /// 表示任务管理器
     /// </summary>
@@ -59,7 +58,7 @@ namespace DH.Services.ScheduleTasks
                 .OrderBy(x => x.Seconds)
                 .ToList();
 
-            var store = _storeContext.GetCurrentStore();
+            var store = _storeContext.CurrentStore;
 
             var scheduleTaskUrl = $"{store.Url.TrimEnd('/')}/{DHTaskDefaults.ScheduleTaskPath}";
             var timeout = _appSettings.Get<CommonConfig>().ScheduleTaskRunTimeout;
@@ -193,10 +192,10 @@ namespace DH.Services.ScheduleTasks
                     var storeContext = EngineContext.Current.Resolve<IStoreContext>(scope);
 
                     var message = ex.InnerException?.GetType() == typeof(TaskCanceledException) ? localizationService.GetResource("ScheduleTasks.TimeoutError") : ex.Message;
-                    var store = storeContext.GetCurrentStore();
+                    var store = storeContext.CurrentStore;
 
                     message = string.Format(localizationService.GetResource("ScheduleTasks.Error"), _scheduleTask.Name,
-                        message, _scheduleTask.Type, store.Name, _scheduleTaskUrl);
+                        message, _scheduleTask.Type, store.SiteName, _scheduleTaskUrl);
 
                     var webHelper = EngineContext.Current.Resolve<IWebHelper>();
 
