@@ -179,7 +179,10 @@ public partial class WebWorkContext : IWorkContext {
             }
 
             // 是否应该从请求中检测语言
-            detectedLanguage = GetLanguageFromRequest();
+            if (detectedLanguage == null)
+            {
+                detectedLanguage = GetLanguageFromRequest();
+            }
 
             // 获取当前保存的语言标识符
             var currentLanguageId = customer?.LanguageId;
