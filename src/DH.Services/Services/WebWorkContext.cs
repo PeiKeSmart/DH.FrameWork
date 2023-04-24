@@ -237,6 +237,8 @@ public partial class WebWorkContext : IWorkContext {
             _cachedLanguage = detectedLanguage;
 
             _cookie.SetValue(DHSetting.Current.LangName, detectedLanguage?.UniqueSeoCode);
+
+            SetLanguageCookie(detectedLanguage);
         }
     }
 
