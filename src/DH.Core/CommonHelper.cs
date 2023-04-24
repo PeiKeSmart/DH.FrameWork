@@ -4,6 +4,7 @@ using DH.Exceptions;
 using System.ComponentModel;
 using System.Globalization;
 using System.Net;
+using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace DH.Core;
