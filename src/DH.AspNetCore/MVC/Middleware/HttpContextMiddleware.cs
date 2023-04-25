@@ -3,6 +3,8 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 
+using NewLife;
+using NewLife.Collections;
 using NewLife.Log;
 
 using Newtonsoft.Json;
@@ -39,6 +41,13 @@ public class HttpContextMiddleware {
     {
         if (DHSetting.Current.AllowRequestParams)  // 允许获取则执行
         {
+            if (context.Request.Path.Value.Contains("/notify-hub", StringComparison.OrdinalIgnoreCase) || context.Request.Path.Value.Contains("/CaptCha", StringComparison.OrdinalIgnoreCase))
+            {
+                // 或请求管道中调用下一个中间件
+                await _next(context);
+                return;
+            }
+
             //context.Request.EnableRewind();
             context.Request.EnableBuffering();  // 可以实现多次读取Body
             _stopwatch = new Stopwatch();
@@ -46,12 +55,15 @@ public class HttpContextMiddleware {
 
             XTrace.WriteLine($"Handling request: " + context.Request.Path);
 
-            var api = new ApiRequestInputViewModel();
-            api.HttpType = context.Request.Method;
-            api.Query = context.Request.QueryString.Value;
-            api.RequestUrl = context.Request.Path;
-            api.RequestName = "";
-            api.RequestIP = context.Request.Host.Value;
+            var api = new ApiRequestInputViewModel
+            {
+                HttpType = context.Request.Method,
+                Query = context.Request.QueryString.Value,
+                RequestUrl = context.Request.Path,
+                RequestName = "",
+                RequestIP = context.Request.Host.Value,
+                RequestHeader = context.Request.Headers.Join()
+            };
 
             var reqOrigin = context.Request.Body;
             var resOrigin = context.Response.Body;

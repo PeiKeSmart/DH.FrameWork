@@ -37,6 +37,11 @@ public class ApiRequestInputViewModel {
 
     public long ElapsedTime { get; set; }
 
+    /// <summary>
+    /// 请求的头部数据
+    /// </summary>
+    public String RequestHeader { get; set; }
+
     public ApiRequestInputViewModel()
     {
         this.RequestName = string.Empty;
@@ -48,5 +53,6 @@ public class ApiRequestInputViewModel {
         this.Body = string.Empty;
         this.ResponseBody = string.Empty;
         this.ElapsedTime = -1;
+        this.RequestHeader = string.Empty;
     }
 }
