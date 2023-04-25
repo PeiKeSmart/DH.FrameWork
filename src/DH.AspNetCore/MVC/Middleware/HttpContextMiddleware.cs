@@ -41,7 +41,7 @@ public class HttpContextMiddleware {
     {
         if (DHSetting.Current.AllowRequestParams)  // 允许获取则执行
         {
-            if (context.Request.Path.Value.Contains("/notify-hub", StringComparison.OrdinalIgnoreCase) || context.Request.Path.Value.Contains("/CaptCha", StringComparison.OrdinalIgnoreCase))
+            if (!context.Request.Path.Value.Contains("/api/", StringComparison.OrdinalIgnoreCase) )
             {
                 // 或请求管道中调用下一个中间件
                 await _next(context);
