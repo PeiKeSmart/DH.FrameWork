@@ -145,11 +145,11 @@ public abstract class EmailSenderBase : IEmailSender
     /// </summary>
     /// <param name="mail">邮件消息</param>
     /// <param name="normalize">是否规范化邮件，如果是，则设置发件人地址/名称并使邮件编码为UTF-8</param>
-    public virtual async Task SendAsync(MailMessage mail, bool normalize = true)
+    public virtual async Task<String> SendAsync(MailMessage mail, bool normalize = true)
     {
         if (normalize)
             NormalizeMail(mail);
-        await SendEmailAsync(mail);
+        return await SendEmailAsync(mail);
     }
 
     /// <summary>
@@ -162,7 +162,7 @@ public abstract class EmailSenderBase : IEmailSender
     /// 发送邮件
     /// </summary>
     /// <param name="mail">邮件</param>
-    protected abstract Task SendEmailAsync(MailMessage mail);
+    protected abstract Task<String> SendEmailAsync(MailMessage mail);
 
     /// <summary>
     /// 处理附件

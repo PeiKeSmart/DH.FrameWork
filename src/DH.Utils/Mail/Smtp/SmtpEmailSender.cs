@@ -41,11 +41,13 @@ public class SmtpEmailSender : EmailSenderBase, ISmtpEmailSender
     /// 发送邮件
     /// </summary>
     /// <param name="mail">邮件</param>
-    protected override async Task SendEmailAsync(MailMessage mail)
+    protected override async Task<String> SendEmailAsync(MailMessage mail)
     {
         using (var smtpClient = BuildClient())
         {
             await smtpClient.SendMailAsync(mail);
+
+            return "Smtp方法无返回";
         }
     }
 

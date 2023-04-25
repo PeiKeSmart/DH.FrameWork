@@ -46,14 +46,14 @@ public class MailKitEmailSender : EmailSenderBase, IMailKitEmailSender
     /// 发送邮件
     /// </summary>
     /// <param name="mail">邮件</param>
-    protected override async Task SendEmailAsync(MailMessage mail)
+    protected override async Task<String> SendEmailAsync(MailMessage mail)
     {
-        using (var client = BuildSmtpClient())
-        {
-            var message = mail.ToMimeMessage();
-            await client.SendAsync(message);
-            await client.DisconnectAsync(true);
-        }
+        using var client = BuildSmtpClient();
+        var message = mail.ToMimeMessage();
+        var result = await client.SendAsync(message);
+        await client.DisconnectAsync(true);
+
+        return result;
     }
 
     /// <summary>
