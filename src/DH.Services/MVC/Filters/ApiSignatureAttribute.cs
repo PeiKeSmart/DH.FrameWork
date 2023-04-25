@@ -8,7 +8,7 @@ using NewLife;
 namespace DH.AspNetCore.MVC.Filters;
 
 /// <summary>
-/// 接口校验过滤器,如果正式环境DHSetting.Current.Debug为false则检验
+/// 接口校验过滤器,IsCheckApiSignature为true则检验
 /// </summary>
 public class ApiSignatureAttribute : ActionFilterAttribute {
     /// <summary>

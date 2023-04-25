@@ -41,15 +41,15 @@ public class HttpContextMiddleware {
     {
         if (DHSetting.Current.AllowRequestParams)  // 允许获取则执行
         {
-            //context.Request.EnableRewind();
-            context.Request.EnableBuffering();  // 可以实现多次读取Body
-
             if (context.Request.Path.Value.Contains("/notify-hub", StringComparison.OrdinalIgnoreCase) || context.Request.Path.Value.Contains("/CaptCha", StringComparison.OrdinalIgnoreCase))
             {
                 // 或请求管道中调用下一个中间件
                 await _next(context);
                 return;
             }
+
+            //context.Request.EnableRewind();
+            context.Request.EnableBuffering();  // 可以实现多次读取Body
 
             _stopwatch = new Stopwatch();
             _stopwatch.Start();
