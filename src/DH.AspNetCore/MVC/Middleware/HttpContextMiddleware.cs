@@ -41,6 +41,9 @@ public class HttpContextMiddleware {
     {
         if (DHSetting.Current.AllowRequestParams)  // 允许获取则执行
         {
+            //context.Request.EnableRewind();
+            context.Request.EnableBuffering();  // 可以实现多次读取Body
+
             if (context.Request.Path.Value.Contains("/notify-hub", StringComparison.OrdinalIgnoreCase) || context.Request.Path.Value.Contains("/CaptCha", StringComparison.OrdinalIgnoreCase))
             {
                 // 或请求管道中调用下一个中间件
@@ -48,8 +51,6 @@ public class HttpContextMiddleware {
                 return;
             }
 
-            //context.Request.EnableRewind();
-            context.Request.EnableBuffering();  // 可以实现多次读取Body
             _stopwatch = new Stopwatch();
             _stopwatch.Start();
 
@@ -62,8 +63,18 @@ public class HttpContextMiddleware {
                 RequestUrl = context.Request.Path,
                 RequestName = "",
                 RequestIP = context.Request.Host.Value,
-                RequestHeader = context.Request.Headers.Join()
             };
+
+            var header = Pool.StringBuilder.Get();
+            foreach(var item in context.Request.Headers)
+            {
+                header.Append($",{item.Key}={item.Value}");
+            }
+            if (header.Length > 0)
+            {
+                header = header.Remove(0, 1);
+            }
+            api.RequestHeader = header.Put(true);
 
             var reqOrigin = context.Request.Body;
             var resOrigin = context.Response.Body;
