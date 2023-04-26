@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
+using NewLife.Log;
+
 using System.Reflection;
 
 namespace DH.Core.Infrastructure;
@@ -154,9 +156,14 @@ public partial class DHEngine : IEngine
             .Select(startup => (IDHStartup)Activator.CreateInstance(startup))
             .OrderBy(startup => startup.Order);
 
+        XTrace.WriteLine($"添加和配置服务顺序：ConfigureServices");
+
         // 配置服务
         foreach (var instance in instances)
+        {
+            XTrace.WriteLine($"{instance.GetType().Name}:{instance.Order}");
             instance.ConfigureServices(services, configuration, instances, webHostEnvironment);
+        }
 
         services.AddSingleton(services);
 
@@ -187,9 +194,14 @@ public partial class DHEngine : IEngine
             .Select(startup => (IDHStartup)Activator.CreateInstance(startup))
             .OrderBy(startup => startup.Order);
 
+        XTrace.WriteLine($"配置HTTP请求管道：Configure");
+
         // 配置请求管道
         foreach (var instance in instances)
+        {
+            XTrace.WriteLine($"{instance.GetType().Name}:{instance.Order}");
             instance.Configure(application, typeFinder);
+        }
     }
 
     /// <summary>
