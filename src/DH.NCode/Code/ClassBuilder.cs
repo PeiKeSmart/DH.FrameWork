@@ -46,6 +46,7 @@ public class ClassBuilder
 
         if (xmlFile.IsNullOrEmpty()) throw new Exception("找不到任何模型文件！");
 
+        var dir = Path.GetDirectoryName(xmlFile);
         xmlFile = xmlFile.GetBasePath();
         if (!File.Exists(xmlFile)) throw new FileNotFoundException("指定模型文件不存在！", xmlFile);
 
@@ -53,35 +54,60 @@ public class ClassBuilder
         var xmlContent = File.ReadAllText(xmlFile);
         atts = new NullableDictionary<String, String>(StringComparer.OrdinalIgnoreCase)
         {
-            ["xmlns"] = "https://newlifex.com/Model2022.xsd",
+            ["xmlns"] = "https://newlifex.com/Model2023.xsd",
             ["xmlns:xs"] = "http://www.w3.org/2001/XMLSchema-instance",
-            ["xs:schemaLocation"] = "https://newlifex.com https://newlifex.com/Model2022.xsd"
+            ["xs:schemaLocation"] = "https://newlifex.com https://newlifex.com/Model2023.xsd"
         };
 
         if (Debug) XTrace.WriteLine("导入模型：{0}", xmlFile);
 
         // 导入模型
-        var tables = ModelHelper.FromXml(xmlContent, DAL.CreateTable, atts);
+        var tables = ModelHelper.FromXml(xmlContent, DAL.CreateTable, option, atts);
 
         if (option != null)
         {
-            option.Output = atts["Output"] ?? Path.GetDirectoryName(xmlFile);
-            option.Namespace = atts["NameSpace"] ?? Path.GetFileNameWithoutExtension(xmlFile);
-            option.ConnName = atts["ConnName"];
-            option.DisplayName = atts["DisplayName"];
-            option.BaseClass = atts["BaseClass"];
+            //option.Output = atts["Output"] ?? Path.GetDirectoryName(xmlFile);
+            //option.Namespace = atts["NameSpace"] ?? Path.GetFileNameWithoutExtension(xmlFile);
+            //option.ConnName = atts["ConnName"];
+            //option.DisplayName = atts["DisplayName"];
+            //option.BaseClass = atts["BaseClass"];
 
-            if (atts.TryGetValue("ExtendOnData", out var str) && !str.IsNullOrEmpty())
-                option.ExtendOnData = str.ToBoolean();
+            //if (atts.TryGetValue("ExtendOnData", out var str) && !str.IsNullOrEmpty())
+            //    option.ExtendOnData = str.ToBoolean();
 
-            if (atts.TryGetValue("ChineseFileName", out str) && !str.IsNullOrEmpty())
-                option.ChineseFileName = str.ToBoolean();
-            if (atts.TryGetValue("CreateCustomBizFile", out str) && !str.IsNullOrEmpty())
-                option.CreateCustomBizFile = str.ToBoolean();
-            if (atts.TryGetValue("OverwriteBizFile", out str) && !str.IsNullOrEmpty())
-                option.OverwriteBizFile = str.ToBoolean();
+            //if (atts.TryGetValue("ChineseFileName", out str) && !str.IsNullOrEmpty())
+            //    option.ChineseFileName = str.ToBoolean();
+            //if (atts.TryGetValue("CreateCustomBizFile", out str) && !str.IsNullOrEmpty())
+            //    option.CreateCustomBizFile = str.ToBoolean();
+            //if (atts.TryGetValue("OverwriteBizFile", out str) && !str.IsNullOrEmpty())
+            //    option.OverwriteBizFile = str.ToBoolean();
 
             option.Items = atts;
+
+            // 反射去掉option中已有设置，改用头部配置对象
+            foreach (var pi in option.GetType().GetProperties())
+            {
+                if (atts.TryGetValue(pi.Name, out var val))
+                {
+                    if (pi.PropertyType.IsEnum)
+                        option.SetValue(pi, Enum.Parse(pi.PropertyType, val, true));
+                    else
+                        option.SetValue(pi, val);
+                    atts.Remove(pi.Name);
+                }
+            }
+
+            // 去掉空属性
+            foreach (var item in atts.ToKeyArray())
+            {
+                if (atts.TryGetValue(item, out var val) && val.IsNullOrEmpty())
+                {
+                    atts.Remove(item);
+                }
+            }
+
+            if (option.Output.IsNullOrEmpty() && !dir.EqualIgnoreCase(".".GetBasePath())) option.Output = dir;
+            if (option.Namespace.IsNullOrEmpty()) option.Namespace = Path.GetFileNameWithoutExtension(xmlFile);
         }
 
         // 保存文件名
@@ -174,7 +200,8 @@ public class ClassBuilder
             builder.Load(item);
 
             // 自定义模型
-            var modelInterface = item.Properties["ModelInterface"];
+            //var modelInterface = item.Properties["ModelInterface"];
+            var modelInterface = option.ModelInterface;
             if (!modelInterface.IsNullOrEmpty()) builder.Option.ClassNameTemplate = modelInterface;
 
             builder.Execute();
@@ -248,7 +275,7 @@ public class ClassBuilder
     {
         // 引用命名空间
         var us = Option.Usings;
-        if (Option.HasIndex && !us.Contains("NewLife.Data")) us.Add("NewLife.Data");
+        if (Option.HasIModel && !us.Contains("NewLife.Data")) us.Add("NewLife.Data");
 
         us = us.Distinct().OrderBy(e => e.StartsWith("System") ? 0 : 1).ThenBy(e => e).ToArray();
         foreach (var item in us)
@@ -294,7 +321,7 @@ public class ClassBuilder
     protected virtual String GetBaseClass()
     {
         var baseClass = Option.BaseClass?.Replace("{name}", Table.Name);
-        if (Option.HasIndex)
+        if (Option.HasIModel)
         {
             if (!baseClass.IsNullOrEmpty()) baseClass += ", ";
             baseClass += "IModel";
@@ -352,7 +379,7 @@ public class ClassBuilder
         }
         WriteLine("#endregion");
 
-        if (Option.HasIndex)
+        if (Option.HasIModel)
         {
             WriteLine();
             BuildIndexItems();
@@ -534,7 +561,7 @@ public class ClassBuilder
         WriteLine($"var model = new {modelClass}();");
         WriteLine("model.Copy(this);");
         WriteLine("");
-        WriteLine(" return model;");
+        WriteLine("return model;");
         WriteLine("}");
     }
 
@@ -602,18 +629,13 @@ public class ClassBuilder
     #endregion 写入缩进方法
 
     #region 保存
-
-    /// <summary>保存文件，返回文件路径</summary>
-    /// <param name="ext">扩展名，默认.cs</param>
-    /// <param name="overwrite">是否覆盖目标文件</param>
-    /// <param name="chineseFileName">是否使用中文名</param>
-    public virtual String Save(String ext = null, Boolean overwrite = true, Boolean chineseFileName = true)
+    /// <summary>获取文件名</summary>
+    /// <param name="ext"></param>
+    /// <param name="chineseFileName"></param>
+    /// <returns></returns>
+    protected virtual String GetFileName(String ext = null, Boolean chineseFileName = true)
     {
         var p = Option.Output;
-        if (ext == ".CusBiz.cs")
-        {
-            p = p.CombinePath(p, "CustomBiz");
-        }
         if (ext.IsNullOrEmpty())
             ext = ".cs";
         else if (!ext.Contains("."))
@@ -627,6 +649,17 @@ public class ClassBuilder
             p = p.CombinePath(ClassName + ext);
 
         p = p.GetBasePath();
+
+        return p;
+    }
+
+    /// <summary>保存文件，返回文件路径</summary>
+    /// <param name="ext">扩展名，默认.cs</param>
+    /// <param name="overwrite">是否覆盖目标文件</param>
+    /// <param name="chineseFileName">是否使用中文名</param>
+    public virtual String Save(String ext = null, Boolean overwrite = true, Boolean chineseFileName = true)
+    {
+        var p = GetFileName(ext, chineseFileName);
 
         if (!File.Exists(p) || overwrite) File.WriteAllText(p.EnsureDirectory(true), ToString(), Encoding.UTF8);
 
