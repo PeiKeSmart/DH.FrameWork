@@ -204,6 +204,12 @@ public class DHSetting : Config<DHSetting>
     [Description("App接口请求的Token值")]
     public String ServerToken { get; set; } = "HlkTech20200429";
 
+    /// <summary>
+    /// 是否允许全局添加JWT授权，一般用于纯接口控制器
+    /// </summary>
+    [Description("是否允许全局添加JWT授权")]
+    public Boolean IsAllowGlobalJWTAuthorize { get; set; }
+
     #region 方法
     /// <summary>实例化</summary>
     public DHSetting() { }
