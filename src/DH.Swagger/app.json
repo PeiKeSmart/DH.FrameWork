@@ -1,0 +1,39 @@
+{
+  "SwaggerOption": {
+    "Enabled": true,
+    "IsDarkTheme": true,
+    "MiniProfilerEnabled": false,
+    //"XmlComments": [ "", "" ],
+    "RoutePrefix": "swagger",
+    "DescEndpoint": "lu/", //json endpoint
+    "Description": "this is swagger for netcore",
+    "Title": "Demo swagger",
+    "Version": "first version",
+    "TermsOfService": "netcore.com",
+    "Contact": {
+      "Email": "swagger@netcore.com",
+      "Name": "swagger",
+      "Url": "swagger@netcore.com"
+    },
+    "License": {
+      "Name": "",
+      "Url": ""
+    },
+    "Headers": [ //swaggerĬ��ͷ����
+      {
+        "Name": "User",
+        "Description": "�û�"
+      }
+    ],
+    "Query": [ //swaggerĬ��url��������
+      {
+        "Name": "sign",
+        "Description": "ǩ��"
+      },
+      {
+        "Name": "timestamp",
+        "Description": "�ͻ���ʱ���"
+      }
+    ]
+  }
+}
