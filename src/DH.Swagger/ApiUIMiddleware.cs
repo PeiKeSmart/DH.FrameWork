@@ -9,7 +9,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
-namespace DG.Swagger;
+namespace DH.Swagger;
 
 public class ApiUIMiddleware {
 

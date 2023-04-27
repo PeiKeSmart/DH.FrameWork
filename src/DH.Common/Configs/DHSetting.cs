@@ -210,12 +210,6 @@ public class DHSetting : Config<DHSetting>
     [Description("是否允许全局添加JWT授权")]
     public Boolean IsAllowGlobalJWTAuthorize { get; set; }
 
-    /// <summary>
-    /// 允许Release下启用Swagger
-    /// </summary>
-    [Description("允许Release下启用Swagger")]
-    public Boolean IsAllowSwagger { get; set; } = false;
-
     #region 方法
     /// <summary>实例化</summary>
     public DHSetting() { }

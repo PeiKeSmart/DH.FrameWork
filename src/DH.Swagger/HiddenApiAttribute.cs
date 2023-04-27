@@ -7,7 +7,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 using System.Reflection;
 
-namespace DG.Web.Framework {
+namespace DH.Swagger {
     /// <summary>
     /// 自定义Swagger隐藏过滤器
     /// </summary>

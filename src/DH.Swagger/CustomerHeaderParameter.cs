@@ -3,7 +3,7 @@ using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Collections.Generic;
 
-namespace DG.Swagger
+namespace DH.Swagger
 {
     public class CustomerHeaderParameter : IOperationFilter
     {

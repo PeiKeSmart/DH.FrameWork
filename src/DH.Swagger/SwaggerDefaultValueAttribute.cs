@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DG.Swagger
+namespace DH.Swagger
 {
     /// <summary>
     /// Swagger默认值设置

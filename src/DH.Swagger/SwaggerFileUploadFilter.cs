@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DG.Swagger
+namespace DH.Swagger
 {
     public class SwaggerFileUploadFilter : IOperationFilter
     {

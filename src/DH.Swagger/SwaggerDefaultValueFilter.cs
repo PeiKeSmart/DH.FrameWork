@@ -10,7 +10,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 
-namespace DG.Swagger
+namespace DH.Swagger
 {
     /// <summary>
     /// swagger默认值，只对swagger生效，避免直接使用[DefaultValue]影响正常业务

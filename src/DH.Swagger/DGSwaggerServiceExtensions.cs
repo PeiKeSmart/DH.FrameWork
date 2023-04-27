@@ -1,6 +1,4 @@
-﻿using DG.Web.Framework;
-
-using DH.AspNetCore;
+﻿using DH.AspNetCore;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -16,7 +14,7 @@ using Swashbuckle.AspNetCore.SwaggerUI;
 
 using System.Reflection;
 
-namespace DG.Swagger {
+namespace DH.Swagger {
     public static class NetProSwaggerServiceExtensions
     {
         public static IServiceCollection AddNetProSwagger(this IServiceCollection services, IConfiguration configuration)
@@ -153,14 +151,14 @@ namespace DG.Swagger {
 
                     #region
                     if (configuration.GetValue("SwaggerOption:Theme", 0) == 1)
-                        c.IndexStream = () => typeof(NetProSwaggerMiddlewareExtensions).GetTypeInfo().Assembly.GetManifestResourceStream("DG.Swagger.IndexDark.html");
+                        c.IndexStream = () => typeof(NetProSwaggerMiddlewareExtensions).GetTypeInfo().Assembly.GetManifestResourceStream("DH.Swagger.IndexDark.html");
                     else if (configuration.GetValue("SwaggerOption:Theme", 0) == 2)
                     {
-                        c.IndexStream = () => typeof(NetProSwaggerMiddlewareExtensions).GetTypeInfo().Assembly.GetManifestResourceStream("DG.Swagger.wwwroot.swagger.index.html");
+                        c.IndexStream = () => typeof(NetProSwaggerMiddlewareExtensions).GetTypeInfo().Assembly.GetManifestResourceStream("DH.Swagger.wwwroot.swagger.index.html");
                     }
                     else
                     {
-                        c.IndexStream = () => typeof(NetProSwaggerMiddlewareExtensions).GetTypeInfo().Assembly.GetManifestResourceStream("DG.Swagger.index.html");
+                        c.IndexStream = () => typeof(NetProSwaggerMiddlewareExtensions).GetTypeInfo().Assembly.GetManifestResourceStream("DH.Swagger.index.html");
                     }
                     #endregion
                     

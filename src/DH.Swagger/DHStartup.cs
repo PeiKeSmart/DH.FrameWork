@@ -9,7 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace DG.Swagger {
+namespace DH.Swagger {
     public class DHStartup : IDHStartup {
         public int Order => 200;
 
@@ -23,18 +23,7 @@ namespace DG.Swagger {
             var env = application.ApplicationServices.GetService<IWebHostEnvironment>();
 
             // 封装Swagger展示
-            if (env.IsDevelopment())
-            {
-                application.UseNetProSwagger();
-            }
-            else
-            {
-                if (DHSetting.Current.IsAllowSwagger)
-                {
-                    application.UseNetProSwagger();
-                }
-            }
-
+            application.UseNetProSwagger();
         }
 
         public void ConfigureArea()
