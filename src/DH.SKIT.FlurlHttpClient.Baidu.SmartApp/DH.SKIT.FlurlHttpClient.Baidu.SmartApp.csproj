@@ -44,6 +44,7 @@
 	<IncludeSymbols>true</IncludeSymbols>
 	<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	<GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 	
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
