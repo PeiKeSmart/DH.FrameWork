@@ -1,6 +1,4 @@
-﻿using AngleSharp;
-
-using AutoMapper;
+﻿using AutoMapper;
 
 using DH.Core.Infrastructure;
 using DH.Entity;
@@ -310,78 +308,78 @@ public static class CommonHelpers
         return mapper.Map<T>(source);
     }
 
-    /// <summary>
-    /// 清理html的img标签的除src之外的其他属性
-    /// </summary>
-    /// <param name="html"></param>
-    /// <returns></returns>
-    public static async Task<string> ClearImgAttributes(this string html)
-    {
-        var context = BrowsingContext.New(AngleSharp.Configuration.Default);
-        var doc = await context.OpenAsync(req => req.Content(html));
-        var nodes = doc.DocumentElement.GetElementsByTagName("img");
-        var allows = new[] { "src", "data-original", "width", "style", "class" };
-        foreach (var node in nodes)
-        {
-            for (var i = 0; i < node.Attributes.Length; i++)
-            {
-                if (allows.Contains(node.Attributes[i].Name))
-                {
-                    continue;
-                }
+    ///// <summary>
+    ///// 清理html的img标签的除src之外的其他属性
+    ///// </summary>
+    ///// <param name="html"></param>
+    ///// <returns></returns>
+    //public static async Task<string> ClearImgAttributes(this string html)
+    //{
+    //    var context = BrowsingContext.New(AngleSharp.Configuration.Default);
+    //    var doc = await context.OpenAsync(req => req.Content(html));
+    //    var nodes = doc.DocumentElement.GetElementsByTagName("img");
+    //    var allows = new[] { "src", "data-original", "width", "style", "class" };
+    //    foreach (var node in nodes)
+    //    {
+    //        for (var i = 0; i < node.Attributes.Length; i++)
+    //        {
+    //            if (allows.Contains(node.Attributes[i].Name))
+    //            {
+    //                continue;
+    //            }
 
-                node.RemoveAttribute(node.Attributes[i].Name);
-            }
-        }
+    //            node.RemoveAttribute(node.Attributes[i].Name);
+    //        }
+    //    }
 
-        return doc.Body.InnerHtml;
-    }
+    //    return doc.Body.InnerHtml;
+    //}
 
-    /// <summary>
-    /// 将html的img标签的src属性名替换成data-original
-    /// </summary>
-    /// <param name="html"></param>
-    /// <param name="title"></param>
-    /// <returns></returns>
-    public static async Task<string> ReplaceImgAttribute(this string html, string title)
-    {
-        var context = BrowsingContext.New(AngleSharp.Configuration.Default);
-        var doc = await context.OpenAsync(req => req.Content(html));
-        var nodes = doc.DocumentElement.GetElementsByTagName("img");
-        foreach (var node in nodes)
-        {
-            if (node.HasAttribute("src"))
-            {
-                string src = node.Attributes["src"].Value;
-                node.RemoveAttribute("src");
-                node.SetAttribute("data-original", src);
-                node.SetAttribute("alt", SystemSettings["Title"]);
-                node.SetAttribute("title", title);
-            }
-        }
+    ///// <summary>
+    ///// 将html的img标签的src属性名替换成data-original
+    ///// </summary>
+    ///// <param name="html"></param>
+    ///// <param name="title"></param>
+    ///// <returns></returns>
+    //public static async Task<string> ReplaceImgAttribute(this string html, string title)
+    //{
+    //    var context = BrowsingContext.New(AngleSharp.Configuration.Default);
+    //    var doc = await context.OpenAsync(req => req.Content(html));
+    //    var nodes = doc.DocumentElement.GetElementsByTagName("img");
+    //    foreach (var node in nodes)
+    //    {
+    //        if (node.HasAttribute("src"))
+    //        {
+    //            string src = node.Attributes["src"].Value;
+    //            node.RemoveAttribute("src");
+    //            node.SetAttribute("data-original", src);
+    //            node.SetAttribute("alt", SystemSettings["Title"]);
+    //            node.SetAttribute("title", title);
+    //        }
+    //    }
 
-        return doc.Body.InnerHtml;
-    }
+    //    return doc.Body.InnerHtml;
+    //}
 
-    /// <summary>
-    /// 获取文章摘要
-    /// </summary>
-    /// <param name="html"></param>
-    /// <param name="length">截取长度</param>
-    /// <param name="min">摘要最少字数</param>
-    /// <returns></returns>
-    public static async Task<string> GetSummary(this string html, int length = 150, int min = 10)
-    {
-        var context = BrowsingContext.New(AngleSharp.Configuration.Default);
-        var doc = await context.OpenAsync(req => req.Content(html));
-        var summary = doc.DocumentElement.GetElementsByTagName("p").FirstOrDefault(n => n.TextContent.Length > min)?.TextContent ?? "没有摘要";
-        if (summary.Length > length)
-        {
-            return summary[..length] + "...";
-        }
+    ///// <summary>
+    ///// 获取文章摘要
+    ///// </summary>
+    ///// <param name="html"></param>
+    ///// <param name="length">截取长度</param>
+    ///// <param name="min">摘要最少字数</param>
+    ///// <returns></returns>
+    //public static async Task<string> GetSummary(this string html, int length = 150, int min = 10)
+    //{
+    //    var context = BrowsingContext.New(AngleSharp.Configuration.Default);
+    //    var doc = await context.OpenAsync(req => req.Content(html));
+    //    var summary = doc.DocumentElement.GetElementsByTagName("p").FirstOrDefault(n => n.TextContent.Length > min)?.TextContent ?? "没有摘要";
+    //    if (summary.Length > length)
+    //    {
+    //        return summary[..length] + "...";
+    //    }
 
-        return summary;
-    }
+    //    return summary;
+    //}
 
     public static string TrimQuery(this string path)
     {
