@@ -1,12 +1,13 @@
-﻿using System.Text.RegularExpressions;
+﻿using DH.Extensions;
+
+using System.Text.RegularExpressions;
 
 namespace DH.AspNetCore.Mime;
 
 /// <summary>
 /// 默认MIME映射器，可以根据文件扩展名获取标准内容类型。
 /// </summary>
-public class MimeMapper : IMimeMapper
-{
+public class MimeMapper : IMimeMapper {
     /// <summary>
     /// 默认Mime  - 如果没有找到任何其他映射则作为默认的Mime-Type
     /// </summary>
@@ -18,14 +19,24 @@ public class MimeMapper : IMimeMapper
     private readonly Regex _pathExtensionPattern = new Regex("\\.(\\w*)$");
 
     /// <summary>
-    /// Mime类型的默认字典(Content types)
+    /// Mime类型与扩展名的映射字典(扩展名:mimetype)
     /// </summary>
-    public static Dictionary<string, string> MimeTypes { get; }
+    public static Dictionary<string, string> MimeTypes { get; } = new Dictionary<string, string>();
+
+    /// <summary>
+    /// mime类型与扩展名的映射关系(mimetype:扩展名)
+    /// </summary>
+    public static Dictionary<string, string> ExtTypes { get; } = new Dictionary<string, string>();
 
     static MimeMapper()
     {
-        MimeTypes = DefaultMimeItems.Items.ToDictionary(item => "." + item.Extension, item => item.MimeType);
+        foreach (var item in DefaultMimeItems.Items)
+        {
+            MimeTypes.AddOrUpdate("." + item.Extension, item.MimeType);
+            ExtTypes.AddOrUpdate(item.MimeType, "." + item.Extension);
+        }
     }
+
     /// <summary>
     /// 
     /// </summary>
@@ -53,14 +64,8 @@ public class MimeMapper : IMimeMapper
         {
             foreach (var mapping in extensions)
             {
-                if (MimeTypes.ContainsKey(mapping.Extension))
-                {
-                    MimeTypes[mapping.Extension] = mapping.MimeType;
-                }
-                else
-                {
-                    MimeTypes.Add(mapping.Extension, mapping.MimeType);
-                }
+                MimeTypes.AddOrUpdate(mapping.Extension, mapping.MimeType);
+                ExtTypes.AddOrUpdate(mapping.MimeType, mapping.Extension);
             }
         }
         return this;
@@ -74,8 +79,18 @@ public class MimeMapper : IMimeMapper
     public string GetMimeFromExtension(string fileExtension)
     {
         fileExtension = (fileExtension ?? string.Empty).ToLower();
-        fileExtension = fileExtension.Trim().StartsWith(".") ? fileExtension.Replace(".", "") : fileExtension;
         return MimeTypes.ContainsKey(fileExtension) ? MimeTypes[fileExtension] : DefaultMime;
+    }
+
+    /// <summary>
+    /// 返回特定Content-Type的文件扩展名，如果未找到任何对应关系，则返回空值
+    /// </summary>
+    /// <param name="mime"></param>
+    /// <returns></returns>
+    public string GetExtensionFromMime(string mime)
+    {
+        mime = (mime ?? string.Empty).ToLower();
+        return ExtTypes.ContainsKey(mime) ? ExtTypes[mime] : "";
     }
 
     /// <summary>
