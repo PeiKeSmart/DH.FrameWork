@@ -1,4 +1,4 @@
-﻿namespace DH.Helpers;
+﻿namespace DH.Models;
 
 public class DResult
 {
@@ -27,7 +27,7 @@ public class DResult
     /// <summary>
     /// 网址路径
     /// </summary>
-    public String locate { get; set; }
+    public string locate { get; set; }
 }
 
 public class DResult<T> : DResult
