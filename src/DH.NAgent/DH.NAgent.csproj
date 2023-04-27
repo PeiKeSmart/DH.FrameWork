@@ -26,7 +26,6 @@
 	<!--禁止生成launchSettings.json-->
 	<NoDefaultLaunchSettingsFile>True</NoDefaultLaunchSettingsFile>
 	<!--<Nullable>enable</Nullable>-->
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 	
   <PropertyGroup>

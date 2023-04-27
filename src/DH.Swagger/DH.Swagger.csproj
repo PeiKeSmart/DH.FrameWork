@@ -6,15 +6,14 @@
     <OutputType>Library</OutputType>
     <ImplicitUsings>enable</ImplicitUsings>
     <TargetFramework>net7.0</TargetFramework>
-    <RootNamespace>DG.Swagger</RootNamespace>
-    <AssemblyName>DG.Swagger</AssemblyName>
+    <RootNamespace>DH.Swagger</RootNamespace>
+    <AssemblyName>DH.Swagger</AssemblyName>
     <AssemblyTitle>Swagger扩展库</AssemblyTitle>
-    <Description>用于DG框架的Swagger扩展库，包含认证，文件上传，公共参，个性主题，参考https://gitee.com/feiyit/fytapi.mui</Description>
+    <Description>用于DH框架的Swagger扩展库，包含认证，文件上传，公共参，个性主题，参考https://gitee.com/feiyit/fytapi.mui</Description>
     <Company>湖北登灏科技有限公司</Company>
     
     <OutputPath>..\Bin</OutputPath>
     <DocumentationFile>$(OutputPath)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-    <DefineConstants>$(DefineConstants);__CORE__</DefineConstants>
     <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
 	<!--<StaticWebAssetsEnabled>false</StaticWebAssetsEnabled>-->
 
@@ -35,10 +34,10 @@
     <Authors>$(Company)</Authors>
     <PackageProjectUrl>https://www.haocoding.com/</PackageProjectUrl>
 	<PackageIcon>DH.png</PackageIcon>
-    <RepositoryUrl>https://www.gitccc.com/admin/DG.FrameWork</RepositoryUrl>
+	<RepositoryUrl>https://gitee.com/chuangchu/DH.FrameWork</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
-    <PackageTags>湖北登灏科技有限公司;DG组件;DG;$(AssemblyName)</PackageTags>
-    <PackageReleaseNotes>用于DG框架的Swagger扩展库，包含认证，文件上传，公共参，个性主题</PackageReleaseNotes>
+    <PackageTags>湖北登灏科技有限公司;DH组件;DH;$(AssemblyName)</PackageTags>
+    <PackageReleaseNotes>用于DH框架的Swagger扩展库，包含认证，文件上传，公共参，个性主题</PackageReleaseNotes>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
