@@ -8,7 +8,7 @@ namespace DH.Extensions;
 /// <summary>
 /// 可枚举类型<see cref="IEnumerable{T}"/> 扩展
 /// </summary>
-public static class EnumerableExtensions
+public static partial class EnumerableExtensions
 {
     #region ForEach(对指定集合中的每个元素执行指定操作)
 

@@ -3,8 +3,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace DH.Security
-{
+namespace DH.Security {
     /// <summary>
     /// 加密操作
     /// 说明：
@@ -67,6 +66,73 @@ namespace DH.Security
                 md5?.Dispose();
             }
             return result.Replace("-", "");
+        }
+
+        /// <summary>
+        ///     对字符串进行MD5加密
+        /// </summary>
+        /// <param name="message">需要加密的字符串</param>
+        /// <returns>加密后的结果</returns>
+        public static string MDString(this string message)
+        {
+            MD5 md5 = MD5.Create();
+            byte[] buffer = Encoding.Default.GetBytes(message);
+            byte[] bytes = md5.ComputeHash(buffer);
+            return bytes.Aggregate("", (current, b) => current + b.ToString("x2"));
+        }
+
+        /// <summary>
+        ///     对字符串进行MD5二次加密
+        /// </summary>
+        /// <param name="message">需要加密的字符串</param>
+        /// <returns>加密后的结果</returns>
+        public static string MDString2(this string message) => MDString(MDString(message));
+
+        /// <summary>
+        /// MD5 三次加密算法
+        /// </summary>
+        /// <param name="s">需要加密的字符串</param>
+        /// <returns>MD5字符串</returns>
+        public static string MDString3(this string s)
+        {
+            using MD5 md5 = MD5.Create();
+            byte[] bytes = Encoding.ASCII.GetBytes(s);
+            byte[] bytes1 = md5.ComputeHash(bytes);
+            byte[] bytes2 = md5.ComputeHash(bytes1);
+            byte[] bytes3 = md5.ComputeHash(bytes2);
+            return bytes3.Aggregate("", (current, b) => current + b.ToString("x2"));
+        }
+
+        /// <summary>
+        ///     对字符串进行MD5加盐加密
+        /// </summary>
+        /// <param name="message">需要加密的字符串</param>
+        /// <param name="salt">盐</param>
+        /// <returns>加密后的结果</returns>
+        public static string MDString(this string message, string salt) => MDString(message + salt);
+
+        /// <summary>
+        ///     对字符串进行MD5二次加盐加密
+        /// </summary>
+        /// <param name="message">需要加密的字符串</param>
+        /// <param name="salt">盐</param>
+        /// <returns>加密后的结果</returns>
+        public static string MDString2(this string message, string salt) => MDString(MDString(message + salt), salt);
+
+        /// <summary>
+        /// MD5 三次加密算法
+        /// </summary>
+        /// <param name="s">需要加密的字符串</param>
+        /// <param name="salt">盐</param>
+        /// <returns>MD5字符串</returns>
+        public static string MDString3(this string s, string salt)
+        {
+            using MD5 md5 = MD5.Create();
+            byte[] bytes = Encoding.ASCII.GetBytes(s + salt);
+            byte[] bytes1 = md5.ComputeHash(bytes);
+            byte[] bytes2 = md5.ComputeHash(bytes1);
+            byte[] bytes3 = md5.ComputeHash(bytes2);
+            return bytes3.Aggregate("", (current, b) => current + b.ToString("x2"));
         }
 
         #endregion
@@ -650,6 +716,51 @@ namespace DH.Security
             string.IsNullOrWhiteSpace(value)
                 ? string.Empty
                 : encoding.GetString(Convert.FromBase64String(value));
+
+        #endregion
+
+        #region 获取文件的MD5值
+
+        /// <summary>
+        /// 获取文件的MD5值
+        /// </summary>
+        /// <param name="fileName">需要求MD5值的文件的文件名及路径</param>
+        /// <returns>MD5字符串</returns>
+        public static string MDFile(this string fileName)
+        {
+            using var fs = new BufferedStream(File.Open(fileName, FileMode.Open, FileAccess.Read), 1048576);
+            using MD5 md5 = MD5.Create();
+            byte[] bytes = md5.ComputeHash(fs);
+            return bytes.Aggregate("", (current, b) => current + b.ToString("x2"));
+        }
+
+        /// <summary>
+        /// 计算文件的sha256
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <returns></returns>
+        public static string SHA256File(this Stream stream)
+        {
+            using var fs = new BufferedStream(stream, 1048576);
+            SHA256Managed sha = new SHA256Managed();
+            byte[] checksum = sha.ComputeHash(fs);
+            return BitConverter.ToString(checksum).Replace("-", string.Empty);
+        }
+
+        /// <summary>
+        /// 获取数据流的MD5值
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <returns>MD5字符串</returns>
+        public static string MDString(this Stream stream)
+        {
+            using var fs = new BufferedStream(stream, 1048576);
+            using MD5 md5 = MD5.Create();
+            byte[] bytes = md5.ComputeHash(fs);
+            var mdstr = bytes.Aggregate("", (current, b) => current + b.ToString("x2"));
+            stream.Position = 0;
+            return mdstr;
+        }
 
         #endregion
     }

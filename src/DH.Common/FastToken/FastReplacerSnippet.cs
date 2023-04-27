@@ -2,10 +2,8 @@
 
 namespace DH.FastToken;
 
-internal class FastReplacerSnippet
-{
-    private class InnerSnippet
-    {
+internal class FastReplacerSnippet {
+    private class InnerSnippet {
         public FastReplacerSnippet Snippet;
         public int Start; // Position of the snippet in parent snippet's Text.
         public int End; // Position of the snippet in parent snippet's Text.

@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Specialized;
 using System.Globalization;
 using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -14,8 +15,7 @@ namespace DH.Extension;
 /// <summary>
 /// 字符串(<see cref="string"/>) 扩展
 /// </summary>
-public static partial class StringExtensions
-{
+public static partial class StringExtensions {
     #region Remove(移除字符串)
     /// <summary>
     /// 从当前字符串中移除任何指定的字符
@@ -1359,6 +1359,34 @@ public static partial class StringExtensions
 
     #endregion IP地址
 
+    #region Url
+
+    /// <summary>
+    /// 判断url是否是外部地址
+    /// </summary>
+    /// <param name="url"></param>
+    /// <returns></returns>
+    public static bool IsExternalAddress(this string url)
+    {
+        var uri = new Uri(url);
+        switch (uri.HostNameType)
+        {
+            case UriHostNameType.Dns:
+                var ipHostEntry = Dns.GetHostEntry(uri.DnsSafeHost);
+                if (ipHostEntry.AddressList.Where(ipAddress => ipAddress.AddressFamily == AddressFamily.InterNetwork).Any(ipAddress => !ipAddress.IsPrivateIP()))
+                {
+                    return true;
+                }
+                break;
+
+            case UriHostNameType.IPv4:
+                return !IPAddress.Parse(uri.DnsSafeHost).IsPrivateIP();
+        }
+        return false;
+    }
+
+    #endregion Url
+
     #region 检测字符串中是否包含列表中的关键词
 
     /// <summary>
@@ -1401,5 +1429,108 @@ public static partial class StringExtensions
     }
 
     #endregion 检测字符串中是否包含列表中的关键词
+
+    #region 权威校验中国专利申请号/专利号
+    /// <summary>
+    /// 中国专利申请号（授权以后就是专利号）由两种组成
+    /// 2003年9月30号以前的9位（不带校验位是8号），校验位之前可能还会有一个点，例如：00262311, 002623110 或 00262311.0
+    /// 2003年10月1号以后的13位（不带校验位是12号），校验位之前可能还会有一个点，例如：200410018477, 2004100184779 或200410018477.9
+    /// http://www.sipo.gov.cn/docs/pub/old/wxfw/zlwxxxggfw/hlwzljsxt/hlwzljsxtsyzn/201507/P020150713610193194682.pdf
+    /// 上面的文档中均不包括校验算法，但是下面的校验算法没有问题
+    /// </summary>
+    /// <param name="patnum">源字符串</param>
+    /// <returns>是否匹配成功</returns>
+    public static bool MatchCNPatentNumber(this string patnum)
+    {
+        Regex patnumWithCheckbitPattern = new Regex(@"^
+(?<!\d)
+(?<patentnum>
+    (?<basenum>
+        (?<year>(?<old>8[5-9]|9[0-9]|0[0-3])|(?<new>[2-9]\d{3}))
+        (?<sn>
+            (?<patenttype>[12389])
+            (?(old)\d{5}|(?(new)\d{7}))
+        )
+    )
+    (?:
+    \.?
+    (?<checkbit>[0-9X])
+    )?
+)
+(?!\d)
+$", RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase | RegexOptions.Multiline);
+        Match m = patnumWithCheckbitPattern.Match(patnum);
+        if (!m.Success)
+        {
+            return false;
+        }
+        bool isPatnumTrue = true;
+        patnum = patnum.ToUpper().Replace(".", "");
+        if (patnum.Length == 9 || patnum.Length == 8)
+        {
+            byte[] factors8 = new byte[8] { 2, 3, 4, 5, 6, 7, 8, 9 };
+            int year = Convert.ToUInt16(patnum.Substring(0, 2));
+            year += (year >= 85) ? (ushort)1900u : (ushort)2000u;
+            if (year >= 1985 || year <= 2003)
+            {
+                int sum = 0;
+                for (byte i = 0; i < 8; i++)
+                {
+                    sum += factors8[i] * (patnum[i] - '0');
+                }
+                char checkbit = "0123456789X"[sum % 11];
+                if (patnum.Length == 9)
+                {
+                    if (checkbit != patnum[8])
+                    {
+                        isPatnumTrue = false;
+                    }
+                }
+                else
+                {
+                    patnum += checkbit;
+                }
+            }
+            else
+            {
+                isPatnumTrue = false;
+            }
+        }
+        else if (patnum.Length == 13 || patnum.Length == 12)
+        {
+            byte[] factors12 = new byte[12] { 2, 3, 4, 5, 6, 7, 8, 9, 2, 3, 4, 5 };
+            int year = Convert.ToUInt16(patnum.Substring(0, 4));
+            if (year >= 2003 && year <= DateTime.Now.Year)
+            {
+                int sum = 0;
+                for (byte i = 0; i < 12; i++)
+                {
+                    sum += factors12[i] * (patnum[i] - '0');
+                }
+                char checkbit = "0123456789X"[sum % 11];
+                if (patnum.Length == 13)
+                {
+                    if (checkbit != patnum[12])
+                    {
+                        isPatnumTrue = false;
+                    }
+                }
+                else
+                {
+                    patnum += checkbit;
+                }
+            }
+            else
+            {
+                isPatnumTrue = false;
+            }
+        }
+        else
+        {
+            isPatnumTrue = false;
+        }
+        return isPatnumTrue;
+    }
+    #endregion
 
 }

@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using NewLife.Collections;
+
+using System.Text;
 
 namespace DH.FastToken;
 
@@ -7,8 +9,7 @@ namespace DH.FastToken;
 /// FastReplacer仅限于替换格式正确的令牌。
 /// 使用ToString()函数获取最终文本。
 /// </summary>
-public class FastReplacer
-{
+public class FastReplacer {
     private readonly string TokenOpen;
     private readonly string TokenClose;
 
@@ -32,8 +33,7 @@ public class FastReplacer
 
     private readonly FastReplacerSnippet RootSnippet = new FastReplacerSnippet("");
 
-    private class TokenOccurrence
-    {
+    private class TokenOccurrence {
         public FastReplacerSnippet Snippet;
         public int Start; // Position of a token in the snippet.
         public int End; // Position of a token in the snippet.
@@ -167,6 +167,7 @@ public class FastReplacer
     public override string ToString()
     {
         int totalTextLength = RootSnippet.GetLength();
+
         var sb = new StringBuilder(totalTextLength);
         RootSnippet.ToString(sb);
         if (sb.Length != totalTextLength)
