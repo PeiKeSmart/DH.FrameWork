@@ -519,5 +519,11 @@ public static class DefaultMimeItems {
             new MimeMappingItem{Extension = "Z", MimeType = "application/x-compress"},
             new MimeMappingItem{Extension = "z", MimeType = "application/x-compress"},
             new MimeMappingItem{Extension = "zip", MimeType = "application/zip"},
+
+            new MimeMappingItem{Extension = "properties", MimeType = "text/plain"},
+            new MimeMappingItem{Extension = "bin", MimeType = "application/octet-stream"},
+            new MimeMappingItem{Extension = "apk", MimeType = "application/vnd.android.package-archive"},
+            new MimeMappingItem{Extension = "ota", MimeType = "application/octet-stream"},
+            new MimeMappingItem{Extension = "s19", MimeType = "application/octet-stream"},
         }.AsReadOnly();
 }
