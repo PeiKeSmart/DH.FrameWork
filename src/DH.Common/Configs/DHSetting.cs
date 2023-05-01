@@ -180,10 +180,6 @@ public class DHSetting : Config<DHSetting>
     [Description("动态页面转静态页面过期时间")]
     public Int32 HtmlStaticExpireMinutes { get; set; } = 1;
 
-    /// <summary>不限制任何跨域</summary>
-    [Description("不限制任何跨域")]
-    public Boolean AllowAllOrigin { get; set; }
-
     /// <summary>跨域授权地址</summary>
     [Description("跨域授权地址")]
     public String CORSUrl { get; set; } = "https://localhost:9091,http://localhost:9090";
@@ -209,6 +205,10 @@ public class DHSetting : Config<DHSetting>
     /// </summary>
     [Description("是否允许全局添加JWT授权")]
     public Boolean IsAllowGlobalJWTAuthorize { get; set; }
+
+    /// <summary>网站启动时监听端口</summary>
+    [Description("网站启动时监听端口")]
+    public String Urls { get; set; } = "http://*:9090;https://*:9091";
 
     #region 方法
     /// <summary>实例化</summary>
