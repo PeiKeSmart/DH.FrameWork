@@ -109,6 +109,11 @@ public class DHSetting : Config<DHSetting>
     [Category("界面配置")]
     public String StartPage { get; set; }
 
+    /// <summary>星尘Web。星尘控制台地址，支持直达调用链 /trace?id={traceId} 或 /graph?id={traceId}</summary>
+    [Description("星尘Web。星尘控制台地址，支持直达调用链 /trace?id={traceId} 或 /graph?id={traceId}")]
+    [Category("界面配置")]
+    public String StarWeb { get; set; }
+
     /// <summary>默认角色。默认普通用户</summary>
     [Description("默认角色。默认普通用户")]
     [Category("用户登录")]
