@@ -215,6 +215,11 @@ public class DHSetting : Config<DHSetting>
     [Description("网站启动时监听端口")]
     public String Urls { get; set; } = "http://*:9090;https://*:9091";
 
+    /// <summary>机器人错误码。设置后拦截各种爬虫并返回相应错误，如404/500，默认0不拦截</summary>
+    [Description("机器人错误码。设置后拦截各种爬虫并返回相应错误，如404/500，默认0不拦截")]
+    [Category("通用")]
+    public Int32 RobotError { get; set; }
+
     #region 方法
     /// <summary>实例化</summary>
     public DHSetting() { }
