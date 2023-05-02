@@ -1,6 +1,7 @@
 ﻿using DH.AspNetCore.Webs;
-using DH.Core.Infrastructure;
 using DH.Entity;
+
+using Microsoft.Extensions.DependencyInjection;
 
 using NewLife;
 using NewLife.Log;
@@ -14,24 +15,14 @@ namespace DH.Web.Framework.Services;
 /// <summary>
 /// 用户服务
 /// </summary>
-public class UserService
-{
+public class UserService {
     private readonly ITracer _tracer;
 
     /// <summary>
     /// 实例化用户服务
     /// </summary>
-    public UserService()
-    {
-        try
-        {
-            _tracer = EngineContext.Current.Resolve<ITracer>();  //provider?.GetService<ITracer>();
-        }
-        catch
-        {
-            _tracer = null;
-        }
-    }
+    /// <param name="provider"></param>
+    public UserService(IServiceProvider provider) => _tracer = provider?.GetService<ITracer>();
 
     #region 核心控制
     private TimerX _timer;
@@ -115,6 +106,7 @@ public class UserService
 
     /// <summary>设置网页会话状态</summary>
     /// <param name="sessionId"></param>
+    /// <param name="deviceId"></param>
     /// <param name="page"></param>
     /// <param name="status"></param>
     /// <param name="userAgent"></param>
