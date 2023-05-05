@@ -9,7 +9,7 @@
 	<RootNamespace>DH.Payment.UnionPay</RootNamespace>
 	<AssemblyName>DH.Payment.UnionPay</AssemblyName>
 	<AssemblyTitle>银联支付类库</AssemblyTitle>
-	<Description>银联支付类库，参考https://github.com/essensoft/payment 移除#46相关渠道</Description>
+	<Description>银联支付类库，参考https://github.com/essensoft/payment</Description>
 	<Company>湖北登灏科技有限公司</Company>
 	
 	<OutputPath>..\Bin</OutputPath>
