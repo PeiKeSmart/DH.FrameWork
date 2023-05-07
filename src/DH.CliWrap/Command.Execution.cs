@@ -7,8 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace DH.CliWrap;
 
-public partial class Command
-{
+public partial class Command {
     // System.Diagnostics.Process already resolves the full path by itself, but it naively assumes that the file
     // is an executable if the extension is omitted. On Windows, BAT and CMD files may also be valid targets.
     // In practice, it means that Process.Start("dotnet") works because the corresponding "dotnet.exe"
@@ -136,7 +135,7 @@ public partial class Command
                     // drops the task and returns early.
                     // This is important with stdin because the process might finish before
                     // the pipe has been fully exhausted, and we don't want to wait for it.
-                    .WithUncooperativeCancellation(cancellationToken)
+                    .WaitAsync(cancellationToken)
                     .ConfigureAwait(false);
             }
             // Expect IOException: "The pipe has been ended" (Windows) or "Broken pipe" (Unix).
