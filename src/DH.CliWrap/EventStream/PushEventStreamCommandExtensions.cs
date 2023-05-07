@@ -9,8 +9,7 @@ namespace DH.CliWrap.EventStream;
 /// Event stream execution model.
 /// </summary>
 // TODO: (breaking change) split the partial class into two separate classes, one for each execution model
-public static partial class EventStreamCommandExtensions
-{
+public static partial class EventStreamCommandExtensions {
     /// <summary>
     /// Executes the command as a push-based event stream.
     /// </summary>
@@ -30,7 +29,7 @@ public static partial class EventStreamCommandExtensions
             var stdOutPipe = PipeTarget.Merge(
                 command.StandardOutputPipe,
                 PipeTarget.ToDelegate(
-                    s => observer.OnNext(new StandardOutputCommandEvent(s)),
+                    line => observer.OnNext(new StandardOutputCommandEvent(line)),
                     standardOutputEncoding
                 )
             );
@@ -38,7 +37,7 @@ public static partial class EventStreamCommandExtensions
             var stdErrPipe = PipeTarget.Merge(
                 command.StandardErrorPipe,
                 PipeTarget.ToDelegate(
-                    s => observer.OnNext(new StandardErrorCommandEvent(s)),
+                    line => observer.OnNext(new StandardErrorCommandEvent(line)),
                     standardErrorEncoding
                 )
             );
