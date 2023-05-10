@@ -58,7 +58,7 @@ public interface IEmailSender
     /// </summary>
     /// <param name="box">邮件</param>
     /// <returns></returns>
-    Task SendAsync(EmailBox box);
+    Task<String> SendAsync(EmailBox box);
 
     /// <summary>
     /// 发送邮件

@@ -112,7 +112,7 @@ public abstract class EmailSenderBase : IEmailSender
     /// </summary>
     /// <param name="box">邮件</param>
     /// <returns></returns>
-    public virtual async Task SendAsync(EmailBox box)
+    public virtual async Task<String> SendAsync(EmailBox box)
     {
         var mail = new MailMessage();
         var config = await ConfigProvider.GetConfigAsync();
@@ -125,7 +125,7 @@ public abstract class EmailSenderBase : IEmailSender
         mail.Body = box.Body;
         mail.IsBodyHtml = box.IsBodyHtml;
         HandlerAttachments(box.Attachments, mail.Attachments);
-        await SendAsync(mail);
+        return await SendAsync(mail);
     }
 
     /// <summary>

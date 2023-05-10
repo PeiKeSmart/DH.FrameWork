@@ -41,7 +41,7 @@ public static partial class Extensions
 
         services.Configure<Email>(Configuration.GetSection("Email"));
 
-        services.TryAddSingleton<IEmailConfigProvider, DefaultEmailConfigProvider>();
+        services.TryAddScoped<IEmailConfigProvider, DefaultEmailConfigProvider>();
         services.TryAddSingleton<IMailKitConfigProvider>(new DefaultMailKitConfigProvider(options.MailKitConfig));
         services.TryAddScoped<IMailKitSmtpBuilder, DefaultMailKitSmtpBuilder>();
         services.TryAddScoped<IMailKitEmailSender, MailKitEmailSender>();
