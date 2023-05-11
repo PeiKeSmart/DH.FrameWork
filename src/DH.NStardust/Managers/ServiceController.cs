@@ -12,8 +12,7 @@ namespace Stardust.Managers;
 /// <summary>
 /// 应用服务控制器
 /// </summary>
-internal class ServiceController : DisposeBase
-{
+internal class ServiceController : DisposeBase {
     #region 属性
     static Int32 _gid = 0;
     private readonly Int32 _id = Interlocked.Increment(ref _gid);
@@ -315,9 +314,9 @@ internal class ServiceController : DisposeBase
             {
                 Process.Start("kill", p.Id.ToString());
 
-                for (var i = 0; i < 10 && !p.HasExited; i++)
+                for (var i = 0; i < 50 && !p.HasExited; i++)
                 {
-                    Thread.Sleep(300);
+                    Thread.Sleep(200);
                 }
             }
         }
@@ -330,9 +329,9 @@ internal class ServiceController : DisposeBase
             {
                 WriteLog("已发送关闭窗口消息，等待目标进程退出");
 
-                for (var i = 0; i < 10 && !p.HasExited; i++)
+                for (var i = 0; i < 50 && !p.HasExited; i++)
                 {
-                    Thread.Sleep(300);
+                    Thread.Sleep(200);
                 }
             }
         }
