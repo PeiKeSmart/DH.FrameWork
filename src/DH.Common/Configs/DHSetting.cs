@@ -234,7 +234,7 @@ public class DHSetting : Config<DHSetting>
 
         if (DefaultRole.IsNullOrEmpty() || DefaultRole == "4") DefaultRole = "普通用户";
 
-        if (JwtOptions.Secret.IsNullOrEmpty() || JwtOptions.Secret.Split(':').Length != 2) JwtOptions.Secret = $"HS256:{Rand.NextString(16)}";
+        if (JwtOptions.Secret.IsNullOrEmpty() || JwtOptions.Secret.Split(':').Length != 2) JwtOptions.Secret = $"HS256:{Rand.NextString(26)}";
 
         if (PaswordStrength.IsNullOrEmpty()) PaswordStrength = @"^(?=.*\d.*)(?=.*[a-z].*)(?=.*[A-Z].*)(?=.*[^(0-9a-zA-Z)].*).{8,32}$";
         if (MaxLoginError <= 0) MaxLoginError = 6;

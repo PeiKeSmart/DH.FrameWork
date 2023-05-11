@@ -251,8 +251,11 @@ public partial class WebWorkContext : IWorkContext {
     {
         // 保存传递的语言标识符
         var customer = CurrentCustomer;
-        customer.LanguageId = language?.Id ?? 0;
-        customer.Update();
+        if (customer != null)
+        {
+            customer.LanguageId = language?.Id ?? 0;
+            customer.Update();
+        }
 
         // 设置cookie
         SetLanguageCookie(language);
