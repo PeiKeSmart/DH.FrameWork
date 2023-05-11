@@ -1,10 +1,11 @@
-﻿using System.Diagnostics;
+﻿using NewLife.Log;
+using NewLife.Reflection;
+
+using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Security;
 using System.Security.Principal;
-using NewLife.Log;
-using NewLife.Reflection;
 
 [assembly: RuntimeCompatibility(WrapNonExceptionThrows = true)]
 [module: UnverifiableCode]
@@ -12,8 +13,7 @@ using NewLife.Reflection;
 namespace NewLife.Agent;
 
 /// <summary>服务程序基类</summary>
-public abstract class ServiceBase : DisposeBase
-{
+public abstract class ServiceBase : DisposeBase {
     #region 属性
     /// <summary>主机</summary>
     public IHost Host { get; set; }
@@ -357,8 +357,7 @@ public abstract class ServiceBase : DisposeBase
     }
 
     /// <summary>菜单项</summary>
-    public class Menu
-    {
+    public class Menu {
         /// <summary>按键</summary>
         public Char Key { get; set; }
 
@@ -518,12 +517,17 @@ public abstract class ServiceBase : DisposeBase
         }
 
         _event.Dispose();
+        _event = null;
     }
 
     /// <summary>开始循环</summary>
     protected internal void StartLoop()
     {
+#if NET45_OR_GREATER || NETCOREAPP
+        NewLife.Model.Host.RegisterExit(OnProcessExit);
+#else
         AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
+#endif
 
         //GetType().Assembly.WriteVersion();
 
@@ -538,7 +542,10 @@ public abstract class ServiceBase : DisposeBase
     {
         if (!_running) return;
 
+#if NET45_OR_GREATER || NETCOREAPP
+#else
         AppDomain.CurrentDomain.ProcessExit -= OnProcessExit;
+#endif
 
         StopWork("StopLoop");
 
@@ -559,7 +566,8 @@ public abstract class ServiceBase : DisposeBase
 
     private void OnProcessExit(Object sender, EventArgs e)
     {
-        StopWork("ProcessExit");
+        WriteLog("OnProcessExit");
+        if (_running) StopWork("ProcessExit");
         //Environment.ExitCode = 0;
 
         if (XTrace.Log is CompositeLog compositeLog)
