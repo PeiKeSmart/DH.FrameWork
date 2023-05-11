@@ -12,7 +12,8 @@ namespace Stardust.Managers;
 /// <summary>
 /// 应用服务控制器
 /// </summary>
-internal class ServiceController : DisposeBase {
+internal class ServiceController : DisposeBase
+{
     #region 属性
     static Int32 _gid = 0;
     private readonly Int32 _id = Interlocked.Increment(ref _gid);
@@ -43,6 +44,9 @@ internal class ServiceController : DisposeBase {
     /// <summary>延迟时间。重启进程或服务的延迟时间，默认3000ms</summary>
     public Int32 Delay { get; set; } = 3000;
 
+    /// <summary>启动应用时的等待时间。如果该时间内进程退出，则认为启动失败</summary>
+    public Int32 StartWait { get; set; } = 3000;
+
     /// <summary>开始时间</summary>
     public DateTime StartTime { get; set; }
 
@@ -69,7 +73,7 @@ internal class ServiceController : DisposeBase {
     #endregion
 
     #region 方法
-    /// <summary>检查并启动应用</summary>
+    /// <summary>检查并启动应用，等待一会确认进程已启动</summary>
     /// <returns>本次是否成功启动，原来已启动返回false</returns>
     public Boolean Start()
     {
@@ -154,6 +158,7 @@ internal class ServiceController : DisposeBase {
                     {
                         FileName = file,
                         WorkingDirectory = workDir,
+                        UserName = service.UserName,
 
                         Tracer = Tracer,
                         Log = new ActionLog(WriteLog),
@@ -164,7 +169,7 @@ internal class ServiceController : DisposeBase {
 
                     if (!args.IsNullOrEmpty() && !deploy.Parse(args.Split(" "))) return false;
 
-                    if (!deploy.Execute())
+                    if (!deploy.Execute(StartWait))
                     {
                         WriteLog("Zip包启动失败！ExitCode={0}", deploy.Process?.ExitCode);
 
@@ -192,6 +197,16 @@ internal class ServiceController : DisposeBase {
                         UseShellExecute = true,
                     };
 
+                    // 指定用户时，以特定用户启动进程
+                    if (!service.UserName.IsNullOrEmpty() && Runtime.Linux)
+                    {
+                        //si.UserName = service.User;
+                        //si.UseShellExecute = false;
+
+                        si.FileName = "runuser";
+                        si.Arguments = $"-l {service.UserName} '{file} {args}'";
+                    }
+
                     // 如果出现超过一次的重启，则打开调试模式，截取控制台输出到日志
                     if (_error > 1)
                     {
@@ -202,7 +217,7 @@ internal class ServiceController : DisposeBase {
                     }
 
                     p = Process.Start(si);
-                    if (p.WaitForExit(3_000) && p.ExitCode != 0)
+                    if (StartWait > 0 && p.WaitForExit(StartWait) && p.ExitCode != 0)
                     {
                         WriteLog("启动失败！ExitCode={0}", p.ExitCode);
 
@@ -290,7 +305,7 @@ internal class ServiceController : DisposeBase {
         return deploy;
     }
 
-    /// <summary>停止应用</summary>
+    /// <summary>停止应用，等待一会确认进程已退出</summary>
     /// <param name="reason"></param>
     public void Stop(String reason)
     {
@@ -306,26 +321,9 @@ internal class ServiceController : DisposeBase {
         _timer.TryDispose();
         _timer = null;
 
-#if NETCOREAPP || NETSTANDARD
-        // 优雅关闭进程
         try
         {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-            {
-                Process.Start("kill", p.Id.ToString());
-
-                for (var i = 0; i < 50 && !p.HasExited; i++)
-                {
-                    Thread.Sleep(200);
-                }
-            }
-        }
-        catch { }
-#endif
-
-        try
-        {
-            if (p.CloseMainWindow())
+            if (!p.HasExited && p.CloseMainWindow())
             {
                 WriteLog("已发送关闭窗口消息，等待目标进程退出");
 
@@ -336,6 +334,34 @@ internal class ServiceController : DisposeBase {
             }
         }
         catch { }
+
+        // 优雅关闭进程
+        if (!p.HasExited)
+        {
+            try
+            {
+                WriteLog("优雅退出进程：PID={0}/{1}，最大等待{2}毫秒", p.Id, p.ProcessName, 50 * 200);
+                if (Runtime.Linux)
+                {
+                    Process.Start("kill", p.Id.ToString());
+
+                    for (var i = 0; i < 50 && !p.HasExited; i++)
+                    {
+                        Thread.Sleep(200);
+                    }
+                }
+                else if (Runtime.Windows)
+                {
+                    Process.Start("taskkill", $"-pid {p.Id}");
+
+                    for (var i = 0; i < 50 && !p.HasExited; i++)
+                    {
+                        Thread.Sleep(200);
+                    }
+                }
+            }
+            catch { }
+        }
 
         try
         {

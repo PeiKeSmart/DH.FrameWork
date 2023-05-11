@@ -405,6 +405,7 @@ public class ServiceManager : DisposeBase
                 old.FileName = svc.FileName;
                 old.Arguments = svc.Arguments;
                 old.WorkingDirectory = svc.WorkingDirectory;
+                old.UserName = svc.UserName;
                 old.Enable = svc.Enable;
                 //old.AutoStart = svc.AutoStart;
                 //svc.AutoStop = item.AutoStop;
@@ -677,7 +678,7 @@ public class ServiceManager : DisposeBase
         if (svc != null)
         {
             var rs = StopService(svc.Name, cmd.Command);
-            if (rs) Thread.Sleep(Delay);
+            //if (rs) Thread.Sleep(Delay);
             StartService(svc);
         }
         else
@@ -733,7 +734,7 @@ public class ServiceManager : DisposeBase
         var changed = false;
         svc.Enable = false;
         changed |= StopService(svc.Name, cmd.Command);
-        if (changed) Thread.Sleep(Delay);
+        //if (changed) Thread.Sleep(Delay);
         svc.Enable = true;
         changed |= StartService(svc);
 
