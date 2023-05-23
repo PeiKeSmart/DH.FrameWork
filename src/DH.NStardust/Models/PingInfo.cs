@@ -33,6 +33,9 @@ namespace Stardust.Models
         ///// <summary>串口</summary>
         //public String COMs { get; set; }
 
+        /// <summary>框架。本地支持的所有版本框架</summary>
+        public String Framework { get; set; }
+
         /// <summary>本地IP地址。随着网卡变动，可能改变</summary>
         public String IP { get; set; }
 
@@ -76,6 +79,9 @@ namespace Stardust.Models
 
         /// <summary>令牌。现有令牌即将过期时，颁发新的令牌</summary>
         public String Token { get; set; }
+
+        /// <summary>新服务器地址。用于服务器迁移</summary>
+        public String NewServer { get; set; }
 
         /// <summary>下发命令</summary>
         public CommandModel[] Commands { get; set; }

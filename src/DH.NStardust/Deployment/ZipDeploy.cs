@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Xml.Serialization;
 using NewLife;
@@ -31,6 +32,9 @@ public class ZipDeploy
 
     /// <summary>用户。以该用户执行应用</summary>
     public String UserName { get; set; }
+
+    /// <summary>覆盖文件。需要拷贝覆盖已存在的文件，支持*模糊匹配，多文件分号隔开。如果目标文件不存在，配置文件等自动拷贝</summary>
+    public String Overwrite { get; set; }
 
     /// <summary>进程</summary>
     public Process Process { get; private set; }
@@ -231,10 +235,19 @@ public class ZipDeploy
         }
 
         // 指定用户时，以特定用户启动进程
-        if (!UserName.IsNullOrEmpty() && Runtime.Linux)
+        if (!UserName.IsNullOrEmpty())
         {
-            si.Arguments = $"-l {UserName} '{si.FileName} {si.Arguments}'";
-            si.FileName = "runuser";
+            si.UserName = UserName;
+            //si.UseShellExecute = false;
+
+            // 在Linux系统中，改变目录所属用户
+            if (Runtime.Linux)
+            {
+                var user = UserName;
+                if (!user.Contains(':')) user = $"{user}:{user}";
+                Process.Start("chown", $"-R {user} {si.WorkingDirectory}");
+                Process.Start("chown", $"-R {user} {shadow}");
+            }
         }
 
         if (Debug)
@@ -244,8 +257,11 @@ public class ZipDeploy
             si.RedirectStandardError = true;
         }
 
+        WriteLog("工作目录: {0}", si.WorkingDirectory);
         WriteLog("启动文件: {0}", si.FileName);
         WriteLog("启动参数: {0}", si.Arguments);
+        if (!si.UserName.IsNullOrEmpty())
+            WriteLog("启动用户：{0}", si.UserName);
 
         var p = Process.Start(si);
         Process = p;
@@ -297,29 +313,46 @@ public class ZipDeploy
 
         fi.Extract(shadow, true);
 
+        var ovs = Overwrite?.Split(';');
+
         // 复制配置文件和数据文件到运行目录
         var sdi = shadow.AsDirectory();
         if (!sdi.FullName.EnsureEnd("\\").EqualIgnoreCase(rundir.EnsureEnd("\\")))
         {
+            // 覆盖文件
             foreach (var item in sdi.GetFiles())
             {
+                // 拷贝配置类文件
                 if (item.Extension.EndsWithIgnoreCase(".json", ".config", ".xml"))
                 {
-                    span?.AppendTag(item.Name);
+                    var dst = rundir.CombinePath(item.Name);
+                    // 当前文件在覆盖列表内时，强制覆盖
+                    if (ovs != null && ovs.Any(e => e.IsMatch(item.Name)))
+                    {
+                        span?.AppendTag(item.Name);
 
-                    // 注意，appsettings.json 也可能覆盖
-                    item.CopyTo(rundir.CombinePath(item.Name), true);
+                        // 注意，appsettings.json 也可能覆盖
+                        item.CopyTo(dst, true);
+                    }
+                    else if (!File.Exists(dst))
+                    {
+                        item.CopyTo(dst, false);
+                    }
                 }
             }
 
-            var di = shadow.CombinePath("Config").AsDirectory();
-            if (di.Exists) di.CopyTo(rundir.CombinePath("Config"));
-
-            di = shadow.CombinePath("Data").AsDirectory();
-            if (di.Exists) di.CopyTo(rundir.CombinePath("Data"));
-
-            di = shadow.CombinePath("Plugins").AsDirectory();
-            if (di.Exists) di.CopyTo(rundir.CombinePath("Plugins"));
+            // 覆盖目录
+            foreach (var item in sdi.GetDirectories())
+            {
+                var di = shadow.CombinePath(item.Name).AsDirectory();
+                var dest = rundir.CombinePath(item.Name).AsDirectory();
+                // 强制覆盖(包含子孙目录，否则会出现目标文件夹中子孙文件夹内容遗漏拷贝)
+                if (ovs != null && ovs.Contains(item.Name))
+                    di.CopyTo(dest.FullName, allSub: true);
+                // 特殊目录且目标不存在时，覆盖
+                else if (item.Name.EqualIgnoreCase("Data", "Config", "Plugins", "wwwroot") && !dest.Exists)
+                    di.CopyTo(dest.FullName, allSub: true);
+            }
         }
     }
 

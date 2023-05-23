@@ -11,9 +11,9 @@ using NewLife.Reflection;
 using NewLife.Remoting;
 using NewLife.Serialization;
 using NewLife.Threading;
+using Stardust.Managers;
 using Stardust.Models;
 using Stardust.Services;
-using System.Threading.Tasks;
 #if NET45_OR_GREATER || NETCOREAPP || NETSTANDARD
 using System.Net.WebSockets;
 using WebSocket = System.Net.WebSockets.WebSocket;
@@ -40,6 +40,9 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
     /// <summary>登录完成后触发</summary>
     public event EventHandler OnLogined;
 
+    /// <summary>服务迁移</summary>
+    public event EventHandler<MigrationEventArgs> OnMigration;
+
     /// <summary>最后一次登录成功后的消息</summary>
     public LoginResponse Info { get; private set; }
 
@@ -59,6 +62,7 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
     /// <summary>收到命令时触发</summary>
     public event EventHandler<CommandEventArgs> Received;
 
+    private FrameworkManager _frameworkManager = new();
     private readonly ConcurrentQueue<PingInfo> _fails = new();
     private readonly ICache _cache = new MemoryCache();
     #endregion
@@ -99,6 +103,7 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
     #endregion
 
     #region 方法
+#if NET40
     /// <summary>远程调用拦截，支持重新登录</summary>
     /// <typeparam name="TResult"></typeparam>
     /// <param name="method"></param>
@@ -128,6 +133,38 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
             throw;
         }
     }
+#else
+    /// <summary>远程调用拦截，支持重新登录</summary>
+    /// <typeparam name="TResult"></typeparam>
+    /// <param name="method"></param>
+    /// <param name="action"></param>
+    /// <param name="args"></param>
+    /// <param name="onRequest"></param>
+    /// <param name="cancellationToken">取消通知</param>
+    /// <returns></returns>
+    public override async Task<TResult> InvokeAsync<TResult>(HttpMethod method, String action, Object args = null, Action<HttpRequestMessage> onRequest = null, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            return await base.InvokeAsync<TResult>(method, action, args, onRequest, cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            var ex2 = ex.GetTrue();
+            if (Logined && ex2 is ApiException aex && (aex.Code == 401 || aex.Code == 403) && !action.EqualIgnoreCase("Node/Login", "Node/Logout"))
+            {
+                Log?.Debug("{0}", ex);
+                //XTrace.WriteException(ex);
+                WriteLog("重新登录！");
+                await Login();
+
+                return await base.InvokeAsync<TResult>(method, action, args, onRequest, cancellationToken);
+            }
+
+            throw;
+        }
+    }
+#endif
     #endregion
 
     #region 登录
@@ -159,6 +196,8 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
         OnLogined?.Invoke(this, EventArgs.Empty);
 
         StartTimer();
+
+        _frameworkManager.Attach(this);
 
         return rs;
     }
@@ -229,11 +268,7 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
         };
 
         // 目标框架
-        var vers = new List<NetRuntime.VerInfo>();
-        vers.AddRange(NetRuntime.Get1To45VersionFromRegistry());
-        vers.AddRange(NetRuntime.Get45PlusFromRegistry());
-        vers.AddRange(NetRuntime.GetNetCore(false));
-        di.Framework = vers.Join(",", e => e.Name.TrimStart('v'));
+        di.Framework = _frameworkManager.GetAllVersions().Join(",", e => e.TrimStart('v'));
 
 #if NETCOREAPP || NETSTANDARD
         di.Framework ??= RuntimeInformation.FrameworkDescription?.TrimStart(".NET Framework", ".NET Core", ".NET Native", ".NET").Trim();
@@ -444,6 +479,9 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
         // 现在借助 Stopwatch 来解决
         if (Stopwatch.IsHighResolution) ext.Uptime = (Int32)(Stopwatch.GetTimestamp() / Stopwatch.Frequency);
 
+        // 目标框架
+        ext.Framework = _frameworkManager.GetAllVersions().Join(",", e => e.TrimStart('v'));
+
         // 获取Tcp连接信息，某些Linux平台不支持
         try
         {
@@ -497,6 +535,29 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
                         foreach (var model in rs.Commands)
                         {
                             await ReceiveCommand(model);
+                        }
+                    }
+
+                    // 迁移到新服务器
+                    if (!rs.NewServer.IsNullOrEmpty())
+                    {
+                        var arg = new MigrationEventArgs { NewServer = rs.NewServer };
+
+                        OnMigration?.Invoke(this, arg);
+                        if (!arg.Cancel)
+                        {
+                            await Logout("切换新服务器");
+
+                            // 清空原有链接，添加新链接
+                            Services.Clear();
+
+                            var ss = rs.NewServer.Split(",");
+                            for (var i = 0; i < ss.Length; i++)
+                            {
+                                Add("service" + (i + 1), new Uri(ss[i]));
+                            }
+
+                            await Login();
                         }
                     }
                 }

@@ -1,12 +1,16 @@
 ﻿using System.Diagnostics;
 using System.Net;
+using System.Reflection;
 using System.Security.Cryptography;
+using NewLife;
+using System.Runtime.InteropServices;
+using NewLife.Log;
 
 #if NET6_0_OR_GREATER
 using System.Net.Http;
 #endif
 
-namespace Stardust;
+namespace Stardust.Managers;
 
 /// <summary>dotNet运行时</summary>
 public class NetRuntime
@@ -21,42 +25,23 @@ public class NetRuntime
     /// <summary>缓存目录</summary>
     public String CachePath { get; set; }
 
-    /// <summary>基准路径</summary>
+    /// <summary>文件哈希。用于校验下载文件的完整性</summary>
     public IDictionary<String, String> Hashs { get; set; }
     #endregion
 
-    #region 核心方法
-    /// <summary>自动安装.NET</summary>
-    public void AutoInstallNet()
+    #region 构造
+    /// <summary>实例化</summary>
+    public NetRuntime()
     {
-        var osVer = Environment.OSVersion.Version;
-
-        // WinXP
-        if (osVer.Major <= 5)
-            InstallNet40();
-        // Vista
-        else if (osVer.Major == 6 && osVer.Minor == 0)
-            InstallNet45();
-        else if (osVer.Major == 6 && osVer.Minor == 1)
-            // Win7
-            if (osVer.Revision <= 7600)
-                InstallNet45();
-            else
-            // Win7Sp1
-            {
-                InstallNet48();
-                InstallNet6();
-            }
-        // Win10/Win11
-        else if (osVer.Major >= 10)
-            InstallNet7();
-        else
+        var set = NewLife.Setting.Current;
+        if (!set.PluginServer.IsNullOrEmpty())
         {
-            InstallNet48();
-            InstallNet7();
+            BaseUrl = set.PluginServer.TrimEnd('/') + "/dotnet";
         }
     }
+    #endregion
 
+    #region 核心方法
     /// <summary>安装</summary>
     /// <param name="fileName"></param>
     /// <param name="baseUrl"></param>
@@ -64,7 +49,7 @@ public class NetRuntime
     /// <returns></returns>
     public Boolean Install(String fileName, String baseUrl = null, String arg = null)
     {
-        Console.WriteLine("下载 {0}", fileName);
+        XTrace.WriteLine("下载 {0}", fileName);
 
         var fullFile = fileName;
         if (!String.IsNullOrEmpty(CachePath)) fullFile = Path.Combine(CachePath, fileName);
@@ -82,12 +67,12 @@ public class NetRuntime
         if (fi == null || !fi.Exists)
         {
             if (String.IsNullOrEmpty(baseUrl))
-                baseUrl = BaseUrl;
+                baseUrl = BaseUrl?.TrimEnd('/');
             else
-                baseUrl = BaseUrl + baseUrl;
+                baseUrl = BaseUrl?.TrimEnd('/') + baseUrl.EnsureStart("/").TrimEnd('/');
 
             var url = $"{baseUrl}/{fileName}";
-            Console.WriteLine("正在下载：{0}", url);
+            XTrace.WriteLine("正在下载：{0}", url);
 
             var dir = Path.GetDirectoryName(fullFile);
             if (!String.IsNullOrEmpty(dir) && !Directory.Exists(dir)) Directory.CreateDirectory(dir);
@@ -102,37 +87,65 @@ public class NetRuntime
             var http = new WebClient();
             http.DownloadFile(url, fullFile);
 #endif
-            Console.WriteLine("MD5: {0}", GetMD5(fullFile));
+            XTrace.WriteLine("MD5: {0}", GetMD5(fullFile));
         }
 
         if (String.IsNullOrEmpty(arg)) arg = "/passive /promptrestart";
         if (!Silent) arg = null;
 
-        Console.WriteLine("正在安装：{0} {1}", fileName, arg);
-        var p = Process.Start(fileName, arg);
+        XTrace.WriteLine("正在安装：{0} {1}", fullFile, arg);
+
+        if (Runtime.Linux)
+            return InstallOnLinux(fullFile, arg);
+        else
+            return InstallOnWindows(fullFile, arg);
+    }
+
+    Boolean InstallOnWindows(String fullFile, String arg)
+    {
+        var p = Process.Start(fullFile, arg);
         if (p.WaitForExit(600_000))
         {
             if (p.ExitCode == 0)
-                Console.WriteLine("安装完成！");
+                XTrace.WriteLine("安装完成！");
             else
-                Console.WriteLine("安装失败！ExitCode={0}", p.ExitCode);
+                XTrace.WriteLine("安装失败！ExitCode={0}", p.ExitCode);
             Environment.ExitCode = p.ExitCode;
             return p.ExitCode == 0;
         }
         else
         {
-            Console.WriteLine("安装超时！");
+            XTrace.WriteLine("安装超时！");
             Environment.ExitCode = 400;
             return false;
         }
+    }
+
+    Boolean InstallOnLinux(String fullFile, String arg)
+    {
+        // 建立目录
+        var target = "/usr/share/dotnet";
+        target.EnsureDirectory(false);
+
+        // 解压缩
+        Process.Start(new ProcessStartInfo("tar", $"-xzf {fullFile} -C {target}") { UseShellExecute = true });
+
+        // 建立链接
+        Process.Start(new ProcessStartInfo("ln", $"{fullFile}/dotnet /usr/bin/dotnet -s") { UseShellExecute = true });
+
+        XTrace.WriteLine("安装完成！");
+
+        return true;
     }
 
     static Version GetLast(IList<VerInfo> vers, String prefix = null, String suffix = null)
     {
         var ver = new Version();
         if (vers.Count > 0)
-            //Console.WriteLine("已安装版本：");
+        {
+            //XTrace.WriteLine("已安装版本：");
             foreach (var item in vers)
+            {
                 if ((String.IsNullOrEmpty(prefix) || item.Name.StartsWith(prefix)) &&
                     (String.IsNullOrEmpty(suffix) || item.Name.EndsWith(suffix)))
                 {
@@ -144,18 +157,11 @@ public class NetRuntime
                     if (v > ver) ver = v;
                 }
 
+                //XTrace.WriteLine(item.Name);
+            }
+            //XTrace.WriteLine("");
+        }
 
-        /* 项目“Stardust (netcoreapp3.1)”的未合并的更改
-        在此之前:
-                        //Console.WriteLine(item.Name);
-                    }
-                    //Console.WriteLine("");
-                }
-
-                return ver;
-        在此之后:
-                return ver;
-        */
         return ver;
     }
 
@@ -164,19 +170,37 @@ public class NetRuntime
     {
         var vers = new List<VerInfo>();
         vers.AddRange(Get1To45VersionFromRegistry());
-        vers.AddRange(Get45PlusFromRegistry());
 
-        var ver = GetLast(vers, null);
+        var ver = GetLast(vers, "v4.0");
 
         // 目标版本
         var target = new Version("4.0");
         if (ver >= target)
         {
-            Console.WriteLine("已安装最新版 v{0}", ver);
+            XTrace.WriteLine("已安装最新版 v{0}", ver);
             return;
         }
 
-        Install("dotNetFx40_Full_x86_x64.exe", null);
+        var rs = Install("dotNetFx40_Full_x86_x64.exe", null);
+        if (!rs)
+        {
+            // 解决“一般信任关系失败”问题
+
+            Process.Start("regsvr32", "/s Softpub.dll");
+            Process.Start("regsvr32", "/s Wintrust.dll");
+            Process.Start("regsvr32", "/s Initpki.dll");
+            Process.Start("regsvr32", "/s Mssip32.dll");
+
+#if NET45_OR_GREATER || NET6_0_OR_GREATER
+            using var reg = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(@"\Software\Microsoft\Windows\CurrentVersion\WinTrust\Trust Providers\Software Publishing", true);
+            if (reg != null)
+            {
+                var v = (Int32)reg.GetValue("State");
+                if (v != 0x23c00) reg.SetValue("State", 0x23c00);
+            }
+#endif
+
+        }
     }
 
     /// <summary>安装.NET4.5</summary>
@@ -184,15 +208,14 @@ public class NetRuntime
     {
         var vers = new List<VerInfo>();
         vers.AddRange(Get1To45VersionFromRegistry());
-        vers.AddRange(Get45PlusFromRegistry());
 
-        var ver = GetLast(vers, null);
+        var ver = GetLast(vers, "v4.5");
 
         // 目标版本
         var target = new Version("4.5");
         if (ver >= target)
         {
-            Console.WriteLine("已安装最新版 v{0}", ver);
+            XTrace.WriteLine("已安装最新版 v{0}", ver);
             return;
         }
 
@@ -214,7 +237,7 @@ public class NetRuntime
         var target = osVer.Major >= 10 ? new Version("4.8.1") : new Version("4.8");
         if (ver >= target)
         {
-            Console.WriteLine("已安装最新版 v{0}", ver);
+            XTrace.WriteLine("已安装最新版 v{0}", ver);
             return;
         }
 
@@ -226,10 +249,17 @@ public class NetRuntime
 
         var isWin7 = osVer.Major == 6 && osVer.Minor == 1;
         if (isWin7)
-            if (is64)
-                Install("Windows6.1-KB3063858-x64.msu", "/win7", "/quiet /norestart");
-            else
-                Install("Windows6.1-KB3063858-x86.msu", "/win7", "/quiet /norestart");
+        {
+            //if (is64)
+            //{
+            //    Install("Windows6.1-KB3063858-x64.msu", "/win7", "/quiet /norestart");
+            //}
+            //else
+            //{
+            //    Install("Windows6.1-KB3063858-x86.msu", "/win7", "/quiet /norestart");
+            //}
+            InstallCert();
+        }
 
         // win10/win11 中安装 .NET4.8.1
         if (osVer.Major >= 10)
@@ -245,8 +275,9 @@ public class NetRuntime
     }
 
     /// <summary>安装.NET6.0</summary>
-    /// <param name="kind"></param>
-    public void InstallNet6(String kind = null)
+    /// <param name="target">目标版本。包括子版本，如6.0.15</param>
+    /// <param name="kind">安装类型。如aspnet/desktop/host</param>
+    public void InstallNet6(String target, String kind = null)
     {
         var vers = GetNetCore();
 
@@ -255,10 +286,10 @@ public class NetRuntime
         var ver = GetLast(vers, "v6.0", suffix);
 
         // 目标版本
-        var target = new Version("6.0");
-        if (ver >= target)
+        var targetVer = new Version(target);
+        if (ver >= targetVer)
         {
-            Console.WriteLine("已安装最新版 v{0}", ver);
+            XTrace.WriteLine("已安装最新版 v{0}", ver);
             return;
         }
 
@@ -271,7 +302,8 @@ public class NetRuntime
         // win7需要vc2019运行时
         var osVer = Environment.OSVersion.Version;
         var isWin7 = osVer.Major == 6 && osVer.Minor == 1;
-        if (isWin7)
+        if (isWin7 && ver.Major < 6)
+        {
             if (is64)
             {
                 Install("Windows6.1-KB3063858-x64.msu", "/win7", "/quiet /norestart");
@@ -282,46 +314,52 @@ public class NetRuntime
                 Install("Windows6.1-KB3063858-x86.msu", "/win7", "/quiet /norestart");
                 Install("VC_redist.x86.exe", "/vc2019", "/passive");
             }
+        }
 
         if (is64)
+        {
             switch (kind)
             {
                 case "aspnet":
-                    Install("dotnet-runtime-6.0.14-win-x64.exe");
-                    Install("aspnetcore-runtime-6.0.14-win-x64.exe");
+                    Install($"dotnet-runtime-{target}-win-x64.exe");
+                    Install($"aspnetcore-runtime-{target}-win-x64.exe");
                     break;
                 case "desktop":
-                    Install("windowsdesktop-runtime-6.0.14-win-x64.exe");
+                    Install($"windowsdesktop-runtime-{target}-win-x64.exe");
                     break;
                 case "host":
-                    Install("dotnet-hosting-6.0.14-win.exe");
+                    Install($"dotnet-hosting-{target}-win.exe");
                     break;
                 default:
-                    Install("dotnet-runtime-6.0.14-win-x64.exe");
+                    Install($"dotnet-runtime-{target}-win-x64.exe");
                     break;
             }
+        }
         else
+        {
             switch (kind)
             {
                 case "aspnet":
-                    Install("dotnet-runtime-6.0.14-win-x86.exe");
-                    Install("aspnetcore-runtime-6.0.14-win-x86.exe");
+                    Install($"dotnet-runtime-{target}-win-x86.exe");
+                    Install($"aspnetcore-runtime-{target}-win-x86.exe");
                     break;
                 case "desktop":
-                    Install("windowsdesktop-runtime-6.0.14-win-x86.exe");
+                    Install($"windowsdesktop-runtime-{target}-win-x86.exe");
                     break;
                 case "host":
-                    Install("dotnet-hosting-6.0.14-win.exe");
+                    Install($"dotnet-hosting-{target}-win.exe");
                     break;
                 default:
-                    Install("dotnet-runtime-6.0.14-win-x86.exe");
+                    Install($"dotnet-runtime-{target}-win-x86.exe");
                     break;
             }
+        }
     }
 
     /// <summary>安装.NET7.0</summary>
-    /// <param name="kind"></param>
-    public void InstallNet7(String kind = null)
+    /// <param name="target">目标版本。包括子版本，如6.0.15</param>
+    /// <param name="kind">安装类型。如aspnet/desktop/host</param>
+    public void InstallNet7(String target, String kind = null)
     {
         var vers = GetNetCore();
 
@@ -330,10 +368,10 @@ public class NetRuntime
         var ver = GetLast(vers, "v7.0", suffix);
 
         // 目标版本
-        var target = new Version("7.0");
-        if (ver >= target)
+        var targetVer = new Version(target);
+        if (ver >= targetVer)
         {
-            Console.WriteLine("已安装最新版 v{0}", ver);
+            XTrace.WriteLine("已安装最新版 v{0}", ver);
             return;
         }
 
@@ -346,7 +384,8 @@ public class NetRuntime
         // win7需要vc2019运行时
         var osVer = Environment.OSVersion.Version;
         var isWin7 = osVer.Major == 6 && osVer.Minor == 1;
-        if (isWin7)
+        if (isWin7 && ver.Major < 6)
+        {
             if (is64)
             {
                 Install("Windows6.1-KB3063858-x64.msu", "/win7", "/quiet /norestart");
@@ -357,41 +396,92 @@ public class NetRuntime
                 Install("Windows6.1-KB3063858-x86.msu", "/win7", "/quiet /norestart");
                 Install("VC_redist.x86.exe", "/vc2019", "/passive");
             }
+        }
 
         if (is64)
+        {
             switch (kind)
             {
                 case "aspnet":
-                    Install("dotnet-runtime-7.0.3-win-x64.exe");
-                    Install("aspnetcore-runtime-7.0.3-win-x64.exe");
+                    Install($"dotnet-runtime-{target}-win-x64.exe");
+                    Install($"aspnetcore-runtime-{target}-win-x64.exe");
                     break;
                 case "desktop":
-                    Install("windowsdesktop-runtime-7.0.3-win-x64.exe");
+                    Install($"windowsdesktop-runtime-{target}-win-x64.exe");
                     break;
                 case "host":
-                    Install("dotnet-hosting-7.0.3-win.exe");
+                    Install($"dotnet-hosting-{target}-win.exe");
                     break;
                 default:
-                    Install("dotnet-runtime-7.0.3-win-x64.exe");
+                    Install($"dotnet-runtime-{target}-win-x64.exe");
                     break;
             }
+        }
         else
+        {
             switch (kind)
             {
                 case "aspnet":
-                    Install("dotnet-runtime-7.0.3-win-x86.exe");
-                    Install("aspnetcore-runtime-7.0.3-win-x86.exe");
+                    Install($"dotnet-runtime-{target}-win-x86.exe");
+                    Install($"aspnetcore-runtime-{target}-win-x86.exe");
                     break;
                 case "desktop":
-                    Install("windowsdesktop-runtime-7.0.3-win-x86.exe");
+                    Install($"windowsdesktop-runtime-{target}-win-x86.exe");
                     break;
                 case "host":
-                    Install("dotnet-hosting-7.0.3-win.exe");
+                    Install($"dotnet-hosting-{target}-win.exe");
                     break;
                 default:
-                    Install("dotnet-runtime-7.0.3-win-x86.exe");
+                    Install($"dotnet-runtime-{target}-win-x86.exe");
                     break;
             }
+        }
+    }
+
+    /// <summary>在Linux上安装.NET运行时</summary>
+    /// <param name="target">目标版本。包括子版本，如6.0.15</param>
+    /// <param name="kind">安装类型。如aspnet</param>
+    public void InstallNetOnLinux(String target, String kind = null)
+    {
+        var vers = GetNetCore();
+
+        var suffix = "";
+        if (!String.IsNullOrEmpty(kind)) suffix = "-" + kind;
+        var ver = GetLast(vers, "v" + target.Substring(0, 3), suffix);
+
+        // 目标版本
+        var targetVer = new Version(target);
+        if (ver >= targetVer)
+        {
+            XTrace.WriteLine("已安装最新版 v{0}", ver);
+            return;
+        }
+
+#if NETSTANDARD ||NETCOREAPP
+        var arch = RuntimeInformation.ProcessArchitecture.ToString().ToLower();
+
+        switch (kind)
+        {
+            case "aspnet":
+                Install($"aspnetcore-runtime-{target}-linux-{arch}.tar.gz");
+                break;
+            default:
+                Install($"dotnet-runtime-{target}-linux-{arch}.tar.gz");
+                break;
+        }
+#endif
+    }
+
+    /// <summary>获取所有已安装版本</summary>
+    /// <returns></returns>
+    public IList<VerInfo> GetVers()
+    {
+        var vers = new List<VerInfo>();
+        vers.AddRange(Get1To45VersionFromRegistry());
+        vers.AddRange(Get45PlusFromRegistry());
+        vers.AddRange(GetNetCore());
+
+        return vers;
     }
 
     /// <summary>获取Net45以下版本</summary>
@@ -427,6 +517,7 @@ public class NetRuntime
                     list.Add(new VerInfo { Name = versionKeyName, Version = ver, Sp = sp });
             }
             else
+            {
                 foreach (var subKeyName in versionKey.GetSubKeyNames())
                 {
                     var subKey = versionKey.OpenSubKey(subKeyName);
@@ -448,6 +539,7 @@ public class NetRuntime
                             list.Add(new VerInfo { Name = name, Version = ver, Sp = sp });
                     }
                 }
+            }
         }
 #endif
 
@@ -536,8 +628,11 @@ public class NetRuntime
                     }
                     else if (name.Contains('-'))
                         continue;
+
                     if (!dic.ContainsKey(name))
+                    {
                         dic.Add(name, new VerInfo { Name = name, Version = item.Name + " " + elm.Name });
+                    }
                 }
             }
         }
@@ -548,34 +643,45 @@ public class NetRuntime
         }
 
         // 通用处理
-        var infs = Execute("dotnet", "--list-runtimes")?.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-        if (infs != null)
+        if (list.Count == 0)
         {
-            foreach (var line in infs)
+            var infs = Execute("dotnet", "--list-runtimes")?.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            if (infs != null)
             {
-                var ss = line.Split(' ');
-                if (ss.Length >= 2)
+                foreach (var line in infs)
                 {
-                    var name = "v" + ss[1];
-                    var ver = $"{ss[0]} {ss[1]}";
-                    if (exact)
+                    var ss = line.Split(' ');
+                    if (ss.Length >= 2)
                     {
-                        if (ver.Contains("AspNet"))
-                            name += "-aspnet";
-                        else if (ver.Contains("Desktop"))
-                            name += "-desktop";
-                    }
-                    else if (name.Contains('-'))
-                        continue;
+                        var name = "v" + ss[1];
+                        var ver = $"{ss[0]} {ss[1]}";
+                        if (exact)
+                        {
+                            if (ver.Contains("AspNet"))
+                                name += "-aspnet";
+                            else if (ver.Contains("Desktop"))
+                                name += "-desktop";
+                        }
+                        else if (name.Contains('-'))
+                            continue;
 
-                    var vi = list.FirstOrDefault(e => e.Name == name);
-                    if (vi == null)
-                    {
-                        vi = new VerInfo { Name = name, Version = ver };
-                        list.Add(vi);
-                    }
+                        VerInfo vi = null;
+                        foreach (var item in list)
+                        {
+                            if (item.Name == name)
+                            {
+                                vi = item;
+                                break;
+                            }
+                        }
+                        if (vi == null)
+                        {
+                            vi = new VerInfo { Name = name, Version = ver };
+                            list.Add(vi);
+                        }
 
-                    if (vi.Version.Length < ver.Length) vi.Version = ver;
+                        if (vi.Version.Length < ver.Length) vi.Version = ver;
+                    }
                 }
             }
         }
@@ -624,20 +730,72 @@ public class NetRuntime
         return hex;
     }
 
-    /// <summary>版本信息</summary>
-    public class VerInfo
+    /// <summary>加载内嵌的文件MD5信息</summary>
+    /// <returns></returns>
+    public static IDictionary<String, String> LoadMD5s()
     {
-        /// <summary>名称</summary>
-        public String Name { get; set; }
+        var asm = Assembly.GetExecutingAssembly();
+        var ms = asm.GetManifestResourceStream(typeof(NetRuntime).Namespace + ".res.md5.txt");
 
-        /// <summary>版本</summary>
-        public String Version { get; set; }
+        var dic = new Dictionary<String, String>(StringComparer.OrdinalIgnoreCase);
+        using var reader = new StreamReader(ms);
+        while (!reader.EndOfStream)
+        {
+            var line = reader.ReadLine()?.Trim();
+            if (String.IsNullOrEmpty(line)) continue;
 
-        /// <summary>补丁</summary>
-        public String Sp { get; set; }
+            var ss = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            if (ss.Length >= 2)
+            {
+                dic[ss[0]] = ss[1];
+            }
+        }
 
-        /// <summary>已重载</summary>
-        public override String ToString() => String.IsNullOrEmpty(Sp) ? $"{Name} {Version}" : $"{Name} {Version} Sp{Sp}";
+        return dic;
+    }
+
+    /// <summary>安装微软根证书</summary>
+    /// <returns></returns>
+    public static Boolean InstallCert()
+    {
+        XTrace.WriteLine("准备安装微软根证书");
+
+        // 释放文件
+        var asm = Assembly.GetExecutingAssembly();
+        var names = new[] { "CertMgr.Exe", "MicrosoftRootCertificateAuthority2011.cer" };
+        foreach (var name in names)
+        {
+            var ms = asm.GetManifestResourceStream(typeof(NetRuntime).Namespace + ".res." + name);
+            if (ms != null)
+            {
+                var buf = new Byte[ms.Length];
+                ms.Read(buf, 0, buf.Length);
+
+                File.WriteAllBytes(name, buf);
+            }
+        }
+
+        var exe = names[0];
+        var cert = names[1];
+        if (!File.Exists(exe) || !File.Exists(cert)) return false;
+
+        // 执行
+        try
+        {
+            var p = Process.Start(exe, $"-add \"{cert}\" -s -r localMachine AuthRoot");
+
+            return p.WaitForExit(30_000) && p.ExitCode == 0;
+        }
+        catch (Exception ex)
+        {
+            XTrace.WriteLine(ex.Message);
+            return false;
+        }
+        finally
+        {
+            if (File.Exists(cert)) File.Delete(cert);
+            if (File.Exists(exe)) File.Delete(exe);
+        }
     }
     #endregion
 }
