@@ -177,7 +177,7 @@ public class WeChatPayClient : IWeChatPayClient
         }
 
         // 解密敏感信息
-        DecryptPrivacyProperty(response, options.APIPrivateKey);
+        DecryptPrivacyProperty(response, options.RSAPrivateKey);
 
         return response;
     }
@@ -219,7 +219,7 @@ public class WeChatPayClient : IWeChatPayClient
         }
 
         // 解密敏感信息
-        DecryptPrivacyProperty(response, options.APIPrivateKey);
+        DecryptPrivacyProperty(response, options.RSAPrivateKey);
 
         return response;
     }
@@ -321,7 +321,7 @@ public class WeChatPayClient : IWeChatPayClient
     /// <remarks>
     /// <para><a href="https://pay.weixin.qq.com/wiki/doc/apiv3/wechatpay/wechatpay4_3.shtml">敏感信息加解密</a></para>
     /// </remarks>
-    private static void DecryptPrivacyProperty(WeChatPayObject obj, string privateKey)
+    private static void DecryptPrivacyProperty(WeChatPayObject obj, RSA rsa)
     {
         foreach (var propertyInfo in obj.GetType().GetProperties())
         {
@@ -341,7 +341,7 @@ public class WeChatPayClient : IWeChatPayClient
                 }
 
                 // 解密并将明文设置回对象
-                var ciphertext = OaepSHA1WithRSA.Decrypt(strValue, privateKey);
+                var ciphertext = OaepSHA1WithRSA.Decrypt(rsa, strValue);
                 propertyInfo.SetValue(obj, ciphertext);
             }
             else if (propertyInfo.PropertyType.IsClass) // 解密子对象
@@ -352,7 +352,7 @@ public class WeChatPayClient : IWeChatPayClient
                     {
                         foreach (var item in array)
                         {
-                            DecryptPrivacyProperty(item, privateKey);
+                            DecryptPrivacyProperty(item, rsa);
                         }
                     }
                 }
@@ -362,7 +362,7 @@ public class WeChatPayClient : IWeChatPayClient
                     {
                         foreach (var item in enumerable)
                         {
-                            DecryptPrivacyProperty(item, privateKey);
+                            DecryptPrivacyProperty(item, rsa);
                         }
                     }
                 }
@@ -370,7 +370,7 @@ public class WeChatPayClient : IWeChatPayClient
                 {
                     if (propertyInfo.GetValue(obj) is WeChatPayObject wcpObj)
                     {
-                        DecryptPrivacyProperty(wcpObj, privateKey);
+                        DecryptPrivacyProperty(wcpObj, rsa);
                     }
                 }
             }
