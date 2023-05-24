@@ -5,6 +5,9 @@ using NewLife.Threading;
 using Stardust.Deployment;
 using Stardust.Models;
 using Stardust.Services;
+#if !NET40
+using TaskEx = System.Threading.Tasks.Task;
+#endif
 
 namespace Stardust.Managers;
 
@@ -113,7 +116,7 @@ internal class ServiceController : DisposeBase
                 file = file.GetFullPath();
                 if (workDir.IsNullOrEmpty()) workDir = Path.GetDirectoryName(file);
             }
-            _fileName = file;
+            _fileName = null;
             _workdir = workDir;
 
             var args = service.Arguments?.Trim();
@@ -197,7 +200,7 @@ internal class ServiceController : DisposeBase
 
                         // false时目前控制台合并到当前控制台，一起退出；
                         // true时目标控制台独立窗口，不会一起退出；
-                        UseShellExecute = true,
+                        UseShellExecute = false,
                     };
 
                     // 指定用户时，以特定用户启动进程
@@ -224,6 +227,12 @@ internal class ServiceController : DisposeBase
                         si.RedirectStandardOutput = true;
                     }
 
+                    // 在环境变量中设置BasePath
+                    if (si.UseShellExecute)
+                        Environment.SetEnvironmentVariable("BasePath", si.WorkingDirectory);
+                    else
+                        si.EnvironmentVariables.Add("BasePath", si.WorkingDirectory);
+
                     WriteLog("工作目录: {0}", si.WorkingDirectory);
                     WriteLog("启动文件: {0}", si.FileName);
                     WriteLog("启动参数: {0}", si.Arguments);
@@ -246,6 +255,8 @@ internal class ServiceController : DisposeBase
 
                         return false;
                     }
+
+                    _fileName ??= file;
                 }
 
                 if (p == null) return false;
@@ -501,7 +512,7 @@ internal class ServiceController : DisposeBase
                 if (!target.IsNullOrEmpty())
                 {
                     //target = Path.GetFileName(target);
-                    span?.AppendTag($"GetProcessesByFile({target})");
+                    span?.AppendTag($"GetProcessesByFile({target}) ProcessName={ProcessName}");
 
                     // 遍历所有进程，从命令行参数中找到启动文件名一致的进程
                     foreach (var item in Process.GetProcesses())
@@ -512,6 +523,8 @@ internal class ServiceController : DisposeBase
                         var name = AppInfo.GetProcessName(item);
                         if (!name.IsNullOrEmpty())
                         {
+                            span?.AppendTag($"id={item.Id} name={name}");
+
                             //name = Path.GetFileName(name);
                             if (name.EqualIgnoreCase(target)) return TakeOver(item, $"按[{ProcessName} {target}]查找");
                         }
@@ -539,7 +552,7 @@ internal class ServiceController : DisposeBase
             else
                 _appInfo.Refresh();
 
-            client.AppPing(_appInfo).Wait();
+            TaskEx.Run(() => client.AppPing(_appInfo));
         }
 
         return rs;
@@ -547,6 +560,8 @@ internal class ServiceController : DisposeBase
 
     Boolean TakeOver(Process p, String reason)
     {
+        using var span = Tracer?.NewSpan(nameof(TakeOver), new { p.Id, p.ProcessName, reason });
+
         WriteLog("应用[{0}/{1}]已启动（{2}），直接接管", p.Id, Name, reason);
 
         SetProcess(p);
