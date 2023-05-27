@@ -74,7 +74,7 @@ public class ApiSignatureAttribute : ActionFilterAttribute {
                 }
                 else if (m == 4)
                 {
-                    result.Message = LocaleStringResource.GetResource("签名重复");
+                    result.Message = LocaleStringResource.GetResource("签名已使用");
                 }
                 else
                 {
