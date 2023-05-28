@@ -1,13 +1,12 @@
-﻿using NewLife;
+﻿using System;
+using NewLife;
 using NewLife.Caching;
 using NewLife.Configuration;
 using NewLife.Log;
-
+using NewLife.Model;
 using Stardust.Services;
 
 namespace Stardust.Extensions.Caches;
-
-using NewLife.Model;
 
 /// <summary>Redis缓存服务。由Redis提供标准缓存和队列服务</summary>
 public class RedisCacheService : CacheService
