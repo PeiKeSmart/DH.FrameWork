@@ -189,10 +189,6 @@ public class DHSetting : Config<DHSetting>
     [Description("跨域授权地址")]
     public String CORSUrl { get; set; } = "https://localhost:9091,http://localhost:9090";
 
-    /// <summary>SignalR服务地址</summary>
-    [Description("SignalR服务地址")]
-    public String SignalRAddress { get; set; } = "https://localhost:9091";
-
     /// <summary>
     /// 是否检查接口检验
     /// </summary>
