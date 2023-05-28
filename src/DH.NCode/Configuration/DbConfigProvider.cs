@@ -1,6 +1,7 @@
 ﻿using System.Security.Cryptography;
 using NewLife;
 using NewLife.Configuration;
+using NewLife.Data;
 using NewLife.Log;
 using NewLife.Serialization;
 using NewLife.Threading;
@@ -57,6 +58,12 @@ public class DbConfigProvider : ConfigProvider
                 JsonParser.Decode(txt) :
                 XmlParser.Decode(txt);
             Root = Build(dic);
+
+            // 如果位于分布式环境中，使用较短间隔，否则使用较长间隔
+            if (Period == 15)
+            {
+                Period = Snowflake.GlobalWorkerId > 0 ? 15 : 60;
+            }
         }
     }
 
