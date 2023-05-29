@@ -33,9 +33,9 @@ namespace DG.Sms.AliYun {
         /// 初始化短信服务
         /// </summary>
         /// <param name="options">短信配置选项</param>
-        public SmsService(IOptions<SmsOptions> options)
+        public SmsService(IOptionsMonitor<SmsOptions> options)
         {
-            _options = options.Value;
+            _options = options.CurrentValue;
         }
 
         /// <summary>

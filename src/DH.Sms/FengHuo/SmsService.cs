@@ -23,7 +23,7 @@ namespace DG.Sms.FengHuo {
         /// <param name="options">短信配置选项</param>
         public SmsService(IOptionsMonitor<FengHuoSms> options)
         {
-            _options = options.Get("fenghuo");
+            _options = options.CurrentValue;
         }
 
         /// <summary>
