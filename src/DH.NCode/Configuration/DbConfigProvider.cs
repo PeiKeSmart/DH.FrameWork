@@ -73,6 +73,9 @@ public class DbConfigProvider : ConfigProvider
     {
         var dic = new Dictionary<String, Object>(StringComparer.CurrentCultureIgnoreCase);
 
+        // 减少日志
+        using var showSql = Parameter.Meta.Session.Dal.Session.SetShowSql(false);
+
         var list = Parameter.FindAllByUserID(UserId, Category);
         foreach (var item in list)
         {
