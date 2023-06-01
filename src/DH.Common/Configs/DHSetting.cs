@@ -93,6 +93,12 @@ public class DHSetting : Config<DHSetting>
     public Int32 SslEnabled { get; set; } = 0;
 
     /// <summary>
+    /// 是否为管理系统
+    /// </summary>
+    [Description("是否为管理系统")]
+    public Boolean IsOnlyManager { get; set; } = true;
+
+    /// <summary>
     /// 接口授权值缓存过期时间，秒
     /// </summary>
     [Description("接口授权值缓存过期时间，秒")]
