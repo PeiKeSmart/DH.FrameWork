@@ -5,7 +5,7 @@ namespace DH.Maths;
 /// <summary>
 /// 进制转换
 /// </summary>
-public class HexConv {
+public static class HexConv {
     /// <summary>
     /// 基础字符
     /// </summary>
@@ -185,5 +185,25 @@ public class HexConv {
                 break;
         }
         return result.Substring(0, radix);
+    }
+
+    /// <summary>
+    /// 小端转为大端。C#数据格式默认为小端
+    /// </summary>
+    /// <param name="bytes"></param>
+    /// <returns></returns>
+    public static Byte[] ConvertLitterToBig(this Byte[] bytes)
+    {
+        return bytes.Reverse().ToArray();
+    }
+
+    /// <summary>
+    /// 大端转为小端。C#数据格式默认为小端
+    /// </summary>
+    /// <param name="bytes"></param>
+    /// <returns></returns>
+    public static Byte[] ConvertBigToLitter(this Byte[] bytes)
+    {
+        return bytes.Reverse().ToArray();
     }
 }
