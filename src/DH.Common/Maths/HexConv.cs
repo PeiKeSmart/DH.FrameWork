@@ -188,7 +188,7 @@ public static class HexConv {
     }
 
     /// <summary>
-    /// 小端转为大端。C#数据格式默认为小端
+    /// 小端转为大端。C#数据格式默认为小端  低们在前，高位在后为小端模式
     /// </summary>
     /// <param name="bytes"></param>
     /// <returns></returns>
@@ -198,7 +198,7 @@ public static class HexConv {
     }
 
     /// <summary>
-    /// 大端转为小端。C#数据格式默认为小端
+    /// 大端转为小端。C#数据格式默认为小端  高位在前，低位在后为大端模式
     /// </summary>
     /// <param name="bytes"></param>
     /// <returns></returns>
