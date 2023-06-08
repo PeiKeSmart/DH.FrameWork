@@ -222,6 +222,27 @@ public class DHSetting : Config<DHSetting>
     [Category("通用")]
     public Int32 RobotError { get; set; }
 
+    /// <summary>下拉选择框。使用Bootstrap，美观，但有呈现方面的性能损耗</summary>
+    [Description("下拉选择框。使用Bootstrap，美观，但有呈现方面的性能损耗")]
+    [Category("界面配置")]
+    public Boolean BootstrapSelect { get; set; } = true;
+
+    /// <summary>最大下拉个数。表单页关联下拉列表最大允许个数，默认50，超过时显示文本数字框</summary>
+    [Description("最大下拉个数。表单页关联下拉列表最大允许个数，默认50，超过时显示文本数字框")]
+    [Category("界面配置")]
+    public Int32 MaxDropDownList { get; set; } = 50;
+
+    /// <summary>抓取头像。是否抓取远程头像，默认true</summary>
+    /// <summary>头像目录。设定后下载远程头像到本地，默认Avatars子目录，web上一级Avatars。清空表示不抓取</summary>
+    [Description("头像目录。设定后下载远程头像到本地，默认Avatars子目录，web上一级Avatars。清空表示不抓取")]
+    [Category("通用")]
+    public String AvatarPath { get; set; } = "Avatars";
+
+    /// <summary>静态资源目录。默认wwwroot</summary>
+    [Description("静态资源目录。默认wwwroot")]
+    [Category("通用")]
+    public String WebRootPath { get; set; } = "wwwroot";
+
     #region 方法
     /// <summary>实例化</summary>
     public DHSetting() { }
