@@ -569,7 +569,7 @@ public abstract class SessionBase : DisposeBase, ISocketClient, ITransport, ILog
     /// <param name="message">消息</param>
     /// <param name="cancellationToken">取消通知</param>
     /// <returns></returns>
-    public virtual Task<Object> SendMessageAsync(Object message, CancellationToken cancellationToken)
+    public virtual async Task<Object> SendMessageAsync(Object message, CancellationToken cancellationToken)
     {
         using var span = Tracer?.NewSpan($"net:{Name}:SendMessageAsync", message);
         try
@@ -582,13 +582,16 @@ public abstract class SessionBase : DisposeBase, ISocketClient, ITransport, ILog
             if (rs < 0) return Task.FromResult((Object)null);
 
             // 注册取消时的处理，如果没有收到响应，取消发送等待
-            cancellationToken.Register(() => { if (!source.Task.IsCompleted) source.TrySetCanceled(); });
-
-            return source.Task;
+            // Register返回值需要Dispose，否则会导致内存泄漏
+            // https://stackoverflow.com/questions/14627226/why-is-my-async-await-with-cancellationtokensource-leaking-memory
+            using (cancellationToken.Register(() => { if (!source.Task.IsCompleted) source.TrySetCanceled(); }))
+            {
+                return await source.Task;
+            }
         }
         catch (Exception ex)
         {
-            span?.SetError(ex, message);
+            span?.SetError(ex, null);
             throw;
         }
     }
