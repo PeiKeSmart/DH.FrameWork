@@ -165,6 +165,7 @@ public class StarFactory : DisposeBase
         if (AppId != "StarAgent")
         {
             // 借助本地StarAgent获取服务器地址
+            var sw = Stopwatch.StartNew();
             try
             {
                 //XTrace.WriteLine("正在探测本机星尘代理……");
@@ -173,7 +174,7 @@ public class StarFactory : DisposeBase
                 if (!server.IsNullOrEmpty())
                 {
                     if (Server.IsNullOrEmpty()) Server = server;
-                    XTrace.WriteLine("星尘探测：{0}", server);
+                    XTrace.WriteLine("星尘探测：{0} Cost={1}ms", server, sw.ElapsedMilliseconds);
 
                     if (set.Server.IsNullOrEmpty())
                     {
@@ -182,11 +183,11 @@ public class StarFactory : DisposeBase
                     }
                 }
                 else
-                    XTrace.WriteLine("星尘探测：StarAgent Not Found");
+                    XTrace.WriteLine("星尘探测：StarAgent Not Found, Cost={0}ms", sw.ElapsedMilliseconds);
             }
             catch (Exception ex)
             {
-                XTrace.Log.Error("星尘探测失败！{0}", ex.Message);
+                XTrace.Log.Error("星尘探测失败！{0} Cost={1}ms", ex.Message, sw.ElapsedMilliseconds);
             }
         }
 
@@ -226,11 +227,23 @@ public class StarFactory : DisposeBase
 
         var ioc = ObjectContainer.Current;
         ioc.AddSingleton(this);
-        ioc.AddSingleton(p => Tracer);
-        ioc.AddSingleton(p => Config);
+        ioc.AddSingleton(p => Tracer ?? DefaultTracer.Instance ?? (DefaultTracer.Instance ??= new DefaultTracer()));
+        //ioc.AddSingleton(p => Config);
         ioc.AddSingleton(p => Service);
+
+        // 替换为混合配置提供者，优先本地配置
+        ioc.AddSingleton(p => GetConfig());
+
 #if !NET40
+        ioc.TryAddSingleton(XTrace.Log);
         ioc.TryAddSingleton(typeof(ICacheProvider), typeof(CacheProvider));
+#else
+        ioc.TryAdd(new ServiceDescriptor
+        {
+            ServiceType = typeof(ILog),
+            Instance = XTrace.Log,
+            Lifetime = ObjectLifetime.Singleton
+        });
 #endif
     }
 
