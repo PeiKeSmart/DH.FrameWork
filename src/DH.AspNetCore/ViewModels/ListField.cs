@@ -84,7 +84,7 @@ public class ListField : DataField {
     #region 数据格式化
     private static readonly Regex _reg = new(@"{(\w+)}", RegexOptions.Compiled);
 
-    private static String Replace(String input, IExtend data)
+    private static String Replace(String input, IModel data)
     {
         return _reg.Replace(input, m =>
         {
@@ -100,7 +100,7 @@ public class ListField : DataField {
     /// <summary>针对指定实体对象计算DisplayName，替换其中变量</summary>
     /// <param name="data"></param>
     /// <returns></returns>
-    public virtual String GetDisplayName(IExtend data)
+    public virtual String GetDisplayName(IModel data)
     {
         if (DisplayName.IsNullOrEmpty()) return null;
 
@@ -110,7 +110,7 @@ public class ListField : DataField {
     /// <summary>针对指定实体对象计算链接名，替换其中变量</summary>
     /// <param name="data"></param>
     /// <returns></returns>
-    public virtual String GetLinkName(IExtend data)
+    public virtual String GetLinkName(IModel data)
     {
         // 如果设置了单元格文字，则优先使用。Text>Entity[name]>DisplayName
         var txt = Text;
@@ -131,7 +131,7 @@ public class ListField : DataField {
     /// <summary>针对指定实体对象计算url，替换其中变量</summary>
     /// <param name="data"></param>
     /// <returns></returns>
-    public virtual String GetUrl(IExtend data)
+    public virtual String GetUrl(IModel data)
     {
         var svc = GetService<IUrlExtend>();
         if (svc != null) return svc.Resolve(this, data);
@@ -145,7 +145,7 @@ public class ListField : DataField {
     /// <summary>针对指定实体对象计算title，替换其中变量</summary>
     /// <param name="data"></param>
     /// <returns></returns>
-    public virtual String GetTitle(IExtend data)
+    public virtual String GetTitle(IModel data)
     {
         if (Title.IsNullOrEmpty()) return null;
 

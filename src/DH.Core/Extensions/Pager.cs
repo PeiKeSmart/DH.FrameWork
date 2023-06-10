@@ -13,7 +13,7 @@ using System.Xml.Serialization;
 namespace DH.AspNetCore.Extensions;
 
 /// <summary>分页器。包含分页排序参数，支持构造Url的功能</summary>
-public class Pager : PageParameter, IExtend3 {
+public class Pager : PageParameter, IExtend {
     #region 名称
     /// <summary>名称类。用户可根据需要修改Url参数名</summary>
     public class __ {
