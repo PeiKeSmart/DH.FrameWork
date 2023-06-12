@@ -1,4 +1,6 @@
-﻿namespace DH.GPS;
+﻿using DH.Extension;
+
+namespace DH.GPS;
 
 /// <summary>
 /// GPS坐标转换
