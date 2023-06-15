@@ -236,6 +236,20 @@ public partial class LocaleStringResource : DHEntityBase<LocaleStringResource>
                 model.CultureId = languageId;
                 model.LanValue = resourceKey;
                 model.Insert();
+
+                var defaultId = Language.FindByDefault().Id;
+                if (languageId != defaultId)
+                {
+                    var modelDefault = FindByLanKeyAndCultureId(resourceKey, defaultId);
+                    if (modelDefault == null)
+                    {
+                        modelDefault = new LocaleStringResource();
+                        modelDefault.LanKey = resourceKey;
+                        modelDefault.CultureId = languageId;
+                        modelDefault.LanValue = resourceKey;
+                        modelDefault.Insert();
+                    }
+                }
             }
             catch (Exception ex)
             {
