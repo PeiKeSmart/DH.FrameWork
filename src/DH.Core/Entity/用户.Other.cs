@@ -200,7 +200,7 @@ public partial class UserE : User {
             }
             if (!mobile.IsNullOrWhiteSpace())
             {
-                list = list.Where(e => !e.Mobile.IsNullOrWhiteSpace() && e.Mobile.Contains(mobile.Trim()));
+                list = list.Where(e => !e.Mobile.IsNullOrWhiteSpace() && e.Mobile.Contains(mobile.Trim(), StringComparison.OrdinalIgnoreCase));
             }
 
             if (IsAdmin != null)
@@ -783,7 +783,7 @@ public partial class UserE : User {
 
             if (!name.IsNullOrWhiteSpace())
             {
-                list = list.FindAll(x => x.Name.Contains(name));
+                list = list.FindAll(x => x.Name.Contains(name, StringComparison.OrdinalIgnoreCase));
             }
 
             if (RoleId > 0)
