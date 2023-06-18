@@ -65,11 +65,34 @@ internal sealed class JsonWebTokenBuilder : IJsonWebTokenBuilder
     /// 创建令牌
     /// </summary>
     /// <param name="payload">负载</param>
+    /// <param name="AccessExpireMinutes">访问令牌有效期分钟数</param>
+    /// <param name="RefreshExpireMinutes">刷新令牌有效期分钟数</param>
+    public async Task<JsonWebToken> Create(IDictionary<string, string> payload, Double RefreshExpireMinutes, Double AccessExpireMinutes = 0)
+    {
+        var options = await _options.DeepClone();
+
+        if (AccessExpireMinutes > 0)
+        {
+            options.AccessExpireMinutes = AccessExpireMinutes;
+        }
+
+        if (RefreshExpireMinutes > 0)
+        {
+            options.RefreshExpireMinutes = RefreshExpireMinutes;
+        }
+
+        return Create(payload, options);
+    }
+
+    /// <summary>
+    /// 创建令牌
+    /// </summary>
+    /// <param name="payload">负载</param>
     /// <param name="options">Jwt选项配置</param>
     public JsonWebToken Create(IDictionary<string, string> payload, JwtOptions options)
     {
         if (string.IsNullOrWhiteSpace(options.Secret))
-            throw new ArgumentNullException(nameof(_options.Secret),
+            throw new ArgumentNullException(nameof(options.Secret),
                 $@"{nameof(options.Secret)}为Null或空字符串。请在""appsettings.json""配置""{nameof(JwtOptions)}""节点及其子节点""{nameof(JwtOptions.Secret)}""");
         var clientId = payload.ContainsKey("clientId") ? payload["clientId"] : Guid.NewGuid().ToString();
         var clientType = payload.ContainsKey("clientType") ? payload["clientType"] : "admin";
@@ -91,7 +114,7 @@ internal sealed class JsonWebTokenBuilder : IJsonWebTokenBuilder
 
         // 生成访问令牌
         var (token, accessExpires) =
-            Helper.CreateToken(_tokenHandler, claims, _options, JsonWebTokenType.AccessToken);
+            Helper.CreateToken(_tokenHandler, claims, options, JsonWebTokenType.AccessToken);
         var accessToken = new JsonWebToken()
         {
             AccessToken = token,
@@ -131,15 +154,38 @@ internal sealed class JsonWebTokenBuilder : IJsonWebTokenBuilder
     /// 刷新令牌
     /// </summary>
     /// <param name="refreshToken">刷新令牌</param>
-    public JsonWebToken Refresh(string refreshToken)
+    public JsonWebToken Refresh(string refreshToken) => Refresh(refreshToken, _options);
+
+    /// <summary>
+    /// 刷新令牌
+    /// </summary>
+    /// <param name="refreshToken">刷新令牌</param>
+    /// <param name="RefreshExpireMinutes">刷新令牌有效期分钟数</param>
+    public async Task<JsonWebToken> Refresh(string refreshToken, Double RefreshExpireMinutes)
+    {
+        var options = await _options.DeepClone();
+
+        if (RefreshExpireMinutes > 0)
+        {
+            options.RefreshExpireMinutes = RefreshExpireMinutes;
+        }
+
+        return Refresh(refreshToken, _options);
+    }
+
+    /// <summary>
+    /// 刷新令牌
+    /// </summary>
+    /// <param name="refreshToken">刷新令牌</param>
+    public JsonWebToken Refresh(string refreshToken, JwtOptions options)
     {
         if (string.IsNullOrWhiteSpace(refreshToken))
             throw new ArgumentNullException(nameof(refreshToken));
         var parameters = new TokenValidationParameters()
         {
-            ValidIssuer = _options.Issuer,
-            ValidAudience = _options.Audience,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.Secret)),
+            ValidIssuer = options.Issuer,
+            ValidAudience = options.Audience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(options.Secret)),
         };
         var tokenModel = _tokenStore.GetRefreshToken(refreshToken);
         if (tokenModel == null || tokenModel.Value != refreshToken || tokenModel.EndUtcTime <= DateTime.UtcNow)
@@ -155,7 +201,7 @@ internal sealed class JsonWebTokenBuilder : IJsonWebTokenBuilder
 
         var principal = _tokenHandler.ValidateToken(refreshToken, parameters, out var securityToken);
         var payload = _tokenPayloadStore.Get(refreshToken);
-        var result = Create(payload, _options);
+        var result = Create(payload, options);
         if (result != null)
         {
             _tokenStore.RemoveRefreshToken(refreshToken);
@@ -164,13 +210,37 @@ internal sealed class JsonWebTokenBuilder : IJsonWebTokenBuilder
         return result;
     }
 
+    /// <summary>
+    /// 刷新令牌，延时清理数据
+    /// </summary>
+    /// <param name="refreshToken">刷新令牌</param>
+    /// <param name="expire">延时时间。秒</param>
+    public JsonWebToken Refresh(String refreshToken, Int32 expire) => Refresh(refreshToken, expire, _options);
 
     /// <summary>
     /// 刷新令牌，延时清理数据
     /// </summary>
     /// <param name="refreshToken">刷新令牌</param>
     /// <param name="expire">延时时间。秒</param>
-    public JsonWebToken Refresh(String refreshToken, Int32 expire)
+    /// <param name="RefreshExpireMinutes">刷新令牌有效期分钟数</param>
+    public async Task<JsonWebToken> Refresh(string refreshToken, Int32 expire, Double RefreshExpireMinutes)
+    {
+        var options = await _options.DeepClone();
+
+        if (RefreshExpireMinutes > 0)
+        {
+            options.RefreshExpireMinutes = RefreshExpireMinutes;
+        }
+
+        return Refresh(refreshToken, expire, _options);
+    }
+
+    /// <summary>
+    /// 刷新令牌，延时清理数据
+    /// </summary>
+    /// <param name="refreshToken">刷新令牌</param>
+    /// <param name="expire">延时时间。秒</param>
+    public JsonWebToken Refresh(String refreshToken, Int32 expire, JwtOptions options)
     {
         if (string.IsNullOrWhiteSpace(refreshToken))
             throw new ArgumentNullException(nameof(refreshToken));
