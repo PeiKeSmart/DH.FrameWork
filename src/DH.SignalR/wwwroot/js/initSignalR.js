@@ -45,6 +45,7 @@ function initSignalr(option) {
             option.onStarted && option.onStarted(data);
             console.log("连接成功");
         }).catch(function (error) {
+            console.log(error);
             console.error(error.toString());
         });
     }, option.delay);
