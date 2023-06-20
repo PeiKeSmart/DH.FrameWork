@@ -45,7 +45,7 @@ function initSignalr(option) {
             option.onStarted && option.onStarted(data);
             console.log("连接成功");
         }).catch(function (error) {
-            if (error.toString().indexOf("Forbidden") > -1) {
+            if (error.toString().indexOf("Forbidden") > -1 || error.toString().indexOf("401") > -1 || error.toString().indexOf("403") > -1) {
                 var AccessToken = storage.get("AccessToken");
                 var RefreshToken = storage.get("RefreshToken");
                 var AccessTokenUtcExpires = storage.get("AccessTokenUtcExpires");
