@@ -25,6 +25,12 @@ public class DHUtilSetting : Config<DHUtilSetting>
     #region Redis
 
     /// <summary>
+    /// 启用Redis缓存，False为内存缓存，True为Redis缓存
+    /// </summary>
+    [Description("启用Redis缓存，False为内存缓存，True为Redis缓存")]
+    public Boolean IsUseRedisCache { get; set; } = false;
+
+    /// <summary>
     /// 是否应该使用Redis服务
     /// </summary>
     [Description("是否应该使用Redis服务")]

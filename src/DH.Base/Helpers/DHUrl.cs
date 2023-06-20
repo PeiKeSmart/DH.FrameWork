@@ -3,7 +3,7 @@
 /// <summary>
 /// Url操作
 /// </summary>
-public static partial class Url {
+public static partial class DHUrl {
     #region Combine(合并Url)
 
     /// <summary>
