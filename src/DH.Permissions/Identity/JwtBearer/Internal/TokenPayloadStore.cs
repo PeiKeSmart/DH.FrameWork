@@ -1,6 +1,7 @@
 ﻿using DH.Core.Infrastructure;
 
 using NewLife.Caching;
+using NewLife.Log;
 
 namespace DH.Permissions.Identity.JwtBearer.Internal;
 
@@ -20,7 +21,7 @@ internal sealed class TokenPayloadStore : ITokenPayloadStore
     /// <param name="cache"></param>
     public TokenPayloadStore(ICache cache)
     {
-        if (DHUtilSetting.Current.RedisEnabled)
+        if (DHUtilSetting.Current.IsUseRedisCache)
         {
             _cache = EngineContext.Current.Resolve<ICache>();
         }
