@@ -153,9 +153,14 @@ public class EntityBuilder : ClassBuilder
                 Log = log
             };
 
-            if (option.ModelNameForToModel.IsNullOrEmpty())
+            // 不能对option赋值，否则所有table的ModelNameForToModel就相同了
+            //if (option.ModelNameForToModel.IsNullOrEmpty())
+            //{
+            //    option.ModelNameForToModel = item.Name;
+            //}
+            if (builder.EntityOption.ModelNameForToModel.IsNullOrEmpty())
             {
-                option.ModelNameForToModel = item.Name;
+                builder.EntityOption.ModelNameForToModel = item.Name;
             }
 
             builder.Load(item);
@@ -877,7 +882,7 @@ public class EntityBuilder : ClassBuilder
                 WriteLine("// 按天分表");
                 WriteLine("//Meta.ShardPolicy = new TimeShardPolicy(nameof({0}), Meta.Factory)", dc.Name);
                 WriteLine("//{");
-                WriteLine("//    TablePolicy = \"{{0}}_{{1:yyyyMMdd}}\",");
+                WriteLine("//    TablePolicy = \"{0}_{1:yyyyMMdd}\",");
                 WriteLine("//    Step = TimeSpan.FromDays(1),");
                 WriteLine("//};");
             }
