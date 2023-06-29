@@ -8,10 +8,6 @@ using NewLife;
 using NewLife.Log;
 using Stardust.Services;
 
-#if NET6_0_OR_GREATER
-using System.Net.Http;
-#endif
-
 namespace Stardust.Managers;
 
 /// <summary>dotNet运行时</summary>
@@ -74,7 +70,7 @@ public class NetRuntime
             if (String.IsNullOrEmpty(baseUrl))
                 baseUrl = BaseUrl?.TrimEnd('/');
             else
-                baseUrl = BaseUrl?.TrimEnd('/') + baseUrl.EnsureStart("/").TrimEnd('/');
+                baseUrl = BaseUrl?.TrimEnd('/') + '/' + baseUrl.TrimStart('/').TrimEnd('/');
 
             var url = $"{baseUrl}/{fileName}";
             WriteLog("正在下载：{0}", url);
@@ -85,7 +81,7 @@ public class NetRuntime
             // 独立区域，下载完成后释放连接和文件句柄
             {
 #if NET6_0_OR_GREATER
-                using var http = new HttpClient();
+                using var http = new System.Net.Http.HttpClient();
                 var hs = http.GetStreamAsync(url).Result;
 
                 using var fs = new FileStream(fullFile, FileMode.CreateNew, FileAccess.Write);
@@ -106,10 +102,10 @@ public class NetRuntime
 
         WriteLog("正在安装：{0} {1}", fullFile, arg);
 
-        if (Runtime.Linux)
-            return InstallOnLinux(fullFile, arg);
-        else
+        if (IsWindows)
             return InstallOnWindows(fullFile, arg);
+        else
+            return InstallOnLinux(fullFile, arg);
     }
 
     Boolean InstallOnWindows(String fullFile, String arg)
@@ -136,7 +132,8 @@ public class NetRuntime
     {
         // 建立目录
         var target = "/usr/share/dotnet";
-        target.EnsureDirectory(false);
+        //target.EnsureDirectory(false);
+        if (!Directory.Exists(target)) Directory.CreateDirectory(target);
 
         // 解压缩
         Process.Start(new ProcessStartInfo("tar", $"-xzf {fullFile} -C {target}") { UseShellExecute = true });
@@ -520,7 +517,7 @@ public class NetRuntime
     public static IList<VerInfo> Get1To45VersionFromRegistry()
     {
         var list = new List<VerInfo>();
-        if (Environment.OSVersion.Platform > PlatformID.WinCE) return list;
+        if (!IsWindows) return list;
 
 #if NET45_OR_GREATER || NET6_0_OR_GREATER
         // 注册表查找 .NET Framework
@@ -585,7 +582,7 @@ public class NetRuntime
     public static IList<VerInfo> Get45PlusFromRegistry()
     {
         var list = new List<VerInfo>();
-        if (Environment.OSVersion.Platform > PlatformID.WinCE) return list;
+        if (!IsWindows) return list;
 
 #if NET45_OR_GREATER || NET6_0_OR_GREATER
         const String subkey = @"SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full\";
@@ -635,13 +632,13 @@ public class NetRuntime
         var list = new List<VerInfo>();
 
         var dir = "";
-        if (Environment.OSVersion.Platform <= PlatformID.WinCE)
+        if (IsWindows)
         {
             dir = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
             if (String.IsNullOrEmpty(dir)) return null;
             dir += "\\dotnet\\shared";
         }
-        else if (Environment.OSVersion.Platform == PlatformID.Unix)
+        else
             dir = "/usr/share/dotnet/shared";
 
         var dic = new SortedDictionary<String, VerInfo>();
@@ -660,7 +657,7 @@ public class NetRuntime
                         else if (item.Name.Contains("Desktop"))
                             name += "-desktop";
                     }
-                    else if (name.Contains('-'))
+                    else if (name.Contains("-"))
                         continue;
 
                     if (!dic.ContainsKey(name))
@@ -696,7 +693,7 @@ public class NetRuntime
                             else if (ver.Contains("Desktop"))
                                 name += "-desktop";
                         }
-                        else if (name.Contains('-'))
+                        else if (name.Contains("-"))
                             continue;
 
                         VerInfo vi = null;
@@ -750,6 +747,9 @@ public class NetRuntime
     #endregion
 
     #region 辅助
+    /// <summary>是否Windows</summary>
+    public static Boolean IsWindows => Environment.OSVersion.Platform <= PlatformID.WinCE;
+
     /// <summary>获取文件MD5</summary>
     /// <param name="fileName"></param>
     /// <returns></returns>
