@@ -45,92 +45,92 @@ function initSignalr(option) {
             option.onStarted && option.onStarted(data);
             console.log("连接成功");
         }).catch(function (error) {
-            if (error.toString().indexOf("Forbidden") > -1 || error.toString().indexOf("401") > -1 || error.toString().indexOf("403") > -1) {
-                var AccessToken = storage.get("AccessToken");
-                var RefreshToken = storage.get("RefreshToken");
-                var AccessTokenUtcExpires = storage.get("AccessTokenUtcExpires");
-                var RefreshUtcExpires = storage.get("RefreshUtcExpires");
-                var Remember = storage.get("remember");
+            //if (error.toString().indexOf("Forbidden") > -1 || error.toString().indexOf("401") > -1 || error.toString().indexOf("403") > -1) {
+            //    var AccessToken = storage.get("AccessToken");
+            //    var RefreshToken = storage.get("RefreshToken");
+            //    var AccessTokenUtcExpires = storage.get("AccessTokenUtcExpires");
+            //    var RefreshUtcExpires = storage.get("RefreshUtcExpires");
+            //    var Remember = storage.get("remember");
 
-                var now = new Date().getTime(); // 获取当前时间戳
+            //    var now = new Date().getTime(); // 获取当前时间戳
 
-                var seconds = Math.floor((RefreshUtcExpires - now) / 1000); //  计算时间戳与当前时间之间的秒数
-                var seconds1 = Math.floor((AccessTokenUtcExpires - now) / 1000); //  计算时间戳与当前时间之间的秒数
+            //    var seconds = Math.floor((RefreshUtcExpires - now) / 1000); //  计算时间戳与当前时间之间的秒数
+            //    var seconds1 = Math.floor((AccessTokenUtcExpires - now) / 1000); //  计算时间戳与当前时间之间的秒数
 
-                if (AccessTokenUtcExpires === null || RefreshUtcExpires === null || seconds1 < 0) {
-                    $.ajax
-                        ({
-                            url: logoutUrl,  // 退出登录
-                            dataType: 'json',
-                            method: 'POST',
-                            data:
-                            {
+            //    if (AccessTokenUtcExpires === null || RefreshUtcExpires === null || seconds1 < 0) {
+            //        $.ajax
+            //            ({
+            //                url: logoutUrl,  // 退出登录
+            //                dataType: 'json',
+            //                method: 'POST',
+            //                data:
+            //                {
 
-                            },
-                            success: function (data) {
-                                if (data.code == 0) {
-                                    storage.remove("AccessToken");
-                                    storage.remove("RefreshToken");
-                                    storage.remove("AccessTokenUtcExpires");
-                                    storage.remove("RefreshUtcExpires");
-                                    storage.remove("remember");
+            //                },
+            //                success: function (data) {
+            //                    if (data.code == 0) {
+            //                        storage.remove("AccessToken");
+            //                        storage.remove("RefreshToken");
+            //                        storage.remove("AccessTokenUtcExpires");
+            //                        storage.remove("RefreshUtcExpires");
+            //                        storage.remove("remember");
 
-                                    window.location.href = loginUrl;
-                                }
-                            }
-                        })
-                    return;
-                }
+            //                        window.location.href = loginUrl;
+            //                    }
+            //                }
+            //            })
+            //        return;
+            //    }
 
-                $.ajax
-                    ({
-                        url: refreshTokenUrl,  // 刷新Token
-                        dataType: 'json',
-                        method: 'POST',
-                        data:
-                        {
-                            RefreshToken: RefreshToken,
-                            RefreshExpireMinutes: Remember
-                        },
-                        success: function (res) {
-                            console.log(res);
+            //    $.ajax
+            //        ({
+            //            url: refreshTokenUrl,  // 刷新Token
+            //            dataType: 'json',
+            //            method: 'POST',
+            //            data:
+            //            {
+            //                RefreshToken: RefreshToken,
+            //                RefreshExpireMinutes: Remember
+            //            },
+            //            success: function (res) {
+            //                console.log(res);
 
-                            if (!res.success) {
-                                $.ajax
-                                    ({
-                                        url: logoutUrl,  // 退出登录
-                                        dataType: 'json',
-                                        method: 'POST',
-                                        data:
-                                        {
+            //                if (!res.success) {
+            //                    $.ajax
+            //                        ({
+            //                            url: logoutUrl,  // 退出登录
+            //                            dataType: 'json',
+            //                            method: 'POST',
+            //                            data:
+            //                            {
 
-                                        },
-                                        success: function (data) {
-                                            if (data.code == 0) {
-                                                storage.remove("AccessToken");
-                                                storage.remove("RefreshToken");
-                                                storage.remove("AccessTokenUtcExpires");
-                                                storage.remove("RefreshUtcExpires");
-                                                storage.remove("remember");
+            //                            },
+            //                            success: function (data) {
+            //                                if (data.code == 0) {
+            //                                    storage.remove("AccessToken");
+            //                                    storage.remove("RefreshToken");
+            //                                    storage.remove("AccessTokenUtcExpires");
+            //                                    storage.remove("RefreshUtcExpires");
+            //                                    storage.remove("remember");
 
-                                                window.location.href = loginUrl;
-                                            }
-                                        }
-                                    })
-                                return;
-                            }
+            //                                    window.location.href = loginUrl;
+            //                                }
+            //                            }
+            //                        })
+            //                    return;
+            //                }
 
-                            var seconds = Math.floor((res.data.RefreshUtcExpires - now) / 1000); // 计算时间戳与当前时间之间的秒数
+            //                var seconds = Math.floor((res.data.RefreshUtcExpires - now) / 1000); // 计算时间戳与当前时间之间的秒数
 
-                            storage.set("AccessToken", res.data.AccessToken, seconds);
-                            storage.set("RefreshToken", res.data.RefreshToken, seconds);
-                            storage.set("AccessTokenUtcExpires", res.data.AccessTokenUtcExpires, seconds);
-                            storage.set("RefreshUtcExpires", res.data.RefreshUtcExpires, seconds);
+            //                storage.set("AccessToken", res.data.AccessToken, seconds);
+            //                storage.set("RefreshToken", res.data.RefreshToken, seconds);
+            //                storage.set("AccessTokenUtcExpires", res.data.AccessTokenUtcExpires, seconds);
+            //                storage.set("RefreshUtcExpires", res.data.RefreshUtcExpires, seconds);
 
-                            storage.set("remember", Remember, seconds);
-                        }
-                    })
-            }
+            //                storage.set("remember", Remember, seconds);
+            //            }
+            //        })
+            //}
 
             console.error(error.toString());
         });

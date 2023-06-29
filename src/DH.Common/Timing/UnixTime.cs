@@ -8,7 +8,7 @@ public static class UnixTime
     /// <summary>
     /// Unix纪元时间
     /// </summary>
-    public static DateTime EpochTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+    public static DateTime EpochTime = new(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
     /// <summary>
     /// 转换为Unix时间戳
