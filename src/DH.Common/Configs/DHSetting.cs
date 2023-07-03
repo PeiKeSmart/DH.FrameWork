@@ -174,6 +174,12 @@ public class DHSetting : Config<DHSetting>
     public Boolean AllowRequestParams { get; set; }
 
     /// <summary>
+    /// 允许获取请求和响应内容时排除的Url关键词，多个以逗号分隔
+    /// </summary>
+    [Description("允许获取请求和响应内容时排除的Url关键词，多个以逗号分隔")]
+    public String ExcludeUrl { get; set; }
+
+    /// <summary>
     /// 语言缓存名称
     /// </summary>
     [Description("语言缓存名称")]

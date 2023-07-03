@@ -41,11 +41,24 @@ public class HttpContextMiddleware {
     {
         if (DHSetting.Current.AllowRequestParams)  // 允许获取则执行
         {
-            if (!context.Request.Path.Value.Contains("/api/", StringComparison.OrdinalIgnoreCase) )
+            if (!context.Request.Path.Value.Contains("/api/", StringComparison.OrdinalIgnoreCase))
             {
                 // 或请求管道中调用下一个中间件
                 await _next(context);
                 return;
+            }
+
+            if (!DHSetting.Current.ExcludeUrl.IsNullOrWhiteSpace())  // 过滤指定路径
+            {
+                foreach(var item in DHSetting.Current.ExcludeUrl.Split(','))
+                {
+                    if (context.Request.Path.Value.Contains(item, StringComparison.OrdinalIgnoreCase))
+                    {
+                        // 或请求管道中调用下一个中间件
+                        await _next(context);
+                        return;
+                    }
+                }
             }
 
             //context.Request.EnableRewind();
@@ -66,7 +79,7 @@ public class HttpContextMiddleware {
             };
 
             var header = Pool.StringBuilder.Get();
-            foreach(var item in context.Request.Headers)
+            foreach (var item in context.Request.Headers)
             {
                 header.Append($",{item.Key}={item.Value}");
             }
