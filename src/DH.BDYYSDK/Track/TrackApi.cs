@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using NewLife.Log;
+
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -62,7 +65,7 @@ namespace Baidu.Yingyan.Track
         {
             var args = framework.getDefaultArgs();
             if (points?.Any() == true)
-                args["point_list"] = Newtonsoft.Json.JsonConvert.SerializeObject(points);
+                args["point_list"] = Newtonsoft.Json.JsonConvert.SerializeObject(points, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
 
             return await framework.post<BatchAddPointResult>(url + "addpoints", args);
         }

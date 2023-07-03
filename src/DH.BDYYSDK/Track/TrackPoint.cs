@@ -1,8 +1,11 @@
 ﻿using Baidu.Yingyan.Entity;
+
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
 using System.ComponentModel.DataAnnotations;
 
-namespace Baidu.Yingyan.Track
-{
+namespace Baidu.Yingyan.Track {
     /// <summary>
     /// 轨迹点
     /// </summary>
@@ -19,6 +22,7 @@ namespace Baidu.Yingyan.Track
         /// 坐标类型
         /// </summary>
         [Required]
+        [JsonConverter(typeof(StringEnumConverter))]
         public CoordTypeEnums coord_type_input { get; set; } = CoordTypeEnums.bd09ll;
 
         /// <summary>
