@@ -1,13 +1,13 @@
-﻿using System.Diagnostics;
-using System.Net;
+﻿using System.Net;
+using System.Net.Sockets;
 using System.Net.WebSockets;
 using System.Reflection;
 using System.Text;
-using System.Web;
 using NewLife.Caching;
 using NewLife.Collections;
 using NewLife.Data;
 using NewLife.Log;
+using NewLife.Net;
 using NewLife.Reflection;
 using NewLife.Serialization;
 using NewLife.Xml;
@@ -63,7 +63,16 @@ public static class HttpHelper
     /// <returns></returns>
     public static HttpMessageHandler CreateHandler(Boolean useProxy, Boolean useCookie)
     {
-#if NETCOREAPP3_0_OR_GREATER
+#if NET5_0_OR_GREATER
+        return new SocketsHttpHandler
+        {
+            UseProxy = useProxy,
+            UseCookies = useCookie,
+            AutomaticDecompression = DecompressionMethods.All,
+            PooledConnectionLifetime = TimeSpan.FromMinutes(5),
+            ConnectCallback = ConnectCallback,
+        };
+#elif NETCOREAPP3_0_OR_GREATER
         return new SocketsHttpHandler
         {
             UseProxy = useProxy,
@@ -80,6 +89,35 @@ public static class HttpHelper
         };
 #endif
     }
+
+#if NET5_0_OR_GREATER
+    /// <summary>连接回调，内部创建Socket，解决DNS解析缓存问题</summary>
+    /// <param name="context"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    static async ValueTask<Stream> ConnectCallback(SocketsHttpConnectionContext context, CancellationToken cancellationToken)
+    {
+        var socket = new Socket(SocketType.Stream, ProtocolType.Tcp)
+        {
+            NoDelay = true
+        };
+        try
+        {
+            var ep = context.DnsEndPoint;
+            var addrs = NetUri.ParseAddress(ep.Host);
+            if (addrs != null && addrs.Length > 0)
+                await socket.ConnectAsync(addrs, ep.Port, cancellationToken).ConfigureAwait(continueOnCapturedContext: false);
+            else
+                await socket.ConnectAsync(ep, cancellationToken).ConfigureAwait(continueOnCapturedContext: false);
+        }
+        catch
+        {
+            socket.Dispose();
+            throw;
+        }
+        return new NetworkStream(socket, ownsSocket: true);
+    }
+#endif
     #endregion
 
     #region Http封包解包

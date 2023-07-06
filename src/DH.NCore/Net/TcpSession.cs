@@ -76,7 +76,7 @@ public class TcpSession : SessionBase, ISocketSession
     internal void Start()
     {
         // 管道
-        Pipeline?.Open(base.CreateContext(this));
+        Pipeline?.Open(CreateContext(this));
 
         // 设置读写超时
         var sock = Client;
@@ -132,7 +132,9 @@ public class TcpSession : SessionBase, ISocketSession
                 sock.SendTimeout = timeout;
                 sock.ReceiveTimeout = timeout;
             }
+
             sock.Bind(Local.EndPoint);
+            Local.EndPoint.Port = ((IPEndPoint)sock.LocalEndPoint).Port;
 
             WriteLog("Open {0}", this);
         }
@@ -142,25 +144,14 @@ public class TcpSession : SessionBase, ISocketSession
 
         try
         {
-            var ep = uri.EndPoint;
-            if (!Local.Address.IsIPv4() && ep.Address.IsIPv4())
-            {
-                var address = uri.GetAddresses().FirstOrDefault(_ => !_.IsIPv4());
-                if (address != null) ep = new IPEndPoint(address, ep.Port);
-            }
-            else if (Local.Address.IsIPv4() && !ep.Address.IsIPv4())
-            {
-                var address = uri.GetAddresses().FirstOrDefault(_ => _.IsIPv4());
-                if (address != null) ep = new IPEndPoint(address, ep.Port);
-            }
+            var addrs = uri.GetAddresses();
 
-            RemoteAddress = ep.Address;
             if (timeout <= 0)
-                sock.Connect(ep);
+                sock.Connect(addrs, uri.Port);
             else
             {
                 // 采用异步来解决连接超时设置问题
-                var ar = sock.BeginConnect(ep, null, null);
+                var ar = sock.BeginConnect(addrs, uri.Port, null, null);
                 if (!ar.AsyncWaitHandle.WaitOne(timeout, true))
                 {
                     sock.Close();
@@ -169,6 +160,7 @@ public class TcpSession : SessionBase, ISocketSession
 
                 sock.EndConnect(ar);
             }
+            RemoteAddress = (sock.RemoteEndPoint as IPEndPoint)?.Address;
 
             // 客户端SSL
             var sp = SslProtocol;
@@ -460,15 +452,12 @@ public class TcpSession : SessionBase, ISocketSession
     /// <returns></returns>
     public override String ToString()
     {
-        if (Remote != null && !Remote.EndPoint.IsAny())
-        {
-            if (_Server == null)
-                return $"{Local}=>{Remote.EndPoint}";
-            else
-                return $"{Local}<={Remote.EndPoint}";
-        }
-        else
-            return Local.ToString();
+        var local = Local;
+        var remote = Remote.EndPoint;
+        if (remote == null || remote.IsAny())
+            return local.ToString();
+
+        return _Server == null ? $"{local}=>{remote}" : $"{local}<={remote}";
     }
     #endregion
 }
