@@ -30,8 +30,6 @@ internal sealed class JsonWebTokenStore : IJsonWebTokenStore
         {
             _cache = cache;
         }
-
-        XTrace.WriteLine($"获取到的数据JsonWebTokenStore：{_cache.GetType().FullName}");
     }
 
     /// <summary>

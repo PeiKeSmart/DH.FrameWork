@@ -29,8 +29,6 @@ internal sealed class TokenPayloadStore : ITokenPayloadStore
         {
             _cache = cache;
         }
-
-        XTrace.WriteLine($"获取到的数据TokenPayloadStore：{_cache.GetType().FullName}");
     }
 
     /// <summary>

@@ -636,22 +636,10 @@ public partial class User : LogEntity<User>, IUser, IAuthUser, IIdentity
         // 如果没有指定权限子项，则指判断是否拥有资源
         if (flags == null || flags.Length == 0) return rs.Any(r => r.Has(menu.ID));
 
-        var rrrr = (Int32)flags.First();
-        XTrace.WriteLine($"获取到值：{rrrr}");
-        if (rrrr == 256)
-        {
-            XTrace.WriteLine($"获取到值11111：{rrrr}");
-        }
-
         foreach (var item in flags)
         {
             // 如果判断None，则直接返回
             if (item == PermissionFlags.None) return true;
-
-            if (rrrr == 256)
-            {
-                XTrace.WriteLine($"获取到值22222222：{(Int32)item}_{menu.Permissions}");
-            }
 
             // 菜单必须拥有这些权限位才行
             if (menu.Permissions.ContainsKey((Int32)item))
