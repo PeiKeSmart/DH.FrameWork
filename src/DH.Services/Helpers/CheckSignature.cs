@@ -59,8 +59,9 @@ public partial class CheckSignature {
     /// <param name="retusnsignature">检验值</param>
     /// <param name="CacheTime">检验类型为1时生效，值为指定时间，单位为秒。</param>
     /// <param name="CheckType">检验类型：0为每个检验值只能被使用一次，1为指定时间内可一直使用</param>
+    /// <param name="CheckTimeStamp">是否检查时间戳</param>
     /// <returns>0为校验值不一致，1为正常，2为大于当前时间戳范围，3为小于当前时间戳范围，4为被使用过</returns>
-    public static Int32 Check(string signature, long timestamp, string nonce, string token, Int32 CheckType, Int32 CacheTime, out string retusnsignature)
+    public static Int32 Check(string signature, long timestamp, string nonce, string token, Int32 CheckType, Int32 CacheTime, Boolean CheckTimeStamp, out string retusnsignature)
     {
         retusnsignature = "";
 
@@ -77,9 +78,12 @@ public partial class CheckSignature {
             }
         }
 
-        var time = UnixTime.ToDateTime(timestamp);
-        if (time > DateTime.Now.AddSeconds(cacheTime)) return 2;
-        if (time < DateTime.Now.AddSeconds(-cacheTime)) return 3;
+        if (CheckTimeStamp)
+        {
+            var time = UnixTime.ToDateTime(timestamp);
+            if (time > DateTime.Now.AddSeconds(cacheTime)) return 2;
+            if (time < DateTime.Now.AddSeconds(-cacheTime)) return 3;
+        }
 
         if (CheckType == 0)
         {

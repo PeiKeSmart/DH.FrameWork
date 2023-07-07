@@ -22,6 +22,11 @@ public class ApiSignatureAttribute : ActionFilterAttribute {
     public Int32 CacheTime { get; set; }
 
     /// <summary>
+    /// 是否检验时间戳
+    /// </summary>
+    public Boolean CheckTimeStamp { get; set; } = true;
+
+    /// <summary>
     /// 通信加密签名
     /// </summary>
     private String Signature;
@@ -64,13 +69,13 @@ public class ApiSignatureAttribute : ActionFilterAttribute {
                 return;
             }
 
-            var m = DH.Helpers.CheckSignature.Check(Signature, TimeStamp.ToLong(), Nonce, Token, CheckType, CacheTime, out String sign);
+            var m = DH.Helpers.CheckSignature.Check(Signature, TimeStamp.ToLong(), Nonce, Token, CheckType, CacheTime, CheckTimeStamp, out String sign);
 
             if (m != 1)
             {
                 if (m == 2 || m == 3)
                 {
-                    result.Message = LocaleStringResource.GetResource("时间戳有误");
+                    result.Message = LocaleStringResource.GetResource("时间戳有误,请检查并同步时间");
                 }
                 else if (m == 4)
                 {
