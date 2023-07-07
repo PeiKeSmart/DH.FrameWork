@@ -216,8 +216,10 @@ public partial class LocaleStringResource : DHEntityBase<LocaleStringResource> {
         bool logIfNotFound = true, string defaultValue = "", bool returnEmptyIfNotFound = false)
     {
         var result = string.Empty;
-        if (resourceKey == null)
-            resourceKey = string.Empty;
+        if (resourceKey.IsNullOrWhiteSpace())
+        {
+            return string.Empty;
+        }
         resourceKey = resourceKey.Trim();
 
         var model = FindByLanKeyAndCultureId(resourceKey, languageId);
