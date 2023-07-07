@@ -16,8 +16,7 @@ using XCode.Cache;
 namespace DH.Entity;
 
 /// <summary>语言包</summary>
-public partial class LocaleStringResource : DHEntityBase<LocaleStringResource>
-{
+public partial class LocaleStringResource : DHEntityBase<LocaleStringResource> {
     #region 对象操作
     static LocaleStringResource()
     {
@@ -245,7 +244,7 @@ public partial class LocaleStringResource : DHEntityBase<LocaleStringResource>
                     {
                         modelDefault = new LocaleStringResource();
                         modelDefault.LanKey = resourceKey;
-                        modelDefault.CultureId = languageId;
+                        modelDefault.CultureId = defaultId;
                         modelDefault.LanValue = resourceKey;
                         modelDefault.Insert();
                     }
