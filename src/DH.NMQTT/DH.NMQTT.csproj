@@ -36,7 +36,7 @@
 	<RepositoryUrl>https://gitee.com/chuangchu/DH.FrameWork</RepositoryUrl>
 	<RepositoryType>Git</RepositoryType>
 	<PackageTags>湖北登灏科技有限公司;DH组件;DH;$(AssemblyName)</PackageTags>
-	<PackageReleaseNotes>完成Mqtt客户端</PackageReleaseNotes>
+	<PackageReleaseNotes>重构增强MqttHandler</PackageReleaseNotes>
 	<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 	<PublishRepositoryUrl>true</PublishRepositoryUrl>
 	<EmbedUntrackedSources>true</EmbedUntrackedSources>
@@ -62,10 +62,6 @@
   <ItemGroup Condition="'$(TargetFramework)'=='net45' or '$(TargetFramework)'=='net461'">
 	<Reference Include="System.Net.Http" />
   </ItemGroup>
-	
-  <ItemGroup>
-    <ProjectReference Include="..\DH.NIoT\DH.NIoT.csproj" />
-  </ItemGroup>
 
   <ItemGroup>
 	<Content Include="..\..\Doc\DH.png" Link="DH.png" PackagePath="\" />
@@ -76,6 +72,10 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>	
+
+  <ItemGroup>
+    <ProjectReference Include="..\DH.NCore\DH.NCore.csproj" />
   </ItemGroup>
 	
 </Project>
