@@ -14,7 +14,8 @@ namespace DH.Services.Components;
 /// <summary>
 /// ViewComponent的基类
 /// </summary>
-public abstract partial class DHViewComponent : ViewComponent {
+public abstract partial class DHViewComponent : ViewComponent
+{
     private void PublishModelPrepared<TModel>(TModel model)
     {
         // 组件不是控制器生命周期的一部分
@@ -87,7 +88,7 @@ public abstract partial class DHViewComponent : ViewComponent {
     {
         var _provider = EngineContext.Current.Resolve<IManageProvider>();
 
-        var user = _provider.Current as IUser ?? UserE.FindAll().FirstOrDefault();
+        var user = _provider.Current as IUser;
 
         var fact = ManageProvider.Menu;
         var menus = fact.Root.Childs;

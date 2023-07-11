@@ -4,6 +4,7 @@ using DH.Exceptions;
 using DH.Helpers;
 
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Primitives;
 
@@ -16,15 +17,14 @@ using System.Web;
 namespace DH.Webs;
 
 /// <summary>网页工具类</summary>
-public static partial class DHWebHelper
-{
+public static partial class DHWebHelper {
     #region Http请求
     /// <summary>返回请求字符串和表单的名值字段，过滤空值和ViewState，同名时优先表单</summary>
     public static IDictionary<String, String> Params
     {
         get
         {
-            var ctx = DHWeb.HttpContext;
+            var ctx = DH.Webs.HttpContext.Current;
             if (ctx.Items["Params"] is IDictionary<String, String> dic) return dic;
 
             var req = ctx.Request;
@@ -79,6 +79,28 @@ public static partial class DHWebHelper
         }
     }
 
+    /// <summary>获取原始请求Url，支持反向代理</summary>
+    /// <param name="request"></param>
+    /// <returns></returns>
+    public static Uri GetRawUrl(this HttpRequest request)
+    {
+        Uri uri = null;
+
+        //// 配置
+        //var ms = OAuthConfig.GetValids();
+        //var mi = ms.FirstOrDefault(e => !e.AppUrl.IsNullOrEmpty());
+        //if (mi != null) uri = new Uri(mi.AppUrl);
+
+        // 取请求头
+        if (uri == null)
+        {
+            var url = request.GetEncodedUrl();
+            uri = new Uri(url);
+        }
+
+        return GetRawUrl(uri, k => request.Headers[k]);
+    }
+
     /// <summary>保存上传文件</summary>
     /// <param name="file"></param>
     /// <param name="filename"></param>
@@ -88,6 +110,29 @@ public static partial class DHWebHelper
         //file.OpenReadStream().CopyTo(fs);
         file.CopyTo(fs);
         fs.SetLength(fs.Position);
+    }
+
+    private static Uri GetRawUrl(Uri uri, Func<String, String> headers)
+    {
+        var str = headers("HTTP_X_REQUEST_URI");
+        if (str.IsNullOrEmpty()) str = headers("X-Request-Uri");
+
+        if (str.IsNullOrEmpty())
+        {
+            // 阿里云CDN默认支持 X-Client-Scheme: https
+            var scheme = headers("HTTP_X_CLIENT_SCHEME");
+            if (scheme.IsNullOrEmpty()) scheme = headers("X-Client-Scheme");
+
+            // nginx
+            if (scheme.IsNullOrEmpty()) scheme = headers("HTTP_X_FORWARDED_PROTO");
+            if (scheme.IsNullOrEmpty()) scheme = headers("X-Forwarded-Proto");
+
+            if (!scheme.IsNullOrEmpty()) str = scheme + "://" + uri.ToString().Substring("://");
+        }
+
+        if (!str.IsNullOrEmpty()) uri = new Uri(uri, str);
+
+        return uri;
     }
     #endregion
 
@@ -162,12 +207,7 @@ public static partial class DHWebHelper
     {
         if (url.IsNullOrEmpty()) return null;
 
-        if (url.StartsWith("~/")) url = "/" + url.Substring(2);
-        else
-        {
-            url = url.UrlDecode();
-            if (url.StartsWith("~/")) url = "/" + url.Substring(2);
-        }
+        if (url.StartsWith("~/")) url = "/" + url[2..];
 
         // 绝对路径
         if (!url.StartsWith("/")) return new Uri(url);
@@ -233,50 +273,5 @@ public static partial class DHWebHelper
 
         return url;
     }
-    #endregion
-
-    #region 工具方法
-
-    /// <summary>
-    /// 重新启动应用程序域
-    /// </summary>
-    /// <param name="makeRedirect">一个值，该值指示我们是否应在重新启动后进行重定向</param>
-    public static void RestartAppDomain(bool makeRedirect = false)
-    {
-        var _hostApplicationLifetime = EngineContext.Current.Resolve<IHostApplicationLifetime>();
-
-        // 网站将在下一个请求期间自动重新启动
-        // 调整web.config强制重新启动
-        var success = TryWriteWebConfig();
-        if (!success)
-        {
-            throw new DHException("needs to be restarted due to a configuration change, but was unable to do so." + Environment.NewLine +
-                "To prevent this issue in the future, a change to the web server configuration is required:" + Environment.NewLine +
-                "- run the application in a full trust environment, or" + Environment.NewLine +
-                "- give the application write access to the 'web.config' file.");
-        }
-
-        if (Environment.OSVersion.Platform == PlatformID.Unix)
-            _hostApplicationLifetime.StopApplication();
-    }
-
-    /// <summary>
-    /// 尝试编写web.config文件
-    /// </summary>
-    /// <returns></returns>
-    public static Boolean TryWriteWebConfig()
-    {
-        var _fileProvider = EngineContext.Current.Resolve<IDHFileProvider>();
-        try
-        {
-            _fileProvider.SetLastWriteTimeUtc(_fileProvider.MapPath(DHInfrastructureDefaults.WebConfigPath), DateTime.UtcNow);
-            return true;
-        }
-        catch
-        {
-            return false;
-        }
-    }
-
     #endregion
 }
