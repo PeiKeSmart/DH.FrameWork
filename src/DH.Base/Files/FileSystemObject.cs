@@ -6,8 +6,7 @@ namespace DH.Files;
 /// <summary>
 /// 文件操作对象类型
 /// </summary>
-public enum FsoMethod
-{
+public enum FsoMethod {
     /// <summary>
     /// 文件夹
     /// </summary>
@@ -25,8 +24,7 @@ public enum FsoMethod
 /// <summary>
 /// 文件管理类
 /// </summary>
-public abstract class FileSystemObject
-{
+public abstract class FileSystemObject {
 
     public static string ConvertEncoding(string content, Encoding srcEncoding, Encoding targetEncoding)
     {
@@ -147,6 +145,20 @@ public abstract class FileSystemObject
             throw new UnauthorizedAccessException("没有权限！");
         }
     }
+
+    //public static string CreateFileFolder(string folderName)
+    //{
+    //    if (string.IsNullOrEmpty(folderName))
+    //    {
+    //        throw new ArgumentNullException("folderName", "folderName为空！");
+    //    }
+    //    string path = Path.Combine(DHWeb.RootPath, folderName);
+    //    if (!Directory.Exists(path))
+    //    {
+    //        Directory.CreateDirectory(path);
+    //    }
+    //    return path;
+    //}
 
     public static void Delete(string file, FsoMethod method)
     {
@@ -367,6 +379,17 @@ public abstract class FileSystemObject
         }
         return ((method == FsoMethod.Folder) && Directory.Exists(file));
     }
+
+    //public static Boolean IsExistCategoryDirAndCreate(string categorDir)
+    //{
+    //    string file = Path.Combine(DHWeb.RootPath, categorDir);
+    //    if (IsExist(file, FsoMethod.Folder))
+    //    {
+    //        return true;
+    //    }
+    //    Create(file, FsoMethod.Folder);
+    //    return false;
+    //}
 
     public static void Move(string oldFile, string newFile, FsoMethod method)
     {
@@ -645,8 +668,7 @@ public abstract class FileSystemObject
 /// <summary>
 /// 文件夹所有信息
 /// </summary>
-public class DirectoryAllInfo
-{
+public class DirectoryAllInfo {
     public string name { get; set; }
 
     public string rname { get; set; }
@@ -666,8 +688,7 @@ public class DirectoryAllInfo
 /// <summary>
 /// 文件夹信息
 /// </summary>
-public class DirectoryInfos
-{
+public class DirectoryInfos {
     public string name { get; set; }
 
     public int type { get; set; }
