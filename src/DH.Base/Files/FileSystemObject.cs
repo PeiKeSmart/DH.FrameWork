@@ -63,6 +63,11 @@ public abstract class FileSystemObject {
         return (num2.ToString(CultureInfo.CurrentCulture) + "<span style='color:red'>&nbsp;MB</span>");
     }
 
+    /// <summary>
+    /// 复制目录
+    /// </summary>
+    /// <param name="oldDir"></param>
+    /// <param name="newDir"></param>
     public static void CopyDirectory(string oldDir, string newDir)
     {
         DirectoryInfo od = new DirectoryInfo(oldDir);
