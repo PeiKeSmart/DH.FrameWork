@@ -540,20 +540,4 @@ public static class WebHelper2
 
         return rawUrl;
     }
-
-    /// <summary>
-    /// 获取是否使用AJAX发出请求
-    /// </summary>
-    /// <param name="request">HTTP请求</param>
-    /// <returns>Result</returns>
-    public static Boolean IsAjaxRequest(HttpRequest request)
-    {
-        if (request == null)
-            throw new ArgumentNullException(nameof(request));
-
-        if (request.Headers == null)
-            return false;
-
-        return request.Headers["X-Requested-With"] == "XMLHttpRequest";
-    }
 }

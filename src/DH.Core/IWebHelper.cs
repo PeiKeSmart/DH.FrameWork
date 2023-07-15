@@ -113,12 +113,5 @@ namespace DH.Core
         /// <param name="request">HTTP请求</param>
         /// <returns>原始URL</returns>
         string GetRawUrl(HttpRequest request);
-
-        /// <summary>
-        /// 获取是否使用AJAX发出请求
-        /// </summary>
-        /// <param name="request">HTTP请求</param>
-        /// <returns>结果</returns>
-        bool IsAjaxRequest(HttpRequest request);
     }
 }

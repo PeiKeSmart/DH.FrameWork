@@ -10,7 +10,8 @@ namespace DH.Extensions;
 /// <summary>
 /// Http请求(<see cref="HttpRequest"/>) 扩展
 /// </summary>
-public static class HttpRequestExtensions {
+public static class HttpRequestExtensions
+{
     #region GetAbsoluteUri(获取Http请求的绝对路径)
 
     /// <summary>
@@ -96,22 +97,6 @@ public static class HttpRequestExtensions {
         if (request.HasFormContentType)
             return request.Form[key];
         return null;
-    }
-
-    #endregion
-
-    #region IsAjaxRequest(是否Ajax请求)
-
-    /// <summary>
-    /// 是否Ajax请求
-    /// </summary>
-    /// <param name="request">Http请求</param>
-    public static bool IsAjaxRequest(this HttpRequest request)
-    {
-        request.CheckNotNull(nameof(request));
-        bool? flag = request.Headers?["X-Requested-With"].ToString()
-            ?.Equals("XMLHttpRequest", StringComparison.OrdinalIgnoreCase);
-        return flag.HasValue && flag.Value;
     }
 
     #endregion
