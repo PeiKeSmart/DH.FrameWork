@@ -7,8 +7,7 @@ using NewLife.Serialization;
 namespace DH.AspNetCore.Webs;
 
 /// <summary>请求助手类</summary>
-public static class RequestHelper
-{
+public static class RequestHelper {
     /// <summary>
     /// 从请求中获取值
     /// </summary>

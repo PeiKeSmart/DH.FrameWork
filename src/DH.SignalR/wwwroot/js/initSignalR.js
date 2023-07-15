@@ -98,7 +98,7 @@ function initSignalr(option) {
                             if (!res.success) {
                                 $.ajax
                                     ({
-                                        url: logoutUrl,  // 退出登录
+                                        url: memberGetAccessToken,  // 通过会员登录信息获取
                                         dataType: 'json',
                                         method: 'POST',
                                         data:
@@ -106,28 +106,53 @@ function initSignalr(option) {
 
                                         },
                                         success: function (data) {
-                                            if (data.code == 0) {
-                                                storage.remove("AccessToken");
-                                                storage.remove("RefreshToken");
-                                                storage.remove("AccessTokenUtcExpires");
-                                                storage.remove("RefreshUtcExpires");
-                                                storage.remove("remember");
+                                            if (!res.success) {
+                                                $.ajax
+                                                    ({
+                                                        url: logoutUrl,  // 退出登录
+                                                        dataType: 'json',
+                                                        method: 'POST',
+                                                        data:
+                                                        {
 
-                                                window.location.href = loginUrl;
+                                                        },
+                                                        success: function (data) {
+                                                            if (data.code == 0) {
+                                                                storage.remove("AccessToken");
+                                                                storage.remove("RefreshToken");
+                                                                storage.remove("AccessTokenUtcExpires");
+                                                                storage.remove("RefreshUtcExpires");
+                                                                storage.remove("remember");
+
+                                                                window.location.href = loginUrl;
+                                                            }
+                                                        }
+                                                    })
+                                                return;
+                                            }
+                                            else {
+                                                var seconds2 = res.data.RefreshUtcExpires - now; // 计算时间戳与当前时间之间的毫秒数
+
+                                                storage.set("AccessToken", res.data.AccessToken, seconds2);
+                                                storage.set("RefreshToken", res.data.RefreshToken, seconds2);
+                                                storage.set("AccessTokenUtcExpires", res.data.AccessTokenUtcExpires, seconds2);
+                                                storage.set("RefreshUtcExpires", res.data.RefreshUtcExpires, seconds2);
+
+                                                storage.set("remember", Remember, seconds2);
                                             }
                                         }
                                     })
-                                return;
                             }
+                            else {
+                                var seconds2 = res.data.RefreshUtcExpires - now; // 计算时间戳与当前时间之间的毫秒数
 
-                            var seconds2 = res.data.RefreshUtcExpires - now; // 计算时间戳与当前时间之间的毫秒数
+                                storage.set("AccessToken", res.data.AccessToken, seconds2);
+                                storage.set("RefreshToken", res.data.RefreshToken, seconds2);
+                                storage.set("AccessTokenUtcExpires", res.data.AccessTokenUtcExpires, seconds2);
+                                storage.set("RefreshUtcExpires", res.data.RefreshUtcExpires, seconds2);
 
-                            storage.set("AccessToken", res.data.AccessToken, seconds2);
-                            storage.set("RefreshToken", res.data.RefreshToken, seconds2);
-                            storage.set("AccessTokenUtcExpires", res.data.AccessTokenUtcExpires, seconds2);
-                            storage.set("RefreshUtcExpires", res.data.RefreshUtcExpires, seconds2);
-
-                            storage.set("remember", Remember, seconds2);
+                                storage.set("remember", Remember, seconds2);
+                            }
                         }
                     })
             }

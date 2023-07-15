@@ -249,6 +249,17 @@ public class DHSetting : Config<DHSetting>
     [Category("通用")]
     public String WebRootPath { get; set; } = "wwwroot";
 
+    /// <summary>允许密码登录。允许输入用户名密码进行登录</summary>
+    [Description("允许密码登录。允许输入用户名密码进行登录")]
+    [Category("用户登录")]
+    public Boolean AllowLogin { get; set; } = true;
+
+    /// <summary>
+    /// 前台用户登录地址
+    /// </summary>
+    [Description("前台用户登录地址")]
+    public String LoginUrl { get; set; } = "~/Login";
+
     #region 方法
     /// <summary>实例化</summary>
     public DHSetting() { }
