@@ -105,7 +105,7 @@ function initSignalr(option) {
                                         {
 
                                         },
-                                        success: function (data) {
+                                        success: function (res) {
                                             if (!res.success) {
                                                 $.ajax
                                                     ({
