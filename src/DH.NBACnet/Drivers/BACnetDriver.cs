@@ -1,8 +1,8 @@
-﻿using NewLife.BACnet.Protocols;
+﻿using System.Security.Cryptography;
+using NewLife.BACnet.Protocols;
 using NewLife.IoT;
 using NewLife.IoT.Drivers;
 using NewLife.IoT.ThingModels;
-using NewLife.Serialization;
 
 namespace NewLife.BACnet.Drivers;
 
@@ -12,8 +12,13 @@ namespace NewLife.BACnet.Drivers;
 [Driver("BACnet")]
 public class BACnetDriver : DriverBase
 {
+    #region 属性
     private BacClient _client;
+    /// <summary>客户端</summary>
+    public BacClient Client => _client;
+
     private Int32 _nodes;
+    #endregion
 
     #region 构造
     #endregion
@@ -29,12 +34,11 @@ public class BACnetDriver : DriverBase
     /// 打开通道。一个BACnet设备可能分为多个通道读取，需要共用Tcp连接，以不同节点区分
     /// </summary>
     /// <param name="device">通道</param>
-    /// <param name="parameters">参数</param>
+    /// <param name="parameter">参数</param>
     /// <returns></returns>
-    public override INode Open(IDevice device, IDictionary<String, Object> parameters)
+    public override INode Open(IDevice device, IDriverParameter parameter)
     {
-        var p = JsonHelper.Convert<BACnetParameter>(parameters);
-        if (p == null) return null;
+        if (parameter is not BACnetParameter p) return null;
 
         // 实例化一次Tcp连接
         if (_client == null)
@@ -47,7 +51,7 @@ public class BACnetDriver : DriverBase
                     {
                         Address = p.Address,
                         Port = p.Port,
-                        DeviceId = p.DeviceId
+                        //DeviceId = p.DeviceId
                     };
 
                     // 外部已指定通道时，打开连接
@@ -65,6 +69,8 @@ public class BACnetDriver : DriverBase
             Driver = this,
             Device = device,
             Parameter = p,
+            DeviceId = p.DeviceId,
+            Client = _client,
         };
     }
 
@@ -91,12 +97,43 @@ public class BACnetDriver : DriverBase
     {
         if (points == null || points.Length == 0) return null;
 
+        var p = (node as BACnetNode).Parameter as BACnetParameter;
+        using var span = Tracer?.NewSpan("bac:Read", new { p.Address, points });
+
+        // 点位转为属性。点位地址0_0，前面是编号，后面是类型
+        var ps = new List<ObjectPair>();
+        foreach (var item in points)
+        {
+            if (ObjectPair.TryParse(item.Address, out var oid))
+            {
+                ps.Add(new ObjectPair { Point = item, ObjectId = oid });
+            }
+        }
+        if (ps.Count == 0) return null;
+
         // 加锁，避免冲突
         lock (_client)
         {
-            var p = (node as BACnetNode).Parameter as BACnetParameter;
-            var device = _client.GetNode(p.Address);
-            var dic = _client.Read(device, points);
+            var bacNode = _client.GetNode(p.DeviceId);
+            bacNode ??= _client.GetNode(p.Address);
+
+            var dic = new Dictionary<String, Object>();
+
+            //todo 批量读取还有问题，每次读取到1
+            //var data = _client.ReadProperties(bacNode.Address, ps.Select(e => e.ObjectId).ToArray());
+            //if (data == null) return null;
+
+            //foreach (var item in ps)
+            //{
+            //    if (data.TryGetValue(item.ObjectId, out var v))
+            //        dic[item.Point.Name] = v;
+            //}
+
+            foreach (var item in ps)
+            {
+                var rs = _client.ReadProperty(bacNode.Address, item.ObjectId);
+                if (rs != null) dic[item.Point.Name] = rs;
+            }
 
             return dic;
         }
