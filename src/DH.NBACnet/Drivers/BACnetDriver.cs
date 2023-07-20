@@ -34,11 +34,11 @@ public class BACnetDriver : DriverBase
     /// 打开通道。一个BACnet设备可能分为多个通道读取，需要共用Tcp连接，以不同节点区分
     /// </summary>
     /// <param name="device">通道</param>
-    /// <param name="parameter">参数</param>
+    /// <param name="parameters">参数</param>
     /// <returns></returns>
-    public override INode Open(IDevice device, IDriverParameter parameter)
+    public override INode Open(IDevice device, IDictionary<String, Object> parameters)
     {
-        if (parameter is not BACnetParameter p) return null;
+        if (parameters is not BACnetParameter p) return null;
 
         // 实例化一次Tcp连接
         if (_client == null)
