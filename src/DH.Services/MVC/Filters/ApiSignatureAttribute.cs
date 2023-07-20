@@ -9,6 +9,9 @@ namespace DH.AspNetCore.MVC.Filters;
 
 /// <summary>
 /// 接口校验过滤器,IsCheckApiSignature为true则检验
+/// Signature:通信加密签名
+/// TimeStamp:时间戳
+/// Nonce:随机数
 /// </summary>
 public class ApiSignatureAttribute : ActionFilterAttribute {
     /// <summary>
