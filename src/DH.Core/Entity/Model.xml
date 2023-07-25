@@ -114,6 +114,14 @@
       <Column Name="LanKey" DataType="String" Master="True" Length="200" Description="资源名称" />
       <Column Name="LanValue" DataType="String" Length="2048" Description="资源值" />
       <Column Name="CultureId" DataType="Int32" Description="语言标识符" />
+      <Column Name="CreateUser" DataType="String" Description="创建者" />
+      <Column Name="CreateUserID" DataType="Int32" Description="创建者" />
+      <Column Name="CreateTime" DataType="DateTime" Description="创建时间" />
+      <Column Name="CreateIP" DataType="String" Description="创建地址" />
+      <Column Name="UpdateUser" DataType="String" Description="更新者" />
+      <Column Name="UpdateUserID" DataType="Int32" Description="更新者" />
+      <Column Name="UpdateTime" DataType="DateTime" Description="更新时间" />
+      <Column Name="UpdateIP" DataType="String" Description="更新地址" />
     </Columns>
     <Indexes>
       <Index Columns="LanKey,CultureId" Unique="True" />

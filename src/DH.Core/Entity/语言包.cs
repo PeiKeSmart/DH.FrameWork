@@ -53,6 +53,70 @@ public partial class LocaleStringResource : ILocaleStringResource, IEntity<Local
     [DataObjectField(false, false, false, 0)]
     [BindColumn("CultureId", "语言标识符", "")]
     public Int32 CultureId { get => _CultureId; set { if (OnPropertyChanging("CultureId", value)) { _CultureId = value; OnPropertyChanged("CultureId"); } } }
+
+    private String _CreateUser;
+    /// <summary>创建者</summary>
+    [DisplayName("创建者")]
+    [Description("创建者")]
+    [DataObjectField(false, false, true, 50)]
+    [BindColumn("CreateUser", "创建者", "")]
+    public String CreateUser { get => _CreateUser; set { if (OnPropertyChanging("CreateUser", value)) { _CreateUser = value; OnPropertyChanged("CreateUser"); } } }
+
+    private Int32 _CreateUserID;
+    /// <summary>创建者</summary>
+    [DisplayName("创建者")]
+    [Description("创建者")]
+    [DataObjectField(false, false, false, 0)]
+    [BindColumn("CreateUserID", "创建者", "")]
+    public Int32 CreateUserID { get => _CreateUserID; set { if (OnPropertyChanging("CreateUserID", value)) { _CreateUserID = value; OnPropertyChanged("CreateUserID"); } } }
+
+    private DateTime _CreateTime;
+    /// <summary>创建时间</summary>
+    [DisplayName("创建时间")]
+    [Description("创建时间")]
+    [DataObjectField(false, false, true, 0)]
+    [BindColumn("CreateTime", "创建时间", "")]
+    public DateTime CreateTime { get => _CreateTime; set { if (OnPropertyChanging("CreateTime", value)) { _CreateTime = value; OnPropertyChanged("CreateTime"); } } }
+
+    private String _CreateIP;
+    /// <summary>创建地址</summary>
+    [DisplayName("创建地址")]
+    [Description("创建地址")]
+    [DataObjectField(false, false, true, 50)]
+    [BindColumn("CreateIP", "创建地址", "")]
+    public String CreateIP { get => _CreateIP; set { if (OnPropertyChanging("CreateIP", value)) { _CreateIP = value; OnPropertyChanged("CreateIP"); } } }
+
+    private String _UpdateUser;
+    /// <summary>更新者</summary>
+    [DisplayName("更新者")]
+    [Description("更新者")]
+    [DataObjectField(false, false, true, 50)]
+    [BindColumn("UpdateUser", "更新者", "")]
+    public String UpdateUser { get => _UpdateUser; set { if (OnPropertyChanging("UpdateUser", value)) { _UpdateUser = value; OnPropertyChanged("UpdateUser"); } } }
+
+    private Int32 _UpdateUserID;
+    /// <summary>更新者</summary>
+    [DisplayName("更新者")]
+    [Description("更新者")]
+    [DataObjectField(false, false, false, 0)]
+    [BindColumn("UpdateUserID", "更新者", "")]
+    public Int32 UpdateUserID { get => _UpdateUserID; set { if (OnPropertyChanging("UpdateUserID", value)) { _UpdateUserID = value; OnPropertyChanged("UpdateUserID"); } } }
+
+    private DateTime _UpdateTime;
+    /// <summary>更新时间</summary>
+    [DisplayName("更新时间")]
+    [Description("更新时间")]
+    [DataObjectField(false, false, true, 0)]
+    [BindColumn("UpdateTime", "更新时间", "")]
+    public DateTime UpdateTime { get => _UpdateTime; set { if (OnPropertyChanging("UpdateTime", value)) { _UpdateTime = value; OnPropertyChanged("UpdateTime"); } } }
+
+    private String _UpdateIP;
+    /// <summary>更新地址</summary>
+    [DisplayName("更新地址")]
+    [Description("更新地址")]
+    [DataObjectField(false, false, true, 50)]
+    [BindColumn("UpdateIP", "更新地址", "")]
+    public String UpdateIP { get => _UpdateIP; set { if (OnPropertyChanging("UpdateIP", value)) { _UpdateIP = value; OnPropertyChanged("UpdateIP"); } } }
     #endregion
 
     #region 拷贝
@@ -64,6 +128,14 @@ public partial class LocaleStringResource : ILocaleStringResource, IEntity<Local
         LanKey = model.LanKey;
         LanValue = model.LanValue;
         CultureId = model.CultureId;
+        CreateUser = model.CreateUser;
+        CreateUserID = model.CreateUserID;
+        CreateTime = model.CreateTime;
+        CreateIP = model.CreateIP;
+        UpdateUser = model.UpdateUser;
+        UpdateUserID = model.UpdateUserID;
+        UpdateTime = model.UpdateTime;
+        UpdateIP = model.UpdateIP;
     }
     #endregion
 
@@ -79,6 +151,14 @@ public partial class LocaleStringResource : ILocaleStringResource, IEntity<Local
             "LanKey" => _LanKey,
             "LanValue" => _LanValue,
             "CultureId" => _CultureId,
+            "CreateUser" => _CreateUser,
+            "CreateUserID" => _CreateUserID,
+            "CreateTime" => _CreateTime,
+            "CreateIP" => _CreateIP,
+            "UpdateUser" => _UpdateUser,
+            "UpdateUserID" => _UpdateUserID,
+            "UpdateTime" => _UpdateTime,
+            "UpdateIP" => _UpdateIP,
             _ => base[name]
         };
         set
@@ -89,6 +169,14 @@ public partial class LocaleStringResource : ILocaleStringResource, IEntity<Local
                 case "LanKey": _LanKey = Convert.ToString(value); break;
                 case "LanValue": _LanValue = Convert.ToString(value); break;
                 case "CultureId": _CultureId = value.ToInt(); break;
+                case "CreateUser": _CreateUser = Convert.ToString(value); break;
+                case "CreateUserID": _CreateUserID = value.ToInt(); break;
+                case "CreateTime": _CreateTime = value.ToDateTime(); break;
+                case "CreateIP": _CreateIP = Convert.ToString(value); break;
+                case "UpdateUser": _UpdateUser = Convert.ToString(value); break;
+                case "UpdateUserID": _UpdateUserID = value.ToInt(); break;
+                case "UpdateTime": _UpdateTime = value.ToDateTime(); break;
+                case "UpdateIP": _UpdateIP = Convert.ToString(value); break;
                 default: base[name] = value; break;
             }
         }
@@ -114,6 +202,30 @@ public partial class LocaleStringResource : ILocaleStringResource, IEntity<Local
         /// <summary>语言标识符</summary>
         public static readonly Field CultureId = FindByName("CultureId");
 
+        /// <summary>创建者</summary>
+        public static readonly Field CreateUser = FindByName("CreateUser");
+
+        /// <summary>创建者</summary>
+        public static readonly Field CreateUserID = FindByName("CreateUserID");
+
+        /// <summary>创建时间</summary>
+        public static readonly Field CreateTime = FindByName("CreateTime");
+
+        /// <summary>创建地址</summary>
+        public static readonly Field CreateIP = FindByName("CreateIP");
+
+        /// <summary>更新者</summary>
+        public static readonly Field UpdateUser = FindByName("UpdateUser");
+
+        /// <summary>更新者</summary>
+        public static readonly Field UpdateUserID = FindByName("UpdateUserID");
+
+        /// <summary>更新时间</summary>
+        public static readonly Field UpdateTime = FindByName("UpdateTime");
+
+        /// <summary>更新地址</summary>
+        public static readonly Field UpdateIP = FindByName("UpdateIP");
+
         static Field FindByName(String name) => Meta.Table.FindByName(name);
     }
 
@@ -131,6 +243,30 @@ public partial class LocaleStringResource : ILocaleStringResource, IEntity<Local
 
         /// <summary>语言标识符</summary>
         public const String CultureId = "CultureId";
+
+        /// <summary>创建者</summary>
+        public const String CreateUser = "CreateUser";
+
+        /// <summary>创建者</summary>
+        public const String CreateUserID = "CreateUserID";
+
+        /// <summary>创建时间</summary>
+        public const String CreateTime = "CreateTime";
+
+        /// <summary>创建地址</summary>
+        public const String CreateIP = "CreateIP";
+
+        /// <summary>更新者</summary>
+        public const String UpdateUser = "UpdateUser";
+
+        /// <summary>更新者</summary>
+        public const String UpdateUserID = "UpdateUserID";
+
+        /// <summary>更新时间</summary>
+        public const String UpdateTime = "UpdateTime";
+
+        /// <summary>更新地址</summary>
+        public const String UpdateIP = "UpdateIP";
     }
     #endregion
 }

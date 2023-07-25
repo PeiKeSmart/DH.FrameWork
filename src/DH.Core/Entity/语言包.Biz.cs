@@ -12,6 +12,7 @@ using System.Xml.Serialization;
 
 using XCode;
 using XCode.Cache;
+using XCode.Membership;
 
 namespace DH.Entity;
 
@@ -25,6 +26,9 @@ public partial class LocaleStringResource : DHEntityBase<LocaleStringResource> {
         //df.Add(__.CultureId);
 
         // 过滤器 UserModule、TimeModule、IPModule
+        Meta.Modules.Add<UserModule>();
+        Meta.Modules.Add<TimeModule>();
+        Meta.Modules.Add<IPModule>();
     }
 
     /// <summary>验证数据，通过抛出异常的方式提示验证失败。</summary>

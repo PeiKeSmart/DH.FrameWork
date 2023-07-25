@@ -23,6 +23,30 @@ public partial class LocaleStringResourceModel : IModel
 
     /// <summary>语言标识符</summary>
     public Int32 CultureId { get; set; }
+
+    /// <summary>创建者</summary>
+    public String CreateUser { get; set; }
+
+    /// <summary>创建者</summary>
+    public Int32 CreateUserID { get; set; }
+
+    /// <summary>创建时间</summary>
+    public DateTime CreateTime { get; set; }
+
+    /// <summary>创建地址</summary>
+    public String CreateIP { get; set; }
+
+    /// <summary>更新者</summary>
+    public String UpdateUser { get; set; }
+
+    /// <summary>更新者</summary>
+    public Int32 UpdateUserID { get; set; }
+
+    /// <summary>更新时间</summary>
+    public DateTime UpdateTime { get; set; }
+
+    /// <summary>更新地址</summary>
+    public String UpdateIP { get; set; }
     #endregion
 
     #region 获取/设置 字段值
@@ -39,6 +63,14 @@ public partial class LocaleStringResourceModel : IModel
                 "LanKey" => LanKey,
                 "LanValue" => LanValue,
                 "CultureId" => CultureId,
+                "CreateUser" => CreateUser,
+                "CreateUserID" => CreateUserID,
+                "CreateTime" => CreateTime,
+                "CreateIP" => CreateIP,
+                "UpdateUser" => UpdateUser,
+                "UpdateUserID" => UpdateUserID,
+                "UpdateTime" => UpdateTime,
+                "UpdateIP" => UpdateIP,
                 _ => null
             };
         }
@@ -50,6 +82,14 @@ public partial class LocaleStringResourceModel : IModel
                 case "LanKey": LanKey = Convert.ToString(value); break;
                 case "LanValue": LanValue = Convert.ToString(value); break;
                 case "CultureId": CultureId = value.ToInt(); break;
+                case "CreateUser": CreateUser = Convert.ToString(value); break;
+                case "CreateUserID": CreateUserID = value.ToInt(); break;
+                case "CreateTime": CreateTime = value.ToDateTime(); break;
+                case "CreateIP": CreateIP = Convert.ToString(value); break;
+                case "UpdateUser": UpdateUser = Convert.ToString(value); break;
+                case "UpdateUserID": UpdateUserID = value.ToInt(); break;
+                case "UpdateTime": UpdateTime = value.ToDateTime(); break;
+                case "UpdateIP": UpdateIP = Convert.ToString(value); break;
             }
         }
     }
@@ -64,6 +104,14 @@ public partial class LocaleStringResourceModel : IModel
         LanKey = model.LanKey;
         LanValue = model.LanValue;
         CultureId = model.CultureId;
+        CreateUser = model.CreateUser;
+        CreateUserID = model.CreateUserID;
+        CreateTime = model.CreateTime;
+        CreateIP = model.CreateIP;
+        UpdateUser = model.UpdateUser;
+        UpdateUserID = model.UpdateUserID;
+        UpdateTime = model.UpdateTime;
+        UpdateIP = model.UpdateIP;
     }
     #endregion
 }
