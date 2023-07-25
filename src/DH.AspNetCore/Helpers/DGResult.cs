@@ -25,6 +25,11 @@ public class DGResult : JsonResult
     public dynamic Data { get; set; }
 
     /// <summary>
+    /// 其他数据
+    /// </summary>
+    public dynamic ExtData { get; set; }
+
+    /// <summary>
     /// 操作时间
     /// </summary>
     public DateTime OperationTime { get; set; }
@@ -44,12 +49,13 @@ public class DGResult : JsonResult
     /// <param name="code">状态码</param>
     /// <param name="message">消息</param>
     /// <param name="data">数据</param>
-    public DGResult(StateCode code, string message, dynamic data = null) : base(null)
+    public DGResult(StateCode code, string message, dynamic data = null, dynamic extdata = null) : base(null)
     {
         Code = code;
         Message = message;
         Data = data;
         OperationTime = DateTime.Now;
+        ExtData = ExtData;
     }
 
     /// <summary>
@@ -64,7 +70,8 @@ public class DGResult : JsonResult
             Code = Code.Value(),
             Message,
             OperationTime,
-            Data
+            Data,
+            ExtData
         };
         return base.ExecuteResultAsync(context);
     }
