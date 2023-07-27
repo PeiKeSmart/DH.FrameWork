@@ -427,7 +427,7 @@
       <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
       <Column Name="SType" DataType="Int16" Description="0为短信，1为邮箱" />
       <Column Name="Account" DataType="String" Description="手机号/邮箱" />
-      <Column Name="Msg" DataType="String" Length="100" Description="消息内容" />
+      <Column Name="Msg" DataType="String" Length="200" Description="消息内容" />
       <Column Name="MType" DataType="Int16" Description="类型：1为注册，2为登录，3为找回密码，4绑定手机/邮箱，5安全验证,6账号申诉，0测试" />
       <Column Name="Remark" DataType="String" Length="300" Description="发送回复数据" />
       <Column Name="SmsId" DataType="String" Description="短信平台返回的Id" />

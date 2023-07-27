@@ -51,7 +51,7 @@ public partial class SendLog : ISendLog, IEntity<SendLogModel>
     /// <summary>消息内容</summary>
     [DisplayName("消息内容")]
     [Description("消息内容")]
-    [DataObjectField(false, false, true, 100)]
+    [DataObjectField(false, false, true, 200)]
     [BindColumn("Msg", "消息内容", "")]
     public String Msg { get => _Msg; set { if (OnPropertyChanging("Msg", value)) { _Msg = value; OnPropertyChanged("Msg"); } } }
 
