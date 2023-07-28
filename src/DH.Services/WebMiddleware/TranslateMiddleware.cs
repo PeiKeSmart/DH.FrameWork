@@ -18,7 +18,8 @@ namespace DH.Services.WebMiddleware;
 /// <summary>
 /// 简繁转换拦截器
 /// </summary>
-public class TranslateMiddleware {
+public class TranslateMiddleware
+{
     private readonly RequestDelegate _next;
 
     /// <summary>
@@ -82,8 +83,6 @@ public class TranslateMiddleware {
 
     private async Task Traditional(HttpContext context)
     {
-        XTrace.WriteLine($"进入到这里了。Traditional");
-
         var Accept = context.Request.Headers["Accept"];
         if (!Accept.Any())
         {
@@ -92,7 +91,6 @@ public class TranslateMiddleware {
         else
         {
             var accept = context.Request.Headers["Accept"][0];
-            XTrace.WriteLine($"进入到这里了1111。Traditional");
             if (accept.StartsWith("text") || accept.Contains(ContentType.Json))
             {
                 //设置stream存放ResponseBody
