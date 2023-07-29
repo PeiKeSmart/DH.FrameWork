@@ -64,9 +64,46 @@ public static class FileInfoExtensions
         {
             using var fileStream = file.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             using var reader = new StreamReader(fileStream);
+
             string content = reader.ReadToEnd();
 
             return content;
+        }
+    }
+
+    /// <summary>
+    /// 读取文件并转换为字符串,适合大的文件
+    /// </summary>
+    /// <param name="file">文件</param>
+    /// <param name="share">是否允许其他进程读取或写入该文件</param>
+    /// <returns></returns>
+    public static IEnumerable<String> ReadString(this FileInfo file, Boolean share = false)
+    {
+        if (file == null)
+        {
+            throw new ArgumentNullException(nameof(file));
+        }
+
+        if (!file.Exists)
+        {
+            yield return String.Empty;
+        }
+
+        if (!share)
+        {
+            using var reader = file.OpenText();
+            yield return reader.ReadToEnd();
+        }
+        else
+        {
+            using var fileStream = file.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            using var reader = new StreamReader(fileStream);
+
+            String? line;
+            while ((line = reader.ReadLine()) != null)
+            {
+                yield return line;
+            }
         }
     }
 
