@@ -41,22 +41,32 @@ public static class FileInfoExtensions
     /// 读取文件并转换为字符串
     /// </summary>
     /// <param name="file">文件</param>
+    /// <param name="share">是否允许其他进程读取或写入该文件</param>
     /// <returns></returns>
-    public static string Read(this FileInfo file)
+    public static string Read(this FileInfo file, Boolean share = false)
     {
         if (file == null)
         {
             throw new ArgumentNullException(nameof(file));
         }
 
-        if (file.Exists == false)
+        if (!file.Exists)
         {
             return string.Empty;
         }
 
-        using (var reader = file.OpenText())
+        if (!share)
         {
+            using var reader = file.OpenText();
             return reader.ReadToEnd();
+        }
+        else
+        {
+            using var fileStream = file.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            using var reader = new StreamReader(fileStream);
+            string content = reader.ReadToEnd();
+
+            return content;
         }
     }
 
@@ -68,8 +78,9 @@ public static class FileInfoExtensions
     /// 读取文件并转换为二进制数组
     /// </summary>
     /// <param name="file">文件</param>
+    /// <param name="share">是否允许其他进程读取或写入该文件</param>
     /// <returns></returns>
-    public static byte[] ReadBinary(this FileInfo file)
+    public static byte[] ReadBinary(this FileInfo file, Boolean share = false)
     {
         if (file == null)
         {
@@ -81,10 +92,17 @@ public static class FileInfoExtensions
             return new byte[0];
         }
 
-        using (var reader = file.OpenRead())
+        if (!share)
         {
+            using var reader = file.OpenRead();
             return reader.ReadAllBytes();
         }
+        else
+        {
+            using var fileStream = file.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            return fileStream.ReadAllBytes();
+        }
+        
     }
 
     #endregion
