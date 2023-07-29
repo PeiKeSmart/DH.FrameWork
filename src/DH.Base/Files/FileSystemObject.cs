@@ -221,6 +221,7 @@ public abstract class FileSystemObject {
                 model.type = 1;
                 model.path = info.FullName.Replace(info.Name, string.Empty);
                 model.creatime = info.CreationTime;
+                model.lastWriteTime = info.LastWriteTime;
                 model.size = 0;
                 list.Add(model);
                 list = CopyDT(list, GetDirectoryAllInfo(info, method));
@@ -237,6 +238,7 @@ public abstract class FileSystemObject {
                 model.type = 2;
                 model.path = info2.DirectoryName + @"\";
                 model.creatime = info2.CreationTime;
+                model.lastWriteTime = info2.LastWriteTime;
                 model.size = info2.Length;
                 list.Add(model);
             }
@@ -674,18 +676,44 @@ public abstract class FileSystemObject {
 /// 文件夹所有信息
 /// </summary>
 public class DirectoryAllInfo {
+    /// <summary>
+    /// 文件名
+    /// </summary>
     public string name { get; set; }
 
+    /// <summary>
+    /// 文件整个路径
+    /// </summary>
     public string rname { get; set; }
 
+    /// <summary>
+    /// 文件后缀
+    /// </summary>
     public string content_type { get; set; }
 
+    /// <summary>
+    /// 2为文件，1为文件夹
+    /// </summary>
     public int type { get; set; }
 
+    /// <summary>
+    /// 文件夹路径
+    /// </summary>
     public string path { get; set; }
 
+    /// <summary>
+    /// 创建时间
+    /// </summary>
     public DateTime creatime { get; set; }
 
+    /// <summary>
+    /// 最后的编辑时间
+    /// </summary>
+    public DateTime lastWriteTime { get; set; }
+
+    /// <summary>
+    /// 文件大小
+    /// </summary>
     public long size { get; set; }
 
 }
@@ -696,6 +724,9 @@ public class DirectoryAllInfo {
 public class DirectoryInfos {
     public string name { get; set; }
 
+    /// <summary>
+    /// 1为文件夹
+    /// </summary>
     public int type { get; set; }
 
     public long size { get; set; }
