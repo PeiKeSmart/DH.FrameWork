@@ -457,6 +457,13 @@ public partial class LocaleStringResource : DHEntityBase<LocaleStringResource> {
         InitInsert("访问", "访问", "訪問", "Visit");
         InitInsert("记录", "记录", "記錄", "Record");
         InitInsert("编辑成功", "编辑成功", "編輯成功", "Edit Success");
+        InitInsert("无数据", "无数据", "無數據", "No Data");
+        InitInsert("共", "共", "共", "Total");
+        InitInsert("条", "条", "條", "Item");
+        InitInsert("条/页", "条/页", "條/頁", "Item/Page");
+        InitInsert("到第", "到第", "到第", "GoTo");
+        InitInsert("页", "页", "頁", "Page");
+        InitInsert("确定", "确定", "確定", "Confirm");
     }
 
     public static void InitInsert(String LanKey, String LanValuecn, String LanValuetw, String LanValueus, Boolean Ischeck = false)
