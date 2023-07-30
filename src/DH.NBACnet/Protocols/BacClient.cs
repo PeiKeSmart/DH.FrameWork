@@ -1,7 +1,4 @@
 ﻿using System.IO.BACnet;
-using System.Security.Cryptography;
-using System.Xml.Linq;
-using NewLife.IoT.Drivers;
 using NewLife.IoT.ThingModels;
 using NewLife.Log;
 using NewLife.Reflection;
@@ -13,8 +10,8 @@ namespace NewLife.BACnet.Protocols;
 public class BacClient : DisposeBase, ITracerFeature, ILogFeature
 {
     #region 属性
-    /// <summary>地址</summary>
-    public String Address { get; set; }
+    ///// <summary>地址</summary>
+    //public String Address { get; set; }
 
     /// <summary>共享端口。节点在该端口上监听广播数据，多进程共享，默认0xBAC0，即47808</summary>
     public Int32 Port { get; set; } = 0xBAC0;
@@ -24,6 +21,12 @@ public class BacClient : DisposeBase, ITracerFeature, ILogFeature
 
     /// <summary>目标设备编号。仅处理该节点，默认0接受所有节点</summary>
     public Int32 DeviceId { get; set; }
+
+    /// <summary>批大小。分批读取点位属性的批大小，默认20</summary>
+    public Int32 BatchSize { get; set; } = 20;
+
+    /// <summary>等待时间。打开连接时等待搜索节点设备的时间，默认3000毫秒</summary>
+    public Int32 WaitingTime { get; set; } = 3_000;
 
     /// <summary>是否活跃</summary>
     public Boolean Active { get; set; }
@@ -42,8 +45,7 @@ public class BacClient : DisposeBase, ITracerFeature, ILogFeature
     {
         base.Dispose(disposing);
 
-        _timer.TryDispose();
-        _client.TryDispose();
+        Close();
     }
     #endregion
 
@@ -53,7 +55,8 @@ public class BacClient : DisposeBase, ITracerFeature, ILogFeature
     {
         if (Active) return;
 
-        using var span = Tracer?.NewSpan("bac:Open", new { Port, DeviceId, Address });
+        using var span = Tracer?.NewSpan("bac:Open", new { Port, DeviceId });
+        Log?.Debug("BACnet.Open [{0}]: {1}", DeviceId, Port);
         try
         {
             Transport ??= new BacnetIpUdpProtocolTransport(Port) { Tracer = Tracer };
@@ -72,7 +75,9 @@ public class BacClient : DisposeBase, ITracerFeature, ILogFeature
 
             _client = client;
 
-            _timer = new TimerX(DoScan, null, 0, 60_000) { Async = true };
+            Scan();
+
+            _timer = new TimerX(DoScan, null, 60_000, 60_000) { Async = true };
 
             Active = true;
         }
@@ -87,6 +92,11 @@ public class BacClient : DisposeBase, ITracerFeature, ILogFeature
     public void Close()
     {
         if (!Active) return;
+
+        Log?.Debug("BACnet.Close [{0}]: {1}", DeviceId, Port);
+
+        _timer.TryDispose();
+        _client.TryDispose();
 
         Transport.TryDispose();
         Transport = null;
@@ -110,7 +120,7 @@ public class BacClient : DisposeBase, ITracerFeature, ILogFeature
 
     private void DoScan(Object state)
     {
-        using var span = Tracer?.NewSpan("bac:Scan", new { Port, DeviceId, Address });
+        using var span = Tracer?.NewSpan("bac:Scan", new { Port, DeviceId });
 
         // 广播“你是谁”
         _client.WhoIs();
@@ -119,7 +129,7 @@ public class BacClient : DisposeBase, ITracerFeature, ILogFeature
     TaskCompletionSource<BacNode> _tcs;
     /// <summary>扫描节点</summary>
     /// <returns></returns>
-    public void Scan()
+    public BacNode Scan()
     {
         _tcs = new TaskCompletionSource<BacNode>();
         try
@@ -127,7 +137,15 @@ public class BacClient : DisposeBase, ITracerFeature, ILogFeature
             // 广播“你是谁”
             _client.WhoIs();
 
-            _tcs.Task.Wait(3_000);
+            var ct = new CancellationTokenSource(WaitingTime);
+            using (ct.Token.Register(() => _tcs.TrySetCanceled()))
+            {
+                return _tcs.Task.Result;
+            }
+        }
+        catch (AggregateException ex) when (ex.InnerException is TaskCanceledException)
+        {
+            return null;
         }
         finally
         {
@@ -139,26 +157,27 @@ public class BacClient : DisposeBase, ITracerFeature, ILogFeature
     private void OnIam(BacnetClient sender, BacnetAddress addr, UInt32 deviceId, UInt32 maxAPDU, BacnetSegmentations segmentation, UInt16 vendorId)
     {
         using var span = Tracer?.NewSpan("bac:OnIam", new { addr, deviceId, vendorId });
+        Log?.Debug("OnIam [{0}]: {1}", addr, deviceId);
 
         // 只要目标DeviceId
         if (DeviceId > 0 && deviceId != DeviceId) return;
+
+        var node = new BacNode(addr, deviceId);
+        _tcs?.TrySetResult(node);
 
         lock (_nodes)
         {
             foreach (var bn in _nodes)
             {
-                XTrace.WriteLine("OnIam [{0}]: {1}", bn.Address, bn.DeviceId);
                 if (bn.GetAdd(deviceId) != null) return;
             }
 
             // 新增节点
-            var node = new BacNode(addr, deviceId);
             _nodes.Add(node);
 
             // 读取属性列表
             Task.Run(() => GetProperties(node, true));
             //_timer.SetNext(-1);
-            _tcs?.TrySetResult(node);
         }
 
     }
@@ -177,18 +196,31 @@ public class BacClient : DisposeBase, ITracerFeature, ILogFeature
 
     /// <summary>获取节点属性列表</summary>
     /// <param name="node">节点</param>
-    /// <param name="includeValue">是否包含数值</param>
-    public void GetProperties(BacNode node, Boolean includeValue)
+    /// <param name="isFull">是否包含完整信息，例如数值等</param>
+    public void GetProperties(BacNode node, Boolean isFull)
     {
         if (node.Address == null) return;
 
         // 读取属性对象列表，点位列表
+        //todo 如果设备下有很多对象，可能数据包超大，需要分批读取
         var oid = new BacnetObjectId(BacnetObjectTypes.OBJECT_DEVICE, node.DeviceId);
         if (_client.ReadPropertyRequest(node.Address, oid, BacnetPropertyIds.PROP_OBJECT_LIST, out var list))
         {
-            node.Ids = list;
+            var ps = new List<BacProperty>();
+            foreach (var item in list)
+            {
+                if (item.Tag == BacnetApplicationTags.BACNET_APPLICATION_TAG_OBJECT_ID)
+                {
+                    var oid2 = (BacnetObjectId)item.Value;
+                    if (oid2.type != BacnetObjectTypes.OBJECT_DEVICE &&
+                        oid2.type != BacnetObjectTypes.OBJECT_NOTIFICATION_CLASS)
+                        ps.Add(new BacProperty(oid2));
+                }
+            }
 
-            if (includeValue) GetValues(node);
+            if (isFull) GetDetail(node.Address, ps);
+
+            node.Properties = ps;
         }
     }
 
@@ -196,11 +228,12 @@ public class BacClient : DisposeBase, ITracerFeature, ILogFeature
     /// <param name="node"></param>
     public void GetValues(BacNode node)
     {
-        if (node.Address == null || node.Ids == null) return;
+        var properties = node.Properties;
+        if (node.Address == null || properties == null) return;
 
         // 构建属性引用列表
         var prs = new List<BacnetPropertyReference>();
-        for (var i = 0; i < node.Ids.Count; i++)
+        for (var i = 0; i < properties.Count; i++)
         {
             var property = new BacnetPropertyReference((UInt32)BacnetPropertyIds.PROP_PRESENT_VALUE, (UInt32)i);
             prs.Add(property);
@@ -208,21 +241,60 @@ public class BacClient : DisposeBase, ITracerFeature, ILogFeature
 
         // 分批读取属性数值
         var oid = new BacnetObjectId(BacnetObjectTypes.OBJECT_DEVICE, node.DeviceId);
-        var list2 = new List<BacProperty>();
-        for (var i = 0; i < node.Ids.Count;)
+        for (var i = 0; i < properties.Count;)
         {
-            var batch = prs.Skip(i).Take(16).ToList();
+            var batch = prs.Skip(i).Take(BatchSize).ToList();
             if (batch.Count == 0) break;
 
             if (_client.ReadPropertyMultipleRequest(node.Address, oid, batch, out var results))
             {
-                var ps = BacProperty.Create(results);
-                list2.AddRange(ps);
+                foreach (var item in results)
+                {
+                    var bp = properties.FirstOrDefault(e => e.ObjectId == item.objectIdentifier);
+                    bp?.Fill(item);
+                }
             }
 
             i += batch.Count;
         }
-        node.Properties = list2;
+    }
+
+    /// <summary>获取节点的详细信息</summary>
+    /// <param name="addr"></param>
+    /// <param name="properties"></param>
+    public void GetDetail(BacnetAddress addr, IList<BacProperty> properties)
+    {
+        if (addr == null || properties == null) return;
+
+        // 构建属性引用列表
+        var prs = new List<BacnetReadAccessSpecification>();
+        for (var i = 0; i < properties.Count; i++)
+        {
+            var ps = new BacnetPropertyReference[] {
+                new BacnetPropertyReference((UInt32)BacnetPropertyIds.PROP_OBJECT_NAME, UInt32.MaxValue),
+                new BacnetPropertyReference((UInt32)BacnetPropertyIds.PROP_PRESENT_VALUE, UInt32.MaxValue),
+                new BacnetPropertyReference((UInt32)BacnetPropertyIds.PROP_DESCRIPTION, UInt32.MaxValue),
+            };
+            prs.Add(new BacnetReadAccessSpecification(properties[i].ObjectId, ps));
+        }
+
+        // 分批读取属性详细信息
+        for (var i = 0; i < properties.Count;)
+        {
+            var batch = prs.Skip(i).Take(BatchSize).ToList();
+            if (batch.Count == 0) break;
+
+            if (_client.ReadPropertyMultipleRequest(addr, batch, out var results))
+            {
+                foreach (var item in results)
+                {
+                    var bp = properties.FirstOrDefault(e => e.ObjectId == item.objectIdentifier);
+                    bp?.Fill(item);
+                }
+            }
+
+            i += batch.Count;
+        }
     }
     #endregion
 
@@ -267,33 +339,61 @@ public class BacClient : DisposeBase, ITracerFeature, ILogFeature
         var prs = new List<BacnetReadAccessSpecification>();
         for (var i = 0; i < oids.Count; i++)
         {
-            var property = new BacnetPropertyReference((UInt32)BacnetPropertyIds.PROP_PRESENT_VALUE, 0);
-            prs.Add(new BacnetReadAccessSpecification(oids[i], new[] { property }));
+            //var property = new BacnetPropertyReference((UInt32)BacnetPropertyIds.PROP_PRESENT_VALUE, UInt32.MaxValue);
+            var ps = new BacnetPropertyReference[] {
+                new BacnetPropertyReference((UInt32)BacnetPropertyIds.PROP_PRESENT_VALUE, UInt32.MaxValue),
+            };
+            prs.Add(new BacnetReadAccessSpecification(oids[i], ps));
         }
 
-        // 批量读取属性数值
+        // 分批读取属性数值
         var results = new Dictionary<BacnetObjectId, Object>();
-        if (_client.ReadPropertyMultipleRequest(addr, prs.ToArray(), out var values))
+        for (var i = 0; i < prs.Count;)
         {
-            foreach (var item in values)
+            var batch = prs.Skip(i).Take(BatchSize).ToList();
+            if (batch.Count == 0) break;
+
+            if (_client.ReadPropertyMultipleRequest(addr, batch, out var values))
             {
-                foreach (var elm in item.values)
+                foreach (var item in values)
                 {
-                    if (elm.value == null || elm.value.Count == 0) continue;
-
-                    if ((BacnetPropertyIds)elm.property.propertyIdentifier == BacnetPropertyIds.PROP_PRESENT_VALUE)
+                    foreach (var elm in item.values)
                     {
-                        var bv = elm.value[0];
-                        if (bv.Tag == BacnetApplicationTags.BACNET_APPLICATION_TAG_ERROR)
-                            throw new XException(bv.Value + "");
+                        if (elm.value == null || elm.value.Count == 0) continue;
 
-                        results[item.objectIdentifier] = bv.Value;
+                        if ((BacnetPropertyIds)elm.property.propertyIdentifier == BacnetPropertyIds.PROP_PRESENT_VALUE)
+                        {
+                            var bv = elm.value[0];
+                            if (bv.Tag != BacnetApplicationTags.BACNET_APPLICATION_TAG_ERROR)
+                                results[item.objectIdentifier] = bv.Value;
+                        }
                     }
                 }
             }
+
+            i += batch.Count;
         }
 
         return results;
+    }
+
+    /// <summary>批量读取多个对象的属性值</summary>
+    /// <param name="addr"></param>
+    /// <param name="oids"></param>
+    /// <returns></returns>
+    public IDictionary<String, Object> ReadProperties(BacnetAddress addr, String[] oids)
+    {
+        var dic = new Dictionary<String, Object>();
+        var rs = ReadProperties(addr, oids.Select(e => BacnetObjectId.Parse(e)).ToList());
+        if (rs != null)
+        {
+            foreach (var item in rs)
+            {
+                dic[item.Key.GetKey()] = item.Value;
+            }
+        }
+
+        return dic;
     }
 
     /// <summary>写入属性值</summary>

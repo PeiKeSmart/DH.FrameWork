@@ -1,8 +1,9 @@
-﻿using System.Security.Cryptography;
+﻿using System.ComponentModel;
 using NewLife.BACnet.Protocols;
 using NewLife.IoT;
 using NewLife.IoT.Drivers;
 using NewLife.IoT.ThingModels;
+using NewLife.Reflection;
 
 namespace NewLife.BACnet.Drivers;
 
@@ -10,6 +11,7 @@ namespace NewLife.BACnet.Drivers;
 /// BACnet协议封装
 /// </summary>
 [Driver("BACnet")]
+[Description("楼宇自动化")]
 public class BACnetDriver : DriverBase
 {
     #region 属性
@@ -28,17 +30,17 @@ public class BACnetDriver : DriverBase
     /// 创建默认参数
     /// </summary>
     /// <returns></returns>
-    public override IDriverParameter GetDefaultParameter() => new BACnetParameter();
+    protected override IDriverParameter OnCreateParameter() => new BACnetParameter();
 
     /// <summary>
     /// 打开通道。一个BACnet设备可能分为多个通道读取，需要共用Tcp连接，以不同节点区分
     /// </summary>
     /// <param name="device">通道</param>
-    /// <param name="parameters">参数</param>
+    /// <param name="parameter">参数</param>
     /// <returns></returns>
-    public override INode Open(IDevice device, IDictionary<String, Object> parameters)
+    public override INode Open(IDevice device, IDriverParameter parameter)
     {
-        if (parameters is not BACnetParameter p) return null;
+        if (parameter is not BACnetParameter p) return null;
 
         // 实例化一次Tcp连接
         if (_client == null)
@@ -49,9 +51,14 @@ public class BACnetDriver : DriverBase
                 {
                     var client = new BacClient
                     {
-                        Address = p.Address,
+                        //Address = p.Address,
                         Port = p.Port,
+
+                        // 这里不指定设备，自动搜索网络中所有设备，以便支持多个设备
                         //DeviceId = p.DeviceId
+
+                        Log = Log,
+                        Tracer = Tracer,
                     };
 
                     // 外部已指定通道时，打开连接
@@ -98,7 +105,7 @@ public class BACnetDriver : DriverBase
         if (points == null || points.Length == 0) return null;
 
         var p = (node as BACnetNode).Parameter as BACnetParameter;
-        using var span = Tracer?.NewSpan("bac:Read", new { p.Address, points });
+        using var span = Tracer?.NewSpan("bac:Read", new { p.DeviceId, points });
 
         // 点位转为属性。点位地址0_0，前面是编号，后面是类型
         var ps = new List<ObjectPair>();
@@ -108,32 +115,38 @@ public class BACnetDriver : DriverBase
             {
                 ps.Add(new ObjectPair { Point = item, ObjectId = oid });
             }
+            else if (ObjectPair.TryParse(item.Name, out var oid2))
+            {
+                ps.Add(new ObjectPair { Point = item, ObjectId = oid2 });
+            }
         }
         if (ps.Count == 0) return null;
+
+        var bacNode = _client.GetNode(p.DeviceId);
+        //bacNode ??= _client.GetNode(p.Address);
+        if (bacNode == null) return null;
 
         // 加锁，避免冲突
         lock (_client)
         {
-            var bacNode = _client.GetNode(p.DeviceId);
-            bacNode ??= _client.GetNode(p.Address);
-
             var dic = new Dictionary<String, Object>();
 
             //todo 批量读取还有问题，每次读取到1
-            //var data = _client.ReadProperties(bacNode.Address, ps.Select(e => e.ObjectId).ToArray());
-            //if (data == null) return null;
-
-            //foreach (var item in ps)
-            //{
-            //    if (data.TryGetValue(item.ObjectId, out var v))
-            //        dic[item.Point.Name] = v;
-            //}
+            var data = _client.ReadProperties(bacNode.Address, ps.Select(e => e.ObjectId).ToArray());
+            if (data == null) return null;
 
             foreach (var item in ps)
             {
-                var rs = _client.ReadProperty(bacNode.Address, item.ObjectId);
-                if (rs != null) dic[item.Point.Name] = rs;
+                if (data.TryGetValue(item.ObjectId, out var v))
+                    dic[item.Point.Name] = v;
             }
+
+            //// 逐个读取
+            //foreach (var item in ps)
+            //{
+            //    var rs = _client.ReadProperty(bacNode.Address, item.ObjectId);
+            //    if (rs != null) dic[item.Point.Name] = rs;
+            //}
 
             return dic;
         }
@@ -148,7 +161,19 @@ public class BACnetDriver : DriverBase
     public override Object Write(INode node, IPoint point, Object value)
     {
         var p = (node as BACnetNode).Parameter as BACnetParameter;
-        return _client.Write(p.Address, point, value);
+        var bnode = _client.GetNode(p.DeviceId);
+
+        // 优先使用地址，其次名称
+        var id = !point.Address.IsNullOrEmpty() ? point.Address : point.Name;
+
+        // 根据属性转换数据类型
+        var property = bnode.Properties.FirstOrDefault(e => e.Name == id);
+        if (property != null)
+        {
+            value = value.ChangeType(property.Type);
+        }
+
+        return _client.WriteProperty(bnode.Address, id, value);
     }
     #endregion
 }

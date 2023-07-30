@@ -13,10 +13,10 @@ public class BacNode
     /// <summary>设备编号</summary>
     public UInt32 DeviceId { get; set; }
 
-    /// <summary>点位集合</summary>
-    public IList<BacnetValue> Ids { get; set; }
+    ///// <summary>点位集合</summary>
+    //public IList<BacnetObjectId> Ids { get; set; }
 
-    /// <summary>属性集合（包含数值）</summary>
+    /// <summary>属性集合</summary>
     public IList<BacProperty> Properties { get; set; }
 
     /// <summary>实例化</summary>
@@ -32,4 +32,8 @@ public class BacNode
     /// <param name="deviceId"></param>
     /// <returns></returns>
     public BacnetAddress GetAdd(UInt32 deviceId) => DeviceId == deviceId ? Address : null;
+
+    /// <summary>已重载。</summary>
+    /// <returns></returns>
+    public override String ToString() => $"[{DeviceId}]{Address}";
 }
