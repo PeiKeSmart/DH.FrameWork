@@ -14,11 +14,9 @@ public class DriverBase<TNode, TParameter> : DriverBase
     where TParameter : IDriverParameter, new()
 {
     #region 元数据
-    /// <summary>
-    /// 获取默认驱动参数对象，可序列化成Xml/Json作为该协议的参数模板
-    /// </summary>
+    /// <summary>创建驱动参数对象，分析参数配置或创建默认参数</summary>
     /// <returns></returns>
-    public override IDriverParameter GetDefaultParameter() => new TParameter();
+    protected override IDriverParameter OnCreateParameter() => new TParameter();
     #endregion
 
     #region 核心方法
@@ -26,17 +24,15 @@ public class DriverBase<TNode, TParameter> : DriverBase
     /// 打开设备驱动，传入参数。一个物理设备可能有多个逻辑设备共用，需要以节点来区分
     /// </summary>
     /// <param name="device">逻辑设备</param>
-    /// <param name="parameters">参数。不同驱动的参数设置相差较大，对象字典具有较好灵活性，其对应IDriverParameter</param>
+    /// <param name="parameter">参数。不同驱动的参数设置相差较大，对象字典具有较好灵活性，其对应IDriverParameter</param>
     /// <returns>节点对象，可存储站号等信息，仅驱动自己识别</returns>
-    public override INode Open(IDevice device, IDictionary<String, Object> parameters)
+    public override INode Open(IDevice device, IDriverParameter parameter)
     {
-        var pm = JsonHelper.Convert<TParameter>(parameters);
-
         var node = new TNode
         {
             Driver = this,
             Device = device,
-            Parameter = pm,
+            Parameter = parameter,
         };
 
         return node;
@@ -52,13 +48,35 @@ public class DriverBase<TNode, TParameter> : DriverBase
 public abstract class DriverBase : DisposeBase, IDriver, ILogFeature, ITracerFeature
 {
     #region 元数据
-    /// <summary>获取默认驱动参数对象</summary>
+    /// <summary>创建驱动参数对象，分析参数配置或创建默认参数</summary>
     /// <remarks>
     /// 可序列化成Xml/Json作为该协议的参数模板。由于Xml需要良好的注释特性，优先使用。
     /// 获取后，按新版本覆盖旧版本。
     /// </remarks>
+    /// <param name="parameter">Xml/Json参数配置</param>
     /// <returns></returns>
-    public virtual IDriverParameter GetDefaultParameter() => null;
+    public virtual IDriverParameter CreateParameter(String parameter)
+    {
+        var p = OnCreateParameter();
+        if (p == null) return null;
+
+        if (!parameter.IsNullOrEmpty())
+        {
+            // 按Xml或Json解析参数成为字典
+            var ps = parameter.StartsWith("<") && parameter.EndsWith(">") ?
+                XmlParser.Decode(parameter) :
+                JsonParser.Decode(parameter);
+
+            // 字段转对象
+            new JsonReader().ToObject(ps, null, p);
+        }
+
+        return p;
+    }
+
+    /// <summary>创建驱动参数对象，分析参数配置或创建默认参数</summary>
+    /// <returns></returns>
+    protected virtual IDriverParameter OnCreateParameter() => null;
 
     /// <summary>获取产品物模型</summary>
     /// <remarks>
@@ -95,9 +113,9 @@ public abstract class DriverBase : DisposeBase, IDriver, ILogFeature, ITracerFea
     /// 打开设备驱动，传入参数。一个物理设备可能有多个逻辑设备共用，需要以节点来区分
     /// </summary>
     /// <param name="device">逻辑设备</param>
-    /// <param name="parameters">参数。不同驱动的参数设置相差较大，对象字典具有较好灵活性，其对应IDriverParameter</param>
+    /// <param name="parameter">参数。不同驱动的参数设置相差较大，对象字典具有较好灵活性，其对应IDriverParameter</param>
     /// <returns>节点对象，可存储站号等信息，仅驱动自己识别</returns>
-    public virtual INode Open(IDevice device, IDictionary<String, Object> parameters)
+    public virtual INode Open(IDevice device, IDriverParameter parameter)
     {
         var node = new Node
         {
