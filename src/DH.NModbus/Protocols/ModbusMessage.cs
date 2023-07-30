@@ -64,7 +64,7 @@ public class ModbusMessage : IAccessor
             return true;
         }
 
-        Payload = stream.ReadBytes(stream.Length);
+        Payload = stream.ReadBytes(-1);
 
         return true;
     }

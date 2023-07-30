@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using NewLife.IoT.Protocols;
-using NewLife.Serialization;
 
 namespace NewLife.IoT.Drivers;
 
@@ -14,7 +13,7 @@ public class ModbusRtuOverTcpDriver : ModbusDriver, IDriver
     /// 创建驱动参数对象，可序列化成Xml/Json作为该协议的参数模板
     /// </summary>
     /// <returns></returns>
-    public override IDriverParameter GetDefaultParameter() => new ModbusIpParameter
+    protected override IDriverParameter OnCreateParameter() => new ModbusIpParameter
     {
         Server = "127.0.0.1:502",
 
@@ -28,12 +27,12 @@ public class ModbusRtuOverTcpDriver : ModbusDriver, IDriver
     /// </summary>
     /// <param name="device">逻辑设备</param>
     /// <param name="node">设备节点</param>
-    /// <param name="parameters">参数</param>
+    /// <param name="parameter">参数</param>
     /// <returns></returns>
-    internal protected override Modbus CreateModbus(IDevice device, ModbusNode node, IDictionary<String, Object> parameters)
+    internal protected override Modbus CreateModbus(IDevice device, ModbusNode node, ModbusParameter parameter)
     {
-        var p = JsonHelper.Convert<ModbusIpParameter>(parameters);
-        if (p.Server.IsNullOrEmpty()) throw new ArgumentException("参数中未指定地址Server");
+        var p = parameter as ModbusIpParameter;
+        if (p == null || p.Server.IsNullOrEmpty()) throw new ArgumentException("参数中未指定地址Server");
 
         node.Parameter = p;
 
