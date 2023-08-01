@@ -805,7 +805,7 @@ public partial class UserE : User {
 
             if (!name.IsNullOrWhiteSpace()) exp &= _.Name.Contains(name);
             if (RoleId > 0) exp &= _.RoleID == RoleId;
-            exp &= _.RoleID.NotIn(XCode.Membership.Role.FindSQLWithKey(XCode.Membership.Role._.IsSystem == true));
+            //exp &= _.RoleID.NotIn(XCode.Membership.Role.FindSQLWithKey(XCode.Membership.Role._.IsSystem == true));
             return FindAll(exp, p);
         }
     }
