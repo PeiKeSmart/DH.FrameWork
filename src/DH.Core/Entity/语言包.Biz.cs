@@ -470,20 +470,13 @@ public partial class LocaleStringResource : DHEntityBase<LocaleStringResource> {
     {
         var langvalue = FindByLanKeyAndCultureId(LanKey, 1);
 
-        if (langvalue == null || langvalue.LanValue.IsNullOrWhiteSpace())
+        if (langvalue == null)
         {
             langvalue = new LocaleStringResource();
             langvalue.LanKey = LanKey;
             langvalue.CultureId = 1;
             langvalue.LanValue = LanValuecn;
             langvalue.Insert();
-        }
-        else if (langvalue.LanValue.IsNullOrWhiteSpace())
-        {
-            langvalue.LanKey = LanKey;
-            langvalue.CultureId = 1;
-            langvalue.LanValue = LanValuecn;
-            langvalue.Update();
         }
         else
         {
@@ -507,13 +500,6 @@ public partial class LocaleStringResource : DHEntityBase<LocaleStringResource> {
             langvalue.LanValue = LanValuetw;
             langvalue.Insert();
         }
-        else if (langvalue.LanValue.IsNullOrWhiteSpace())
-        {
-            langvalue.LanKey = LanKey;
-            langvalue.CultureId = 2;
-            langvalue.LanValue = LanValuetw;
-            langvalue.Update();
-        }
         else
         {
             if (Ischeck)
@@ -536,13 +522,6 @@ public partial class LocaleStringResource : DHEntityBase<LocaleStringResource> {
             langvalue.LanValue = LanValueus;
             langvalue.Insert();
         }
-        else if (langvalue.LanValue.IsNullOrWhiteSpace())
-        {
-            langvalue.LanKey = LanKey;
-            langvalue.CultureId = 3;
-            langvalue.LanValue = LanValueus;
-            langvalue.Update();
-        }
         else
         {
             if (Ischeck)
@@ -557,7 +536,7 @@ public partial class LocaleStringResource : DHEntityBase<LocaleStringResource> {
 
         langvalue = FindByLanKeyAndCultureId(LanKey, 4);
 
-        if (langvalue == null || langvalue.LanValue.IsNullOrWhiteSpace())
+        if (langvalue == null)
         {
             langvalue = new LocaleStringResource();
             langvalue.LanKey = LanKey;
