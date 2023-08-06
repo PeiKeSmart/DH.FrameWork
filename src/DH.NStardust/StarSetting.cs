@@ -16,10 +16,6 @@ public class StarSetting : Config<StarSetting>
     [Description("服务端地址。如http://star.newlifex.com:6600，默认为空")]
     public String Server { get; set; } = "";
 
-    /// <summary>应用名称</summary>
-    [Description("应用名称")]
-    public String AppName { get; set; }
-
     /// <summary>应用标识</summary>
     [Description("应用标识")]
     public String AppKey { get; set; }
