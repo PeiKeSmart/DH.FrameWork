@@ -71,21 +71,52 @@ public static class ManagerProviderHelper {
         provider.SetPrincipal(serviceProvider);
 
         // 处理租户相关信息
-        {
-            var tlist = TenantUser.FindAllByUserId(user.ID);
-            var tenantId = GetCookieTenantID(context);
-
-            if (tlist.Any(e => e.TenantId == tenantId))
-            {
-                ChangeTenant(context, tenantId);
-            }
-            else
-            {
-                ChangeTenant(context, tlist.FirstOrDefault()?.TenantId ?? 0);
-            }
-        }
+        context.ChooseTenant(user.ID);
 
         return user;
+    }
+
+    /// <summary>设置租户</summary>
+    /// <param name="context"></param>
+    /// <param name="userId"></param>
+    public static void ChooseTenant(this HttpContext context, Int32 userId)
+    {
+        /*
+         * 用户登录后的租户选择逻辑：
+         *  已选租户且有效
+         *      直接进入已选租户
+         *  已选管理后台
+         *      直接接入管理后台
+         *  未选租户
+         *      拥有租户
+         *          进入第一个租户
+         *      未有租户
+         *          进入管理后台
+         */
+        var tlist = TenantUser.FindAllByUserId(userId).Where(e => e.Enable).ToList();
+        var tenantId = GetTenantId(context);
+
+        // 进入最后一次使用的租户
+        if (tenantId > 0 && tlist.Any(e => e.TenantId == tenantId))
+            SetTenant(context, tenantId);
+        else if (tenantId == 0)
+            SetTenant(context, 0);
+        else
+        {
+            if (tlist.Count > 0)
+                SaveTenant(context, tlist[0].TenantId);
+            else
+                SaveTenant(context, 0);
+        }
+    }
+
+    /// <summary>设置租户</summary>
+    /// <param name="context"></param>
+    /// <param name="tenantId"></param>
+    public static void SetTenant(this HttpContext context, Int32 tenantId)
+    {
+        TenantContext.Current = new TenantContext { TenantId = tenantId };
+        ManageProvider.Provider.Tenant = Tenant.FindById(tenantId);
     }
 
     /// <summary>生成令牌</summary>
@@ -107,7 +138,7 @@ public static class ManagerProviderHelper {
         return jwt;
     }
 
-    #region Cookie
+    #region 用户Cookie
     /// <summary>从Cookie加载用户信息</summary>
     /// <param name="provider">提供者</param>
     /// <param name="autologin">是否自动登录</param>
@@ -152,6 +183,7 @@ public static class ManagerProviderHelper {
         var u = provider.FindByName(user);
         if (u == null || !u.Enable) return null;
 
+#if MVC
         // 保存登录信息。如果是json请求，不用记录自动登录
         if (autologin && u is IAuthUser mu && !req.IsAjaxRequest())
         {
@@ -159,6 +191,7 @@ public static class ManagerProviderHelper {
 
             LogProvider.Provider.WriteLog("用户", "自动登录", true, $"{user} Time={jwt.IssuedAt} Expire={jwt.Expire} Token={token}", u.ID, u + "", ip: context.GetUserHost());
         }
+#endif
 
         return u;
     }
@@ -173,7 +206,7 @@ public static class ManagerProviderHelper {
         var res = context?.Response;
         if (res == null) return;
 
-        var set = DHSetting.Current;
+        //var set = DHSetting.Current;
         var option = new CookieOptions
         {
             SameSite = SameSiteMode.Unspecified,
@@ -210,10 +243,11 @@ public static class ManagerProviderHelper {
     }
     #endregion
 
+    #region 租户Cookie
     /// <summary>改变选中的租户</summary>
     /// <param name="context"></param>
     /// <param name="tenantId">0管理员场景，大于0租户场景</param>
-    public static void ChangeTenant(HttpContext context, Int32 tenantId)
+    public static void SaveTenant(this HttpContext context, Int32 tenantId)
     {
         var res = context?.Response;
         if (res == null) return;
@@ -233,19 +267,24 @@ public static class ManagerProviderHelper {
 
         if (tenantId < 0) option.Expires = DateTimeOffset.MinValue;
 
-        res.Cookies.Append("TenantId", tenantId + "", option);
+        var key = $"TenantId-{SysConfig.Current.Name}";
+        res.Cookies.Append(key, tenantId + "", option);
+
+        SetTenant(context, tenantId);
     }
 
     /// <summary>获取cookie中tenantId</summary>
     /// <param name="context"></param>
     /// <returns></returns>
-    public static Int32 GetCookieTenantID(HttpContext context)
+    public static Int32 GetTenantId(this HttpContext context)
     {
-        var res = context?.Request;
-        if (res == null) return 0;
+        var key = $"TenantId-{SysConfig.Current.Name}";
+        var req = context?.Request;
+        if (req == null) return -1;
 
-        return res.Cookies["TenantId"].ToInt(0);
+        return req.Cookies[key].ToInt(-1);
     }
+    #endregion
 
     /// <summary>
     /// 添加管理提供者

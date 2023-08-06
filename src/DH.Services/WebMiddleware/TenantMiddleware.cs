@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using DH.Services.Membership;
+
+using Microsoft.AspNetCore.Http;
 
 using XCode.Membership;
 
@@ -23,11 +25,10 @@ public class TenantMiddleware {
         {
             if (TenantContext.Current == null)
             {
-                var tenantId = ctx.Request.Cookies["TenantId"].ToInt(-1);
+                var tenantId = ctx.GetTenantId();
                 if (tenantId > 0)
                 {
-                    TenantContext.Current = new TenantContext { TenantId = tenantId };
-                    ManageProvider.Provider.Tenant = Tenant.FindById(tenantId);
+                    ctx.SetTenant(tenantId);
 
                     changed = true;
                 }
