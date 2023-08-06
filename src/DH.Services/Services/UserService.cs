@@ -233,6 +233,9 @@ public class UserService {
         // 无在线则不执行
         if (_onlines == 0) return;
 
+        var set = DHSetting.Current;
+        if (!set.EnableUserStat) return;
+
         using var span = _tracer?.NewSpan("UserStat");
 
         var t1 = DateTime.Today.AddDays(-0);
