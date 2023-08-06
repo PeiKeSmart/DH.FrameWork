@@ -94,6 +94,22 @@ public partial class OrderManager : IOrderManager, IEntity<OrderManagerModel>
     [BindColumn("Method", "请求方式,GET、POST、PUT、DELETE", "")]
     public String Method { get => _Method; set { if (OnPropertyChanging("Method", value)) { _Method = value; OnPropertyChanged("Method"); } } }
 
+    private String _ValueField;
+    /// <summary>值字段</summary>
+    [DisplayName("值字段")]
+    [Description("值字段")]
+    [DataObjectField(false, false, true, 50)]
+    [BindColumn("ValueField", "值字段", "")]
+    public String ValueField { get => _ValueField; set { if (OnPropertyChanging("ValueField", value)) { _ValueField = value; OnPropertyChanged("ValueField"); } } }
+
+    private String _LabelField;
+    /// <summary>文本字段</summary>
+    [DisplayName("文本字段")]
+    [Description("文本字段")]
+    [DataObjectField(false, false, true, 50)]
+    [BindColumn("LabelField", "文本字段", "")]
+    public String LabelField { get => _LabelField; set { if (OnPropertyChanging("LabelField", value)) { _LabelField = value; OnPropertyChanged("LabelField"); } } }
+
     private Int32 _CreateUserId;
     /// <summary>创建者</summary>
     [Category("扩展")]
@@ -172,6 +188,8 @@ public partial class OrderManager : IOrderManager, IEntity<OrderManagerModel>
         DataType = model.DataType;
         Url = model.Url;
         Method = model.Method;
+        ValueField = model.ValueField;
+        LabelField = model.LabelField;
         CreateUserId = model.CreateUserId;
         CreateTime = model.CreateTime;
         CreateIP = model.CreateIP;
@@ -199,6 +217,8 @@ public partial class OrderManager : IOrderManager, IEntity<OrderManagerModel>
             "DataType" => _DataType,
             "Url" => _Url,
             "Method" => _Method,
+            "ValueField" => _ValueField,
+            "LabelField" => _LabelField,
             "CreateUserId" => _CreateUserId,
             "CreateTime" => _CreateTime,
             "CreateIP" => _CreateIP,
@@ -221,6 +241,8 @@ public partial class OrderManager : IOrderManager, IEntity<OrderManagerModel>
                 case "DataType": _DataType = Convert.ToString(value); break;
                 case "Url": _Url = Convert.ToString(value); break;
                 case "Method": _Method = Convert.ToString(value); break;
+                case "ValueField": _ValueField = Convert.ToString(value); break;
+                case "LabelField": _LabelField = Convert.ToString(value); break;
                 case "CreateUserId": _CreateUserId = value.ToInt(); break;
                 case "CreateTime": _CreateTime = value.ToDateTime(); break;
                 case "CreateIP": _CreateIP = Convert.ToString(value); break;
@@ -267,6 +289,12 @@ public partial class OrderManager : IOrderManager, IEntity<OrderManagerModel>
 
         /// <summary>请求方式,GET、POST、PUT、DELETE</summary>
         public static readonly Field Method = FindByName("Method");
+
+        /// <summary>值字段</summary>
+        public static readonly Field ValueField = FindByName("ValueField");
+
+        /// <summary>文本字段</summary>
+        public static readonly Field LabelField = FindByName("LabelField");
 
         /// <summary>创建者</summary>
         public static readonly Field CreateUserId = FindByName("CreateUserId");
@@ -321,6 +349,12 @@ public partial class OrderManager : IOrderManager, IEntity<OrderManagerModel>
 
         /// <summary>请求方式,GET、POST、PUT、DELETE</summary>
         public const String Method = "Method";
+
+        /// <summary>值字段</summary>
+        public const String ValueField = "ValueField";
+
+        /// <summary>文本字段</summary>
+        public const String LabelField = "LabelField";
 
         /// <summary>创建者</summary>
         public const String CreateUserId = "CreateUserId";

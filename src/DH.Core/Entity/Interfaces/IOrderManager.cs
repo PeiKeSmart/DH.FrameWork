@@ -38,6 +38,12 @@ public partial interface IOrderManager
     /// <summary>请求方式,GET、POST、PUT、DELETE</summary>
     String Method { get; set; }
 
+    /// <summary>值字段</summary>
+    String ValueField { get; set; }
+
+    /// <summary>文本字段</summary>
+    String LabelField { get; set; }
+
     /// <summary>创建者</summary>
     Int32 CreateUserId { get; set; }
 

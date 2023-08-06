@@ -39,6 +39,12 @@ public partial class OrderManagerModel : IModel
     /// <summary>请求方式,GET、POST、PUT、DELETE</summary>
     public String Method { get; set; }
 
+    /// <summary>值字段</summary>
+    public String ValueField { get; set; }
+
+    /// <summary>文本字段</summary>
+    public String LabelField { get; set; }
+
     /// <summary>创建者</summary>
     public Int32 CreateUserId { get; set; }
 
@@ -80,6 +86,8 @@ public partial class OrderManagerModel : IModel
                 "DataType" => DataType,
                 "Url" => Url,
                 "Method" => Method,
+                "ValueField" => ValueField,
+                "LabelField" => LabelField,
                 "CreateUserId" => CreateUserId,
                 "CreateTime" => CreateTime,
                 "CreateIP" => CreateIP,
@@ -103,6 +111,8 @@ public partial class OrderManagerModel : IModel
                 case "DataType": DataType = Convert.ToString(value); break;
                 case "Url": Url = Convert.ToString(value); break;
                 case "Method": Method = Convert.ToString(value); break;
+                case "ValueField": ValueField = Convert.ToString(value); break;
+                case "LabelField": LabelField = Convert.ToString(value); break;
                 case "CreateUserId": CreateUserId = value.ToInt(); break;
                 case "CreateTime": CreateTime = value.ToDateTime(); break;
                 case "CreateIP": CreateIP = Convert.ToString(value); break;
@@ -129,6 +139,8 @@ public partial class OrderManagerModel : IModel
         DataType = model.DataType;
         Url = model.Url;
         Method = model.Method;
+        ValueField = model.ValueField;
+        LabelField = model.LabelField;
         CreateUserId = model.CreateUserId;
         CreateTime = model.CreateTime;
         CreateIP = model.CreateIP;
