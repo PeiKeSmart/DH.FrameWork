@@ -3,6 +3,7 @@ using DH.Services.Webs;
 using DH.Web.Framework.Services;
 
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 
 using NewLife;
 using NewLife.Collections;
@@ -19,6 +20,11 @@ namespace DH.Services.Membership;
 public class ManageProvider2 : ManageProvider {
     #region 静态实例
     internal static IHttpContextAccessor Context;
+
+    /// <summary>
+    /// 节点路由
+    /// </summary>
+    public static IEndpointRouteBuilder EndpointRoute { get; set; }
 
     static ManageProvider2()
     {
