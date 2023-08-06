@@ -71,11 +71,11 @@ public partial class OAuthConfig : IOAuthConfig, IEntity<OAuthConfigModel>
     public String Secret { get => _Secret; set { if (OnPropertyChanging("Secret", value)) { _Secret = value; OnPropertyChanged("Secret"); } } }
 
     private String _Server;
-    /// <summary>服务地址</summary>
+    /// <summary>服务地址。支持设置两个服务器地址，自动选择http/https</summary>
     [DisplayName("服务地址")]
-    [Description("服务地址")]
+    [Description("服务地址。支持设置两个服务器地址，自动选择http/https")]
     [DataObjectField(false, false, true, 200)]
-    [BindColumn("Server", "服务地址", "")]
+    [BindColumn("Server", "服务地址。支持设置两个服务器地址，自动选择http/https", "")]
     public String Server { get => _Server; set { if (OnPropertyChanging("Server", value)) { _Server = value; OnPropertyChanged("Server"); } } }
 
     private String _AccessServer;
@@ -402,7 +402,7 @@ public partial class OAuthConfig : IOAuthConfig, IEntity<OAuthConfigModel>
         /// <summary>应用密钥</summary>
         public static readonly Field Secret = FindByName("Secret");
 
-        /// <summary>服务地址</summary>
+        /// <summary>服务地址。支持设置两个服务器地址，自动选择http/https</summary>
         public static readonly Field Server = FindByName("Server");
 
         /// <summary>令牌服务地址。可以不同于验证地址的内网直达地址</summary>
@@ -495,7 +495,7 @@ public partial class OAuthConfig : IOAuthConfig, IEntity<OAuthConfigModel>
         /// <summary>应用密钥</summary>
         public const String Secret = "Secret";
 
-        /// <summary>服务地址</summary>
+        /// <summary>服务地址。支持设置两个服务器地址，自动选择http/https</summary>
         public const String Server = "Server";
 
         /// <summary>令牌服务地址。可以不同于验证地址的内网直达地址</summary>

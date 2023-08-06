@@ -29,7 +29,7 @@ public partial interface IOAuthConfig
     /// <summary>应用密钥</summary>
     String Secret { get; set; }
 
-    /// <summary>服务地址</summary>
+    /// <summary>服务地址。支持设置两个服务器地址，自动选择http/https</summary>
     String Server { get; set; }
 
     /// <summary>令牌服务地址。可以不同于验证地址的内网直达地址</summary>
