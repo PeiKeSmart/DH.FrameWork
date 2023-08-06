@@ -3,8 +3,7 @@
 /// <summary>
 /// OAuth配置字段映射
 /// </summary>
-public class OAuthFieldMap
-{
+public class OAuthFieldMap {
     /// <summary>统一标识。当前应用下唯一</summary>
     public String OpenID { get; set; }
 
