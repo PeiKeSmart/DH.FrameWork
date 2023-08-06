@@ -110,7 +110,7 @@ public class RcInit : Host
     /// <returns></returns>
     public static Boolean Install(String systemdPath, String serviceName, String binPath, String displayName, String description)
     {
-        XTrace.WriteLine("{0}.Install {1}, {2}, {3}, {4}", typeof(Systemd).Name, serviceName, displayName, binPath, description);
+        XTrace.WriteLine("{0}.Install {1}, {2}, {3}, {4}", typeof(RcInit).Name, serviceName, displayName, binPath, description);
 
         var file = systemdPath.CombinePath($"{serviceName}");
         XTrace.WriteLine(file);
@@ -132,6 +132,9 @@ public class RcInit : Host
 
         // 给予可执行权限
         Process.Start("chmod", $"+x {file}");
+
+        // 创建同级链接文件 [解决某些linux启动必须以Sxx开头的启动文件]
+        Process.Start("ln", $"-s {systemdPath}/{serviceName} {systemdPath}/S50{serviceName}");
 
         // 创建链接文件
         for (var i = 0; i < 7; i++)
@@ -157,6 +160,10 @@ public class RcInit : Host
         XTrace.WriteLine("{0}.Remove {1}", GetType().Name, serviceName);
 
         var file = _path.CombinePath($"{serviceName}");
+        if (File.Exists(file)) File.Delete(file);
+
+        // 删除同级链接文件
+        file = _path.CombinePath($"S50{serviceName}");
         if (File.Exists(file)) File.Delete(file);
 
         // 删除链接文件
