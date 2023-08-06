@@ -125,9 +125,8 @@ public class DHSetting : Config<DHSetting>
     [Category("用户登录")]
     public String DefaultRole { get; set; } = "普通用户";
 
-    /// <summary>密码强度。*表示无限制，默认8位起，数字大小写字母和符号</summary>
-    [Description("密码强度。*表示无限制，默认8位起，数字大小写字母和符号")]
-    [Category("用户登录")]
+    /// <summary>密码强度。*表示无限制，默认8位起，数字大小写字母和符号。简易版^(?=.*\\d.*)(?=.*[a-zA-Z].*).{8,32}$</summary>
+    [Description("密码强度。*表示无限制，默认8位起，数字大小写字母和符号。简易版^(?=.*\\d.*)(?=.*[a-zA-Z].*).{8,32}$")]
     public String PaswordStrength { get; set; } = @"^(?=.*\d.*)(?=.*[a-z].*)(?=.*[A-Z].*)(?=.*[^(0-9a-zA-Z)].*).{8,32}$";
 
     /// <summary>登录失败次数。短时间内，相同用户或IP地址连续登录错误次数达到该值后禁止登录或提供验证码，默认6</summary>
