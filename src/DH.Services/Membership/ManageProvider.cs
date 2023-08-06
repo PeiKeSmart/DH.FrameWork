@@ -24,6 +24,7 @@ using XCode.Membership;
 
 using IServiceCollection = Microsoft.Extensions.DependencyInjection.IServiceCollection;
 using JwtBuilder = NewLife.Web.JwtBuilder;
+using SameSiteMode = Microsoft.AspNetCore.Http.SameSiteMode;
 
 namespace DH.Core.Membership;
 
@@ -439,9 +440,10 @@ public static class ManagerProviderHelper {
         var set = DHSetting.Current;
         var option = new CookieOptions
         {
-            SameSite = (Microsoft.AspNetCore.Http.SameSiteMode)set.SameSiteMode
+            SameSite = (SameSiteMode)set.SameSiteMode
         };
         if (!set.CookieDomain.IsNullOrEmpty()) option.Domain = set.CookieDomain;
+        if (option.SameSite == SameSiteMode.None) option.Secure = true;
 
         var token = "";
         if (user != null)
@@ -478,9 +480,10 @@ public static class ManagerProviderHelper {
         var set = DHSetting.Current;
         var option = new CookieOptions
         {
-            SameSite = (Microsoft.AspNetCore.Http.SameSiteMode)set.SameSiteMode
+            SameSite = (SameSiteMode)set.SameSiteMode
         };
         if (!set.CookieDomain.IsNullOrEmpty()) option.Domain = set.CookieDomain;
+        if (option.SameSite == SameSiteMode.None) option.Secure = true;
 
         if (tenantId < 0) option.Expires = DateTimeOffset.MinValue;
 
