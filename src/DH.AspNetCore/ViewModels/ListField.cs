@@ -1,5 +1,6 @@
 ﻿using NewLife;
 using NewLife.Data;
+using NewLife.Reflection;
 
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
@@ -83,13 +84,23 @@ public class ListField : DataField {
     #endregion
 
     #region 数据格式化
-    private static readonly Regex _reg = new(@"{(\w+)}", RegexOptions.Compiled);
+    private static readonly Regex _reg = new(@"{(\w+(?:\.\w+)*)}", RegexOptions.Compiled);
 
     private static String Replace(String input, IModel data)
     {
         return _reg.Replace(input, m =>
         {
-            var val = data[m.Groups[1].Value + ""];
+            //var val = data[m.Groups[1].Value + ""];
+            // 循环解析多层数值
+            var names = m.Groups[1].Value.Split('.');
+            var val = data[names[0]];
+            for (var i = 1; i < names.Length && val != null; i++)
+            {
+                if (val is IModel model)
+                    val = model[names[i]] ?? val.GetValue(names[i]);
+                else
+                    val = val.GetValue(names[i]);
+            }
 
             // 特殊处理时间
             if (val is DateTime dt) return dt == dt.Date ? dt.ToString("yyyy-MM-dd") : dt.ToFullString();
