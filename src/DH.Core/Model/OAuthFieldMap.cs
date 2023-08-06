@@ -1,4 +1,4 @@
-﻿namespace DH.Core.Model;
+﻿namespace DH.Model;
 
 /// <summary>
 /// OAuth配置字段映射

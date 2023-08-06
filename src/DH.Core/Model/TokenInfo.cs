@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace DH.Core.Model;
+namespace DH.Model;
 
 /// <summary>令牌信息</summary>
 public class TokenInfo

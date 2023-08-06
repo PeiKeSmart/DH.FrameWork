@@ -1,4 +1,4 @@
-﻿using DH.Core.Model;
+﻿using DH.Model;
 
 using NewLife;
 using NewLife.Data;

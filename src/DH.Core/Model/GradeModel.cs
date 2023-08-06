@@ -1,4 +1,4 @@
-﻿namespace DH.Core.Model;
+﻿namespace DH.Model;
 
 /// <summary>
 /// 会员等级实体
