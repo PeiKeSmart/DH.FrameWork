@@ -99,6 +99,7 @@ namespace DH.Entity
                 Logo = "/images/logo/Logo.png",
 
                 Server = "https://sso.chuangchu.net/sso",
+                //Server = "https://sso.newlifex.com/sso,http://sso2.newlifex.com/sso",
                 AppId = "ChuangChu.Cube",
                 Secret = Rand.NextString(16),
 
