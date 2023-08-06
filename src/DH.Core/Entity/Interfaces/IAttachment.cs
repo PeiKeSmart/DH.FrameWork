@@ -53,6 +53,9 @@ public partial interface IAttachment
     /// <summary>来源。用于远程抓取的附件来源地址，本地文件不存在时自动依次抓取</summary>
     String Source { get; set; }
 
+    /// <summary>追踪。链路追踪，用于APM性能追踪定位，还原该事件的调用链</summary>
+    String TraceId { get; set; }
+
     /// <summary>创建者</summary>
     String CreateUser { get; set; }
 

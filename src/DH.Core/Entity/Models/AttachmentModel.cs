@@ -54,6 +54,9 @@ public partial class AttachmentModel : IModel
     /// <summary>来源。用于远程抓取的附件来源地址，本地文件不存在时自动依次抓取</summary>
     public String Source { get; set; }
 
+    /// <summary>追踪。链路追踪，用于APM性能追踪定位，还原该事件的调用链</summary>
+    public String TraceId { get; set; }
+
     /// <summary>创建者</summary>
     public String CreateUser { get; set; }
 
@@ -106,6 +109,7 @@ public partial class AttachmentModel : IModel
                 "UploadTime" => UploadTime,
                 "Url" => Url,
                 "Source" => Source,
+                "TraceId" => TraceId,
                 "CreateUser" => CreateUser,
                 "CreateUserID" => CreateUserID,
                 "CreateIP" => CreateIP,
@@ -136,6 +140,7 @@ public partial class AttachmentModel : IModel
                 case "UploadTime": UploadTime = value.ToDateTime(); break;
                 case "Url": Url = Convert.ToString(value); break;
                 case "Source": Source = Convert.ToString(value); break;
+                case "TraceId": TraceId = Convert.ToString(value); break;
                 case "CreateUser": CreateUser = Convert.ToString(value); break;
                 case "CreateUserID": CreateUserID = value.ToInt(); break;
                 case "CreateIP": CreateIP = Convert.ToString(value); break;
@@ -169,6 +174,7 @@ public partial class AttachmentModel : IModel
         UploadTime = model.UploadTime;
         Url = model.Url;
         Source = model.Source;
+        TraceId = model.TraceId;
         CreateUser = model.CreateUser;
         CreateUserID = model.CreateUserID;
         CreateIP = model.CreateIP;

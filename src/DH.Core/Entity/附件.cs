@@ -136,6 +136,15 @@ public partial class Attachment : IAttachment, IEntity<AttachmentModel>
     [BindColumn("Source", "来源。用于远程抓取的附件来源地址，本地文件不存在时自动依次抓取", "")]
     public String Source { get => _Source; set { if (OnPropertyChanging("Source", value)) { _Source = value; OnPropertyChanged("Source"); } } }
 
+    private String _TraceId;
+    /// <summary>追踪。链路追踪，用于APM性能追踪定位，还原该事件的调用链</summary>
+    [Category("扩展")]
+    [DisplayName("追踪")]
+    [Description("追踪。链路追踪，用于APM性能追踪定位，还原该事件的调用链")]
+    [DataObjectField(false, false, true, 50)]
+    [BindColumn("TraceId", "追踪。链路追踪，用于APM性能追踪定位，还原该事件的调用链", "")]
+    public String TraceId { get => _TraceId; set { if (OnPropertyChanging("TraceId", value)) { _TraceId = value; OnPropertyChanged("TraceId"); } } }
+
     private String _CreateUser;
     /// <summary>创建者</summary>
     [Category("扩展")]
@@ -237,6 +246,7 @@ public partial class Attachment : IAttachment, IEntity<AttachmentModel>
         UploadTime = model.UploadTime;
         Url = model.Url;
         Source = model.Source;
+        TraceId = model.TraceId;
         CreateUser = model.CreateUser;
         CreateUserID = model.CreateUserID;
         CreateIP = model.CreateIP;
@@ -271,6 +281,7 @@ public partial class Attachment : IAttachment, IEntity<AttachmentModel>
             "UploadTime" => _UploadTime,
             "Url" => _Url,
             "Source" => _Source,
+            "TraceId" => _TraceId,
             "CreateUser" => _CreateUser,
             "CreateUserID" => _CreateUserID,
             "CreateIP" => _CreateIP,
@@ -300,6 +311,7 @@ public partial class Attachment : IAttachment, IEntity<AttachmentModel>
                 case "UploadTime": _UploadTime = value.ToDateTime(); break;
                 case "Url": _Url = Convert.ToString(value); break;
                 case "Source": _Source = Convert.ToString(value); break;
+                case "TraceId": _TraceId = Convert.ToString(value); break;
                 case "CreateUser": _CreateUser = Convert.ToString(value); break;
                 case "CreateUserID": _CreateUserID = value.ToInt(); break;
                 case "CreateIP": _CreateIP = Convert.ToString(value); break;
@@ -363,6 +375,9 @@ public partial class Attachment : IAttachment, IEntity<AttachmentModel>
 
         /// <summary>来源。用于远程抓取的附件来源地址，本地文件不存在时自动依次抓取</summary>
         public static readonly Field Source = FindByName("Source");
+
+        /// <summary>追踪。链路追踪，用于APM性能追踪定位，还原该事件的调用链</summary>
+        public static readonly Field TraceId = FindByName("TraceId");
 
         /// <summary>创建者</summary>
         public static readonly Field CreateUser = FindByName("CreateUser");
@@ -438,6 +453,9 @@ public partial class Attachment : IAttachment, IEntity<AttachmentModel>
 
         /// <summary>来源。用于远程抓取的附件来源地址，本地文件不存在时自动依次抓取</summary>
         public const String Source = "Source";
+
+        /// <summary>追踪。链路追踪，用于APM性能追踪定位，还原该事件的调用链</summary>
+        public const String TraceId = "TraceId";
 
         /// <summary>创建者</summary>
         public const String CreateUser = "CreateUser";

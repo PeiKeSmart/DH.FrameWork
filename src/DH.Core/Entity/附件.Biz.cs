@@ -8,9 +8,8 @@ using XCode.Membership;
 
 namespace DH.Entity;
 
-/// <summary>附件。用于记录各系统模块使用的文件，可以是Local/NAS/OSS等</summary>
-public partial class Attachment : DHEntityBase<Attachment>
-{
+/// <summary>附件。用于记录各系统模块使用的文件</summary>
+public partial class Attachment : Entity<Attachment> {
     #region 对象操作
     static Attachment()
     {
@@ -22,6 +21,7 @@ public partial class Attachment : DHEntityBase<Attachment>
         Meta.Modules.Add<UserModule>();
         Meta.Modules.Add<TimeModule>();
         Meta.Modules.Add<IPModule>();
+        Meta.Modules.Add<TraceModule>();
     }
 
     /// <summary>验证数据，通过抛出异常的方式提示验证失败。</summary>
@@ -42,7 +42,6 @@ public partial class Attachment : DHEntityBase<Attachment>
 
         base.Valid(isNew);
     }
-
     #endregion
 
     #region 扩展属性
@@ -80,18 +79,22 @@ public partial class Attachment : DHEntityBase<Attachment>
     #region 高级查询
     /// <summary>高级查询</summary>
     /// <param name="category">分类</param>
+    /// <param name="key">业务关键字</param>
+    /// <param name="ext">扩展名</param>
     /// <param name="start">关键字</param>
     /// <param name="end">关键字</param>
-    /// <param name="key">关键字</param>
+    /// <param name="keyWord">关键字</param>
     /// <param name="page">分页参数信息。可携带统计和数据权限扩展查询等信息</param>
     /// <returns>实体列表</returns>
-    public static IList<Attachment> Search(String category, DateTime start, DateTime end, String key, PageParameter page)
+    public static IList<Attachment> Search(String category, String key, String ext, DateTime start, DateTime end, String keyWord, PageParameter page)
     {
         var exp = new WhereExpression();
 
         if (!category.IsNullOrEmpty()) exp &= _.Category == category;
+        if (!key.IsNullOrEmpty()) exp &= _.Key == key;
+        if (!ext.IsNullOrEmpty()) exp &= _.Extension == ext;
         exp &= _.Id.Between(start, end, Meta.Factory.Snow);
-        if (!key.IsNullOrEmpty()) exp &= _.FileName == key | _.Extension == key | _.ContentType.Contains(key) | _.FilePath.StartsWith(key) | _.Title.Contains(key);
+        if (!keyWord.IsNullOrEmpty()) exp &= _.FileName == keyWord | _.Extension == keyWord | _.ContentType.Contains(keyWord) | _.FilePath.StartsWith(keyWord) | _.Title.Contains(keyWord);
 
         return FindAll(exp, page);
     }
@@ -102,7 +105,7 @@ public partial class Attachment : DHEntityBase<Attachment>
         //Where = _.CreateTime > DateTime.Today.AddDays(-30) & Expression.Empty
     };
 
-    /// <summary>获取业务分类列表，字段缓存10分钟，分组统计数据最多的前20种，用于魔方前台下拉选择</summary>
+    /// <summary>获取分类列表，字段缓存10分钟，分组统计数据最多的前20种，用于魔方前台下拉选择</summary>
     /// <returns></returns>
     public static IDictionary<String, String> GetCategoryList() => _CategoryCache.FindAllName();
     #endregion
@@ -172,7 +175,7 @@ public partial class Attachment : DHEntityBase<Attachment>
         //if (File.Exists(fullFile)) File.Delete(fullFile);
 
         // 抓取并保存
-        if (_client == null) _client = new HttpClient();
+        _client ??= new HttpClient();
         var rs = await _client.GetAsync(url);
         var contentType = rs.Content.Headers.ContentType + "";
         if (!contentType.IsNullOrEmpty()) ContentType = contentType;
@@ -220,6 +223,7 @@ public partial class Attachment : DHEntityBase<Attachment>
         // 保存文件，优先原名字
         var fullFile = uploadPath.CombinePath(file).GetBasePath();
         fullFile.EnsureDirectory(true);
+        DefaultSpan.Current?.AppendTag($"fullFile={fullFile}");
 
         {
             using var fs = new FileStream(fullFile, FileMode.OpenOrCreate);
