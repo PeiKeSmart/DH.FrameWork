@@ -688,6 +688,17 @@ public class OAuthClient {
         // 2021-07-19 企业微信正常请求返回"errmsg": "ok"，导致登录报错，所以暂时注释
         if ((dic.TryGetValue("error", out str) || dic.TryGetValue("errmsg", out str)) && str != "ok") throw new InvalidOperationException(str);
     }
+
+    /// <summary>获取头像路径</summary>
+    /// <returns></returns>
+    public String GetAvatarUrl()
+    {
+        var av = Avatar;
+        if (av != null && av.StartsWith("/") && Server.StartsWithIgnoreCase("http"))
+            return new Uri(new Uri(Server), av) + "";
+
+        return null;
+    }
     #endregion
 
     #region 日志
