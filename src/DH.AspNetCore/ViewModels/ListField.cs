@@ -6,6 +6,7 @@ using NewLife.Reflection;
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+using System.Web;
 using System.Xml.Serialization;
 
 using XCode.Configuration;
@@ -166,11 +167,10 @@ public class ListField : DataField {
         //if (linkName.IsNullOrEmpty()) linkName = GetDisplayName(data);
 
         var sb = Pool.StringBuilder.Get();
-
         sb.AppendFormat("<a href=\"{0}\"", url);
         if (!target.IsNullOrEmpty()) sb.AppendFormat(" target=\"{0}\"", target);
         if (!action.IsNullOrEmpty()) sb.AppendFormat(" data-action=\"{0}\"", action);
-        if (!title.IsNullOrEmpty()) sb.AppendFormat(" title=\"{0}\"", title);
+        if (!title.IsNullOrEmpty()) sb.AppendFormat(" title=\"{0}\"", HttpUtility.HtmlEncode(title));
         sb.Append(">");
         sb.Append(linkName);
         sb.Append("</a>");
@@ -179,7 +179,6 @@ public class ListField : DataField {
 
         return Replace(link, data);
     }
-
 
     /// <summary>针对指定实体对象计算url，替换其中变量</summary>
     /// <param name="data"></param>
