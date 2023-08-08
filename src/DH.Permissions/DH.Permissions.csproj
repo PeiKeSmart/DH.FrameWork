@@ -72,7 +72,7 @@
   <ItemGroup>
 	<PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.32.1" />
 	<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.32.1" />
-	<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.9" />
+	<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.10" />
   </ItemGroup>
 	
   <ItemGroup>
