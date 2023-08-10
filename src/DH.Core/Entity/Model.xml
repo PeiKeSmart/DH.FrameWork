@@ -416,7 +416,7 @@
       <Column Name="RId" DataType="Int32" Description="关联角色表Id" />
       <Column Name="LId" DataType="Int32" Description="关联所属语言Id" />
       <Column Name="Name" DataType="String" Master="True" Description="角色分组名称" />
-      <Column Name="Remark" DataType="String" Description="备注" />
+      <Column Name="Remark" DataType="String" Length="200" Description="备注" />
     </Columns>
     <Indexes>
       <Index Columns="RId,LId" Unique="True" />

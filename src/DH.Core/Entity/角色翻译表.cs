@@ -58,7 +58,7 @@ public partial class RoleLan : IRoleLan, IEntity<RoleLanModel>
     /// <summary>备注</summary>
     [DisplayName("备注")]
     [Description("备注")]
-    [DataObjectField(false, false, true, 50)]
+    [DataObjectField(false, false, true, 200)]
     [BindColumn("Remark", "备注", "")]
     public String Remark { get => _Remark; set { if (OnPropertyChanging("Remark", value)) { _Remark = value; OnPropertyChanged("Remark"); } } }
     #endregion
