@@ -269,6 +269,16 @@ public class DHSetting : Config<DHSetting>
     [Category("通用")]
     public Boolean EnableUserStat { get; set; } = true;
 
+    /// <summary>万能验证码</summary>
+    [Description("万能验证码")]
+    [Category("用户登录")]
+    public String EnableUniversalCaptcha { get; set; } = Rand.NextString(4);
+
+    /// <summary>万能验证码开启截止时间</summary>
+    [Description("万能验证码开启截止时间")]
+    [Category("用户登录")]
+    public DateTime UniversalCaptchaEndTime { get; set; }
+
     #region 方法
     /// <summary>实例化</summary>
     public DHSetting() { }
