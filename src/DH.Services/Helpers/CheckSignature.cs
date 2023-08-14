@@ -142,6 +142,8 @@ public partial class CheckSignature {
 
         dic.Remove("sign");
 
-        return signature == DH.Security.CheckSignature.CreateSign(dic, token);
+        retusnsignature = DH.Security.CheckSignature.CreateSign(dic, token);
+
+        return signature == retusnsignature;
     }
 }
