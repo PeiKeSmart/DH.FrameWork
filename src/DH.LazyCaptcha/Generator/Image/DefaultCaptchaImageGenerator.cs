@@ -227,7 +227,7 @@ namespace DH.LazyCaptcha.Generator.Image
             var charWidths = new List<float>();
             foreach (var s in text)
             {
-                var charWidth = TextMeasurer.Measure(s.ToString(), new TextOptions(font)).Width;
+                var charWidth = TextMeasurer.MeasureSize(s.ToString(), new TextOptions(font)).Width;
                 charWidths.Add(charWidth);
             }
 
@@ -244,7 +244,7 @@ namespace DH.LazyCaptcha.Generator.Image
                 var padding = (wrapperWidth - charWidths[i]) / 2;
                 var textX = currentX + padding;
 
-                var fontHeight = (int)TextMeasurer.Measure(text[i].ToString(), new TextOptions(font)).Height;
+                var fontHeight = (int)TextMeasurer.MeasureSize(text[i].ToString(), new TextOptions(font)).Height;
                 int textY = (height - fontHeight) / 2 + 3;  // 文字的纵坐标
 
                 result.Add(new PointF(textX, textY));
