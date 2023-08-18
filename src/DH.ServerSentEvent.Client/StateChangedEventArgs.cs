@@ -1,7 +1,7 @@
 ﻿namespace DH.ServerSentEvent;
 
 /// <summary>
-/// Provides data for the state of the <see cref="EventSource"/> connection.
+/// 提供 <see cref="EventSource"/> 连接状态的数据。
 /// </summary>
 /// <seealso cref="System.EventArgs" />
 public class StateChangedEventArgs : EventArgs {

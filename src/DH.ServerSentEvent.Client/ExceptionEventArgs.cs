@@ -1,7 +1,7 @@
 ﻿namespace DH.ServerSentEvent;
 
 /// <summary>
-/// Provides exception data raised in the EventSource <see cref="EventSource.Error" /> event. 
+/// 提供在事件源 <see cref="EventSource.Error" /> 事件中引发的异常数据。
 /// </summary>
 /// <seealso cref="System.EventArgs" />
 public class ExceptionEventArgs : EventArgs {

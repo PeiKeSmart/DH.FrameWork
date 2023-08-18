@@ -13,7 +13,7 @@ internal class ExponentialBackoffWithDecorrelation {
     }
 
     /// <summary>
-    /// Gets the next backoff duration and increments the reconnect attempt count
+    /// 获取下一个退避持续时间并增加重新连接尝试计数
     /// </summary>
     public TimeSpan GetNextBackOff()
     {

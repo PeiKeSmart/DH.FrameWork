@@ -1,7 +1,7 @@
 ﻿namespace DH.ServerSentEvent;
 
 /// <summary>
-/// The parameter type for a <see cref="EventSource.MessageReceived"/> event handler.
+/// <see cref="EventSource.MessageReceived"/> 事件处理程序的参数类型。
 /// </summary>
 /// <seealso cref="System.EventArgs" />
 public class MessageReceivedEventArgs : EventArgs {

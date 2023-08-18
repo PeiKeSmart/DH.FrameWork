@@ -79,7 +79,7 @@ public sealed class Configuration {
     public Action<HttpRequestMessage> HttpRequestModifier { get; }
 
     /// <summary>
-    /// The initial amount of time to wait before attempting to reconnect to the EventSource API.
+    /// 尝试重新连接到事件源 API 之前等待的初始时间。
     /// </summary>
     /// <seealso cref="ConfigurationBuilder.InitialRetryDelay(TimeSpan)"/>
     public TimeSpan InitialRetryDelay { get; }

@@ -1,7 +1,7 @@
 ﻿namespace DH.ServerSentEvent;
 
 /// <summary>
-/// Provides data recieved in the EventSource <see cref="EventSource.CommentReceived"/> event. 
+/// 提供在事件源 <see cref="EventSource.CommentReceived"/> 事件中接收的数据。
 /// </summary>
 /// <seealso cref="System.EventArgs" />
 public class CommentReceivedEventArgs : EventArgs {
