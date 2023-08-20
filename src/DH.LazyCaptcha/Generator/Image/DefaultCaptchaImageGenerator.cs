@@ -8,8 +8,7 @@ using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 
-namespace DH.LazyCaptcha.Generator.Image
-{
+namespace DH.LazyCaptcha.Generator.Image {
     /// <summary>
     /// 验证码生成器基类
     /// </summary>
