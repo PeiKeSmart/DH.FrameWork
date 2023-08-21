@@ -594,7 +594,7 @@ public abstract class FileSystemObject {
             Directory.CreateDirectory(info.DirectoryName);
         }
         FileStream stream = new FileStream(file, FileMode.Create, FileAccess.Write);
-        StreamWriter writer = new StreamWriter(stream, Encoding.UTF8);
+        StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(false));
         try
         {
             writer.Write(fileContent);
