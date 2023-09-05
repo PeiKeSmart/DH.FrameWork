@@ -83,12 +83,12 @@ public class LocalStarClient
             // 某些情况下检查端口占用会抛出异常，原因未知
             var gp = IPGlobalProperties.GetIPGlobalProperties();
             var eps = gp.GetActiveUdpListeners();
-            if (!eps.Any(ep => ep.Port == Port)) return null;
+            if (eps.Length > 0 && !eps.Any(ep => ep.Port == Port)) return null;
         }
         catch { }
 
         var task = TaskEx.Run(GetInfoAsync);
-        return task.Wait(500) ? task.Result : null;
+        return task.Wait(1000) ? task.Result : null;
     }
 
     /// <summary>获取信息</summary>
@@ -447,19 +447,27 @@ public class LocalStarClient
             var rs = new DefaultMessage();
             IPEndPoint ep = null;
             buf = udp.Receive(ref ep);
+#if NET40
             if (buf != null && rs.Read(buf) && encoder.Decode(rs, out var action, out _, out var data))
             {
-                //ms = rs.Payload.GetStream();
-                //var reader=new BinaryReader(ms);
-                //var name=reader.ReadString();
-                //var code = reader.ReadInt32();
-                //var data=reader
-
                 var js = encoder.DecodeResult(action, data, rs);
                 var info = (AgentInfo)encoder.Convert(js, typeof(AgentInfo));
 
                 yield return info;
             }
+#else
+            if (buf != null && rs.Read(buf))
+            {
+                var msg = encoder.Decode(rs);
+                if (msg != null)
+                {
+                    var js = encoder.DecodeResult(msg.Action, msg.Data, rs);
+                    var info = (AgentInfo)encoder.Convert(js, typeof(AgentInfo));
+
+                    yield return info;
+                }
+            }
+#endif
         }
     }
     #endregion
