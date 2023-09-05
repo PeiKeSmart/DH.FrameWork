@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 using System.Web.Script.Serialization;
 using System.Xml.Serialization;
 using NewLife.Data;
+using NewLife.Reflection;
 
 namespace DH.Entity;
 
@@ -35,7 +36,7 @@ public partial class RoleExModel : IModel
                 "Id" => Id,
                 "IsAdmin" => IsAdmin,
                 "Roles" => Roles,
-                _ => null
+                _ => this.GetValue(name),
             };
         }
         set
@@ -45,6 +46,7 @@ public partial class RoleExModel : IModel
                 case "Id": Id = value.ToInt(); break;
                 case "IsAdmin": IsAdmin = value.ToBoolean(); break;
                 case "Roles": Roles = Convert.ToString(value); break;
+                default: this.SetValue(name, value); break;
             }
         }
     }

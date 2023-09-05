@@ -7,8 +7,10 @@ using NewLife.Model;
 using NewLife.Reflection;
 using NewLife.Serialization;
 
+using System.Runtime.Serialization;
 using System.Text;
 using System.Web;
+using System.Xml.Serialization;
 
 namespace DH.Core.Webs;
 
@@ -60,6 +62,10 @@ public class OAuthClient {
     /// 字段映射
     /// </summary>
     public IDictionary<String, Object> FieldMap { get; set; }
+
+    /// <summary>OAuth配置</summary>
+    [XmlIgnore, IgnoreDataMember]
+    public OAuthConfig Config { get; set; }
 
     /// <summary>APM跟踪器</summary>
     public static ITracer Tracer { get; set; } = DefaultTracer.Instance;
@@ -182,6 +188,8 @@ public class OAuthClient {
         if (!mi.Secret.IsNullOrEmpty()) Secret = mi.Secret;
         if (!mi.Scope.IsNullOrEmpty()) Scope = mi.Scope;
         if (!mi.FieldMap.IsNullOrEmpty()) FieldMap = JsonParser.Decode(mi.FieldMap);
+
+        Config = mi;
     }
 
     /// <summary>是否支持指定用户端，也就是判断是否在特定应用内打开，例如QQ/DingDing/WeiXin</summary>

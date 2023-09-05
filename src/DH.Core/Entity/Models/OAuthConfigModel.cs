@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 using System.Web.Script.Serialization;
 using System.Xml.Serialization;
 using NewLife.Data;
+using NewLife.Reflection;
 
 namespace DH.Entity;
 
@@ -78,6 +79,9 @@ public partial class OAuthConfigModel : IModel
     /// <summary>字段映射。SSO用户字段如何映射到OAuthClient内部属性</summary>
     public String FieldMap { get; set; }
 
+    /// <summary>抓取头像。是否抓取头像并保存到本地</summary>
+    public Boolean FetchAvatar { get; set; }
+
     /// <summary>创建者</summary>
     public Int32 CreateUserID { get; set; }
 
@@ -132,6 +136,7 @@ public partial class OAuthConfigModel : IModel
                 "Sort" => Sort,
                 "SecurityKey" => SecurityKey,
                 "FieldMap" => FieldMap,
+                "FetchAvatar" => FetchAvatar,
                 "CreateUserID" => CreateUserID,
                 "CreateTime" => CreateTime,
                 "CreateIP" => CreateIP,
@@ -139,7 +144,7 @@ public partial class OAuthConfigModel : IModel
                 "UpdateTime" => UpdateTime,
                 "UpdateIP" => UpdateIP,
                 "Remark" => Remark,
-                _ => null
+                _ => this.GetValue(name),
             };
         }
         set
@@ -168,6 +173,7 @@ public partial class OAuthConfigModel : IModel
                 case "Sort": Sort = value.ToInt(); break;
                 case "SecurityKey": SecurityKey = Convert.ToString(value); break;
                 case "FieldMap": FieldMap = Convert.ToString(value); break;
+                case "FetchAvatar": FetchAvatar = value.ToBoolean(); break;
                 case "CreateUserID": CreateUserID = value.ToInt(); break;
                 case "CreateTime": CreateTime = value.ToDateTime(); break;
                 case "CreateIP": CreateIP = Convert.ToString(value); break;
@@ -175,6 +181,7 @@ public partial class OAuthConfigModel : IModel
                 case "UpdateTime": UpdateTime = value.ToDateTime(); break;
                 case "UpdateIP": UpdateIP = Convert.ToString(value); break;
                 case "Remark": Remark = Convert.ToString(value); break;
+                default: this.SetValue(name, value); break;
             }
         }
     }
@@ -207,6 +214,7 @@ public partial class OAuthConfigModel : IModel
         Sort = model.Sort;
         SecurityKey = model.SecurityKey;
         FieldMap = model.FieldMap;
+        FetchAvatar = model.FetchAvatar;
         CreateUserID = model.CreateUserID;
         CreateTime = model.CreateTime;
         CreateIP = model.CreateIP;

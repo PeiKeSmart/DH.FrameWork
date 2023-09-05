@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 using System.Web.Script.Serialization;
 using System.Xml.Serialization;
 using NewLife.Data;
+using NewLife.Reflection;
 
 namespace DH.Entity;
 
@@ -39,7 +40,7 @@ public partial class SettingModel : IModel
                 "Name" => Name,
                 "Value" => Value,
                 "StoreId" => StoreId,
-                _ => null
+                _ => this.GetValue(name),
             };
         }
         set
@@ -50,6 +51,7 @@ public partial class SettingModel : IModel
                 case "Name": Name = Convert.ToString(value); break;
                 case "Value": Value = Convert.ToString(value); break;
                 case "StoreId": StoreId = value.ToInt(); break;
+                default: this.SetValue(name, value); break;
             }
         }
     }

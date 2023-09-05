@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 using System.Web.Script.Serialization;
 using System.Xml.Serialization;
 using NewLife.Data;
+using NewLife.Reflection;
 
 namespace DH.Entity;
 
@@ -59,7 +60,7 @@ public partial class SiteInfoLanModel : IModel
                 "SeoDescribe" => SeoDescribe,
                 "Registration" => Registration,
                 "SiteCopyright" => SiteCopyright,
-                _ => null
+                _ => this.GetValue(name),
             };
         }
         set
@@ -75,6 +76,7 @@ public partial class SiteInfoLanModel : IModel
                 case "SeoDescribe": SeoDescribe = Convert.ToString(value); break;
                 case "Registration": Registration = Convert.ToString(value); break;
                 case "SiteCopyright": SiteCopyright = Convert.ToString(value); break;
+                default: this.SetValue(name, value); break;
             }
         }
     }

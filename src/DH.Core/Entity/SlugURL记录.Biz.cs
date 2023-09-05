@@ -169,6 +169,19 @@ namespace DH.Entity {
 
             return Find(_.EntityId == entityId & _.EntityName == entityName & _.LanguageId == languageId & _.IsActive == true)?.Slug;
         }
+
+    /// <summary>根据对应实体标识符、对应实体名称、语言标识符查找</summary>
+    /// <param name="entityId">对应实体标识符</param>
+    /// <param name="entityName">对应实体名称</param>
+    /// <param name="languageId">语言标识符</param>
+    /// <returns>实体列表</returns>
+    public static IList<UrlRecord> FindAllByEntityIdAndEntityNameAndLanguageId(Int32 entityId, String entityName, Int32 languageId)
+    {
+        // 实体缓存
+        if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => e.EntityId == entityId && e.EntityName.EqualIgnoreCase(entityName) && e.LanguageId == languageId);
+
+        return FindAll(_.EntityId == entityId & _.EntityName == entityName & _.LanguageId == languageId);
+    }
         #endregion
 
         #region 高级查询

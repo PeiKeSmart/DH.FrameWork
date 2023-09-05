@@ -130,6 +130,18 @@ public partial class GenericAttribute : DHEntityBase<GenericAttribute>
 
         return FindAll(_.EntityId == entityId & _.KeyGroup == keyGroup);
     }
+
+    /// <summary>根据实体标识符、键组查找</summary>
+    /// <param name="entityId">实体标识符</param>
+    /// <param name="keyGroup">键组</param>
+    /// <returns>实体列表</returns>
+    public static IList<GenericAttribute> FindAllByEntityIdAndKeyGroup(Int32 entityId, String keyGroup)
+    {
+        // 实体缓存
+        if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => e.EntityId == entityId && e.KeyGroup.EqualIgnoreCase(keyGroup));
+
+        return FindAll(_.EntityId == entityId & _.KeyGroup == keyGroup);
+    }
     #endregion
 
     #region 高级查询

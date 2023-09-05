@@ -229,6 +229,58 @@ namespace DH.Entity {
             return FindAll();
         }
 
+
+    /// <summary>根据推荐人ID查找</summary>
+    /// <param name="referrerId">推荐人ID</param>
+    /// <returns>实体列表</returns>
+    public static IList<UserDetail> FindAllByReferrerId(Int32 referrerId)
+    {
+        if (referrerId <= 0) return new List<UserDetail>();
+
+        // 实体缓存
+        if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => e.ReferrerId == referrerId);
+
+        return FindAll(_.ReferrerId == referrerId);
+    }
+
+    /// <summary>根据用户所属租户Id查找</summary>
+    /// <param name="tenantId">用户所属租户Id</param>
+    /// <returns>实体列表</returns>
+    public static IList<UserDetail> FindAllByTenantId(Int32 tenantId)
+    {
+        if (tenantId <= 0) return new List<UserDetail>();
+
+        // 实体缓存
+        if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => e.TenantId == tenantId);
+
+        return FindAll(_.TenantId == tenantId);
+    }
+
+    /// <summary>根据所属销售ID查找</summary>
+    /// <param name="keFuId">所属销售ID</param>
+    /// <returns>实体列表</returns>
+    public static IList<UserDetail> FindAllByKeFuId(Int32 keFuId)
+    {
+        if (keFuId <= 0) return new List<UserDetail>();
+
+        // 实体缓存
+        if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => e.KeFuId == keFuId);
+
+        return FindAll(_.KeFuId == keFuId);
+    }
+
+    /// <summary>根据所属上级会员ID查找</summary>
+    /// <param name="parentUId">所属上级会员ID</param>
+    /// <returns>实体列表</returns>
+    public static IList<UserDetail> FindAllByParentUId(Int32 parentUId)
+    {
+        if (parentUId <= 0) return new List<UserDetail>();
+
+        // 实体缓存
+        if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => e.ParentUId == parentUId);
+
+        return FindAll(_.ParentUId == parentUId);
+    }
         #endregion
 
         #region 高级查询

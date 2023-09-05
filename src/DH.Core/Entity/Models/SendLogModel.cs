@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 using System.Web.Script.Serialization;
 using System.Xml.Serialization;
 using NewLife.Data;
+using NewLife.Reflection;
 
 namespace DH.Entity;
 
@@ -67,7 +68,7 @@ public partial class SendLogModel : IModel
                 "CreateUserID" => CreateUserID,
                 "CreateTime" => CreateTime,
                 "CreateIP" => CreateIP,
-                _ => null
+                _ => this.GetValue(name),
             };
         }
         set
@@ -85,6 +86,7 @@ public partial class SendLogModel : IModel
                 case "CreateUserID": CreateUserID = value.ToInt(); break;
                 case "CreateTime": CreateTime = value.ToDateTime(); break;
                 case "CreateIP": CreateIP = Convert.ToString(value); break;
+                default: this.SetValue(name, value); break;
             }
         }
     }

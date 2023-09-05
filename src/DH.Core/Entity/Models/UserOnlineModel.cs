@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 using System.Web.Script.Serialization;
 using System.Xml.Serialization;
 using NewLife.Data;
+using NewLife.Reflection;
 
 namespace DH.Entity;
 
@@ -111,7 +112,7 @@ public partial class UserOnlineModel : IModel
                 "CreateTime" => CreateTime,
                 "UpdateIP" => UpdateIP,
                 "UpdateTime" => UpdateTime,
-                _ => null
+                _ => this.GetValue(name),
             };
         }
         set
@@ -140,6 +141,7 @@ public partial class UserOnlineModel : IModel
                 case "CreateTime": CreateTime = value.ToDateTime(); break;
                 case "UpdateIP": UpdateIP = Convert.ToString(value); break;
                 case "UpdateTime": UpdateTime = value.ToDateTime(); break;
+                default: this.SetValue(name, value); break;
             }
         }
     }

@@ -77,6 +77,9 @@ public partial interface IOAuthConfig
     /// <summary>字段映射。SSO用户字段如何映射到OAuthClient内部属性</summary>
     String FieldMap { get; set; }
 
+    /// <summary>抓取头像。是否抓取头像并保存到本地</summary>
+    Boolean FetchAvatar { get; set; }
+
     /// <summary>创建者</summary>
     Int32 CreateUserID { get; set; }
 

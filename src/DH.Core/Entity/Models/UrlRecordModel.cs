@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 using System.Web.Script.Serialization;
 using System.Xml.Serialization;
 using NewLife.Data;
+using NewLife.Reflection;
 
 namespace DH.Entity;
 
@@ -79,7 +80,7 @@ public partial class UrlRecordModel : IModel
                 "UpdateUserID" => UpdateUserID,
                 "UpdateIP" => UpdateIP,
                 "UpdateTime" => UpdateTime,
-                _ => null
+                _ => this.GetValue(name),
             };
         }
         set
@@ -100,6 +101,7 @@ public partial class UrlRecordModel : IModel
                 case "UpdateUserID": UpdateUserID = value.ToInt(); break;
                 case "UpdateIP": UpdateIP = Convert.ToString(value); break;
                 case "UpdateTime": UpdateTime = value.ToDateTime(); break;
+                default: this.SetValue(name, value); break;
             }
         }
     }

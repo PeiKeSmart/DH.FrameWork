@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 using System.Web.Script.Serialization;
 using System.Xml.Serialization;
 using NewLife.Data;
+using NewLife.Reflection;
 
 namespace DH.Entity;
 
@@ -43,7 +44,7 @@ public partial class RoleLanModel : IModel
                 "LId" => LId,
                 "Name" => Name,
                 "Remark" => Remark,
-                _ => null
+                _ => this.GetValue(name),
             };
         }
         set
@@ -55,6 +56,7 @@ public partial class RoleLanModel : IModel
                 case "LId": LId = value.ToInt(); break;
                 case "Name": Name = Convert.ToString(value); break;
                 case "Remark": Remark = Convert.ToString(value); break;
+                default: this.SetValue(name, value); break;
             }
         }
     }

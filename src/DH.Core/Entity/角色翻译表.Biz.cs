@@ -182,6 +182,18 @@ namespace DH.Entity
             }
         }
 
+
+    /// <summary>根据关联角色表Id、关联所属语言Id查找</summary>
+    /// <param name="rId">关联角色表Id</param>
+    /// <param name="lId">关联所属语言Id</param>
+    /// <returns>实体对象</returns>
+    public static RoleLan FindByRIdAndLId(Int32 rId, Int32 lId)
+    {
+        // 实体缓存
+        if (Meta.Session.Count < 1000) return Meta.Cache.Find(e => e.RId == rId && e.LId == lId);
+
+        return Find(_.RId == rId & _.LId == lId);
+    }
         #endregion
 
         #region 高级查询

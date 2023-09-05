@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 using System.Web.Script.Serialization;
 using System.Xml.Serialization;
 using NewLife.Data;
+using NewLife.Reflection;
 
 namespace DH.Entity;
 
@@ -283,7 +284,7 @@ public partial class UserDetailModel : IModel
                 "UpdateUserID" => UpdateUserID,
                 "UpdateTime" => UpdateTime,
                 "UpdateIP" => UpdateIP,
-                _ => null
+                _ => this.GetValue(name),
             };
         }
         set
@@ -355,6 +356,7 @@ public partial class UserDetailModel : IModel
                 case "UpdateUserID": UpdateUserID = value.ToInt(); break;
                 case "UpdateTime": UpdateTime = value.ToDateTime(); break;
                 case "UpdateIP": UpdateIP = Convert.ToString(value); break;
+                default: this.SetValue(name, value); break;
             }
         }
     }

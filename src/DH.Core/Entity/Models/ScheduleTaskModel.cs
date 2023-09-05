@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 using System.Web.Script.Serialization;
 using System.Xml.Serialization;
 using NewLife.Data;
+using NewLife.Reflection;
 
 namespace DH.Entity;
 
@@ -63,7 +64,7 @@ public partial class ScheduleTaskModel : IModel
                 "LastStartUtc" => LastStartUtc,
                 "LastEndUtc" => LastEndUtc,
                 "LastSuccessUtc" => LastSuccessUtc,
-                _ => null
+                _ => this.GetValue(name),
             };
         }
         set
@@ -80,6 +81,7 @@ public partial class ScheduleTaskModel : IModel
                 case "LastStartUtc": LastStartUtc = value.ToDateTime(); break;
                 case "LastEndUtc": LastEndUtc = value.ToDateTime(); break;
                 case "LastSuccessUtc": LastSuccessUtc = value.ToDateTime(); break;
+                default: this.SetValue(name, value); break;
             }
         }
     }

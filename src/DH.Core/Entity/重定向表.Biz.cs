@@ -116,6 +116,19 @@ namespace DH.Entity {
 
             return FindAll();
         }
+
+    /// <summary>根据正则表达式查找</summary>
+    /// <param name="regexInfo">正则表达式</param>
+    /// <returns>实体对象</returns>
+    public static RouteRewrite FindByRegexInfo(String regexInfo)
+    {
+        if (regexInfo.IsNullOrEmpty()) return null;
+
+        // 实体缓存
+        if (Meta.Session.Count < 1000) return Meta.Cache.Find(e => e.RegexInfo.EqualIgnoreCase(regexInfo));
+
+        return Find(_.RegexInfo == regexInfo);
+    }
         #endregion
 
         #region 高级查询
