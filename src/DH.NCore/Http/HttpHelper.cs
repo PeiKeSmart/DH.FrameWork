@@ -97,6 +97,10 @@ public static class HttpHelper
     /// <returns></returns>
     static async ValueTask<Stream> ConnectCallback(SocketsHttpConnectionContext context, CancellationToken cancellationToken)
     {
+        var dep = context.DnsEndPoint;
+        var method = context.InitialRequestMessage.Method?.ToString() ?? "Connect";
+        using var span = Tracer?.NewSpan($"net:{dep.Host}:{dep.Port}:{method}");
+
         var socket = new Socket(SocketType.Stream, ProtocolType.Tcp)
         {
             NoDelay = true
@@ -110,11 +114,17 @@ public static class HttpHelper
             else
                 await socket.ConnectAsync(ep, cancellationToken).ConfigureAwait(continueOnCapturedContext: false);
         }
-        catch
+        catch (Exception ex)
         {
+            span?.SetError(ex, null);
+
+            if (ex is SocketException se)
+                Tracer?.NewError($"socket:SocketError-{se.SocketErrorCode}", se);
+
             socket.Dispose();
             throw;
         }
+
         return new NetworkStream(socket, ownsSocket: true);
     }
 #endif

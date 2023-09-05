@@ -113,11 +113,14 @@ public class TcpSession : SessionBase, ISocketSession
         // 服务端会话没有打开
         if (_Server != null) return false;
 
+        var span = DefaultSpan.Current;
         var timeout = Timeout;
         var uri = Remote;
         var sock = Client;
         if (sock == null || !sock.IsBound)
         {
+            span?.AppendTag($"Local={Local}");
+
             // 根据目标地址适配本地IPv4/IPv6
             if (Local.Address.IsAny() && uri != null && !uri.Address.IsAny())
             {
@@ -135,6 +138,7 @@ public class TcpSession : SessionBase, ISocketSession
 
             sock.Bind(Local.EndPoint);
             Local.EndPoint.Port = ((IPEndPoint)sock.LocalEndPoint).Port;
+            span?.AppendTag($"LocalEndPoint={sock.LocalEndPoint}");
 
             WriteLog("Open {0}", this);
         }
@@ -145,6 +149,7 @@ public class TcpSession : SessionBase, ISocketSession
         try
         {
             var addrs = uri.GetAddresses();
+            span?.AppendTag($"addrs={addrs.Join()} port={uri.Port}");
 
             if (timeout <= 0)
                 sock.Connect(addrs, uri.Port);
@@ -161,6 +166,7 @@ public class TcpSession : SessionBase, ISocketSession
                 sock.EndConnect(ar);
             }
             RemoteAddress = (sock.RemoteEndPoint as IPEndPoint)?.Address;
+            span?.AppendTag($"RemoteEndPoint={sock.RemoteEndPoint}");
 
             // 客户端SSL
             var sp = SslProtocol;
@@ -368,7 +374,7 @@ public class TcpSession : SessionBase, ISocketSession
         ProcessEvent(se, bytes, true);
     }
 
-    //private Int32 _empty;
+    private Int32 _empty;
     /// <summary>预处理</summary>
     /// <param name="pk">数据包</param>
     /// <param name="remote">远程地址</param>
@@ -377,10 +383,10 @@ public class TcpSession : SessionBase, ISocketSession
     {
         if (pk.Count == 0)
         {
-            using var span = Tracer?.NewSpan($"net:{Name}:EmptyData");
+            using var span = Tracer?.NewSpan($"net:{Name}:EmptyData", remote);
 
             // 连续多次空数据，则断开
-            if (DisconnectWhenEmptyData /*|| _empty++ > 3*/)
+            if (DisconnectWhenEmptyData || _empty++ > 3)
             {
                 Close("EmptyData");
                 Dispose();
@@ -388,8 +394,8 @@ public class TcpSession : SessionBase, ISocketSession
                 return null;
             }
         }
-        //else
-        //    _empty = 0;
+        else
+            _empty = 0;
 
         return this;
     }
