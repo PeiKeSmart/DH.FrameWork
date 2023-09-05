@@ -115,6 +115,7 @@ public abstract partial class DHViewComponent : ViewComponent
                                 ID = menu.ID,
                                 Name = menu.Name,
                                 DisplayName = menu.DisplayName ?? menu.Name,
+                                FullName = menu.FullName,
                                 Url = Url.Content(menu.Url),
                                 Icon = menu.Icon,
                                 Class = "",

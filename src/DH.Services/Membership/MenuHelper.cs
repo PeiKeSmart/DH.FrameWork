@@ -1,4 +1,6 @@
-﻿using NewLife;
+﻿using DH.Models;
+
+using NewLife;
 using NewLife.Log;
 using NewLife.Reflection;
 
@@ -132,6 +134,32 @@ public static class MenuHelper {
                     XTrace.WriteException(ex);
                 }
             }, null);
+        }
+
+        return list;
+    }
+
+    /// <summary>根据租户隔离菜单</summary>
+    /// <param name="menus"></param>
+    /// <param name="isTenant"></param>
+    /// <returns></returns>
+    public static IList<MenuTree> FilterByTenant(IList<MenuTree> menus, Boolean isTenant)
+    {
+        var list = new List<MenuTree>();
+
+        foreach (var item in menus)
+        {
+            var flag = false;
+            if (!item.FullName.IsNullOrEmpty())
+            {
+                var type = Type.GetType(item.FullName);
+                if (type != null && type.As<ITenantController>())
+                {
+                    flag = true;
+                }
+            }
+
+            if (isTenant && flag || !isTenant && !flag) list.Add(item);
         }
 
         return list;

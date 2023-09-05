@@ -222,6 +222,7 @@ public static class ViewHelper {
                                 ID = menu.ID,
                                 Name = menu.Name,
                                 DisplayName = menu.DisplayName ?? menu.Name,
+                                FullName = menu.FullName,
                                 Url = menu.Url,
                                 Icon = menu.Icon,
                                 Visible = menu.Visible,

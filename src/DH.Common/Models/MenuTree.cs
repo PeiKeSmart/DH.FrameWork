@@ -21,6 +21,9 @@ public class MenuTree {
     /// </summary>
     public String DisplayName { get; set; }
 
+    /// <summary>全名</summary>
+    public String FullName { get; set; }
+
     /// <summary>
     /// 父级id
     /// </summary>

@@ -259,16 +259,6 @@ public class DHSetting : Config<DHSetting>
     [Description("前台用户登录地址")]
     public String LoginUrl { get; set; } = "~/Login";
 
-    /// <summary>用户在线。是否记录用户在线信息，0表示不记录，1表示仅记录已登录用户，2表示记录所有访客。默认2</summary>
-    [Description("用户在线。是否记录用户在线信息，0表示不记录，1表示仅记录已登录用户，2表示记录所有访客。默认2")]
-    [Category("通用")]
-    public Int32 EnableUserOnline { get; set; } = 2;
-
-    /// <summary>用户统计。是否统计用户访问，默认true</summary>
-    [Description("用户统计。是否统计用户访问，默认true")]
-    [Category("通用")]
-    public Boolean EnableUserStat { get; set; } = true;
-
     /// <summary>万能验证码</summary>
     [Description("万能验证码")]
     [Category("用户登录")]
@@ -278,6 +268,23 @@ public class DHSetting : Config<DHSetting>
     [Description("万能验证码开启截止时间")]
     [Category("用户登录")]
     public DateTime UniversalCaptchaEndTime { get; set; }
+
+    #region 系统功能
+    /// <summary>多租户。是否支持多租户，租户模式禁止访问系统管理，平台管理模式禁止访问租户页面</summary>
+    [Description("多租户。是否支持多租户，租户模式禁止访问系统管理，平台管理模式禁止访问租户页面")]
+    [Category("系统功能")]
+    public Boolean EnableTenant { get; set; }
+
+    /// <summary>用户在线。是否记录用户在线信息，0表示不记录，1表示仅记录已登录用户，2表示记录所有访客。默认2</summary>
+    [Description("用户在线。是否记录用户在线信息，0表示不记录，1表示仅记录已登录用户，2表示记录所有访客。默认2")]
+    [Category("系统功能")]
+    public Int32 EnableUserOnline { get; set; } = 2;
+
+    /// <summary>用户统计。是否统计用户访问，默认true</summary>
+    [Description("用户统计。是否统计用户访问，默认true")]
+    [Category("系统功能")]
+    public Boolean EnableUserStat { get; set; } = true;
+    #endregion
 
     #region 方法
     /// <summary>实例化</summary>
