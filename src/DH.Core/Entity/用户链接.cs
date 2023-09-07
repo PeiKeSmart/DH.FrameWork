@@ -8,6 +8,7 @@ using NewLife;
 using NewLife.Data;
 using XCode;
 using XCode.Cache;
+using XCode.Common;
 using XCode.Configuration;
 using XCode.DataAccessLayer;
 
@@ -26,7 +27,7 @@ namespace DH.Entity;
 [BindIndex("IX_UserConnect_UnionID", false, "UnionID")]
 [BindIndex("IX_UserConnect_DeviceId", false, "DeviceId")]
 [BindTable("UserConnect", Description = "用户链接。第三方绑定", ConnName = "Membership", DbType = DatabaseType.None)]
-public partial class UserConnect : IUserConnect, IEntity<UserConnectModel>
+public partial class UserConnect : IUserConnect, IEntity<IUserConnect>
 {
     #region 属性
     private Int32 _ID;
@@ -207,7 +208,7 @@ public partial class UserConnect : IUserConnect, IEntity<UserConnectModel>
     #region 拷贝
     /// <summary>拷贝模型对象</summary>
     /// <param name="model">模型</param>
-    public void Copy(UserConnectModel model)
+    public void Copy(IUserConnect model)
     {
         ID = model.ID;
         Provider = model.Provider;

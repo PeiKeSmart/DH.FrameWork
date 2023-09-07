@@ -8,6 +8,7 @@ using NewLife;
 using NewLife.Data;
 using XCode;
 using XCode.Cache;
+using XCode.Common;
 using XCode.Configuration;
 using XCode.DataAccessLayer;
 
@@ -18,7 +19,7 @@ namespace DH.Entity;
 [DataObject]
 [Description("角色扩展表")]
 [BindTable("DG_RoleEx", Description = "角色扩展表", ConnName = "DG", DbType = DatabaseType.None)]
-public partial class RoleEx : IRoleEx, IEntity<RoleExModel>
+public partial class RoleEx : IRoleEx, IEntity<IRoleEx>
 {
     #region 属性
     private Int32 _Id;
@@ -49,7 +50,7 @@ public partial class RoleEx : IRoleEx, IEntity<RoleExModel>
     #region 拷贝
     /// <summary>拷贝模型对象</summary>
     /// <param name="model">模型</param>
-    public void Copy(RoleExModel model)
+    public void Copy(IRoleEx model)
     {
         Id = model.Id;
         IsAdmin = model.IsAdmin;

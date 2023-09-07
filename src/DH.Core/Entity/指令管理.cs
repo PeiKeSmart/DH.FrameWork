@@ -8,6 +8,7 @@ using NewLife;
 using NewLife.Data;
 using XCode;
 using XCode.Cache;
+using XCode.Common;
 using XCode.Configuration;
 using XCode.DataAccessLayer;
 
@@ -19,7 +20,7 @@ namespace DH.Entity;
 [Description("指令管理")]
 [BindIndex("IU_OrderManager_Code", true, "Code")]
 [BindTable("OrderManager", Description = "指令管理", ConnName = "DG", DbType = DatabaseType.None)]
-public partial class OrderManager : IOrderManager, IEntity<OrderManagerModel>
+public partial class OrderManager : IOrderManager, IEntity<IOrderManager>
 {
     #region 属性
     private Int32 _Id;
@@ -177,7 +178,7 @@ public partial class OrderManager : IOrderManager, IEntity<OrderManagerModel>
     #region 拷贝
     /// <summary>拷贝模型对象</summary>
     /// <param name="model">模型</param>
-    public void Copy(OrderManagerModel model)
+    public void Copy(IOrderManager model)
     {
         Id = model.Id;
         Name = model.Name;

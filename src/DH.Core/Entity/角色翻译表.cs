@@ -8,6 +8,7 @@ using NewLife;
 using NewLife.Data;
 using XCode;
 using XCode.Cache;
+using XCode.Common;
 using XCode.Configuration;
 using XCode.DataAccessLayer;
 
@@ -19,7 +20,7 @@ namespace DH.Entity;
 [Description("角色翻译表")]
 [BindIndex("IU_DG_RoleLan_RId_LId", true, "RId,LId")]
 [BindTable("DG_RoleLan", Description = "角色翻译表", ConnName = "DG", DbType = DatabaseType.None)]
-public partial class RoleLan : IRoleLan, IEntity<RoleLanModel>
+public partial class RoleLan : IRoleLan, IEntity<IRoleLan>
 {
     #region 属性
     private Int32 _Id;
@@ -66,7 +67,7 @@ public partial class RoleLan : IRoleLan, IEntity<RoleLanModel>
     #region 拷贝
     /// <summary>拷贝模型对象</summary>
     /// <param name="model">模型</param>
-    public void Copy(RoleLanModel model)
+    public void Copy(IRoleLan model)
     {
         Id = model.Id;
         RId = model.RId;

@@ -8,6 +8,7 @@ using NewLife;
 using NewLife.Data;
 using XCode;
 using XCode.Cache;
+using XCode.Common;
 using XCode.Configuration;
 using XCode.DataAccessLayer;
 
@@ -21,7 +22,7 @@ namespace DH.Entity;
 [BindIndex("IX_Attachment_FilePath", false, "FilePath")]
 [BindIndex("IX_Attachment_Extension", false, "Extension")]
 [BindTable("Attachment", Description = "附件。用于记录各系统模块使用的文件，可以是Local/NAS/OSS等", ConnName = "DG", DbType = DatabaseType.None)]
-public partial class Attachment : IAttachment, IEntity<AttachmentModel>
+public partial class Attachment : IAttachment, IEntity<IAttachment>
 {
     #region 属性
     private Int64 _Id;
@@ -230,7 +231,7 @@ public partial class Attachment : IAttachment, IEntity<AttachmentModel>
     #region 拷贝
     /// <summary>拷贝模型对象</summary>
     /// <param name="model">模型</param>
-    public void Copy(AttachmentModel model)
+    public void Copy(IAttachment model)
     {
         Id = model.Id;
         Category = model.Category;

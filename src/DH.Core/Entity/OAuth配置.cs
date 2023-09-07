@@ -8,6 +8,7 @@ using NewLife;
 using NewLife.Data;
 using XCode;
 using XCode.Cache;
+using XCode.Common;
 using XCode.Configuration;
 using XCode.DataAccessLayer;
 
@@ -19,7 +20,7 @@ namespace DH.Entity;
 [Description("OAuth配置。需要连接的OAuth认证方")]
 [BindIndex("IU_OAuthConfig_Name", true, "Name")]
 [BindTable("OAuthConfig", Description = "OAuth配置。需要连接的OAuth认证方", ConnName = "DG", DbType = DatabaseType.None)]
-public partial class OAuthConfig : IOAuthConfig, IEntity<OAuthConfigModel>
+public partial class OAuthConfig : IOAuthConfig, IEntity<IOAuthConfig>
 {
     #region 属性
     private Int32 _ID;
@@ -273,7 +274,7 @@ public partial class OAuthConfig : IOAuthConfig, IEntity<OAuthConfigModel>
     #region 拷贝
     /// <summary>拷贝模型对象</summary>
     /// <param name="model">模型</param>
-    public void Copy(OAuthConfigModel model)
+    public void Copy(IOAuthConfig model)
     {
         ID = model.ID;
         Name = model.Name;

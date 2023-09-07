@@ -14,13 +14,12 @@ using XCode.DataAccessLayer;
 
 namespace DH.Entity;
 
-/// <summary>站点设置</summary>
+/// <summary>PV统计表</summary>
 [Serializable]
 [DataObject]
-[Description("站点设置")]
-[BindIndex("IX_DG_SiteSetting_Key", false, "Key")]
-[BindTable("DG_SiteSetting", Description = "站点设置", ConnName = "DG", DbType = DatabaseType.None)]
-public partial class SiteSettingInfo : ISiteSettingInfo, IEntity<ISiteSettingInfo>
+[Description("PV统计表")]
+[BindTable("DH_PvStats", Description = "PV统计表", ConnName = "DG", DbType = DatabaseType.None)]
+public partial class SysPvstats : ISysPvstats, IEntity<ISysPvstats>
 {
     #region 属性
     private Int32 _Id;
@@ -28,34 +27,43 @@ public partial class SiteSettingInfo : ISiteSettingInfo, IEntity<ISiteSettingInf
     [DisplayName("编号")]
     [Description("编号")]
     [DataObjectField(true, true, false, 0)]
-    [BindColumn("Id", "编号", "")]
+    [BindColumn("Id", "编号", "int(11)")]
     public Int32 Id { get => _Id; set { if (OnPropertyChanging("Id", value)) { _Id = value; OnPropertyChanged("Id"); } } }
 
-    private String _Key;
-    /// <summary>键名称</summary>
-    [DisplayName("键名称")]
-    [Description("键名称")]
-    [DataObjectField(false, false, false, 100)]
-    [BindColumn("Key", "键名称", "")]
-    public String Key { get => _Key; set { if (OnPropertyChanging("Key", value)) { _Key = value; OnPropertyChanged("Key"); } } }
+    private String _Category;
+    /// <summary>分类</summary>
+    [DisplayName("分类")]
+    [Description("分类")]
+    [DataObjectField(false, false, false, 10)]
+    [BindColumn("Category", "分类", "varchar(10)")]
+    public String Category { get => _Category; set { if (OnPropertyChanging("Category", value)) { _Category = value; OnPropertyChanged("Category"); } } }
 
     private String _Value;
-    /// <summary>键值</summary>
-    [DisplayName("键值")]
-    [Description("键值")]
-    [DataObjectField(false, false, true, 4000)]
-    [BindColumn("Value", "键值", "")]
+    /// <summary>访问者系统</summary>
+    [DisplayName("访问者系统")]
+    [Description("访问者系统")]
+    [DataObjectField(false, false, false, 30)]
+    [BindColumn("Value", "访问者系统", "varchar(30)")]
     public String Value { get => _Value; set { if (OnPropertyChanging("Value", value)) { _Value = value; OnPropertyChanged("Value"); } } }
+
+    private Int32 _Count;
+    /// <summary>数量</summary>
+    [DisplayName("数量")]
+    [Description("数量")]
+    [DataObjectField(false, false, false, 0)]
+    [BindColumn("Count", "数量", "int(11)")]
+    public Int32 Count { get => _Count; set { if (OnPropertyChanging("Count", value)) { _Count = value; OnPropertyChanged("Count"); } } }
     #endregion
 
     #region 拷贝
     /// <summary>拷贝模型对象</summary>
     /// <param name="model">模型</param>
-    public void Copy(ISiteSettingInfo model)
+    public void Copy(ISysPvstats model)
     {
         Id = model.Id;
-        Key = model.Key;
+        Category = model.Category;
         Value = model.Value;
+        Count = model.Count;
     }
     #endregion
 
@@ -68,8 +76,9 @@ public partial class SiteSettingInfo : ISiteSettingInfo, IEntity<ISiteSettingInf
         get => name switch
         {
             "Id" => _Id,
-            "Key" => _Key,
+            "Category" => _Category,
             "Value" => _Value,
+            "Count" => _Count,
             _ => base[name]
         };
         set
@@ -77,8 +86,9 @@ public partial class SiteSettingInfo : ISiteSettingInfo, IEntity<ISiteSettingInf
             switch (name)
             {
                 case "Id": _Id = value.ToInt(); break;
-                case "Key": _Key = Convert.ToString(value); break;
+                case "Category": _Category = Convert.ToString(value); break;
                 case "Value": _Value = Convert.ToString(value); break;
+                case "Count": _Count = value.ToInt(); break;
                 default: base[name] = value; break;
             }
         }
@@ -89,32 +99,38 @@ public partial class SiteSettingInfo : ISiteSettingInfo, IEntity<ISiteSettingInf
     #endregion
 
     #region 字段名
-    /// <summary>取得站点设置字段信息的快捷方式</summary>
+    /// <summary>取得PV统计表字段信息的快捷方式</summary>
     public partial class _
     {
         /// <summary>编号</summary>
         public static readonly Field Id = FindByName("Id");
 
-        /// <summary>键名称</summary>
-        public static readonly Field Key = FindByName("Key");
+        /// <summary>分类</summary>
+        public static readonly Field Category = FindByName("Category");
 
-        /// <summary>键值</summary>
+        /// <summary>访问者系统</summary>
         public static readonly Field Value = FindByName("Value");
+
+        /// <summary>数量</summary>
+        public static readonly Field Count = FindByName("Count");
 
         static Field FindByName(String name) => Meta.Table.FindByName(name);
     }
 
-    /// <summary>取得站点设置字段名称的快捷方式</summary>
+    /// <summary>取得PV统计表字段名称的快捷方式</summary>
     public partial class __
     {
         /// <summary>编号</summary>
         public const String Id = "Id";
 
-        /// <summary>键名称</summary>
-        public const String Key = "Key";
+        /// <summary>分类</summary>
+        public const String Category = "Category";
 
-        /// <summary>键值</summary>
+        /// <summary>访问者系统</summary>
         public const String Value = "Value";
+
+        /// <summary>数量</summary>
+        public const String Count = "Count";
     }
     #endregion
 }

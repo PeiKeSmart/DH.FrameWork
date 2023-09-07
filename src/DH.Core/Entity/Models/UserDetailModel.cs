@@ -4,13 +4,11 @@ using System.ComponentModel;
 using System.Runtime.Serialization;
 using System.Web.Script.Serialization;
 using System.Xml.Serialization;
-using NewLife.Data;
-using NewLife.Reflection;
 
 namespace DH.Entity;
 
 /// <summary>用户扩展</summary>
-public partial class UserDetailModel : IModel
+public partial class UserDetailModel : IUserDetail
 {
     #region 属性
     /// <summary>用户Id</summary>
@@ -207,159 +205,6 @@ public partial class UserDetailModel : IModel
 
     /// <summary>更新地址</summary>
     public String UpdateIP { get; set; }
-    #endregion
-
-    #region 获取/设置 字段值
-    /// <summary>获取/设置 字段值</summary>
-    /// <param name="name">字段名</param>
-    /// <returns></returns>
-    public virtual Object this[String name]
-    {
-        get
-        {
-            return name switch
-            {
-                "Id" => Id,
-                "LanguageId" => LanguageId,
-                "IsSuper" => IsSuper,
-                "SId" => SId,
-                "TenantId" => TenantId,
-                "UType" => UType,
-                "RoleExIds" => RoleExIds,
-                "OtherPermissions" => OtherPermissions,
-                "DepartmentIds" => DepartmentIds,
-                "TrueName" => TrueName,
-                "PayPwd" => PayPwd,
-                "AuthState" => AuthState,
-                "IdCard" => IdCard,
-                "IdcardImage1" => IdcardImage1,
-                "IdcardImage2" => IdcardImage2,
-                "IdcardImage3" => IdcardImage3,
-                "CompanyName" => CompanyName,
-                "CompnayAuthState" => CompnayAuthState,
-                "CorporateName" => CorporateName,
-                "BusinessLicenseImage" => BusinessLicenseImage,
-                "CorporateImage" => CorporateImage,
-                "EmailBind" => EmailBind,
-                "MobileBind" => MobileBind,
-                "IsSubScribe" => IsSubScribe,
-                "IsSales" => IsSales,
-                "IsEngineer" => IsEngineer,
-                "ReferrerId" => ReferrerId,
-                "KeFuId" => KeFuId,
-                "ParentUId" => ParentUId,
-                "Points" => Points,
-                "ExpPoints" => ExpPoints,
-                "QQ" => QQ,
-                "WeiXin" => WeiXin,
-                "WangWang" => WangWang,
-                "ContactName" => ContactName,
-                "Tel" => Tel,
-                "Fax" => Fax,
-                "CompanyInfo" => CompanyInfo,
-                "Address" => Address,
-                "InformAllow" => InformAllow,
-                "IsBuy" => IsBuy,
-                "IsAllowTalk" => IsAllowTalk,
-                "AvailablePredeposit" => AvailablePredeposit,
-                "FreezePredeposit" => FreezePredeposit,
-                "AvailableRcBalance" => AvailableRcBalance,
-                "FreezeRcBalance" => FreezeRcBalance,
-                "CountryId" => CountryId,
-                "AreaId" => AreaId,
-                "CityId" => CityId,
-                "ProvinceId" => ProvinceId,
-                "AreaInfo" => AreaInfo,
-                "Question1" => Question1,
-                "Answer1" => Answer1,
-                "Question2" => Question2,
-                "Answer2" => Answer2,
-                "Question3" => Question3,
-                "Answer3" => Answer3,
-                "CreateUser" => CreateUser,
-                "CreateUserID" => CreateUserID,
-                "CreateTime" => CreateTime,
-                "CreateIP" => CreateIP,
-                "UpdateUser" => UpdateUser,
-                "UpdateUserID" => UpdateUserID,
-                "UpdateTime" => UpdateTime,
-                "UpdateIP" => UpdateIP,
-                _ => this.GetValue(name),
-            };
-        }
-        set
-        {
-            switch (name)
-            {
-                case "Id": Id = value.ToInt(); break;
-                case "LanguageId": LanguageId = value.ToInt(); break;
-                case "IsSuper": IsSuper = value.ToBoolean(); break;
-                case "SId": SId = value.ToLong(); break;
-                case "TenantId": TenantId = value.ToInt(); break;
-                case "UType": UType = Convert.ToInt16(value); break;
-                case "RoleExIds": RoleExIds = Convert.ToString(value); break;
-                case "OtherPermissions": OtherPermissions = Convert.ToString(value); break;
-                case "DepartmentIds": DepartmentIds = Convert.ToString(value); break;
-                case "TrueName": TrueName = Convert.ToString(value); break;
-                case "PayPwd": PayPwd = Convert.ToString(value); break;
-                case "AuthState": AuthState = Convert.ToInt16(value); break;
-                case "IdCard": IdCard = Convert.ToString(value); break;
-                case "IdcardImage1": IdcardImage1 = Convert.ToString(value); break;
-                case "IdcardImage2": IdcardImage2 = Convert.ToString(value); break;
-                case "IdcardImage3": IdcardImage3 = Convert.ToString(value); break;
-                case "CompanyName": CompanyName = Convert.ToString(value); break;
-                case "CompnayAuthState": CompnayAuthState = Convert.ToInt16(value); break;
-                case "CorporateName": CorporateName = Convert.ToString(value); break;
-                case "BusinessLicenseImage": BusinessLicenseImage = Convert.ToString(value); break;
-                case "CorporateImage": CorporateImage = Convert.ToString(value); break;
-                case "EmailBind": EmailBind = value.ToBoolean(); break;
-                case "MobileBind": MobileBind = value.ToBoolean(); break;
-                case "IsSubScribe": IsSubScribe = value.ToBoolean(); break;
-                case "IsSales": IsSales = value.ToBoolean(); break;
-                case "IsEngineer": IsEngineer = value.ToBoolean(); break;
-                case "ReferrerId": ReferrerId = value.ToInt(); break;
-                case "KeFuId": KeFuId = value.ToInt(); break;
-                case "ParentUId": ParentUId = value.ToInt(); break;
-                case "Points": Points = value.ToInt(); break;
-                case "ExpPoints": ExpPoints = value.ToInt(); break;
-                case "QQ": QQ = Convert.ToString(value); break;
-                case "WeiXin": WeiXin = Convert.ToString(value); break;
-                case "WangWang": WangWang = Convert.ToString(value); break;
-                case "ContactName": ContactName = Convert.ToString(value); break;
-                case "Tel": Tel = Convert.ToString(value); break;
-                case "Fax": Fax = Convert.ToString(value); break;
-                case "CompanyInfo": CompanyInfo = Convert.ToString(value); break;
-                case "Address": Address = Convert.ToString(value); break;
-                case "InformAllow": InformAllow = value.ToBoolean(); break;
-                case "IsBuy": IsBuy = value.ToBoolean(); break;
-                case "IsAllowTalk": IsAllowTalk = value.ToBoolean(); break;
-                case "AvailablePredeposit": AvailablePredeposit = Convert.ToDecimal(value); break;
-                case "FreezePredeposit": FreezePredeposit = Convert.ToDecimal(value); break;
-                case "AvailableRcBalance": AvailableRcBalance = Convert.ToDecimal(value); break;
-                case "FreezeRcBalance": FreezeRcBalance = Convert.ToDecimal(value); break;
-                case "CountryId": CountryId = value.ToInt(); break;
-                case "AreaId": AreaId = value.ToInt(); break;
-                case "CityId": CityId = value.ToInt(); break;
-                case "ProvinceId": ProvinceId = value.ToInt(); break;
-                case "AreaInfo": AreaInfo = Convert.ToString(value); break;
-                case "Question1": Question1 = Convert.ToString(value); break;
-                case "Answer1": Answer1 = Convert.ToString(value); break;
-                case "Question2": Question2 = Convert.ToString(value); break;
-                case "Answer2": Answer2 = Convert.ToString(value); break;
-                case "Question3": Question3 = Convert.ToString(value); break;
-                case "Answer3": Answer3 = Convert.ToString(value); break;
-                case "CreateUser": CreateUser = Convert.ToString(value); break;
-                case "CreateUserID": CreateUserID = value.ToInt(); break;
-                case "CreateTime": CreateTime = value.ToDateTime(); break;
-                case "CreateIP": CreateIP = Convert.ToString(value); break;
-                case "UpdateUser": UpdateUser = Convert.ToString(value); break;
-                case "UpdateUserID": UpdateUserID = value.ToInt(); break;
-                case "UpdateTime": UpdateTime = value.ToDateTime(); break;
-                case "UpdateIP": UpdateIP = Convert.ToString(value); break;
-                default: this.SetValue(name, value); break;
-            }
-        }
-    }
     #endregion
 
     #region 拷贝

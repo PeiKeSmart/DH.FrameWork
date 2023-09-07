@@ -4,13 +4,11 @@ using System.ComponentModel;
 using System.Runtime.Serialization;
 using System.Web.Script.Serialization;
 using System.Xml.Serialization;
-using NewLife.Data;
-using NewLife.Reflection;
 
 namespace DH.Entity;
 
 /// <summary>OAuth配置。需要连接的OAuth认证方</summary>
-public partial class OAuthConfigModel : IModel
+public partial class OAuthConfigModel : IOAuthConfig
 {
     #region 属性
     /// <summary>编号</summary>
@@ -102,89 +100,6 @@ public partial class OAuthConfigModel : IModel
 
     /// <summary>内容</summary>
     public String Remark { get; set; }
-    #endregion
-
-    #region 获取/设置 字段值
-    /// <summary>获取/设置 字段值</summary>
-    /// <param name="name">字段名</param>
-    /// <returns></returns>
-    public virtual Object this[String name]
-    {
-        get
-        {
-            return name switch
-            {
-                "ID" => ID,
-                "Name" => Name,
-                "NickName" => NickName,
-                "Logo" => Logo,
-                "AppId" => AppId,
-                "Secret" => Secret,
-                "Server" => Server,
-                "AccessServer" => AccessServer,
-                "GrantType" => GrantType,
-                "Scope" => Scope,
-                "AuthUrl" => AuthUrl,
-                "AccessUrl" => AccessUrl,
-                "UserUrl" => UserUrl,
-                "AppUrl" => AppUrl,
-                "Enable" => Enable,
-                "Debug" => Debug,
-                "Visible" => Visible,
-                "AutoRegister" => AutoRegister,
-                "AutoRole" => AutoRole,
-                "Sort" => Sort,
-                "SecurityKey" => SecurityKey,
-                "FieldMap" => FieldMap,
-                "FetchAvatar" => FetchAvatar,
-                "CreateUserID" => CreateUserID,
-                "CreateTime" => CreateTime,
-                "CreateIP" => CreateIP,
-                "UpdateUserID" => UpdateUserID,
-                "UpdateTime" => UpdateTime,
-                "UpdateIP" => UpdateIP,
-                "Remark" => Remark,
-                _ => this.GetValue(name),
-            };
-        }
-        set
-        {
-            switch (name)
-            {
-                case "ID": ID = value.ToInt(); break;
-                case "Name": Name = Convert.ToString(value); break;
-                case "NickName": NickName = Convert.ToString(value); break;
-                case "Logo": Logo = Convert.ToString(value); break;
-                case "AppId": AppId = Convert.ToString(value); break;
-                case "Secret": Secret = Convert.ToString(value); break;
-                case "Server": Server = Convert.ToString(value); break;
-                case "AccessServer": AccessServer = Convert.ToString(value); break;
-                case "GrantType": GrantType = (GrantTypes)value; break;
-                case "Scope": Scope = Convert.ToString(value); break;
-                case "AuthUrl": AuthUrl = Convert.ToString(value); break;
-                case "AccessUrl": AccessUrl = Convert.ToString(value); break;
-                case "UserUrl": UserUrl = Convert.ToString(value); break;
-                case "AppUrl": AppUrl = Convert.ToString(value); break;
-                case "Enable": Enable = value.ToBoolean(); break;
-                case "Debug": Debug = value.ToBoolean(); break;
-                case "Visible": Visible = value.ToBoolean(); break;
-                case "AutoRegister": AutoRegister = value.ToBoolean(); break;
-                case "AutoRole": AutoRole = Convert.ToString(value); break;
-                case "Sort": Sort = value.ToInt(); break;
-                case "SecurityKey": SecurityKey = Convert.ToString(value); break;
-                case "FieldMap": FieldMap = Convert.ToString(value); break;
-                case "FetchAvatar": FetchAvatar = value.ToBoolean(); break;
-                case "CreateUserID": CreateUserID = value.ToInt(); break;
-                case "CreateTime": CreateTime = value.ToDateTime(); break;
-                case "CreateIP": CreateIP = Convert.ToString(value); break;
-                case "UpdateUserID": UpdateUserID = value.ToInt(); break;
-                case "UpdateTime": UpdateTime = value.ToDateTime(); break;
-                case "UpdateIP": UpdateIP = Convert.ToString(value); break;
-                case "Remark": Remark = Convert.ToString(value); break;
-                default: this.SetValue(name, value); break;
-            }
-        }
-    }
     #endregion
 
     #region 拷贝

@@ -8,6 +8,7 @@ using NewLife;
 using NewLife.Data;
 using XCode;
 using XCode.Cache;
+using XCode.Common;
 using XCode.Configuration;
 using XCode.DataAccessLayer;
 
@@ -18,7 +19,7 @@ namespace DH.Entity;
 [DataObject]
 [Description("站点基础信息。目前表只启用部分字段")]
 [BindTable("DG_SiteInfo", Description = "站点基础信息。目前表只启用部分字段", ConnName = "DG", DbType = DatabaseType.None)]
-public partial class SiteInfo : ISiteInfo, IEntity<SiteInfoModel>
+public partial class SiteInfo : ISiteInfo, IEntity<ISiteInfo>
 {
     #region 属性
     private Int32 _Id;
@@ -321,7 +322,7 @@ public partial class SiteInfo : ISiteInfo, IEntity<SiteInfoModel>
     #region 拷贝
     /// <summary>拷贝模型对象</summary>
     /// <param name="model">模型</param>
-    public void Copy(SiteInfoModel model)
+    public void Copy(ISiteInfo model)
     {
         Id = model.Id;
         Url = model.Url;

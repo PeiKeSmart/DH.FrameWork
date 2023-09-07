@@ -4,13 +4,11 @@ using System.ComponentModel;
 using System.Runtime.Serialization;
 using System.Web.Script.Serialization;
 using System.Xml.Serialization;
-using NewLife.Data;
-using NewLife.Reflection;
 
 namespace DH.Entity;
 
 /// <summary>用户链接。第三方绑定</summary>
-public partial class UserConnectModel : IModel
+public partial class UserConnectModel : IUserConnect
 {
     #region 属性
     /// <summary>编号</summary>
@@ -75,71 +73,6 @@ public partial class UserConnectModel : IModel
 
     /// <summary>备注</summary>
     public String Remark { get; set; }
-    #endregion
-
-    #region 获取/设置 字段值
-    /// <summary>获取/设置 字段值</summary>
-    /// <param name="name">字段名</param>
-    /// <returns></returns>
-    public virtual Object this[String name]
-    {
-        get
-        {
-            return name switch
-            {
-                "ID" => ID,
-                "Provider" => Provider,
-                "UserID" => UserID,
-                "OpenID" => OpenID,
-                "UnionID" => UnionID,
-                "LinkID" => LinkID,
-                "NickName" => NickName,
-                "DeviceId" => DeviceId,
-                "Avatar" => Avatar,
-                "AccessToken" => AccessToken,
-                "RefreshToken" => RefreshToken,
-                "Expire" => Expire,
-                "RefreshExpire" => RefreshExpire,
-                "Enable" => Enable,
-                "CreateUserID" => CreateUserID,
-                "CreateIP" => CreateIP,
-                "CreateTime" => CreateTime,
-                "UpdateUserID" => UpdateUserID,
-                "UpdateIP" => UpdateIP,
-                "UpdateTime" => UpdateTime,
-                "Remark" => Remark,
-                _ => this.GetValue(name),
-            };
-        }
-        set
-        {
-            switch (name)
-            {
-                case "ID": ID = value.ToInt(); break;
-                case "Provider": Provider = Convert.ToString(value); break;
-                case "UserID": UserID = value.ToInt(); break;
-                case "OpenID": OpenID = Convert.ToString(value); break;
-                case "UnionID": UnionID = Convert.ToString(value); break;
-                case "LinkID": LinkID = value.ToLong(); break;
-                case "NickName": NickName = Convert.ToString(value); break;
-                case "DeviceId": DeviceId = Convert.ToString(value); break;
-                case "Avatar": Avatar = Convert.ToString(value); break;
-                case "AccessToken": AccessToken = Convert.ToString(value); break;
-                case "RefreshToken": RefreshToken = Convert.ToString(value); break;
-                case "Expire": Expire = value.ToDateTime(); break;
-                case "RefreshExpire": RefreshExpire = value.ToDateTime(); break;
-                case "Enable": Enable = value.ToBoolean(); break;
-                case "CreateUserID": CreateUserID = value.ToInt(); break;
-                case "CreateIP": CreateIP = Convert.ToString(value); break;
-                case "CreateTime": CreateTime = value.ToDateTime(); break;
-                case "UpdateUserID": UpdateUserID = value.ToInt(); break;
-                case "UpdateIP": UpdateIP = Convert.ToString(value); break;
-                case "UpdateTime": UpdateTime = value.ToDateTime(); break;
-                case "Remark": Remark = Convert.ToString(value); break;
-                default: this.SetValue(name, value); break;
-            }
-        }
-    }
     #endregion
 
     #region 拷贝

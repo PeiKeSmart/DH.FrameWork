@@ -8,6 +8,7 @@ using NewLife;
 using NewLife.Data;
 using XCode;
 using XCode.Cache;
+using XCode.Common;
 using XCode.Configuration;
 using XCode.DataAccessLayer;
 
@@ -20,7 +21,7 @@ namespace DH.Entity;
 [BindIndex("IX_PrincipalAgent_PrincipalId", false, "PrincipalId")]
 [BindIndex("IX_PrincipalAgent_AgentId", false, "AgentId")]
 [BindTable("PrincipalAgent", Description = "委托代理。委托某人代理自己的用户权限，代理人下一次登录时将得到委托人的身份", ConnName = "DG", DbType = DatabaseType.None)]
-public partial class PrincipalAgent : IPrincipalAgent, IEntity<PrincipalAgentModel>
+public partial class PrincipalAgent : IPrincipalAgent, IEntity<IPrincipalAgent>
 {
     #region 属性
     private Int32 _Id;
@@ -138,7 +139,7 @@ public partial class PrincipalAgent : IPrincipalAgent, IEntity<PrincipalAgentMod
     #region 拷贝
     /// <summary>拷贝模型对象</summary>
     /// <param name="model">模型</param>
-    public void Copy(PrincipalAgentModel model)
+    public void Copy(IPrincipalAgent model)
     {
         Id = model.Id;
         PrincipalId = model.PrincipalId;

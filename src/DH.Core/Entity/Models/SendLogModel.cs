@@ -4,13 +4,11 @@ using System.ComponentModel;
 using System.Runtime.Serialization;
 using System.Web.Script.Serialization;
 using System.Xml.Serialization;
-using NewLife.Data;
-using NewLife.Reflection;
 
 namespace DH.Entity;
 
 /// <summary>消息记录</summary>
-public partial class SendLogModel : IModel
+public partial class SendLogModel : ISendLog
 {
     #region 属性
     /// <summary>编号</summary>
@@ -45,51 +43,6 @@ public partial class SendLogModel : IModel
 
     /// <summary>消息请求IP</summary>
     public String CreateIP { get; set; }
-    #endregion
-
-    #region 获取/设置 字段值
-    /// <summary>获取/设置 字段值</summary>
-    /// <param name="name">字段名</param>
-    /// <returns></returns>
-    public virtual Object this[String name]
-    {
-        get
-        {
-            return name switch
-            {
-                "Id" => Id,
-                "SType" => SType,
-                "Account" => Account,
-                "Msg" => Msg,
-                "MType" => MType,
-                "Remark" => Remark,
-                "SmsId" => SmsId,
-                "CreateUser" => CreateUser,
-                "CreateUserID" => CreateUserID,
-                "CreateTime" => CreateTime,
-                "CreateIP" => CreateIP,
-                _ => this.GetValue(name),
-            };
-        }
-        set
-        {
-            switch (name)
-            {
-                case "Id": Id = value.ToInt(); break;
-                case "SType": SType = Convert.ToInt16(value); break;
-                case "Account": Account = Convert.ToString(value); break;
-                case "Msg": Msg = Convert.ToString(value); break;
-                case "MType": MType = Convert.ToInt16(value); break;
-                case "Remark": Remark = Convert.ToString(value); break;
-                case "SmsId": SmsId = Convert.ToString(value); break;
-                case "CreateUser": CreateUser = Convert.ToString(value); break;
-                case "CreateUserID": CreateUserID = value.ToInt(); break;
-                case "CreateTime": CreateTime = value.ToDateTime(); break;
-                case "CreateIP": CreateIP = Convert.ToString(value); break;
-                default: this.SetValue(name, value); break;
-            }
-        }
-    }
     #endregion
 
     #region 拷贝

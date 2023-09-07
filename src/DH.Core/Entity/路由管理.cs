@@ -8,6 +8,7 @@ using NewLife;
 using NewLife.Data;
 using XCode;
 using XCode.Cache;
+using XCode.Common;
 using XCode.Configuration;
 using XCode.DataAccessLayer;
 
@@ -20,7 +21,7 @@ namespace DH.Entity;
 [BindIndex("IX_DH_SystemRout_FromUrl", false, "FromUrl")]
 [BindIndex("IU_DH_SystemRout_Url", true, "Url")]
 [BindTable("DH_SystemRout", Description = "路由管理", ConnName = "DG", DbType = DatabaseType.None)]
-public partial class SystemRout : ISystemRout, IEntity<SystemRoutModel>
+public partial class SystemRout : ISystemRout, IEntity<ISystemRout>
 {
     #region 属性
     private Int32 _Id;
@@ -123,7 +124,7 @@ public partial class SystemRout : ISystemRout, IEntity<SystemRoutModel>
     #region 拷贝
     /// <summary>拷贝模型对象</summary>
     /// <param name="model">模型</param>
-    public void Copy(SystemRoutModel model)
+    public void Copy(ISystemRout model)
     {
         Id = model.Id;
         RType = model.RType;

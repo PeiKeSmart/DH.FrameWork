@@ -8,6 +8,7 @@ using NewLife;
 using NewLife.Data;
 using XCode;
 using XCode.Cache;
+using XCode.Common;
 using XCode.Configuration;
 using XCode.DataAccessLayer;
 
@@ -23,7 +24,7 @@ namespace DH.Entity;
 [BindIndex("IX_DG_UserDetail_UType", false, "UType")]
 [BindIndex("IX_DG_UserDetail_ParentUId", false, "ParentUId")]
 [BindTable("DG_UserDetail", Description = "用户扩展", ConnName = "Membership", DbType = DatabaseType.None)]
-public partial class UserDetail : IUserDetail, IEntity<UserDetailModel>
+public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
 {
     #region 属性
     private Int32 _Id;
@@ -550,7 +551,7 @@ public partial class UserDetail : IUserDetail, IEntity<UserDetailModel>
     #region 拷贝
     /// <summary>拷贝模型对象</summary>
     /// <param name="model">模型</param>
-    public void Copy(UserDetailModel model)
+    public void Copy(IUserDetail model)
     {
         Id = model.Id;
         LanguageId = model.LanguageId;

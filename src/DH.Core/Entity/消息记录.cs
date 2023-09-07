@@ -8,6 +8,7 @@ using NewLife;
 using NewLife.Data;
 using XCode;
 using XCode.Cache;
+using XCode.Common;
 using XCode.Configuration;
 using XCode.DataAccessLayer;
 
@@ -20,7 +21,7 @@ namespace DH.Entity;
 [BindIndex("IX_DG_SendLog_Account", false, "Account")]
 [BindIndex("IX_DG_SendLog_SmsId", false, "SmsId")]
 [BindTable("DG_SendLog", Description = "消息记录", ConnName = "DG", DbType = DatabaseType.None)]
-public partial class SendLog : ISendLog, IEntity<SendLogModel>
+public partial class SendLog : ISendLog, IEntity<ISendLog>
 {
     #region 属性
     private Int32 _Id;
@@ -115,7 +116,7 @@ public partial class SendLog : ISendLog, IEntity<SendLogModel>
     #region 拷贝
     /// <summary>拷贝模型对象</summary>
     /// <param name="model">模型</param>
-    public void Copy(SendLogModel model)
+    public void Copy(ISendLog model)
     {
         Id = model.Id;
         SType = model.SType;

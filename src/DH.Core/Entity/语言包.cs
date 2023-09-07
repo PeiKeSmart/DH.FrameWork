@@ -8,6 +8,7 @@ using NewLife;
 using NewLife.Data;
 using XCode;
 using XCode.Cache;
+using XCode.Common;
 using XCode.Configuration;
 using XCode.DataAccessLayer;
 
@@ -19,7 +20,7 @@ namespace DH.Entity;
 [Description("语言包")]
 [BindIndex("IU_DG_LocaleStringResource_LanKey_CultureId", true, "LanKey,CultureId")]
 [BindTable("DG_LocaleStringResource", Description = "语言包", ConnName = "DG", DbType = DatabaseType.None)]
-public partial class LocaleStringResource : ILocaleStringResource, IEntity<LocaleStringResourceModel>
+public partial class LocaleStringResource : ILocaleStringResource, IEntity<ILocaleStringResource>
 {
     #region 属性
     private Int32 _Id;
@@ -122,7 +123,7 @@ public partial class LocaleStringResource : ILocaleStringResource, IEntity<Local
     #region 拷贝
     /// <summary>拷贝模型对象</summary>
     /// <param name="model">模型</param>
-    public void Copy(LocaleStringResourceModel model)
+    public void Copy(ILocaleStringResource model)
     {
         Id = model.Id;
         LanKey = model.LanKey;

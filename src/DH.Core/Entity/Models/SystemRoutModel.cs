@@ -4,13 +4,11 @@ using System.ComponentModel;
 using System.Runtime.Serialization;
 using System.Web.Script.Serialization;
 using System.Xml.Serialization;
-using NewLife.Data;
-using NewLife.Reflection;
 
 namespace DH.Entity;
 
 /// <summary>路由管理</summary>
-public partial class SystemRoutModel : IModel
+public partial class SystemRoutModel : ISystemRout
 {
     #region 属性
     /// <summary>编号</summary>
@@ -48,53 +46,6 @@ public partial class SystemRoutModel : IModel
 
     /// <summary>更新时间</summary>
     public DateTime UpdateTime { get; set; }
-    #endregion
-
-    #region 获取/设置 字段值
-    /// <summary>获取/设置 字段值</summary>
-    /// <param name="name">字段名</param>
-    /// <returns></returns>
-    public virtual Object this[String name]
-    {
-        get
-        {
-            return name switch
-            {
-                "Id" => Id,
-                "RType" => RType,
-                "Name" => Name,
-                "Url" => Url,
-                "Parms" => Parms,
-                "Pages" => Pages,
-                "AreaName" => AreaName,
-                "ControllerName" => ControllerName,
-                "ActionName" => ActionName,
-                "FromUrl" => FromUrl,
-                "CreateTime" => CreateTime,
-                "UpdateTime" => UpdateTime,
-                _ => this.GetValue(name),
-            };
-        }
-        set
-        {
-            switch (name)
-            {
-                case "Id": Id = value.ToInt(); break;
-                case "RType": RType = Convert.ToByte(value); break;
-                case "Name": Name = Convert.ToString(value); break;
-                case "Url": Url = Convert.ToString(value); break;
-                case "Parms": Parms = Convert.ToString(value); break;
-                case "Pages": Pages = Convert.ToString(value); break;
-                case "AreaName": AreaName = Convert.ToString(value); break;
-                case "ControllerName": ControllerName = Convert.ToString(value); break;
-                case "ActionName": ActionName = Convert.ToString(value); break;
-                case "FromUrl": FromUrl = Convert.ToString(value); break;
-                case "CreateTime": CreateTime = value.ToDateTime(); break;
-                case "UpdateTime": UpdateTime = value.ToDateTime(); break;
-                default: this.SetValue(name, value); break;
-            }
-        }
-    }
     #endregion
 
     #region 拷贝

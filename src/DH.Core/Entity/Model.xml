@@ -32,7 +32,7 @@
     <!--命名格式。Default/Upper/Lower/Underline-->
     <NameFormat>Default</NameFormat>
     <!--生成器版本-->
-    <Version>11.8.2023.0605</Version>
+    <Version>11.9.2023.0905</Version>
     <!--帮助文档-->
     <Document>https://newlifex.com/xcode/model</Document>
     <!--魔方区域显示名-->
@@ -606,5 +606,24 @@
     <Indexes>
       <Index Columns="Code" Unique="True" />
     </Indexes>
+  </Table>
+  <Table Name="SysOnlineUsers" TableName="DH_OnlineUsers" Description="在线用户表">
+    <Columns>
+      <Column Name="Id" DataType="Int32" RawType="int(11)" Identity="True" PrimaryKey="True" Description="编号" />
+      <Column Name="Uid" DataType="Int32" RawType="int(11)" Description="用户id" />
+      <Column Name="Sid" DataType="String" RawType="varchar(16)" Length="16" Nullable="False" Description="用户sessionid" />
+      <Column Name="NickName" DataType="String" RawType="varchar(100)" Length="100" Nullable="False" Description="用户昵称" />
+      <Column Name="Ip" DataType="String" RawType="varchar(20)" Length="20" Nullable="False" Description="用户ip" />
+      <Column Name="Regionid" DataType="Int16" RawType="smallint(6)" Description="用户所在区域id" />
+      <Column Name="Updatetime" DataType="DateTime" Nullable="False" Description="最后更新时间" />
+    </Columns>
+  </Table>
+  <Table Name="SysPvstats" TableName="DH_PvStats" Description="PV统计表">
+    <Columns>
+      <Column Name="Id" DataType="Int32" RawType="int(11)" Identity="True" PrimaryKey="True" Description="编号" />
+      <Column Name="Category" DataType="String" RawType="varchar(10)" Length="10" Nullable="False" Description="分类" />
+      <Column Name="Value" DataType="String" RawType="varchar(30)" Length="30" Nullable="False" Description="访问者系统" />
+      <Column Name="Count" DataType="Int32" RawType="int(11)" Description="数量" />
+    </Columns>
   </Table>
 </EntityModel>

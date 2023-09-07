@@ -4,13 +4,11 @@ using System.ComponentModel;
 using System.Runtime.Serialization;
 using System.Web.Script.Serialization;
 using System.Xml.Serialization;
-using NewLife.Data;
-using NewLife.Reflection;
 
 namespace DH.Entity;
 
 /// <summary>计划任务</summary>
-public partial class ScheduleTaskModel : IModel
+public partial class ScheduleTaskModel : IScheduleTask
 {
     #region 属性
     /// <summary>编号</summary>
@@ -42,49 +40,6 @@ public partial class ScheduleTaskModel : IModel
 
     /// <summary>上次成功完成的日期时间</summary>
     public DateTime LastSuccessUtc { get; set; }
-    #endregion
-
-    #region 获取/设置 字段值
-    /// <summary>获取/设置 字段值</summary>
-    /// <param name="name">字段名</param>
-    /// <returns></returns>
-    public virtual Object this[String name]
-    {
-        get
-        {
-            return name switch
-            {
-                "Id" => Id,
-                "Name" => Name,
-                "Seconds" => Seconds,
-                "Type" => Type,
-                "LastEnabledUtc" => LastEnabledUtc,
-                "Enabled" => Enabled,
-                "StopOnError" => StopOnError,
-                "LastStartUtc" => LastStartUtc,
-                "LastEndUtc" => LastEndUtc,
-                "LastSuccessUtc" => LastSuccessUtc,
-                _ => this.GetValue(name),
-            };
-        }
-        set
-        {
-            switch (name)
-            {
-                case "Id": Id = value.ToInt(); break;
-                case "Name": Name = Convert.ToString(value); break;
-                case "Seconds": Seconds = value.ToInt(); break;
-                case "Type": Type = Convert.ToString(value); break;
-                case "LastEnabledUtc": LastEnabledUtc = value.ToDateTime(); break;
-                case "Enabled": Enabled = value.ToBoolean(); break;
-                case "StopOnError": StopOnError = value.ToBoolean(); break;
-                case "LastStartUtc": LastStartUtc = value.ToDateTime(); break;
-                case "LastEndUtc": LastEndUtc = value.ToDateTime(); break;
-                case "LastSuccessUtc": LastSuccessUtc = value.ToDateTime(); break;
-                default: this.SetValue(name, value); break;
-            }
-        }
-    }
     #endregion
 
     #region 拷贝

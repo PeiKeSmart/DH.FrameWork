@@ -8,6 +8,7 @@ using NewLife;
 using NewLife.Data;
 using XCode;
 using XCode.Cache;
+using XCode.Common;
 using XCode.Configuration;
 using XCode.DataAccessLayer;
 
@@ -18,7 +19,7 @@ namespace DH.Entity;
 [DataObject]
 [Description("计划任务")]
 [BindTable("DH_ScheduleTask", Description = "计划任务", ConnName = "DG", DbType = DatabaseType.None)]
-public partial class ScheduleTask : IScheduleTask, IEntity<ScheduleTaskModel>
+public partial class ScheduleTask : IScheduleTask, IEntity<IScheduleTask>
 {
     #region 属性
     private Int32 _Id;
@@ -105,7 +106,7 @@ public partial class ScheduleTask : IScheduleTask, IEntity<ScheduleTaskModel>
     #region 拷贝
     /// <summary>拷贝模型对象</summary>
     /// <param name="model">模型</param>
-    public void Copy(ScheduleTaskModel model)
+    public void Copy(IScheduleTask model)
     {
         Id = model.Id;
         Name = model.Name;

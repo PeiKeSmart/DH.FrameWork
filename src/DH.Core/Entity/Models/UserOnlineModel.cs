@@ -4,13 +4,11 @@ using System.ComponentModel;
 using System.Runtime.Serialization;
 using System.Web.Script.Serialization;
 using System.Xml.Serialization;
-using NewLife.Data;
-using NewLife.Reflection;
 
 namespace DH.Entity;
 
 /// <summary>用户在线</summary>
-public partial class UserOnlineModel : IModel
+public partial class UserOnlineModel : IUserOnline
 {
     #region 属性
     /// <summary>编号</summary>
@@ -78,73 +76,6 @@ public partial class UserOnlineModel : IModel
 
     /// <summary>修改时间</summary>
     public DateTime UpdateTime { get; set; }
-    #endregion
-
-    #region 获取/设置 字段值
-    /// <summary>获取/设置 字段值</summary>
-    /// <param name="name">字段名</param>
-    /// <returns></returns>
-    public virtual Object this[String name]
-    {
-        get
-        {
-            return name switch
-            {
-                "ID" => ID,
-                "UserID" => UserID,
-                "Name" => Name,
-                "SessionID" => SessionID,
-                "OAuthProvider" => OAuthProvider,
-                "Times" => Times,
-                "Page" => Page,
-                "Platform" => Platform,
-                "OS" => OS,
-                "Device" => Device,
-                "Brower" => Brower,
-                "NetType" => NetType,
-                "DeviceId" => DeviceId,
-                "Status" => Status,
-                "OnlineTime" => OnlineTime,
-                "LastError" => LastError,
-                "TraceId" => TraceId,
-                "Address" => Address,
-                "CreateIP" => CreateIP,
-                "CreateTime" => CreateTime,
-                "UpdateIP" => UpdateIP,
-                "UpdateTime" => UpdateTime,
-                _ => this.GetValue(name),
-            };
-        }
-        set
-        {
-            switch (name)
-            {
-                case "ID": ID = value.ToInt(); break;
-                case "UserID": UserID = value.ToInt(); break;
-                case "Name": Name = Convert.ToString(value); break;
-                case "SessionID": SessionID = Convert.ToString(value); break;
-                case "OAuthProvider": OAuthProvider = Convert.ToString(value); break;
-                case "Times": Times = value.ToInt(); break;
-                case "Page": Page = Convert.ToString(value); break;
-                case "Platform": Platform = Convert.ToString(value); break;
-                case "OS": OS = Convert.ToString(value); break;
-                case "Device": Device = Convert.ToString(value); break;
-                case "Brower": Brower = Convert.ToString(value); break;
-                case "NetType": NetType = Convert.ToString(value); break;
-                case "DeviceId": DeviceId = Convert.ToString(value); break;
-                case "Status": Status = Convert.ToString(value); break;
-                case "OnlineTime": OnlineTime = value.ToInt(); break;
-                case "LastError": LastError = value.ToDateTime(); break;
-                case "TraceId": TraceId = Convert.ToString(value); break;
-                case "Address": Address = Convert.ToString(value); break;
-                case "CreateIP": CreateIP = Convert.ToString(value); break;
-                case "CreateTime": CreateTime = value.ToDateTime(); break;
-                case "UpdateIP": UpdateIP = Convert.ToString(value); break;
-                case "UpdateTime": UpdateTime = value.ToDateTime(); break;
-                default: this.SetValue(name, value); break;
-            }
-        }
-    }
     #endregion
 
     #region 拷贝

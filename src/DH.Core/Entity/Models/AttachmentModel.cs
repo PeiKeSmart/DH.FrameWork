@@ -4,13 +4,11 @@ using System.ComponentModel;
 using System.Runtime.Serialization;
 using System.Web.Script.Serialization;
 using System.Xml.Serialization;
-using NewLife.Data;
-using NewLife.Reflection;
 
 namespace DH.Entity;
 
 /// <summary>附件。用于记录各系统模块使用的文件，可以是Local/NAS/OSS等</summary>
-public partial class AttachmentModel : IModel
+public partial class AttachmentModel : IAttachment
 {
     #region 属性
     /// <summary>编号</summary>
@@ -84,77 +82,6 @@ public partial class AttachmentModel : IModel
 
     /// <summary>备注</summary>
     public String Remark { get; set; }
-    #endregion
-
-    #region 获取/设置 字段值
-    /// <summary>获取/设置 字段值</summary>
-    /// <param name="name">字段名</param>
-    /// <returns></returns>
-    public virtual Object this[String name]
-    {
-        get
-        {
-            return name switch
-            {
-                "Id" => Id,
-                "Category" => Category,
-                "Key" => Key,
-                "Title" => Title,
-                "FileName" => FileName,
-                "Extension" => Extension,
-                "Size" => Size,
-                "ContentType" => ContentType,
-                "FilePath" => FilePath,
-                "Hash" => Hash,
-                "Enable" => Enable,
-                "UploadTime" => UploadTime,
-                "Url" => Url,
-                "Source" => Source,
-                "TraceId" => TraceId,
-                "CreateUser" => CreateUser,
-                "CreateUserID" => CreateUserID,
-                "CreateIP" => CreateIP,
-                "CreateTime" => CreateTime,
-                "UpdateUser" => UpdateUser,
-                "UpdateUserID" => UpdateUserID,
-                "UpdateIP" => UpdateIP,
-                "UpdateTime" => UpdateTime,
-                "Remark" => Remark,
-                _ => this.GetValue(name),
-            };
-        }
-        set
-        {
-            switch (name)
-            {
-                case "Id": Id = value.ToLong(); break;
-                case "Category": Category = Convert.ToString(value); break;
-                case "Key": Key = Convert.ToString(value); break;
-                case "Title": Title = Convert.ToString(value); break;
-                case "FileName": FileName = Convert.ToString(value); break;
-                case "Extension": Extension = Convert.ToString(value); break;
-                case "Size": Size = value.ToLong(); break;
-                case "ContentType": ContentType = Convert.ToString(value); break;
-                case "FilePath": FilePath = Convert.ToString(value); break;
-                case "Hash": Hash = Convert.ToString(value); break;
-                case "Enable": Enable = value.ToBoolean(); break;
-                case "UploadTime": UploadTime = value.ToDateTime(); break;
-                case "Url": Url = Convert.ToString(value); break;
-                case "Source": Source = Convert.ToString(value); break;
-                case "TraceId": TraceId = Convert.ToString(value); break;
-                case "CreateUser": CreateUser = Convert.ToString(value); break;
-                case "CreateUserID": CreateUserID = value.ToInt(); break;
-                case "CreateIP": CreateIP = Convert.ToString(value); break;
-                case "CreateTime": CreateTime = value.ToDateTime(); break;
-                case "UpdateUser": UpdateUser = Convert.ToString(value); break;
-                case "UpdateUserID": UpdateUserID = value.ToInt(); break;
-                case "UpdateIP": UpdateIP = Convert.ToString(value); break;
-                case "UpdateTime": UpdateTime = value.ToDateTime(); break;
-                case "Remark": Remark = Convert.ToString(value); break;
-                default: this.SetValue(name, value); break;
-            }
-        }
-    }
     #endregion
 
     #region 拷贝

@@ -4,13 +4,11 @@ using System.ComponentModel;
 using System.Runtime.Serialization;
 using System.Web.Script.Serialization;
 using System.Xml.Serialization;
-using NewLife.Data;
-using NewLife.Reflection;
 
 namespace DH.Entity;
 
 /// <summary>重定向表</summary>
-public partial class RouteRewriteModel : IModel
+public partial class RouteRewriteModel : IRouteRewrite
 {
     #region 属性
     /// <summary>编号</summary>
@@ -51,55 +49,6 @@ public partial class RouteRewriteModel : IModel
 
     /// <summary>更新地址</summary>
     public String UpdateIP { get; set; }
-    #endregion
-
-    #region 获取/设置 字段值
-    /// <summary>获取/设置 字段值</summary>
-    /// <param name="name">字段名</param>
-    /// <returns></returns>
-    public virtual Object this[String name]
-    {
-        get
-        {
-            return name switch
-            {
-                "Id" => Id,
-                "Name" => Name,
-                "RegexInfo" => RegexInfo,
-                "ReplacementInfo" => ReplacementInfo,
-                "ParentId" => ParentId,
-                "CreateUser" => CreateUser,
-                "CreateUserID" => CreateUserID,
-                "CreateTime" => CreateTime,
-                "CreateIP" => CreateIP,
-                "UpdateUser" => UpdateUser,
-                "UpdateUserID" => UpdateUserID,
-                "UpdateTime" => UpdateTime,
-                "UpdateIP" => UpdateIP,
-                _ => this.GetValue(name),
-            };
-        }
-        set
-        {
-            switch (name)
-            {
-                case "Id": Id = value.ToInt(); break;
-                case "Name": Name = Convert.ToString(value); break;
-                case "RegexInfo": RegexInfo = Convert.ToString(value); break;
-                case "ReplacementInfo": ReplacementInfo = Convert.ToString(value); break;
-                case "ParentId": ParentId = value.ToInt(); break;
-                case "CreateUser": CreateUser = Convert.ToString(value); break;
-                case "CreateUserID": CreateUserID = value.ToInt(); break;
-                case "CreateTime": CreateTime = value.ToDateTime(); break;
-                case "CreateIP": CreateIP = Convert.ToString(value); break;
-                case "UpdateUser": UpdateUser = Convert.ToString(value); break;
-                case "UpdateUserID": UpdateUserID = value.ToInt(); break;
-                case "UpdateTime": UpdateTime = value.ToDateTime(); break;
-                case "UpdateIP": UpdateIP = Convert.ToString(value); break;
-                default: this.SetValue(name, value); break;
-            }
-        }
-    }
     #endregion
 
     #region 拷贝

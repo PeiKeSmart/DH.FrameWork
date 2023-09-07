@@ -8,6 +8,7 @@ using NewLife;
 using NewLife.Data;
 using XCode;
 using XCode.Cache;
+using XCode.Common;
 using XCode.Configuration;
 using XCode.DataAccessLayer;
 
@@ -19,7 +20,7 @@ namespace DH.Entity;
 [Description("站点配置")]
 [BindIndex("IU_DH_Setting_Name_StoreId", true, "Name,StoreId")]
 [BindTable("DH_Setting", Description = "站点配置", ConnName = "DG", DbType = DatabaseType.None)]
-public partial class Setting : ISetting, IEntity<SettingModel>
+public partial class Setting : ISetting, IEntity<ISetting>
 {
     #region 属性
     private Int32 _Id;
@@ -58,7 +59,7 @@ public partial class Setting : ISetting, IEntity<SettingModel>
     #region 拷贝
     /// <summary>拷贝模型对象</summary>
     /// <param name="model">模型</param>
-    public void Copy(SettingModel model)
+    public void Copy(ISetting model)
     {
         Id = model.Id;
         Name = model.Name;

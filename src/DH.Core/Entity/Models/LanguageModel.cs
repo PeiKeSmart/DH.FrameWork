@@ -4,13 +4,11 @@ using System.ComponentModel;
 using System.Runtime.Serialization;
 using System.Web.Script.Serialization;
 using System.Xml.Serialization;
-using NewLife.Data;
-using NewLife.Reflection;
 
 namespace DH.Entity;
 
 /// <summary>语言类别</summary>
-public partial class LanguageModel : IModel
+public partial class LanguageModel : ILanguage
 {
     #region 属性
     /// <summary>编号</summary>
@@ -84,77 +82,6 @@ public partial class LanguageModel : IModel
 
     /// <summary>更新地址</summary>
     public String UpdateIP { get; set; }
-    #endregion
-
-    #region 获取/设置 字段值
-    /// <summary>获取/设置 字段值</summary>
-    /// <param name="name">字段名</param>
-    /// <returns></returns>
-    public virtual Object this[String name]
-    {
-        get
-        {
-            return name switch
-            {
-                "Id" => Id,
-                "Name" => Name,
-                "DisplayName" => DisplayName,
-                "EnglishName" => EnglishName,
-                "FlagImageFileName" => FlagImageFileName,
-                "LanguageCulture" => LanguageCulture,
-                "UniqueSeoCode" => UniqueSeoCode,
-                "LangAbbreviation" => LangAbbreviation,
-                "Flag" => Flag,
-                "Domain" => Domain,
-                "Lcid" => Lcid,
-                "Status" => Status,
-                "Rtl" => Rtl,
-                "DisplayOrder" => DisplayOrder,
-                "IsDefault" => IsDefault,
-                "Remark" => Remark,
-                "CreateUser" => CreateUser,
-                "CreateUserID" => CreateUserID,
-                "CreateTime" => CreateTime,
-                "CreateIP" => CreateIP,
-                "UpdateUser" => UpdateUser,
-                "UpdateUserID" => UpdateUserID,
-                "UpdateTime" => UpdateTime,
-                "UpdateIP" => UpdateIP,
-                _ => this.GetValue(name),
-            };
-        }
-        set
-        {
-            switch (name)
-            {
-                case "Id": Id = value.ToInt(); break;
-                case "Name": Name = Convert.ToString(value); break;
-                case "DisplayName": DisplayName = Convert.ToString(value); break;
-                case "EnglishName": EnglishName = Convert.ToString(value); break;
-                case "FlagImageFileName": FlagImageFileName = Convert.ToString(value); break;
-                case "LanguageCulture": LanguageCulture = Convert.ToString(value); break;
-                case "UniqueSeoCode": UniqueSeoCode = Convert.ToString(value); break;
-                case "LangAbbreviation": LangAbbreviation = Convert.ToString(value); break;
-                case "Flag": Flag = Convert.ToString(value); break;
-                case "Domain": Domain = Convert.ToString(value); break;
-                case "Lcid": Lcid = value.ToInt(); break;
-                case "Status": Status = value.ToBoolean(); break;
-                case "Rtl": Rtl = value.ToBoolean(); break;
-                case "DisplayOrder": DisplayOrder = value.ToInt(); break;
-                case "IsDefault": IsDefault = Convert.ToByte(value); break;
-                case "Remark": Remark = Convert.ToString(value); break;
-                case "CreateUser": CreateUser = Convert.ToString(value); break;
-                case "CreateUserID": CreateUserID = value.ToInt(); break;
-                case "CreateTime": CreateTime = value.ToDateTime(); break;
-                case "CreateIP": CreateIP = Convert.ToString(value); break;
-                case "UpdateUser": UpdateUser = Convert.ToString(value); break;
-                case "UpdateUserID": UpdateUserID = value.ToInt(); break;
-                case "UpdateTime": UpdateTime = value.ToDateTime(); break;
-                case "UpdateIP": UpdateIP = Convert.ToString(value); break;
-                default: this.SetValue(name, value); break;
-            }
-        }
-    }
     #endregion
 
     #region 拷贝

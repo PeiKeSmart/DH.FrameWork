@@ -8,6 +8,7 @@ using NewLife;
 using NewLife.Data;
 using XCode;
 using XCode.Cache;
+using XCode.Common;
 using XCode.Configuration;
 using XCode.DataAccessLayer;
 
@@ -19,7 +20,7 @@ namespace DH.Entity;
 [Description("公共属性")]
 [BindIndex("IX_DH_GenericAttribute_EntityId_KeyGroup", false, "EntityId,KeyGroup")]
 [BindTable("DH_GenericAttribute", Description = "公共属性", ConnName = "DG", DbType = DatabaseType.None)]
-public partial class GenericAttribute : IGenericAttribute, IEntity<GenericAttributeModel>
+public partial class GenericAttribute : IGenericAttribute, IEntity<IGenericAttribute>
 {
     #region 属性
     private Int32 _Id;
@@ -138,7 +139,7 @@ public partial class GenericAttribute : IGenericAttribute, IEntity<GenericAttrib
     #region 拷贝
     /// <summary>拷贝模型对象</summary>
     /// <param name="model">模型</param>
-    public void Copy(GenericAttributeModel model)
+    public void Copy(IGenericAttribute model)
     {
         Id = model.Id;
         Key = model.Key;

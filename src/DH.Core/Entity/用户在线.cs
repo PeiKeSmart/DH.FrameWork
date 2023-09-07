@@ -8,6 +8,7 @@ using NewLife;
 using NewLife.Data;
 using XCode;
 using XCode.Cache;
+using XCode.Common;
 using XCode.Configuration;
 using XCode.DataAccessLayer;
 
@@ -21,7 +22,7 @@ namespace DH.Entity;
 [BindIndex("IX_UserOnline_SessionID", false, "SessionID")]
 [BindIndex("IX_UserOnline_CreateTime", false, "CreateTime")]
 [BindTable("UserOnline", Description = "用户在线", ConnName = "Log", DbType = DatabaseType.None)]
-public partial class UserOnline : IUserOnline, IEntity<UserOnlineModel>
+public partial class UserOnline : IUserOnline, IEntity<IUserOnline>
 {
     #region 属性
     private Int32 _ID;
@@ -208,7 +209,7 @@ public partial class UserOnline : IUserOnline, IEntity<UserOnlineModel>
     #region 拷贝
     /// <summary>拷贝模型对象</summary>
     /// <param name="model">模型</param>
-    public void Copy(UserOnlineModel model)
+    public void Copy(IUserOnline model)
     {
         ID = model.ID;
         UserID = model.UserID;

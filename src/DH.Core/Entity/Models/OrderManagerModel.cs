@@ -4,13 +4,11 @@ using System.ComponentModel;
 using System.Runtime.Serialization;
 using System.Web.Script.Serialization;
 using System.Xml.Serialization;
-using NewLife.Data;
-using NewLife.Reflection;
 
 namespace DH.Entity;
 
 /// <summary>指令管理</summary>
-public partial class OrderManagerModel : IModel
+public partial class OrderManagerModel : IOrderManager
 {
     #region 属性
     /// <summary>编号</summary>
@@ -66,65 +64,6 @@ public partial class OrderManagerModel : IModel
 
     /// <summary>内容</summary>
     public String Remark { get; set; }
-    #endregion
-
-    #region 获取/设置 字段值
-    /// <summary>获取/设置 字段值</summary>
-    /// <param name="name">字段名</param>
-    /// <returns></returns>
-    public virtual Object this[String name]
-    {
-        get
-        {
-            return name switch
-            {
-                "Id" => Id,
-                "Name" => Name,
-                "Code" => Code,
-                "OptCategory" => OptCategory,
-                "Enable" => Enable,
-                "Data" => Data,
-                "DataType" => DataType,
-                "Url" => Url,
-                "Method" => Method,
-                "ValueField" => ValueField,
-                "LabelField" => LabelField,
-                "CreateUserId" => CreateUserId,
-                "CreateTime" => CreateTime,
-                "CreateIP" => CreateIP,
-                "UpdateUserId" => UpdateUserId,
-                "UpdateTime" => UpdateTime,
-                "UpdateIP" => UpdateIP,
-                "Remark" => Remark,
-                _ => this.GetValue(name),
-            };
-        }
-        set
-        {
-            switch (name)
-            {
-                case "Id": Id = value.ToInt(); break;
-                case "Name": Name = Convert.ToString(value); break;
-                case "Code": Code = Convert.ToString(value); break;
-                case "OptCategory": OptCategory = Convert.ToString(value); break;
-                case "Enable": Enable = value.ToBoolean(); break;
-                case "Data": Data = Convert.ToString(value); break;
-                case "DataType": DataType = Convert.ToString(value); break;
-                case "Url": Url = Convert.ToString(value); break;
-                case "Method": Method = Convert.ToString(value); break;
-                case "ValueField": ValueField = Convert.ToString(value); break;
-                case "LabelField": LabelField = Convert.ToString(value); break;
-                case "CreateUserId": CreateUserId = value.ToInt(); break;
-                case "CreateTime": CreateTime = value.ToDateTime(); break;
-                case "CreateIP": CreateIP = Convert.ToString(value); break;
-                case "UpdateUserId": UpdateUserId = value.ToInt(); break;
-                case "UpdateTime": UpdateTime = value.ToDateTime(); break;
-                case "UpdateIP": UpdateIP = Convert.ToString(value); break;
-                case "Remark": Remark = Convert.ToString(value); break;
-                default: this.SetValue(name, value); break;
-            }
-        }
-    }
     #endregion
 
     #region 拷贝

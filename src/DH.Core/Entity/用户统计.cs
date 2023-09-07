@@ -8,6 +8,7 @@ using NewLife;
 using NewLife.Data;
 using XCode;
 using XCode.Cache;
+using XCode.Common;
 using XCode.Configuration;
 using XCode.DataAccessLayer;
 
@@ -19,7 +20,7 @@ namespace DH.Entity;
 [Description("用户统计")]
 [BindIndex("IU_UserStat_Date", true, "Date")]
 [BindTable("UserStat", Description = "用户统计", ConnName = "Membership", DbType = DatabaseType.None)]
-public partial class UserStat : IUserStat, IEntity<UserStatModel>
+public partial class UserStat : IUserStat, IEntity<IUserStat>
 {
     #region 属性
     private Int32 _ID;
@@ -157,7 +158,7 @@ public partial class UserStat : IUserStat, IEntity<UserStatModel>
     #region 拷贝
     /// <summary>拷贝模型对象</summary>
     /// <param name="model">模型</param>
-    public void Copy(UserStatModel model)
+    public void Copy(IUserStat model)
     {
         ID = model.ID;
         Date = model.Date;

@@ -8,6 +8,7 @@ using NewLife;
 using NewLife.Data;
 using XCode;
 using XCode.Cache;
+using XCode.Common;
 using XCode.Configuration;
 using XCode.DataAccessLayer;
 
@@ -19,7 +20,7 @@ namespace DH.Entity;
 [Description("重定向表")]
 [BindIndex("IU_DG_RouteRewrite_RegexInfo", true, "RegexInfo")]
 [BindTable("DG_RouteRewrite", Description = "重定向表", ConnName = "DG", DbType = DatabaseType.None)]
-public partial class RouteRewrite : IRouteRewrite, IEntity<RouteRewriteModel>
+public partial class RouteRewrite : IRouteRewrite, IEntity<IRouteRewrite>
 {
     #region 属性
     private Int32 _Id;
@@ -130,7 +131,7 @@ public partial class RouteRewrite : IRouteRewrite, IEntity<RouteRewriteModel>
     #region 拷贝
     /// <summary>拷贝模型对象</summary>
     /// <param name="model">模型</param>
-    public void Copy(RouteRewriteModel model)
+    public void Copy(IRouteRewrite model)
     {
         Id = model.Id;
         Name = model.Name;

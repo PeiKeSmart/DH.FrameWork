@@ -8,6 +8,7 @@ using NewLife;
 using NewLife.Data;
 using XCode;
 using XCode.Cache;
+using XCode.Common;
 using XCode.Configuration;
 using XCode.DataAccessLayer;
 
@@ -19,7 +20,7 @@ namespace DH.Entity;
 [Description("站点基础信息翻译表")]
 [BindIndex("IU_DG_SiteInfoLan_SiteInfoId_LanguageId", true, "SiteInfoId,LanguageId")]
 [BindTable("DG_SiteInfoLan", Description = "站点基础信息翻译表", ConnName = "DG", DbType = DatabaseType.None)]
-public partial class SiteInfoLan : ISiteInfoLan, IEntity<SiteInfoLanModel>
+public partial class SiteInfoLan : ISiteInfoLan, IEntity<ISiteInfoLan>
 {
     #region 属性
     private Int32 _Id;
@@ -98,7 +99,7 @@ public partial class SiteInfoLan : ISiteInfoLan, IEntity<SiteInfoLanModel>
     #region 拷贝
     /// <summary>拷贝模型对象</summary>
     /// <param name="model">模型</param>
-    public void Copy(SiteInfoLanModel model)
+    public void Copy(ISiteInfoLan model)
     {
         Id = model.Id;
         SiteInfoId = model.SiteInfoId;

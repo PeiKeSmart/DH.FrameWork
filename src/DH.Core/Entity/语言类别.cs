@@ -8,6 +8,7 @@ using NewLife;
 using NewLife.Data;
 using XCode;
 using XCode.Cache;
+using XCode.Common;
 using XCode.Configuration;
 using XCode.DataAccessLayer;
 
@@ -20,7 +21,7 @@ namespace DH.Entity;
 [BindIndex("IU_DG_Language_UniqueSeoCode", true, "UniqueSeoCode")]
 [BindIndex("IU_DG_Language_LanguageCulture", true, "LanguageCulture")]
 [BindTable("DG_Language", Description = "语言类别", ConnName = "DG", DbType = DatabaseType.None)]
-public partial class Language : ILanguage, IEntity<LanguageModel>
+public partial class Language : ILanguage, IEntity<ILanguage>
 {
     #region 属性
     private Int32 _Id;
@@ -219,7 +220,7 @@ public partial class Language : ILanguage, IEntity<LanguageModel>
     #region 拷贝
     /// <summary>拷贝模型对象</summary>
     /// <param name="model">模型</param>
-    public void Copy(LanguageModel model)
+    public void Copy(ILanguage model)
     {
         Id = model.Id;
         Name = model.Name;

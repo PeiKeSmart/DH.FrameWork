@@ -8,6 +8,7 @@ using NewLife;
 using NewLife.Data;
 using XCode;
 using XCode.Cache;
+using XCode.Common;
 using XCode.Configuration;
 using XCode.DataAccessLayer;
 
@@ -19,7 +20,7 @@ namespace DH.Entity;
 [Description("动态路由表")]
 [BindIndex("IU_DH_DynamicRoute_RegexInfo", true, "RegexInfo")]
 [BindTable("DH_DynamicRoute", Description = "动态路由表", ConnName = "DG", DbType = DatabaseType.None)]
-public partial class DynamicRoute : IDynamicRoute, IEntity<DynamicRouteModel>
+public partial class DynamicRoute : IDynamicRoute, IEntity<IDynamicRoute>
 {
     #region 属性
     private Int32 _Id;
@@ -146,7 +147,7 @@ public partial class DynamicRoute : IDynamicRoute, IEntity<DynamicRouteModel>
     #region 拷贝
     /// <summary>拷贝模型对象</summary>
     /// <param name="model">模型</param>
-    public void Copy(DynamicRouteModel model)
+    public void Copy(IDynamicRoute model)
     {
         Id = model.Id;
         RegexInfo = model.RegexInfo;

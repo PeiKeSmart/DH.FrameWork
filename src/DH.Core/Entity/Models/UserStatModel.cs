@@ -4,13 +4,11 @@ using System.ComponentModel;
 using System.Runtime.Serialization;
 using System.Web.Script.Serialization;
 using System.Xml.Serialization;
-using NewLife.Data;
-using NewLife.Reflection;
 
 namespace DH.Entity;
 
 /// <summary>用户统计</summary>
-public partial class UserStatModel : IModel
+public partial class UserStatModel : IUserStat
 {
     #region 属性
     /// <summary>编号</summary>
@@ -60,61 +58,6 @@ public partial class UserStatModel : IModel
 
     /// <summary>详细信息</summary>
     public String Remark { get; set; }
-    #endregion
-
-    #region 获取/设置 字段值
-    /// <summary>获取/设置 字段值</summary>
-    /// <param name="name">字段名</param>
-    /// <returns></returns>
-    public virtual Object this[String name]
-    {
-        get
-        {
-            return name switch
-            {
-                "ID" => ID,
-                "Date" => Date,
-                "Total" => Total,
-                "Logins" => Logins,
-                "OAuths" => OAuths,
-                "MaxOnline" => MaxOnline,
-                "Actives" => Actives,
-                "ActivesT7" => ActivesT7,
-                "ActivesT30" => ActivesT30,
-                "News" => News,
-                "NewsT7" => NewsT7,
-                "NewsT30" => NewsT30,
-                "OnlineTime" => OnlineTime,
-                "CreateTime" => CreateTime,
-                "UpdateTime" => UpdateTime,
-                "Remark" => Remark,
-                _ => this.GetValue(name),
-            };
-        }
-        set
-        {
-            switch (name)
-            {
-                case "ID": ID = value.ToInt(); break;
-                case "Date": Date = value.ToDateTime(); break;
-                case "Total": Total = value.ToInt(); break;
-                case "Logins": Logins = value.ToInt(); break;
-                case "OAuths": OAuths = value.ToInt(); break;
-                case "MaxOnline": MaxOnline = value.ToInt(); break;
-                case "Actives": Actives = value.ToInt(); break;
-                case "ActivesT7": ActivesT7 = value.ToInt(); break;
-                case "ActivesT30": ActivesT30 = value.ToInt(); break;
-                case "News": News = value.ToInt(); break;
-                case "NewsT7": NewsT7 = value.ToInt(); break;
-                case "NewsT30": NewsT30 = value.ToInt(); break;
-                case "OnlineTime": OnlineTime = value.ToInt(); break;
-                case "CreateTime": CreateTime = value.ToDateTime(); break;
-                case "UpdateTime": UpdateTime = value.ToDateTime(); break;
-                case "Remark": Remark = Convert.ToString(value); break;
-                default: this.SetValue(name, value); break;
-            }
-        }
-    }
     #endregion
 
     #region 拷贝
