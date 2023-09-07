@@ -137,5 +137,12 @@ public partial class SysOnlineUsers : DHEntityBase<SysOnlineUsers>
         return model;
     }
 
+    /// <summary>
+    /// 重置在线用户表
+    /// </summary>
+    public static void ResetOnlineUserTable()
+    {
+        SysOnlineUsers.Delete(SysOnlineUsers._.Id > 0);
+    }
     #endregion
 }

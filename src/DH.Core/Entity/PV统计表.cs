@@ -18,7 +18,7 @@ namespace DH.Entity;
 [Serializable]
 [DataObject]
 [Description("PV统计表")]
-[BindTable("DH_PvStats", Description = "PV统计表", ConnName = "DG", DbType = DatabaseType.None)]
+[BindTable("DH_SysPvStats", Description = "PV统计表", ConnName = "DG", DbType = DatabaseType.None)]
 public partial class SysPvstats : ISysPvstats, IEntity<ISysPvstats>
 {
     #region 属性

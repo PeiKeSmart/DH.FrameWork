@@ -18,7 +18,7 @@ namespace DH.Entity;
 [Serializable]
 [DataObject]
 [Description("在线用户表")]
-[BindTable("DH_OnlineUsers", Description = "在线用户表", ConnName = "DG", DbType = DatabaseType.None)]
+[BindTable("DH_SysOnlineUsers", Description = "在线用户表", ConnName = "DG", DbType = DatabaseType.None)]
 public partial class SysOnlineUsers : ISysOnlineUsers, IEntity<ISysOnlineUsers>
 {
     #region 属性
