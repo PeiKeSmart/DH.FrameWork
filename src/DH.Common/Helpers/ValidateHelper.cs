@@ -51,7 +51,7 @@ public class ValidateHelper {
     /// <returns></returns>
     public static bool BetweenPeriod(string periodList)
     {
-        return BetweenPeriod(periodList, out string liePeriod);
+        return BetweenPeriod(periodList, out _);
     }
 
     /// <summary>
@@ -84,8 +84,8 @@ public class ValidateHelper {
             foreach (string period in periodList)
             {
                 int index = period.IndexOf("-");
-                startTime = period.Substring(0, index).StampToDateTime();
-                endTime = period.Substring(index + 1).StampToDateTime();
+                startTime = period[..index].StampToDateTime();
+                endTime = period[(index + 1)..].StampToDateTime();
 
                 if (startTime < endTime)
                 {
@@ -121,7 +121,7 @@ public class ValidateHelper {
             return false;
 
         string[] sourceIPBlockList = sourceIP.SplitString(@".");
-        string[] targetIPBlockList = sourceIP.SplitString(@".");
+        string[] targetIPBlockList = targetIP.SplitString(@".");
 
         int sourceIPBlockListLength = sourceIPBlockList.Length;
 
