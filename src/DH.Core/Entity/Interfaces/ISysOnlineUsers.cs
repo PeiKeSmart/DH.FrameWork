@@ -26,8 +26,8 @@ public partial interface ISysOnlineUsers
     /// <summary>用户ip</summary>
     String Ip { get; set; }
 
-    /// <summary>用户所在区域id</summary>
-    Int16 Regionid { get; set; }
+    /// <summary>用户所在区域</summary>
+    String Region { get; set; }
 
     /// <summary>最后更新时间</summary>
     DateTime Updatetime { get; set; }

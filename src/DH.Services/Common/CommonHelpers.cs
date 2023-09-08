@@ -8,6 +8,8 @@ using DH.Models;
 using DH.Timing;
 
 using IP2Region;
+using IP2Region.Net.Abstractions;
+using IP2Region.Net.XDB;
 
 using MaxMind.GeoIP2;
 using MaxMind.GeoIP2.Exceptions;
@@ -17,6 +19,7 @@ using MaxMind.GeoIP2.Responses;
 using Microsoft.AspNetCore.Http;
 
 using NewLife;
+using NewLife.Log;
 
 using Polly;
 
@@ -170,7 +173,8 @@ public static class CommonHelpers
         return false;
     }
 
-    private static readonly DbSearcher IPSearcher = new(Path.Combine(AppContext.BaseDirectory + "/Data", "ip2region.db"));
+    //private static readonly DbSearcher IPSearcher = new(Path.Combine(AppContext.BaseDirectory + "/Data", "ip2region.db"));
+    private static readonly ISearcher IPSearcher = new Searcher(CachePolicy.Content, Path.Combine(AppContext.BaseDirectory + "/Data", "ip2region.xdb"));
     public static readonly DatabaseReader MaxmindReader = new(Path.Combine(AppContext.BaseDirectory + "/Data", "GeoLite2-City.mmdb"));
     private static readonly DatabaseReader MaxmindAsnReader = new(Path.Combine(AppContext.BaseDirectory + "/Data", "GeoLite2-ASN.mmdb"));
 
@@ -228,7 +232,7 @@ public static class CommonHelpers
                 ip = ip.MapToIPv4();
                 goto case AddressFamily.InterNetwork;
             case AddressFamily.InterNetwork:
-                var parts = IPSearcher.MemorySearch(ip.ToString())?.Region.Split('|');
+                var parts = IPSearcher.Search(ip.ToString())?.Split('|');
                 if (parts != null)
                 {
                     var network = parts[^1] == "0" ? asn.AutonomousSystemOrganization : parts[^1] + "/" + asn.AutonomousSystemOrganization;
@@ -261,7 +265,7 @@ public static class CommonHelpers
                 ip = ip.MapToIPv4();
                 goto case AddressFamily.InterNetwork;
             case AddressFamily.InterNetwork:
-                var parts = IPSearcher.MemorySearch(ip.ToString())?.Region.Split('|');
+                var parts = IPSearcher.Search(ip.ToString())?.Split('|');
                 if (parts != null)
                 {
                     var asn = GetIPAsn(ip);

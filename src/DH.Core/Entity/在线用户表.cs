@@ -62,13 +62,13 @@ public partial class SysOnlineUsers : ISysOnlineUsers, IEntity<ISysOnlineUsers>
     [BindColumn("Ip", "用户ip", "varchar(20)")]
     public String Ip { get => _Ip; set { if (OnPropertyChanging("Ip", value)) { _Ip = value; OnPropertyChanged("Ip"); } } }
 
-    private Int16 _Regionid;
-    /// <summary>用户所在区域id</summary>
-    [DisplayName("用户所在区域id")]
-    [Description("用户所在区域id")]
-    [DataObjectField(false, false, false, 0)]
-    [BindColumn("Regionid", "用户所在区域id", "smallint(6)")]
-    public Int16 Regionid { get => _Regionid; set { if (OnPropertyChanging("Regionid", value)) { _Regionid = value; OnPropertyChanged("Regionid"); } } }
+    private String _Region;
+    /// <summary>用户所在区域</summary>
+    [DisplayName("用户所在区域")]
+    [Description("用户所在区域")]
+    [DataObjectField(false, false, true, 50)]
+    [BindColumn("Region", "用户所在区域", "")]
+    public String Region { get => _Region; set { if (OnPropertyChanging("Region", value)) { _Region = value; OnPropertyChanged("Region"); } } }
 
     private DateTime _Updatetime;
     /// <summary>最后更新时间</summary>
@@ -89,7 +89,7 @@ public partial class SysOnlineUsers : ISysOnlineUsers, IEntity<ISysOnlineUsers>
         Sid = model.Sid;
         NickName = model.NickName;
         Ip = model.Ip;
-        Regionid = model.Regionid;
+        Region = model.Region;
         Updatetime = model.Updatetime;
     }
     #endregion
@@ -107,7 +107,7 @@ public partial class SysOnlineUsers : ISysOnlineUsers, IEntity<ISysOnlineUsers>
             "Sid" => _Sid,
             "NickName" => _NickName,
             "Ip" => _Ip,
-            "Regionid" => _Regionid,
+            "Region" => _Region,
             "Updatetime" => _Updatetime,
             _ => base[name]
         };
@@ -120,7 +120,7 @@ public partial class SysOnlineUsers : ISysOnlineUsers, IEntity<ISysOnlineUsers>
                 case "Sid": _Sid = Convert.ToString(value); break;
                 case "NickName": _NickName = Convert.ToString(value); break;
                 case "Ip": _Ip = Convert.ToString(value); break;
-                case "Regionid": _Regionid = Convert.ToInt16(value); break;
+                case "Region": _Region = Convert.ToString(value); break;
                 case "Updatetime": _Updatetime = value.ToDateTime(); break;
                 default: base[name] = value; break;
             }
@@ -150,8 +150,8 @@ public partial class SysOnlineUsers : ISysOnlineUsers, IEntity<ISysOnlineUsers>
         /// <summary>用户ip</summary>
         public static readonly Field Ip = FindByName("Ip");
 
-        /// <summary>用户所在区域id</summary>
-        public static readonly Field Regionid = FindByName("Regionid");
+        /// <summary>用户所在区域</summary>
+        public static readonly Field Region = FindByName("Region");
 
         /// <summary>最后更新时间</summary>
         public static readonly Field Updatetime = FindByName("Updatetime");
@@ -177,8 +177,8 @@ public partial class SysOnlineUsers : ISysOnlineUsers, IEntity<ISysOnlineUsers>
         /// <summary>用户ip</summary>
         public const String Ip = "Ip";
 
-        /// <summary>用户所在区域id</summary>
-        public const String Regionid = "Regionid";
+        /// <summary>用户所在区域</summary>
+        public const String Region = "Region";
 
         /// <summary>最后更新时间</summary>
         public const String Updatetime = "Updatetime";

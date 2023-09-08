@@ -26,8 +26,8 @@ public partial class SysOnlineUsersModel : ISysOnlineUsers
     /// <summary>用户ip</summary>
     public String Ip { get; set; }
 
-    /// <summary>用户所在区域id</summary>
-    public Int16 Regionid { get; set; }
+    /// <summary>用户所在区域</summary>
+    public String Region { get; set; }
 
     /// <summary>最后更新时间</summary>
     public DateTime Updatetime { get; set; }
@@ -43,7 +43,7 @@ public partial class SysOnlineUsersModel : ISysOnlineUsers
         Sid = model.Sid;
         NickName = model.NickName;
         Ip = model.Ip;
-        Regionid = model.Regionid;
+        Region = model.Region;
         Updatetime = model.Updatetime;
     }
     #endregion
