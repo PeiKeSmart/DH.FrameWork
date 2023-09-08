@@ -260,7 +260,7 @@ public class DHSetting : Config<DHSetting>
     public String LoginUrl { get; set; } = "~/Login";
 
     /// <summary>万能验证码</summary>
-    [Description("万能验证码")]
+    [Description("万能验证码。用于测试使用专门的验证码进行测试")]
     [Category("用户登录")]
     public String EnableUniversalCaptcha { get; set; } = Rand.NextString(4);
 
@@ -268,6 +268,42 @@ public class DHSetting : Config<DHSetting>
     [Description("万能验证码开启截止时间")]
     [Category("用户登录")]
     public DateTime UniversalCaptchaEndTime { get; set; }
+
+    /// <summary>
+    /// 禁止访问时间
+    /// </summary>
+    [Description("禁止访问时间")]
+    public string BanAccessTime { get; set; }
+
+    /// <summary>
+    /// 禁止IP列表
+    /// </summary>
+    [Description("禁止IP列表")]
+    public string BanAccessIP { get; set; } = "";
+
+    /// <summary>
+    /// 允许IP列表
+    /// </summary>
+    [Description("允许IP列表")]
+    public string AllowAccessIP { get; set; } = "";
+
+    /// <summary>
+    /// 启用在线数统计
+    /// </summary>
+    [Description("启用在线数统计")]
+    public Boolean EnableOnlineStatistics { get; set; } = false;
+
+    /// <summary>
+    /// 最大在线人数
+    /// </summary>
+    [Description("最大在线人数")]
+    public int MaxOnlineCount { get; set; } = 10000;
+
+    /// <summary>
+    /// 在线人数缓存时间(单位为分钟,0代表即时数量)
+    /// </summary>
+    [Description("在线人数缓存时间(单位为分钟,0代表即时数量)")]
+    public int OnlineCountExpire { get; set; } = 5;
 
     #region 系统功能
     /// <summary>多租户。是否支持多租户，租户模式禁止访问系统管理，平台管理模式禁止访问租户页面</summary>

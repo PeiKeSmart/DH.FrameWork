@@ -84,8 +84,8 @@ public class ValidateHelper {
             foreach (string period in periodList)
             {
                 int index = period.IndexOf("-");
-                startTime = period[..index].StampToDateTime();
-                endTime = period[(index + 1)..].StampToDateTime();
+                startTime = period[..index].ToDateTime();
+                endTime = period[(index + 1)..].ToDateTime();
 
                 if (startTime < endTime)
                 {

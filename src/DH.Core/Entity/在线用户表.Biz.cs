@@ -11,6 +11,7 @@ using System.Web;
 using System.Web.Script.Serialization;
 using System.Xml.Serialization;
 using NewLife;
+using NewLife.Caching;
 using NewLife.Data;
 using NewLife.Log;
 using NewLife.Model;
@@ -112,6 +113,40 @@ public partial class SysOnlineUsers : DHEntityBase<SysOnlineUsers>
         return Meta.SingleCache[id];
 
         //return Find(_.Id == id);
+    }
+
+    /// <summary>
+    /// 获得全部在线用户数量
+    /// </summary>
+    /// <returns></returns>
+    public static Int64 GetOnlineUserCount()
+    {
+        var onlineUserExpire = DHSetting.Current.OnlineCountExpire;
+        if (onlineUserExpire == 0)
+            return GetOnlineUserCount(0);
+
+        var cacheAllCount = Cache.Default.Get<Int64>($"{DHUtilSetting.Current.CacheKeyPrefix}.OnlineAllUserCount"); // 获取在线人数缓存数据
+
+        if (cacheAllCount == 0)
+        {
+            cacheAllCount = GetOnlineUserCount(0);
+            Cache.Default.Add($"{DHUtilSetting.Current.CacheKeyPrefix}.OnlineAllUserCount", cacheAllCount);
+        }
+
+        return cacheAllCount;
+    }
+
+    /// <summary>
+    /// 获得在线用户数量
+    /// </summary>
+    /// <param name="userType">在线用户类型</param>
+    /// <returns></returns>
+    public static Int64 GetOnlineUserCount(Int32 userType)
+    {
+        if (userType == 0)
+            return FindCount();
+        else
+            return FindCount(_.Uid == -1);
     }
     #endregion
 
