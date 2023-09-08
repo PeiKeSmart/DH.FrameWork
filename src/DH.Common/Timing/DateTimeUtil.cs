@@ -884,7 +884,18 @@ public static class DateTimeUtil
     /// <returns></returns>
     public static int GetMonthLen(string iYear, string iMonth)
     {
-        return DateTime.DaysInMonth(int.Parse(iYear), int.Parse(iMonth));
+        return GetMonthLen(int.Parse(iYear), int.Parse(iMonth));
+    }
+
+    /// <summary>
+    /// 获取一个月有多少天！
+    /// </summary>
+    /// <param name="iYear"></param>
+    /// <param name="iMonth"></param>
+    /// <returns></returns>
+    public static int GetMonthLen(Int32 iYear, Int32 iMonth)
+    {
+        return DateTime.DaysInMonth(iYear, iMonth);
     }
 
     #endregion

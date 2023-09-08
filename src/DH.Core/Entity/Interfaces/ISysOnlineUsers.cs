@@ -18,7 +18,7 @@ public partial interface ISysOnlineUsers
     Int32 Uid { get; set; }
 
     /// <summary>用户sessionid</summary>
-    String Sid { get; set; }
+    Int64 Sid { get; set; }
 
     /// <summary>用户昵称</summary>
     String NickName { get; set; }
@@ -28,6 +28,9 @@ public partial interface ISysOnlineUsers
 
     /// <summary>用户所在区域</summary>
     String Region { get; set; }
+
+    /// <summary>请求次数</summary>
+    Int32 Clicks { get; set; }
 
     /// <summary>最后更新时间</summary>
     DateTime Updatetime { get; set; }

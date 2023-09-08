@@ -99,6 +99,7 @@
       <Column Name="Answer2" DataType="String" Length="100" Description="回答2" />
       <Column Name="Question3" DataType="String" Length="100" Description="问题3" />
       <Column Name="Answer3" DataType="String" Length="100" Description="回答3" />
+      <Column Name="OnlineTime" DataType="Int32" ItemType="TimeSpan" Description="在线时间。累计在线总时间，单位秒" Category="登录信息" />
       <Column Name="CreateUser" DataType="String" Description="创建者" />
       <Column Name="CreateUserID" DataType="Int32" Description="创建者" />
       <Column Name="CreateTime" DataType="DateTime" Description="创建时间" />
@@ -611,12 +612,33 @@
     <Columns>
       <Column Name="Id" DataType="Int32" RawType="int(11)" Identity="True" PrimaryKey="True" Description="编号" />
       <Column Name="Uid" DataType="Int32" RawType="int(11)" Description="用户id" />
-      <Column Name="Sid" DataType="String" RawType="varchar(16)" Length="16" Nullable="False" Description="用户sessionid" />
+      <Column Name="Sid" DataType="Int64" Description="用户sessionid" />
       <Column Name="NickName" DataType="String" RawType="varchar(100)" Length="100" Nullable="False" Description="用户昵称" />
       <Column Name="Ip" DataType="String" RawType="varchar(20)" Length="20" Nullable="False" Description="用户ip" />
       <Column Name="Region" DataType="String" Description="用户所在区域" />
+      <Column Name="Clicks" DataType="Int32" Description="请求次数" />
       <Column Name="Updatetime" DataType="DateTime" Nullable="False" Description="最后更新时间" />
     </Columns>
+    <Indexes>
+      <Index Columns="Sid" Unique="True" />
+      <Index Columns="Updatetime" />
+    </Indexes>
+  </Table>
+  <Table Name="SysOnlineTime" TableName="DH_SysOnlineTime" Description="在线时间表" ConnName="Cube">
+    <Columns>
+      <Column Name="Id" DataType="Int32" PrimaryKey="True" Description="用户编号" />
+      <Column Name="Year" DataType="Int32" Description="年" />
+      <Column Name="Month" DataType="Int32" Description="月" />
+      <Column Name="MonthTimes" DataType="Int32" ItemType="TimeSpan" Description="本月在线时间。累计在线总时间，单位秒" />
+      <Column Name="DayTimes" DataType="Int32" ItemType="TimeSpan" Description="本月在线时间。累计在线总时间，单位秒" />
+      <Column Name="Day" DataType="String" Description="按日的在线时间。以|分隔" />
+      <Column Name="UpdateTime" DataType="DateTime" Nullable="False" Description="最后更新时间" />
+    </Columns>
+    <Indexes>
+      <Index Name="PRIMARY" Columns="Id" Unique="True" PrimaryKey="True" />
+      <Index Columns="Id,Year,Month" Unique="True" />
+      <Index Columns="UpdateTime" />
+    </Indexes>
   </Table>
   <Table Name="SysPvstats" TableName="DH_SysPvStats" Description="PV统计表">
     <Columns>

@@ -305,6 +305,18 @@ public class DHSetting : Config<DHSetting>
     [Description("在线人数缓存时间(单位为分钟,0代表即时数量)")]
     public int OnlineCountExpire { get; set; } = 5;
 
+    /// <summary>
+    /// 更新用户在线时间间隔(单位为分钟,0代表不更新)
+    /// </summary>
+    [Description("更新用户在线时间间隔(单位为分钟,0代表不更新)")]
+    public int UpdateOnlineTimeSpan { get; set; } = 2;
+
+    /// <summary>
+    /// 在线用户过期时间(单位为分钟)
+    /// </summary>
+    [Description("在线用户过期时间(单位为分钟)")]
+    public int OnlineUserExpire { get; set; } = 8;
+
     #region 系统功能
     /// <summary>多租户。是否支持多租户，租户模式禁止访问系统管理，平台管理模式禁止访问租户页面</summary>
     [Description("多租户。是否支持多租户，租户模式禁止访问系统管理，平台管理模式禁止访问租户页面")]

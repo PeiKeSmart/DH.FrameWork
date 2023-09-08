@@ -18,6 +18,8 @@ namespace DH.Entity;
 [Serializable]
 [DataObject]
 [Description("在线用户表")]
+[BindIndex("IU_DH_SysOnlineUsers_Sid", true, "Sid")]
+[BindIndex("IX_DH_SysOnlineUsers_Updatetime", false, "Updatetime")]
 [BindTable("DH_SysOnlineUsers", Description = "在线用户表", ConnName = "DG", DbType = DatabaseType.None)]
 public partial class SysOnlineUsers : ISysOnlineUsers, IEntity<ISysOnlineUsers>
 {
@@ -38,13 +40,13 @@ public partial class SysOnlineUsers : ISysOnlineUsers, IEntity<ISysOnlineUsers>
     [BindColumn("Uid", "用户id", "int(11)")]
     public Int32 Uid { get => _Uid; set { if (OnPropertyChanging("Uid", value)) { _Uid = value; OnPropertyChanged("Uid"); } } }
 
-    private String _Sid;
+    private Int64 _Sid;
     /// <summary>用户sessionid</summary>
     [DisplayName("用户sessionid")]
     [Description("用户sessionid")]
-    [DataObjectField(false, false, false, 16)]
-    [BindColumn("Sid", "用户sessionid", "varchar(16)")]
-    public String Sid { get => _Sid; set { if (OnPropertyChanging("Sid", value)) { _Sid = value; OnPropertyChanged("Sid"); } } }
+    [DataObjectField(false, false, false, 0)]
+    [BindColumn("Sid", "用户sessionid", "")]
+    public Int64 Sid { get => _Sid; set { if (OnPropertyChanging("Sid", value)) { _Sid = value; OnPropertyChanged("Sid"); } } }
 
     private String _NickName;
     /// <summary>用户昵称</summary>
@@ -70,6 +72,14 @@ public partial class SysOnlineUsers : ISysOnlineUsers, IEntity<ISysOnlineUsers>
     [BindColumn("Region", "用户所在区域", "")]
     public String Region { get => _Region; set { if (OnPropertyChanging("Region", value)) { _Region = value; OnPropertyChanged("Region"); } } }
 
+    private Int32 _Clicks;
+    /// <summary>请求次数</summary>
+    [DisplayName("请求次数")]
+    [Description("请求次数")]
+    [DataObjectField(false, false, false, 0)]
+    [BindColumn("Clicks", "请求次数", "")]
+    public Int32 Clicks { get => _Clicks; set { if (OnPropertyChanging("Clicks", value)) { _Clicks = value; OnPropertyChanged("Clicks"); } } }
+
     private DateTime _Updatetime;
     /// <summary>最后更新时间</summary>
     [DisplayName("最后更新时间")]
@@ -90,6 +100,7 @@ public partial class SysOnlineUsers : ISysOnlineUsers, IEntity<ISysOnlineUsers>
         NickName = model.NickName;
         Ip = model.Ip;
         Region = model.Region;
+        Clicks = model.Clicks;
         Updatetime = model.Updatetime;
     }
     #endregion
@@ -108,6 +119,7 @@ public partial class SysOnlineUsers : ISysOnlineUsers, IEntity<ISysOnlineUsers>
             "NickName" => _NickName,
             "Ip" => _Ip,
             "Region" => _Region,
+            "Clicks" => _Clicks,
             "Updatetime" => _Updatetime,
             _ => base[name]
         };
@@ -117,10 +129,11 @@ public partial class SysOnlineUsers : ISysOnlineUsers, IEntity<ISysOnlineUsers>
             {
                 case "Id": _Id = value.ToInt(); break;
                 case "Uid": _Uid = value.ToInt(); break;
-                case "Sid": _Sid = Convert.ToString(value); break;
+                case "Sid": _Sid = value.ToLong(); break;
                 case "NickName": _NickName = Convert.ToString(value); break;
                 case "Ip": _Ip = Convert.ToString(value); break;
                 case "Region": _Region = Convert.ToString(value); break;
+                case "Clicks": _Clicks = value.ToInt(); break;
                 case "Updatetime": _Updatetime = value.ToDateTime(); break;
                 default: base[name] = value; break;
             }
@@ -153,6 +166,9 @@ public partial class SysOnlineUsers : ISysOnlineUsers, IEntity<ISysOnlineUsers>
         /// <summary>用户所在区域</summary>
         public static readonly Field Region = FindByName("Region");
 
+        /// <summary>请求次数</summary>
+        public static readonly Field Clicks = FindByName("Clicks");
+
         /// <summary>最后更新时间</summary>
         public static readonly Field Updatetime = FindByName("Updatetime");
 
@@ -179,6 +195,9 @@ public partial class SysOnlineUsers : ISysOnlineUsers, IEntity<ISysOnlineUsers>
 
         /// <summary>用户所在区域</summary>
         public const String Region = "Region";
+
+        /// <summary>请求次数</summary>
+        public const String Clicks = "Clicks";
 
         /// <summary>最后更新时间</summary>
         public const String Updatetime = "Updatetime";

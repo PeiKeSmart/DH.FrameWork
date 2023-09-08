@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Script.Serialization;
 using System.Xml.Serialization;
+
 using NewLife;
 using NewLife.Caching;
 using NewLife.Data;
@@ -18,6 +19,7 @@ using NewLife.Model;
 using NewLife.Reflection;
 using NewLife.Threading;
 using NewLife.Web;
+
 using XCode;
 using XCode.Cache;
 using XCode.Configuration;
@@ -27,14 +29,13 @@ using XCode.Shards;
 
 namespace DH.Entity;
 
-public partial class SysOnlineUsers : DHEntityBase<SysOnlineUsers>
-{
+public partial class SysOnlineUsers : DHEntityBase<SysOnlineUsers> {
     #region 对象操作
     static SysOnlineUsers()
     {
         // 累加字段，生成 Update xx Set Count=Count+1234 Where xxx
-        //var df = Meta.Factory.AdditionalFields;
-        //df.Add(nameof(Uid));
+        var df = Meta.Factory.AdditionalFields;
+        df.Add(nameof(Clicks));
 
         // 过滤器 UserModule、TimeModule、IPModule
         Meta.Modules.Add<TimeModule>();
@@ -48,7 +49,6 @@ public partial class SysOnlineUsers : DHEntityBase<SysOnlineUsers>
         if (!HasDirty) return;
 
         // 这里验证参数范围，建议抛出参数异常，指定参数名，前端用户界面可以捕获参数异常并聚焦到对应的参数输入框
-        if (Sid.IsNullOrEmpty()) throw new ArgumentNullException(nameof(Sid), "用户sessionid不能为空！");
         if (NickName.IsNullOrEmpty()) throw new ArgumentNullException(nameof(NickName), "用户昵称不能为空！");
         if (Ip.IsNullOrEmpty()) throw new ArgumentNullException(nameof(Ip), "用户ip不能为空！");
 
@@ -107,7 +107,7 @@ public partial class SysOnlineUsers : DHEntityBase<SysOnlineUsers>
         if (id <= 0) return null;
 
         // 实体缓存
-        if (Meta.Session.Count < 1000) return Meta.Cache.Find(e => e.Id == id);
+        if (Meta.Session.Count < 10000) return Meta.Cache.Find(e => e.Id == id);
 
         // 单对象缓存
         return Meta.SingleCache[id];
@@ -146,7 +146,48 @@ public partial class SysOnlineUsers : DHEntityBase<SysOnlineUsers>
         if (userType == 0)
             return FindCount();
         else
-            return FindCount(_.Uid == -1);
+            return FindCount(_.Uid == 0);
+    }
+
+    /// <summary>根据用户sessionid查找</summary>
+    /// <param name="sid">用户sessionid</param>
+    /// <returns>实体列表</returns>
+    public static IList<SysOnlineUsers> FindAllBySid(Int64 sid)
+    {
+        if (sid <= 0) return new List<SysOnlineUsers>();
+
+        // 实体缓存
+        if (Meta.Session.Count < 10000) return Meta.Cache.FindAll(e => e.Sid == sid);
+
+        return FindAll(_.Sid == sid);
+    }
+
+    /// <summary>
+    /// 获取过期用户
+    /// </summary>
+    /// <param name="expiretime">过期时间</param>
+    /// <returns></returns>
+    public static IList<SysOnlineUsers> GetExpiredOnlineUser(DateTime expiretime)
+    {
+        if (Meta.Session.Count < 10000)
+        {
+            return Meta.Cache.FindAll(e => e.Updatetime < expiretime);
+        }
+
+        return FindAll(_.Updatetime < expiretime);
+    }
+
+    /// <summary>根据用户sessionid查找</summary>
+    /// <param name="sid">用户sessionid</param>
+    /// <returns>实体对象</returns>
+    public static SysOnlineUsers FindBySid(Int64 sid)
+    {
+        if (sid <= 0) return null;
+
+        // 实体缓存
+        if (Meta.Session.Count < 1000) return Meta.Cache.Find(e => e.Sid == sid);
+
+        return Find(_.Sid == sid);
     }
     #endregion
 
@@ -178,6 +219,94 @@ public partial class SysOnlineUsers : DHEntityBase<SysOnlineUsers>
     public static void ResetOnlineUserTable()
     {
         SysOnlineUsers.Delete(SysOnlineUsers._.Id > 0);
+    }
+
+    /// <summary>
+    /// 更新在线用户
+    /// </summary>
+    /// <param name="uid">用户Id</param>
+    /// <param name="sid">用户惟一Id</param>
+    /// <param name="nickName">昵称</param>
+    /// <param name="ip">Ip地址</param>
+    /// <param name="region">区域</param>
+    public static void UpdateOnlineUser(Int32 uid, Int64 sid, string nickName, string ip, String region)
+    {
+        if (sid <= 0) return;
+
+        var onlineUserInfo = GetOnlineUserBySid(sid);
+        if (onlineUserInfo != null)
+        {
+            try
+            {
+                onlineUserInfo.Uid = uid;
+                onlineUserInfo.Sid = sid;
+                onlineUserInfo.NickName = nickName;
+                onlineUserInfo.Ip = ip;
+                onlineUserInfo.Region = region;
+                onlineUserInfo.Clicks++;
+                onlineUserInfo.SaveAsync();
+            }
+            catch (Exception ex)
+            {
+                XTrace.WriteException(ex);
+                onlineUserInfo = new SysOnlineUsers();
+                onlineUserInfo.Uid = uid;
+                onlineUserInfo.Sid = sid;
+                onlineUserInfo.NickName = nickName;
+                onlineUserInfo.Ip = ip;
+                onlineUserInfo.Region = region;
+                onlineUserInfo.Clicks = 1;
+                onlineUserInfo.Insert();
+            }
+        }
+        else
+        {
+            onlineUserInfo = new SysOnlineUsers();
+            onlineUserInfo.Uid = uid;
+            onlineUserInfo.Sid = sid;
+            onlineUserInfo.NickName = nickName;
+            onlineUserInfo.Ip = ip;
+            onlineUserInfo.Region = region;
+            onlineUserInfo.Clicks = 1;
+            onlineUserInfo.Insert();
+        }
+
+        DeleteExpiredOnlineUser();
+    }
+
+    /// <summary>根据用户SessionId查找</summary>
+    /// <param name="sid">SessionId</param>
+    /// <returns>实体对象</returns>
+    public static SysOnlineUsers GetOnlineUserBySid(Int64 sid)
+    {
+        if (sid <= 0) return null;
+
+        if (Meta.Session.Count < 10000)
+        {
+            return Meta.Cache.Find(e => e.Sid == sid);
+        }
+
+        return Find(_.Sid == sid);
+    }
+
+    /// <summary>
+    /// 最后一次删除过期在线用户的时间
+    /// </summary>
+    private static int _lastdeleteexpiredonlineuserstime = 0;
+    /// <summary>
+    /// 删除过期在线用户
+    /// </summary>
+    private static void DeleteExpiredOnlineUser()
+    {
+        if (_lastdeleteexpiredonlineuserstime == 0 || _lastdeleteexpiredonlineuserstime < (Environment.TickCount - DHSetting.Current.OnlineUserExpire * 1000 * 60))
+        {
+            var expiretime = DateTime.Now.AddMinutes((DHSetting.Current.OnlineUserExpire) * -1);
+
+            var list = GetExpiredOnlineUser(expiretime);
+
+            list.Delete();
+            _lastdeleteexpiredonlineuserstime = Environment.TickCount;
+        }
     }
     #endregion
 }

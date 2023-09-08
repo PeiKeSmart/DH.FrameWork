@@ -182,6 +182,9 @@ public partial interface IUserDetail
     /// <summary>回答3</summary>
     String Answer3 { get; set; }
 
+    /// <summary>在线时间。累计在线总时间，单位秒</summary>
+    Int32 OnlineTime { get; set; }
+
     /// <summary>创建者</summary>
     String CreateUser { get; set; }
 

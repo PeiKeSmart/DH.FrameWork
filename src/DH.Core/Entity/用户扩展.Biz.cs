@@ -22,6 +22,7 @@ namespace DH.Entity {
             df.Add(nameof(FreezePredeposit));
             df.Add(nameof(AvailableRcBalance));
             df.Add(nameof(FreezeRcBalance));
+            df.Add(nameof(OnlineTime));
 
             // 过滤器 UserModule、TimeModule、IPModule
             Meta.Modules.Add<UserModule>();

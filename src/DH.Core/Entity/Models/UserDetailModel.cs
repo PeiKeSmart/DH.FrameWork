@@ -182,6 +182,9 @@ public partial class UserDetailModel : IUserDetail
     /// <summary>回答3</summary>
     public String Answer3 { get; set; }
 
+    /// <summary>在线时间。累计在线总时间，单位秒</summary>
+    public Int32 OnlineTime { get; set; }
+
     /// <summary>创建者</summary>
     public String CreateUser { get; set; }
 
@@ -269,6 +272,7 @@ public partial class UserDetailModel : IUserDetail
         Answer2 = model.Answer2;
         Question3 = model.Question3;
         Answer3 = model.Answer3;
+        OnlineTime = model.OnlineTime;
         CreateUser = model.CreateUser;
         CreateUserID = model.CreateUserID;
         CreateTime = model.CreateTime;

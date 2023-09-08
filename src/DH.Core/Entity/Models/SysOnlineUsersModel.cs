@@ -18,7 +18,7 @@ public partial class SysOnlineUsersModel : ISysOnlineUsers
     public Int32 Uid { get; set; }
 
     /// <summary>用户sessionid</summary>
-    public String Sid { get; set; }
+    public Int64 Sid { get; set; }
 
     /// <summary>用户昵称</summary>
     public String NickName { get; set; }
@@ -28,6 +28,9 @@ public partial class SysOnlineUsersModel : ISysOnlineUsers
 
     /// <summary>用户所在区域</summary>
     public String Region { get; set; }
+
+    /// <summary>请求次数</summary>
+    public Int32 Clicks { get; set; }
 
     /// <summary>最后更新时间</summary>
     public DateTime Updatetime { get; set; }
@@ -44,6 +47,7 @@ public partial class SysOnlineUsersModel : ISysOnlineUsers
         NickName = model.NickName;
         Ip = model.Ip;
         Region = model.Region;
+        Clicks = model.Clicks;
         Updatetime = model.Updatetime;
     }
     #endregion
