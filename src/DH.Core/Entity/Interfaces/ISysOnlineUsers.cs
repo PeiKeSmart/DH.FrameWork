@@ -32,6 +32,9 @@ public partial interface ISysOnlineUsers
     /// <summary>请求次数</summary>
     Int32 Clicks { get; set; }
 
+    /// <summary>特征字符串</summary>
+    String UserAgent { get; set; }
+
     /// <summary>最后更新时间</summary>
     DateTime Updatetime { get; set; }
     #endregion

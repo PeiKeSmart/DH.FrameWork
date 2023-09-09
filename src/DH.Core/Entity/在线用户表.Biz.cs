@@ -231,7 +231,8 @@ public partial class SysOnlineUsers : DHEntityBase<SysOnlineUsers> {
     /// <param name="nickName">昵称</param>
     /// <param name="ip">Ip地址</param>
     /// <param name="region">区域</param>
-    public static void UpdateOnlineUser(Int32 uid, Int64 sid, string nickName, string ip, String region)
+    /// <param name="userAgent">特征字符串</param>
+    public static void UpdateOnlineUser(Int32 uid, Int64 sid, string nickName, string ip, String region, String userAgent)
     {
         if (sid <= 0) return;
 
@@ -245,6 +246,7 @@ public partial class SysOnlineUsers : DHEntityBase<SysOnlineUsers> {
                 onlineUserInfo.NickName = nickName;
                 onlineUserInfo.Ip = ip;
                 onlineUserInfo.Region = region;
+                onlineUserInfo.UserAgent = userAgent;
                 onlineUserInfo.Clicks++;
                 onlineUserInfo.SaveAsync();
             }
@@ -257,6 +259,7 @@ public partial class SysOnlineUsers : DHEntityBase<SysOnlineUsers> {
                 onlineUserInfo.NickName = nickName;
                 onlineUserInfo.Ip = ip;
                 onlineUserInfo.Region = region;
+                onlineUserInfo.UserAgent = userAgent;
                 onlineUserInfo.Clicks = 1;
                 onlineUserInfo.Insert();
             }
@@ -269,6 +272,7 @@ public partial class SysOnlineUsers : DHEntityBase<SysOnlineUsers> {
             onlineUserInfo.NickName = nickName;
             onlineUserInfo.Ip = ip;
             onlineUserInfo.Region = region;
+            onlineUserInfo.UserAgent = userAgent;
             onlineUserInfo.Clicks = 1;
             onlineUserInfo.Insert();
         }

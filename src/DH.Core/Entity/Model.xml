@@ -617,6 +617,7 @@
       <Column Name="Ip" DataType="String" RawType="varchar(20)" Length="20" Nullable="False" Description="用户ip" />
       <Column Name="Region" DataType="String" Length="100" Description="用户所在区域" />
       <Column Name="Clicks" DataType="Int32" Description="请求次数" />
+      <Column Name="UserAgent" DataType="String" Length="1000" Description="特征字符串" />
       <Column Name="Updatetime" DataType="DateTime" Nullable="False" Description="最后更新时间" />
     </Columns>
     <Indexes>
@@ -639,13 +640,5 @@
       <Index Columns="Id,Year,Month" Unique="True" />
       <Index Columns="UpdateTime" />
     </Indexes>
-  </Table>
-  <Table Name="SysPvstats" TableName="DH_SysPvStats" Description="PV统计表">
-    <Columns>
-      <Column Name="Id" DataType="Int32" RawType="int(11)" Identity="True" PrimaryKey="True" Description="编号" />
-      <Column Name="Category" DataType="String" RawType="varchar(10)" Length="10" Nullable="False" Description="分类" />
-      <Column Name="Value" DataType="String" RawType="varchar(30)" Length="30" Nullable="False" Description="访问者系统" />
-      <Column Name="Count" DataType="Int32" RawType="int(11)" Description="数量" />
-    </Columns>
   </Table>
 </EntityModel>

@@ -32,6 +32,9 @@ public partial class SysOnlineUsersModel : ISysOnlineUsers
     /// <summary>请求次数</summary>
     public Int32 Clicks { get; set; }
 
+    /// <summary>特征字符串</summary>
+    public String UserAgent { get; set; }
+
     /// <summary>最后更新时间</summary>
     public DateTime Updatetime { get; set; }
     #endregion
@@ -48,6 +51,7 @@ public partial class SysOnlineUsersModel : ISysOnlineUsers
         Ip = model.Ip;
         Region = model.Region;
         Clicks = model.Clicks;
+        UserAgent = model.UserAgent;
         Updatetime = model.Updatetime;
     }
     #endregion

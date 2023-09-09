@@ -80,6 +80,14 @@ public partial class SysOnlineUsers : ISysOnlineUsers, IEntity<ISysOnlineUsers>
     [BindColumn("Clicks", "请求次数", "")]
     public Int32 Clicks { get => _Clicks; set { if (OnPropertyChanging("Clicks", value)) { _Clicks = value; OnPropertyChanged("Clicks"); } } }
 
+    private String _UserAgent;
+    /// <summary>特征字符串</summary>
+    [DisplayName("特征字符串")]
+    [Description("特征字符串")]
+    [DataObjectField(false, false, true, 1000)]
+    [BindColumn("UserAgent", "特征字符串", "")]
+    public String UserAgent { get => _UserAgent; set { if (OnPropertyChanging("UserAgent", value)) { _UserAgent = value; OnPropertyChanged("UserAgent"); } } }
+
     private DateTime _Updatetime;
     /// <summary>最后更新时间</summary>
     [DisplayName("最后更新时间")]
@@ -101,6 +109,7 @@ public partial class SysOnlineUsers : ISysOnlineUsers, IEntity<ISysOnlineUsers>
         Ip = model.Ip;
         Region = model.Region;
         Clicks = model.Clicks;
+        UserAgent = model.UserAgent;
         Updatetime = model.Updatetime;
     }
     #endregion
@@ -120,6 +129,7 @@ public partial class SysOnlineUsers : ISysOnlineUsers, IEntity<ISysOnlineUsers>
             "Ip" => _Ip,
             "Region" => _Region,
             "Clicks" => _Clicks,
+            "UserAgent" => _UserAgent,
             "Updatetime" => _Updatetime,
             _ => base[name]
         };
@@ -134,6 +144,7 @@ public partial class SysOnlineUsers : ISysOnlineUsers, IEntity<ISysOnlineUsers>
                 case "Ip": _Ip = Convert.ToString(value); break;
                 case "Region": _Region = Convert.ToString(value); break;
                 case "Clicks": _Clicks = value.ToInt(); break;
+                case "UserAgent": _UserAgent = Convert.ToString(value); break;
                 case "Updatetime": _Updatetime = value.ToDateTime(); break;
                 default: base[name] = value; break;
             }
@@ -169,6 +180,9 @@ public partial class SysOnlineUsers : ISysOnlineUsers, IEntity<ISysOnlineUsers>
         /// <summary>请求次数</summary>
         public static readonly Field Clicks = FindByName("Clicks");
 
+        /// <summary>特征字符串</summary>
+        public static readonly Field UserAgent = FindByName("UserAgent");
+
         /// <summary>最后更新时间</summary>
         public static readonly Field Updatetime = FindByName("Updatetime");
 
@@ -198,6 +212,9 @@ public partial class SysOnlineUsers : ISysOnlineUsers, IEntity<ISysOnlineUsers>
 
         /// <summary>请求次数</summary>
         public const String Clicks = "Clicks";
+
+        /// <summary>特征字符串</summary>
+        public const String UserAgent = "UserAgent";
 
         /// <summary>最后更新时间</summary>
         public const String Updatetime = "Updatetime";
