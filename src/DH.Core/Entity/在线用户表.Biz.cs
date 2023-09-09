@@ -273,6 +273,16 @@ public partial class SysOnlineUsers : DHEntityBase<SysOnlineUsers> {
             onlineUserInfo.Insert();
         }
 
+        if (uid > 0)
+        {
+            var model = UserE.FindByID(uid);
+            if (model != null)
+            {
+                model.Online = true;
+                model.SaveAsync();
+            }
+        }
+
         DeleteExpiredOnlineUser();
     }
 
@@ -305,6 +315,19 @@ public partial class SysOnlineUsers : DHEntityBase<SysOnlineUsers> {
             var expiretime = DateTime.Now.AddMinutes(-DHSetting.Current.OnlineUserExpire);
 
             var list = GetExpiredOnlineUser(expiretime);
+
+            foreach(var item in list)
+            {
+                if (item.Uid > 0)
+                {
+                    var model = UserE.FindByID(item.Uid);
+                    if (model != null)
+                    {
+                        model.Online = false;
+                        model.SaveAsync();
+                    }
+                }
+            }
 
             list.Delete();
             _lastdeleteexpiredonlineuserstime = DateTime.Now.ToTimeStamp();
