@@ -11,6 +11,8 @@ using System.Web;
 using System.Web.Script.Serialization;
 using System.Xml.Serialization;
 
+using DH.Timing;
+
 using NewLife;
 using NewLife.Caching;
 using NewLife.Data;
@@ -298,14 +300,14 @@ public partial class SysOnlineUsers : DHEntityBase<SysOnlineUsers> {
     /// </summary>
     private static void DeleteExpiredOnlineUser()
     {
-        if (_lastdeleteexpiredonlineuserstime == 0 || _lastdeleteexpiredonlineuserstime < (Environment.TickCount - DHSetting.Current.OnlineUserExpire * 1000 * 60))
+        if (_lastdeleteexpiredonlineuserstime == 0 || _lastdeleteexpiredonlineuserstime < DateTime.Now.AddMinutes(-DHSetting.Current.OnlineUserExpire).ToTimeStamp())
         {
-            var expiretime = DateTime.Now.AddMinutes((DHSetting.Current.OnlineUserExpire) * -1);
+            var expiretime = DateTime.Now.AddMinutes(-DHSetting.Current.OnlineUserExpire);
 
             var list = GetExpiredOnlineUser(expiretime);
 
             list.Delete();
-            _lastdeleteexpiredonlineuserstime = Environment.TickCount;
+            _lastdeleteexpiredonlineuserstime = DateTime.Now.ToTimeStamp();
         }
     }
     #endregion

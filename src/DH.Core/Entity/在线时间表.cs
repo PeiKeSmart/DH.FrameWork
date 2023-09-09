@@ -69,7 +69,7 @@ public partial class SysOnlineTime : ISysOnlineTime, IEntity<ISysOnlineTime>
     /// <summary>按日的在线时间。以|分隔</summary>
     [DisplayName("按日的在线时间")]
     [Description("按日的在线时间。以|分隔")]
-    [DataObjectField(false, false, true, 50)]
+    [DataObjectField(false, false, true, 500)]
     [BindColumn("Day", "按日的在线时间。以|分隔", "")]
     public String Day { get => _Day; set { if (OnPropertyChanging("Day", value)) { _Day = value; OnPropertyChanged("Day"); } } }
 

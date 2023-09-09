@@ -3,7 +3,6 @@ using DH.Core.Infrastructure;
 using DH.Timing;
 
 using NewLife;
-using NewLife.Log;
 using NewLife.Collections;
 
 using XCode;
@@ -170,14 +169,14 @@ public partial class SysOnlineTime : DHEntityBase<SysOnlineTime> {
         var _cookie = EngineContext.Current.Resolve<ICookie>();
         var lastUpdateTime = _cookie.GetValue<Int32>($"oltime");
 
-        if (lastUpdateTime < (Environment.TickCount - updateOnlineTimeSpan * 60 * 1000))
+        if (lastUpdateTime > 0 && lastUpdateTime <= DateTime.Now.AddMinutes(-updateOnlineTimeSpan).ToTimeStamp())
         {
             UpdateUserOnlineTime(uid, updateOnlineTimeSpan, DateTime.Now);
-            _cookie.SetValue("oltime", Environment.TickCount, 24 * 60);
+            _cookie.SetValue("oltime", DateTime.Now.ToTimeStamp(), 24 * 60);
         }
-        else if (lastUpdateTime == 0)
+        else
         {
-            _cookie.SetValue("oltime", Environment.TickCount, 24 * 60);
+            _cookie.SetValue("oltime", DateTime.Now.ToTimeStamp(), 24 * 60);
         }
     }
 

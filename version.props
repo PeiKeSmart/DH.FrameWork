@@ -1,7 +1,7 @@
 <Project>
 	<PropertyGroup>
 		<VersionPrefix>2.3</VersionPrefix>
-		<VersionPrefixBeta>218</VersionPrefixBeta>
+		<VersionPrefixBeta>220</VersionPrefixBeta>
 		<VersionSuffix>$([System.DateTime]::Now.ToString(`yyyy.MMdd`))</VersionSuffix>
 		<Version>$(VersionPrefix).$(VersionSuffix)$(VersionPrefixBeta)</Version>
 		<FileVersion>$(VersionPrefix).$(VersionSuffix)</FileVersion>
