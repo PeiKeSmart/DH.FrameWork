@@ -65,14 +65,6 @@ public partial class SysOnlineTime : ISysOnlineTime, IEntity<ISysOnlineTime>
     [BindColumn("DayTimes", "本月在线时间。累计在线总时间，单位秒", "", ItemType = "TimeSpan")]
     public Int32 DayTimes { get => _DayTimes; set { if (OnPropertyChanging("DayTimes", value)) { _DayTimes = value; OnPropertyChanged("DayTimes"); } } }
 
-    private String _Day;
-    /// <summary>按日的在线时间。以|分隔</summary>
-    [DisplayName("按日的在线时间")]
-    [Description("按日的在线时间。以|分隔")]
-    [DataObjectField(false, false, true, 500)]
-    [BindColumn("Day", "按日的在线时间。以|分隔", "")]
-    public String Day { get => _Day; set { if (OnPropertyChanging("Day", value)) { _Day = value; OnPropertyChanged("Day"); } } }
-
     private Int32 _Day1;
     /// <summary>1号的在线时间</summary>
     [DisplayName("1号的在线时间")]
@@ -340,7 +332,6 @@ public partial class SysOnlineTime : ISysOnlineTime, IEntity<ISysOnlineTime>
         Month = model.Month;
         MonthTimes = model.MonthTimes;
         DayTimes = model.DayTimes;
-        Day = model.Day;
         Day1 = model.Day1;
         Day2 = model.Day2;
         Day3 = model.Day3;
@@ -389,7 +380,6 @@ public partial class SysOnlineTime : ISysOnlineTime, IEntity<ISysOnlineTime>
             "Month" => _Month,
             "MonthTimes" => _MonthTimes,
             "DayTimes" => _DayTimes,
-            "Day" => _Day,
             "Day1" => _Day1,
             "Day2" => _Day2,
             "Day3" => _Day3,
@@ -433,7 +423,6 @@ public partial class SysOnlineTime : ISysOnlineTime, IEntity<ISysOnlineTime>
                 case "Month": _Month = value.ToInt(); break;
                 case "MonthTimes": _MonthTimes = value.ToInt(); break;
                 case "DayTimes": _DayTimes = value.ToInt(); break;
-                case "Day": _Day = Convert.ToString(value); break;
                 case "Day1": _Day1 = value.ToInt(); break;
                 case "Day2": _Day2 = value.ToInt(); break;
                 case "Day3": _Day3 = value.ToInt(); break;
@@ -493,9 +482,6 @@ public partial class SysOnlineTime : ISysOnlineTime, IEntity<ISysOnlineTime>
 
         /// <summary>本月在线时间。累计在线总时间，单位秒</summary>
         public static readonly Field DayTimes = FindByName("DayTimes");
-
-        /// <summary>按日的在线时间。以|分隔</summary>
-        public static readonly Field Day = FindByName("Day");
 
         /// <summary>1号的在线时间</summary>
         public static readonly Field Day1 = FindByName("Day1");
@@ -613,9 +599,6 @@ public partial class SysOnlineTime : ISysOnlineTime, IEntity<ISysOnlineTime>
 
         /// <summary>本月在线时间。累计在线总时间，单位秒</summary>
         public const String DayTimes = "DayTimes";
-
-        /// <summary>按日的在线时间。以|分隔</summary>
-        public const String Day = "Day";
 
         /// <summary>1号的在线时间</summary>
         public const String Day1 = "Day1";

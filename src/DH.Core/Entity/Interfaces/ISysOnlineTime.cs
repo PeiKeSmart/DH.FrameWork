@@ -26,9 +26,6 @@ public partial interface ISysOnlineTime
     /// <summary>本月在线时间。累计在线总时间，单位秒</summary>
     Int32 DayTimes { get; set; }
 
-    /// <summary>按日的在线时间。以|分隔</summary>
-    String Day { get; set; }
-
     /// <summary>1号的在线时间</summary>
     Int32 Day1 { get; set; }
 

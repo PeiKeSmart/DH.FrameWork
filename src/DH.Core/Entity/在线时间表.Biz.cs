@@ -4,6 +4,7 @@ using DH.Timing;
 
 using NewLife;
 using NewLife.Collections;
+using NewLife.Data;
 
 using System.Runtime.Serialization;
 using System.Web.Script.Serialization;
@@ -142,6 +143,27 @@ public partial class SysOnlineTime : DHEntityBase<SysOnlineTime> {
 
     #region 高级查询
 
+    /// <summary>高级查询</summary>
+    /// <param name="key">关键字</param>
+    /// <param name="page">分页参数信息。可携带统计和数据权限扩展查询等信息</param>
+    /// <returns>实体列表</returns>
+    public static IList<SysOnlineTime> Searchs(Int32 Year, Int32 Month, PageParameter page)
+    {
+        var exp = new WhereExpression();
+
+        if (Year > 0)
+        {
+            exp &= _.Year == Year;
+        }
+
+        if (Month > 0)
+        {
+            exp &= _.Month == Month;
+        }
+
+        return FindAll(exp, page);
+    }
+
     // Select Count(Id) as Id,Category From DH_SysOnlineTime Where CreateTime>'2020-01-24 00:00:00' Group By Category Order By Id Desc limit 20
     //static readonly FieldCache<SysOnlineTime> _CategoryCache = new FieldCache<SysOnlineTime>(nameof(Category))
     //{
@@ -223,15 +245,6 @@ public partial class SysOnlineTime : DHEntityBase<SysOnlineTime> {
                 model.DayTimes += onlineTime;
             }
 
-            var daysArr = model.Day.Split('|');
-            daysArr[updateTime.Day - 1] = model.DayTimes.SafeString();
-            model.Day = daysArr.Join("|");
-
-            for(var i = 1; i < daysArr.Length; i++)
-            {
-                model.SetItem($"Day{i}", daysArr[i - 1]);
-            }
-
             model.SetItem($"Day{updateTime.Day}", model.DayTimes);
 
             model.SaveAsync();
@@ -246,22 +259,17 @@ public partial class SysOnlineTime : DHEntityBase<SysOnlineTime> {
             model.MonthTimes = onlineTime;
             model.DayTimes = onlineTime;
 
-            var build = Pool.StringBuilder.Get();
             for (var i = 1; i <= DateTimeUtil.GetMonthLen(updateTime.Year, updateTime.Month); i++)
             {
                 if (i == updateTime.Day)
                 {
-                    build.Append($"{model.DayTimes}|");
                     model.SetItem($"Day{i}", model.DayTimes);
                 }
                 else
                 {
-                    build.Append("0|");
                     model.SetItem($"Day{i}", 0);
                 }
             }
-
-            model.Day = build.Remove(build.Length - 1, 1).Put(true);
 
             model.Insert();
         }

@@ -26,9 +26,6 @@ public partial class SysOnlineTimeModel : ISysOnlineTime
     /// <summary>本月在线时间。累计在线总时间，单位秒</summary>
     public Int32 DayTimes { get; set; }
 
-    /// <summary>按日的在线时间。以|分隔</summary>
-    public String Day { get; set; }
-
     /// <summary>1号的在线时间</summary>
     public Int32 Day1 { get; set; }
 
@@ -136,7 +133,6 @@ public partial class SysOnlineTimeModel : ISysOnlineTime
         Month = model.Month;
         MonthTimes = model.MonthTimes;
         DayTimes = model.DayTimes;
-        Day = model.Day;
         Day1 = model.Day1;
         Day2 = model.Day2;
         Day3 = model.Day3;

@@ -632,7 +632,6 @@
       <Column Name="Month" DataType="Int32" Description="月" />
       <Column Name="MonthTimes" DataType="Int32" ItemType="TimeSpan" Description="本月在线时间。累计在线总时间，单位秒" />
       <Column Name="DayTimes" DataType="Int32" ItemType="TimeSpan" Description="本月在线时间。累计在线总时间，单位秒" />
-      <Column Name="Day" DataType="String" Length="500" Description="按日的在线时间。以|分隔" />
       <Column Name="Day1" DataType="Int32" Description="1号的在线时间" />
       <Column Name="Day2" DataType="Int32" Description="2号的在线时间" />
       <Column Name="Day3" DataType="Int32" Description="3号的在线时间" />
