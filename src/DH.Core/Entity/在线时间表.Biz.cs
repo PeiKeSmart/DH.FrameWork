@@ -5,6 +5,10 @@ using DH.Timing;
 using NewLife;
 using NewLife.Collections;
 
+using System.Runtime.Serialization;
+using System.Web.Script.Serialization;
+using System.Xml.Serialization;
+
 using XCode;
 using XCode.Membership;
 
@@ -82,6 +86,10 @@ public partial class SysOnlineTime : DHEntityBase<SysOnlineTime> {
     #endregion
 
     #region 扩展属性
+    /// <summary>用户</summary>
+    [XmlIgnore, ScriptIgnore, IgnoreDataMember]
+    //[ScriptIgnore]
+    public User User => Extends.Get(nameof(User), k => User.FindByID(Id));
     #endregion
 
     #region 扩展查询
@@ -219,6 +227,13 @@ public partial class SysOnlineTime : DHEntityBase<SysOnlineTime> {
             daysArr[updateTime.Day - 1] = model.DayTimes.SafeString();
             model.Day = daysArr.Join("|");
 
+            for(var i = 1; i < daysArr.Length; i++)
+            {
+                model.SetItem($"Day{i}", daysArr[i - 1]);
+            }
+
+            model.SetItem($"Day{updateTime.Day}", model.DayTimes);
+
             model.SaveAsync();
         }
         else
@@ -237,10 +252,12 @@ public partial class SysOnlineTime : DHEntityBase<SysOnlineTime> {
                 if (i == updateTime.Day)
                 {
                     build.Append($"{model.DayTimes}|");
+                    model.SetItem($"Day{i}", model.DayTimes);
                 }
                 else
                 {
                     build.Append("0|");
+                    model.SetItem($"Day{i}", 0);
                 }
             }
 

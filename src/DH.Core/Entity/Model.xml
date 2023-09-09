@@ -633,6 +633,37 @@
       <Column Name="MonthTimes" DataType="Int32" ItemType="TimeSpan" Description="本月在线时间。累计在线总时间，单位秒" />
       <Column Name="DayTimes" DataType="Int32" ItemType="TimeSpan" Description="本月在线时间。累计在线总时间，单位秒" />
       <Column Name="Day" DataType="String" Length="500" Description="按日的在线时间。以|分隔" />
+      <Column Name="Day1" DataType="Int32" Description="1号的在线时间" />
+      <Column Name="Day2" DataType="Int32" Description="2号的在线时间" />
+      <Column Name="Day3" DataType="Int32" Description="3号的在线时间" />
+      <Column Name="Day4" DataType="Int32" Description="4号的在线时间" />
+      <Column Name="Day5" DataType="Int32" Description="5号的在线时间" />
+      <Column Name="Day6" DataType="Int32" Description="6号的在线时间" />
+      <Column Name="Day7" DataType="Int32" Description="7号的在线时间" />
+      <Column Name="Day8" DataType="Int32" Description="8号的在线时间" />
+      <Column Name="Day9" DataType="Int32" Description="9号的在线时间" />
+      <Column Name="Day10" DataType="Int32" Description="10号的在线时间" />
+      <Column Name="Day11" DataType="Int32" Description="11号的在线时间" />
+      <Column Name="Day12" DataType="Int32" Description="12号的在线时间" />
+      <Column Name="Day13" DataType="Int32" Description="13号的在线时间" />
+      <Column Name="Day14" DataType="Int32" Description="14号的在线时间" />
+      <Column Name="Day15" DataType="Int32" Description="15号的在线时间" />
+      <Column Name="Day16" DataType="Int32" Description="16号的在线时间" />
+      <Column Name="Day17" DataType="Int32" Description="17号的在线时间" />
+      <Column Name="Day18" DataType="Int32" Description="18号的在线时间" />
+      <Column Name="Day19" DataType="Int32" Description="19号的在线时间" />
+      <Column Name="Day20" DataType="Int32" Description="20号的在线时间" />
+      <Column Name="Day21" DataType="Int32" Description="21号的在线时间" />
+      <Column Name="Day22" DataType="Int32" Description="22号的在线时间" />
+      <Column Name="Day23" DataType="Int32" Description="23号的在线时间" />
+      <Column Name="Day24" DataType="Int32" Description="24号的在线时间" />
+      <Column Name="Day25" DataType="Int32" Description="25号的在线时间" />
+      <Column Name="Day26" DataType="Int32" Description="26号的在线时间" />
+      <Column Name="Day27" DataType="Int32" Description="27号的在线时间" />
+      <Column Name="Day28" DataType="Int32" Description="28号的在线时间" />
+      <Column Name="Day29" DataType="Int32" Description="29号的在线时间" />
+      <Column Name="Day30" DataType="Int32" Description="30号的在线时间" />
+      <Column Name="Day31" DataType="Int32" Description="31号的在线时间" />
       <Column Name="UpdateTime" DataType="DateTime" Nullable="False" Description="最后更新时间" />
     </Columns>
     <Indexes>

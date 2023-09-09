@@ -98,6 +98,10 @@ public partial class SysOnlineUsers : DHEntityBase<SysOnlineUsers> {
     #endregion
 
     #region 扩展属性
+    /// <summary>用户</summary>
+    [XmlIgnore, ScriptIgnore, IgnoreDataMember]
+    //[ScriptIgnore]
+    public User User => Extends.Get(nameof(User), k => User.FindByID(Uid));
     #endregion
 
     #region 扩展查询
