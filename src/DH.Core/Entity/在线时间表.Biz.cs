@@ -164,6 +164,30 @@ public partial class SysOnlineTime : DHEntityBase<SysOnlineTime> {
         return FindAll(exp, page);
     }
 
+    /// <summary>高级查询</summary>
+    /// <param name="StartTime">开始时间</param>
+    /// <param name="EndTime">结束时间</param>
+    /// <param name="page">分页参数信息。可携带统计和数据权限扩展查询等信息</param>
+    /// <returns>实体列表</returns>
+    public static IList<SysOnlineTime> Searchs(DateTime? StartTime, DateTime? EndTime, PageParameter page)
+    {
+        var exp = new WhereExpression();
+
+        if (StartTime.HasValue)
+        {
+            exp &= _.Year >= StartTime.Value.Year;
+            exp &= _.Month >= StartTime.Value.Month;
+        }
+
+        if (EndTime.HasValue)
+        {
+            exp &= _.Year <= EndTime.Value.Year;
+            exp &= _.Month <= EndTime.Value.Month;
+        }
+
+        return FindAll(exp, page);
+    }
+
     // Select Count(Id) as Id,Category From DH_SysOnlineTime Where CreateTime>'2020-01-24 00:00:00' Group By Category Order By Id Desc limit 20
     //static readonly FieldCache<SysOnlineTime> _CategoryCache = new FieldCache<SysOnlineTime>(nameof(Category))
     //{
