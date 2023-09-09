@@ -615,7 +615,7 @@
       <Column Name="Sid" DataType="Int64" Description="用户sessionid" />
       <Column Name="NickName" DataType="String" RawType="varchar(100)" Length="100" Nullable="False" Description="用户昵称" />
       <Column Name="Ip" DataType="String" RawType="varchar(20)" Length="20" Nullable="False" Description="用户ip" />
-      <Column Name="Region" DataType="String" Description="用户所在区域" />
+      <Column Name="Region" DataType="String" Length="100" Description="用户所在区域" />
       <Column Name="Clicks" DataType="Int32" Description="请求次数" />
       <Column Name="Updatetime" DataType="DateTime" Nullable="False" Description="最后更新时间" />
     </Columns>

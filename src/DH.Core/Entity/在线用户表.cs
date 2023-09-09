@@ -68,7 +68,7 @@ public partial class SysOnlineUsers : ISysOnlineUsers, IEntity<ISysOnlineUsers>
     /// <summary>用户所在区域</summary>
     [DisplayName("用户所在区域")]
     [Description("用户所在区域")]
-    [DataObjectField(false, false, true, 50)]
+    [DataObjectField(false, false, true, 100)]
     [BindColumn("Region", "用户所在区域", "")]
     public String Region { get => _Region; set { if (OnPropertyChanging("Region", value)) { _Region = value; OnPropertyChanged("Region"); } } }
 
