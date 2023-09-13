@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 namespace DH.Entity;
 
 /// <summary>语言包</summary>
-public partial class LocaleStringResourceModel : ILocaleStringResource
+public partial class LocaleStringResourceModel
 {
     #region 属性
     /// <summary>编号</summary>

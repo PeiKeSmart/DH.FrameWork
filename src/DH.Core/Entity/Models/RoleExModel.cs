@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 namespace DH.Entity;
 
 /// <summary>角色扩展表</summary>
-public partial class RoleExModel : IRoleEx
+public partial class RoleExModel
 {
     #region 属性
     /// <summary>角色编号</summary>

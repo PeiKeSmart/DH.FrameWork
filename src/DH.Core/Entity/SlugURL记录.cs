@@ -8,7 +8,6 @@ using NewLife;
 using NewLife.Data;
 using XCode;
 using XCode.Cache;
-using XCode.Common;
 using XCode.Configuration;
 using XCode.DataAccessLayer;
 

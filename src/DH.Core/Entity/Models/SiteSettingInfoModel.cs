@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 namespace DH.Entity;
 
 /// <summary>站点设置</summary>
-public partial class SiteSettingInfoModel : ISiteSettingInfo
+public partial class SiteSettingInfoModel
 {
     #region 属性
     /// <summary>编号</summary>

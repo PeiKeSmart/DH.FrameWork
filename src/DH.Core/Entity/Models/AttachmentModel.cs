@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 namespace DH.Entity;
 
 /// <summary>附件。用于记录各系统模块使用的文件，可以是Local/NAS/OSS等</summary>
-public partial class AttachmentModel : IAttachment
+public partial class AttachmentModel
 {
     #region 属性
     /// <summary>编号</summary>

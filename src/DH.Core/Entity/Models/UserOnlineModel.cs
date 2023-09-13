@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 namespace DH.Entity;
 
 /// <summary>用户在线</summary>
-public partial class UserOnlineModel : IUserOnline
+public partial class UserOnlineModel
 {
     #region 属性
     /// <summary>编号</summary>

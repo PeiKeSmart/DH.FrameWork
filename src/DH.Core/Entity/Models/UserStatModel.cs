@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 namespace DH.Entity;
 
 /// <summary>用户统计</summary>
-public partial class UserStatModel : IUserStat
+public partial class UserStatModel
 {
     #region 属性
     /// <summary>编号</summary>

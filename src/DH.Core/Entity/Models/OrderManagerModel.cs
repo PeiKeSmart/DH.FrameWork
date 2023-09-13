@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 namespace DH.Entity;
 
 /// <summary>指令管理</summary>
-public partial class OrderManagerModel : IOrderManager
+public partial class OrderManagerModel
 {
     #region 属性
     /// <summary>编号</summary>

@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 namespace DH.Entity;
 
 /// <summary>路由管理</summary>
-public partial class SystemRoutModel : ISystemRout
+public partial class SystemRoutModel
 {
     #region 属性
     /// <summary>编号</summary>

@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 namespace DH.Entity;
 
 /// <summary>站点基础信息翻译表</summary>
-public partial class SiteInfoLanModel : ISiteInfoLan
+public partial class SiteInfoLanModel
 {
     #region 属性
     /// <summary>编号</summary>

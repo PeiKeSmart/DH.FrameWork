@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 namespace DH.Entity;
 
 /// <summary>用户链接。第三方绑定</summary>
-public partial class UserConnectModel : IUserConnect
+public partial class UserConnectModel
 {
     #region 属性
     /// <summary>编号</summary>

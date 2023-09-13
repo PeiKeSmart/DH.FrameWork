@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 namespace DH.Entity;
 
 /// <summary>公共属性</summary>
-public partial class GenericAttributeModel : IGenericAttribute
+public partial class GenericAttributeModel
 {
     #region 属性
     /// <summary>编号</summary>

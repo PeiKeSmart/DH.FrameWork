@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 namespace DH.Entity;
 
 /// <summary>动态路由表</summary>
-public partial class DynamicRouteModel : IDynamicRoute
+public partial class DynamicRouteModel
 {
     #region 属性
     /// <summary>编号</summary>

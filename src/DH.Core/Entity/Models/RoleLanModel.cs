@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 namespace DH.Entity;
 
 /// <summary>角色翻译表</summary>
-public partial class RoleLanModel : IRoleLan
+public partial class RoleLanModel
 {
     #region 属性
     /// <summary>编号</summary>

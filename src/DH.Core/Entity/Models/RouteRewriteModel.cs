@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 namespace DH.Entity;
 
 /// <summary>重定向表</summary>
-public partial class RouteRewriteModel : IRouteRewrite
+public partial class RouteRewriteModel
 {
     #region 属性
     /// <summary>编号</summary>

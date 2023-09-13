@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 namespace DH.Entity;
 
 /// <summary>语言类别</summary>
-public partial class LanguageModel : ILanguage
+public partial class LanguageModel
 {
     #region 属性
     /// <summary>编号</summary>

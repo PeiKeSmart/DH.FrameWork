@@ -8,7 +8,6 @@ using NewLife;
 using NewLife.Data;
 using XCode;
 using XCode.Cache;
-using XCode.Common;
 using XCode.Configuration;
 using XCode.DataAccessLayer;
 
@@ -21,6 +20,7 @@ namespace DH.Entity;
 [BindIndex("PRIMARY", true, "Id")]
 [BindIndex("IU_DH_SysOnlineTime_Id_Year_Month", true, "Id,Year,Month")]
 [BindIndex("IX_DH_SysOnlineTime_UpdateTime", false, "UpdateTime")]
+[BindIndex("IX_DH_SysOnlineTime_RoleId", false, "RoleId")]
 [BindTable("DH_SysOnlineTime", Description = "在线时间表", ConnName = "Cube", DbType = DatabaseType.None)]
 public partial class SysOnlineTime : ISysOnlineTime, IEntity<ISysOnlineTime>
 {
@@ -40,6 +40,14 @@ public partial class SysOnlineTime : ISysOnlineTime, IEntity<ISysOnlineTime>
     [DataObjectField(false, false, false, 0)]
     [BindColumn("Year", "年", "")]
     public Int32 Year { get => _Year; set { if (OnPropertyChanging("Year", value)) { _Year = value; OnPropertyChanged("Year"); } } }
+
+    private Int32 _RoleId;
+    /// <summary>角色</summary>
+    [DisplayName("角色")]
+    [Description("角色")]
+    [DataObjectField(false, false, false, 0)]
+    [BindColumn("RoleId", "角色", "")]
+    public Int32 RoleId { get => _RoleId; set { if (OnPropertyChanging("RoleId", value)) { _RoleId = value; OnPropertyChanged("RoleId"); } } }
 
     private Int32 _Month;
     /// <summary>月</summary>
@@ -329,6 +337,7 @@ public partial class SysOnlineTime : ISysOnlineTime, IEntity<ISysOnlineTime>
     {
         Id = model.Id;
         Year = model.Year;
+        RoleId = model.RoleId;
         Month = model.Month;
         MonthTimes = model.MonthTimes;
         DayTimes = model.DayTimes;
@@ -377,6 +386,7 @@ public partial class SysOnlineTime : ISysOnlineTime, IEntity<ISysOnlineTime>
         {
             "Id" => _Id,
             "Year" => _Year,
+            "RoleId" => _RoleId,
             "Month" => _Month,
             "MonthTimes" => _MonthTimes,
             "DayTimes" => _DayTimes,
@@ -420,6 +430,7 @@ public partial class SysOnlineTime : ISysOnlineTime, IEntity<ISysOnlineTime>
             {
                 case "Id": _Id = value.ToInt(); break;
                 case "Year": _Year = value.ToInt(); break;
+                case "RoleId": _RoleId = value.ToInt(); break;
                 case "Month": _Month = value.ToInt(); break;
                 case "MonthTimes": _MonthTimes = value.ToInt(); break;
                 case "DayTimes": _DayTimes = value.ToInt(); break;
@@ -473,6 +484,9 @@ public partial class SysOnlineTime : ISysOnlineTime, IEntity<ISysOnlineTime>
 
         /// <summary>年</summary>
         public static readonly Field Year = FindByName("Year");
+
+        /// <summary>角色</summary>
+        public static readonly Field RoleId = FindByName("RoleId");
 
         /// <summary>月</summary>
         public static readonly Field Month = FindByName("Month");
@@ -590,6 +604,9 @@ public partial class SysOnlineTime : ISysOnlineTime, IEntity<ISysOnlineTime>
 
         /// <summary>年</summary>
         public const String Year = "Year";
+
+        /// <summary>角色</summary>
+        public const String RoleId = "RoleId";
 
         /// <summary>月</summary>
         public const String Month = "Month";

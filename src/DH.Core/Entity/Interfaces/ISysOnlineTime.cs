@@ -17,6 +17,9 @@ public partial interface ISysOnlineTime
     /// <summary>年</summary>
     Int32 Year { get; set; }
 
+    /// <summary>角色</summary>
+    Int32 RoleId { get; set; }
+
     /// <summary>月</summary>
     Int32 Month { get; set; }
 

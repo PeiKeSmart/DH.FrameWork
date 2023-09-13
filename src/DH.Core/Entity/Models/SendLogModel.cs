@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 namespace DH.Entity;
 
 /// <summary>消息记录</summary>
-public partial class SendLogModel : ISendLog
+public partial class SendLogModel
 {
     #region 属性
     /// <summary>编号</summary>

@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 namespace DH.Entity;
 
 /// <summary>SlugURL记录</summary>
-public partial class UrlRecordModel : IUrlRecord
+public partial class UrlRecordModel
 {
     #region 属性
     /// <summary>编号</summary>

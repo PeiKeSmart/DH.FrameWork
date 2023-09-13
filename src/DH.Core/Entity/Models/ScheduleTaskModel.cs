@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 namespace DH.Entity;
 
 /// <summary>计划任务</summary>
-public partial class ScheduleTaskModel : IScheduleTask
+public partial class ScheduleTaskModel
 {
     #region 属性
     /// <summary>编号</summary>

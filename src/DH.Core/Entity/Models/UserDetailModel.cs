@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 namespace DH.Entity;
 
 /// <summary>用户扩展</summary>
-public partial class UserDetailModel : IUserDetail
+public partial class UserDetailModel
 {
     #region 属性
     /// <summary>用户Id</summary>

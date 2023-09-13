@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 namespace DH.Entity;
 
 /// <summary>在线时间表</summary>
-public partial class SysOnlineTimeModel : ISysOnlineTime
+public partial class SysOnlineTimeModel
 {
     #region 属性
     /// <summary>用户编号</summary>
@@ -16,6 +16,9 @@ public partial class SysOnlineTimeModel : ISysOnlineTime
 
     /// <summary>年</summary>
     public Int32 Year { get; set; }
+
+    /// <summary>角色</summary>
+    public Int32 RoleId { get; set; }
 
     /// <summary>月</summary>
     public Int32 Month { get; set; }
@@ -130,6 +133,7 @@ public partial class SysOnlineTimeModel : ISysOnlineTime
     {
         Id = model.Id;
         Year = model.Year;
+        RoleId = model.RoleId;
         Month = model.Month;
         MonthTimes = model.MonthTimes;
         DayTimes = model.DayTimes;

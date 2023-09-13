@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 namespace DH.Entity;
 
 /// <summary>在线用户表</summary>
-public partial class SysOnlineUsersModel : ISysOnlineUsers
+public partial class SysOnlineUsersModel
 {
     #region 属性
     /// <summary>编号</summary>

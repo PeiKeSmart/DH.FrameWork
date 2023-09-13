@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 namespace DH.Entity;
 
 /// <summary>站点基础信息。目前表只启用部分字段</summary>
-public partial class SiteInfoModel : ISiteInfo
+public partial class SiteInfoModel
 {
     #region 属性
     /// <summary>编号</summary>

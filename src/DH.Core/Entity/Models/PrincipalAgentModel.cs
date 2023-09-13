@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 namespace DH.Entity;
 
 /// <summary>委托代理。委托某人代理自己的用户权限，代理人下一次登录时将得到委托人的身份</summary>
-public partial class PrincipalAgentModel : IPrincipalAgent
+public partial class PrincipalAgentModel
 {
     #region 属性
     /// <summary>编号</summary>
