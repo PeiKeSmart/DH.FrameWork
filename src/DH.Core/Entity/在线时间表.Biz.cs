@@ -175,7 +175,8 @@ public partial class SysOnlineTime : DHEntityBase<SysOnlineTime> {
     #region 高级查询
 
     /// <summary>高级查询</summary>
-    /// <param name="key">关键字</param>
+    /// <param name="Year">年</param>
+    /// <param name="Month">月</param>
     /// <param name="page">分页参数信息。可携带统计和数据权限扩展查询等信息</param>
     /// <returns>实体列表</returns>
     public static IList<SysOnlineTime> Searchs(Int32 Year, Int32 Month, PageParameter page)
@@ -218,7 +219,7 @@ public partial class SysOnlineTime : DHEntityBase<SysOnlineTime> {
             exp &= _.Month <= EndTime.Value.Month;
         }
 
-        if (RoleId > -1)
+        if (RoleId > 0)
         {
             exp &= _.RoleId == RoleId;
         }
@@ -255,7 +256,7 @@ public partial class SysOnlineTime : DHEntityBase<SysOnlineTime> {
     /// 更新用户在线时间
     /// </summary>
     /// <param name="uid">用户id</param>
-    public static void UpdateUserOnlineTime(Int32 uid, Int32 roleId)
+    public static void UpdateUserOnlineTime(Int32 uid, Int32 roleId, String uName)
     {
         if (uid <= 0) return;
 
@@ -268,7 +269,7 @@ public partial class SysOnlineTime : DHEntityBase<SysOnlineTime> {
 
         if (lastUpdateTime > 0 && lastUpdateTime <= DateTime.Now.AddMinutes(-updateOnlineTimeSpan).ToTimeStamp())
         {
-            UpdateUserOnlineTime(uid, updateOnlineTimeSpan, DateTime.Now, roleId);
+            UpdateUserOnlineTime(uid, updateOnlineTimeSpan, DateTime.Now, roleId, uName);
             _cookie.SetValue("oltime", DateTime.Now.ToTimeStamp(), 24 * 60);
         }
         else
@@ -283,7 +284,9 @@ public partial class SysOnlineTime : DHEntityBase<SysOnlineTime> {
     /// <param name="uid">用户id</param>
     /// <param name="onlineTime">在线时间</param>
     /// <param name="updateTime">更新时间</param>
-    private static void UpdateUserOnlineTime(Int32 uid, Int32 onlineTime, DateTime updateTime, Int32 roleId)
+    /// <param name="roleId">角色Id</param>
+    /// <param name="uName">用户名</param>
+    private static void UpdateUserOnlineTime(Int32 uid, Int32 onlineTime, DateTime updateTime, Int32 roleId, String uName)
     {
         if (uid <= 0) return;
 
@@ -299,6 +302,7 @@ public partial class SysOnlineTime : DHEntityBase<SysOnlineTime> {
         {
             model.Id = uid;
             model.RoleId = roleId;
+            model.UName = uName;
             model.Year = updateTime.Year;
             model.Month = updateTime.Month;
             model.MonthTimes += onlineTime;
@@ -322,6 +326,7 @@ public partial class SysOnlineTime : DHEntityBase<SysOnlineTime> {
             model = new SysOnlineTime();
             model.UpdateTime = updateTime;
             model.Id = uid;
+            model.UName = uName;
             model.Year = updateTime.Year;
             model.Month = updateTime.Month;
             model.MonthTimes = onlineTime;
