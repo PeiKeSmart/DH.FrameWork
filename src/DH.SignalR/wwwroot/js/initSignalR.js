@@ -125,6 +125,7 @@ function initSignalr(option) {
                                                                 storage.remove("remember");
 
                                                                 window.location.href = loginUrl;
+                                                                return;
                                                             }
                                                         }
                                                     })
@@ -139,6 +140,8 @@ function initSignalr(option) {
                                                 storage.set("RefreshUtcExpires", res.data.RefreshUtcExpires, seconds2);
 
                                                 storage.set("remember", Remember, seconds2);
+
+                                                initSignalr(option);
                                             }
                                         }
                                     })
@@ -152,6 +155,8 @@ function initSignalr(option) {
                                 storage.set("RefreshUtcExpires", res.data.RefreshUtcExpires, seconds2);
 
                                 storage.set("remember", Remember, seconds2);
+
+                                initSignalr(option);
                             }
                         }
                     })
