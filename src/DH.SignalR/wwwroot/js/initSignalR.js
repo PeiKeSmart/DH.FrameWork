@@ -76,6 +76,7 @@ function initSignalr(option) {
                                     storage.remove("remember");
 
                                     window.location.href = loginUrl;
+                                    return;
                                 }
                             }
                         })
