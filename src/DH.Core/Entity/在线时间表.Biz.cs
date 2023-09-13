@@ -91,6 +91,11 @@ public partial class SysOnlineTime : DHEntityBase<SysOnlineTime> {
     [XmlIgnore, ScriptIgnore, IgnoreDataMember]
     //[ScriptIgnore]
     public User User => Extends.Get(nameof(User), k => User.FindByID(Id));
+
+    /// <summary>角色</summary>
+    [XmlIgnore, ScriptIgnore, IgnoreDataMember]
+    //[ScriptIgnore]
+    public Role Role => Extends.Get(nameof(Role), k => Role.FindByID(RoleId));
     #endregion
 
     #region 扩展查询
