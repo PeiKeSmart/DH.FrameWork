@@ -21,6 +21,7 @@ namespace DH.Entity;
 [BindIndex("IU_DH_SysOnlineTime_Id_Year_Month", true, "Id,Year,Month")]
 [BindIndex("IX_DH_SysOnlineTime_UpdateTime", false, "UpdateTime")]
 [BindIndex("IX_DH_SysOnlineTime_RoleId", false, "RoleId")]
+[BindIndex("IX_DH_SysOnlineTime_UName", false, "UName")]
 [BindTable("DH_SysOnlineTime", Description = "在线时间表", ConnName = "Cube", DbType = DatabaseType.None)]
 public partial class SysOnlineTime : ISysOnlineTime, IEntity<ISysOnlineTime>
 {
@@ -48,6 +49,14 @@ public partial class SysOnlineTime : ISysOnlineTime, IEntity<ISysOnlineTime>
     [DataObjectField(false, false, false, 0)]
     [BindColumn("RoleId", "角色", "")]
     public Int32 RoleId { get => _RoleId; set { if (OnPropertyChanging("RoleId", value)) { _RoleId = value; OnPropertyChanged("RoleId"); } } }
+
+    private String _UName;
+    /// <summary>用户名</summary>
+    [DisplayName("用户名")]
+    [Description("用户名")]
+    [DataObjectField(false, false, true, 50)]
+    [BindColumn("UName", "用户名", "")]
+    public String UName { get => _UName; set { if (OnPropertyChanging("UName", value)) { _UName = value; OnPropertyChanged("UName"); } } }
 
     private Int32 _Month;
     /// <summary>月</summary>
@@ -338,6 +347,7 @@ public partial class SysOnlineTime : ISysOnlineTime, IEntity<ISysOnlineTime>
         Id = model.Id;
         Year = model.Year;
         RoleId = model.RoleId;
+        UName = model.UName;
         Month = model.Month;
         MonthTimes = model.MonthTimes;
         DayTimes = model.DayTimes;
@@ -387,6 +397,7 @@ public partial class SysOnlineTime : ISysOnlineTime, IEntity<ISysOnlineTime>
             "Id" => _Id,
             "Year" => _Year,
             "RoleId" => _RoleId,
+            "UName" => _UName,
             "Month" => _Month,
             "MonthTimes" => _MonthTimes,
             "DayTimes" => _DayTimes,
@@ -431,6 +442,7 @@ public partial class SysOnlineTime : ISysOnlineTime, IEntity<ISysOnlineTime>
                 case "Id": _Id = value.ToInt(); break;
                 case "Year": _Year = value.ToInt(); break;
                 case "RoleId": _RoleId = value.ToInt(); break;
+                case "UName": _UName = Convert.ToString(value); break;
                 case "Month": _Month = value.ToInt(); break;
                 case "MonthTimes": _MonthTimes = value.ToInt(); break;
                 case "DayTimes": _DayTimes = value.ToInt(); break;
@@ -487,6 +499,9 @@ public partial class SysOnlineTime : ISysOnlineTime, IEntity<ISysOnlineTime>
 
         /// <summary>角色</summary>
         public static readonly Field RoleId = FindByName("RoleId");
+
+        /// <summary>用户名</summary>
+        public static readonly Field UName = FindByName("UName");
 
         /// <summary>月</summary>
         public static readonly Field Month = FindByName("Month");
@@ -607,6 +622,9 @@ public partial class SysOnlineTime : ISysOnlineTime, IEntity<ISysOnlineTime>
 
         /// <summary>角色</summary>
         public const String RoleId = "RoleId";
+
+        /// <summary>用户名</summary>
+        public const String UName = "UName";
 
         /// <summary>月</summary>
         public const String Month = "Month";

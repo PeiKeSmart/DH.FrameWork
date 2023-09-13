@@ -20,6 +20,9 @@ public partial interface ISysOnlineTime
     /// <summary>角色</summary>
     Int32 RoleId { get; set; }
 
+    /// <summary>用户名</summary>
+    String UName { get; set; }
+
     /// <summary>月</summary>
     Int32 Month { get; set; }
 

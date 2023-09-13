@@ -157,6 +157,19 @@ public partial class SysOnlineTime : DHEntityBase<SysOnlineTime> {
 
         return FindAll(_.RoleId == roleId);
     }
+
+    /// <summary>根据用户名查找</summary>
+    /// <param name="uName">用户名</param>
+    /// <returns>实体列表</returns>
+    public static IList<SysOnlineTime> FindAllByUName(String uName)
+    {
+        if (uName.IsNullOrEmpty()) return new List<SysOnlineTime>();
+
+        // 实体缓存
+        if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => e.UName.EqualIgnoreCase(uName));
+
+        return FindAll(_.UName == uName);
+    }
     #endregion
 
     #region 高级查询
@@ -185,9 +198,11 @@ public partial class SysOnlineTime : DHEntityBase<SysOnlineTime> {
     /// <summary>高级查询</summary>
     /// <param name="StartTime">开始时间</param>
     /// <param name="EndTime">结束时间</param>
+    /// <param name="RoleId">角色Id</param>
+    /// <param name="UName">用户名</param>
     /// <param name="page">分页参数信息。可携带统计和数据权限扩展查询等信息</param>
     /// <returns>实体列表</returns>
-    public static IList<SysOnlineTime> Searchs(DateTime? StartTime, DateTime? EndTime, PageParameter page)
+    public static IList<SysOnlineTime> Searchs(DateTime? StartTime, DateTime? EndTime, Int32 RoleId, String UName, PageParameter page)
     {
         var exp = new WhereExpression();
 
@@ -201,6 +216,16 @@ public partial class SysOnlineTime : DHEntityBase<SysOnlineTime> {
         {
             exp &= _.Year <= EndTime.Value.Year;
             exp &= _.Month <= EndTime.Value.Month;
+        }
+
+        if (RoleId > -1)
+        {
+            exp &= _.RoleId == RoleId;
+        }
+
+        if (!UName.IsNullOrWhiteSpace())
+        {
+            exp &= _.UName.Contains(UName);
         }
 
         return FindAll(exp, page);

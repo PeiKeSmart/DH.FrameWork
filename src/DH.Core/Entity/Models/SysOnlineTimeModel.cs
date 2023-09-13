@@ -20,6 +20,9 @@ public partial class SysOnlineTimeModel
     /// <summary>角色</summary>
     public Int32 RoleId { get; set; }
 
+    /// <summary>用户名</summary>
+    public String UName { get; set; }
+
     /// <summary>月</summary>
     public Int32 Month { get; set; }
 
@@ -134,6 +137,7 @@ public partial class SysOnlineTimeModel
         Id = model.Id;
         Year = model.Year;
         RoleId = model.RoleId;
+        UName = model.UName;
         Month = model.Month;
         MonthTimes = model.MonthTimes;
         DayTimes = model.DayTimes;

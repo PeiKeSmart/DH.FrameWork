@@ -627,6 +627,7 @@
         <Column Name="Id" DataType="Int32" PrimaryKey="True" Description="用户编号" />
         <Column Name="Year" DataType="Int32" Description="年" />
         <Column Name="RoleId" DataType="Int32" Description="角色" />
+        <Column Name="UName" DataType="String" Description="用户名" />
         <Column Name="Month" DataType="Int32" Description="月" />
         <Column Name="MonthTimes" DataType="Int32" ItemType="TimeSpan" Description="本月在线时间。累计在线总时间，单位秒" />
         <Column Name="DayTimes" DataType="Int32" ItemType="TimeSpan" Description="本月在线时间。累计在线总时间，单位秒" />
@@ -668,6 +669,7 @@
         <Index Columns="Id,Year,Month" Unique="True" />
         <Index Columns="UpdateTime" />
         <Index Columns="RoleId" />
+        <Index Columns="UName" />
       </Indexes>
     </Table>
   </Tables>
