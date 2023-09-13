@@ -254,7 +254,6 @@ public partial class SysOnlineTime : DHEntityBase<SysOnlineTime> {
         var model = FindByIdAndYearAndMonth(uid, updateTime.Year, updateTime.Month);
         if (model != null)
         {
-            model.UpdateTime = updateTime;
             model.Id = uid;
             model.Year = updateTime.Year;
             model.Month = updateTime.Month;
@@ -268,6 +267,7 @@ public partial class SysOnlineTime : DHEntityBase<SysOnlineTime> {
             {
                 model.DayTimes += onlineTime;
             }
+            model.UpdateTime = updateTime;
 
             model.SetItem($"Day{updateTime.Day}", model.DayTimes);
 
