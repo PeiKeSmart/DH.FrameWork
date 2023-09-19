@@ -67,7 +67,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="PolyShim" Version="1.7.0">
+    <PackageReference Include="PolyShim" Version="1.8.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
