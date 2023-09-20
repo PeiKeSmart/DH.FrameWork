@@ -1,4 +1,4 @@
-﻿namespace SKIT.FlurlHttpClient.Upyun.Sim
+namespace SKIT.FlurlHttpClient.Upyun.Sim
 {
     /// <summary>
     /// 一个用于构造 <see cref="UpyunSimClient"/> 时使用的配置项。

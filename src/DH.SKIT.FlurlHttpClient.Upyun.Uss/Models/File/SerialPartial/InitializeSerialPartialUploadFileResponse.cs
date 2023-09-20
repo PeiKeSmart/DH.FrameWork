@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 
 namespace SKIT.FlurlHttpClient.Upyun.Uss.Models

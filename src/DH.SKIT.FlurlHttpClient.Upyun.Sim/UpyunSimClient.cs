@@ -33,7 +33,7 @@ namespace SKIT.FlurlHttpClient.Upyun.Sim
         }
 
         /// <summary>
-        /// 用指定的又拍云 AppKey、又拍云 AppSecret 初始化 <see cref="UpyunSimClient"/> 类的新实例。
+        /// 用指定的又拍云 AppKey、又拍云 AppSecret 初始化 <see cref="UpyunSmsClient"/> 类的新实例。
         /// </summary>
         /// <param name="appKey">又拍云 AppKey。</param>
         /// <param name="appSecret">又拍云 AppSecret。</param>

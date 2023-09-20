@@ -290,6 +290,8 @@ public partial class SysOnlineTime : DHEntityBase<SysOnlineTime> {
     {
         if (uid <= 0) return;
 
+        onlineTime = Math.Abs(onlineTime);
+
         var modelUser = UserDetail.FindById(uid);
         if (modelUser != null)
         {

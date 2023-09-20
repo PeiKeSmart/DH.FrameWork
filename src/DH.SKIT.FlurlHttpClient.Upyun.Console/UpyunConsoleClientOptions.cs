@@ -1,4 +1,4 @@
-﻿namespace SKIT.FlurlHttpClient.Upyun.Console
+namespace SKIT.FlurlHttpClient.Upyun.Console
 {
     /// <summary>
     /// 一个用于构造 <see cref="UpyunConsoleClient"/> 时使用的配置项。

@@ -1,4 +1,4 @@
-﻿namespace SKIT.FlurlHttpClient.Upyun.Uss
+namespace SKIT.FlurlHttpClient.Upyun.Uss
 {
     /// <summary>
     /// 一个用于构造 <see cref="UpyunUssClient"/> 时使用的配置项。
