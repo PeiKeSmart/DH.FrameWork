@@ -32,7 +32,7 @@ namespace SKIT.FlurlHttpClient.Wechat.Work
             where TEvent : WechatWorkEvent
         {
             if (client == null) throw new ArgumentNullException(nameof(client));
-            if (string.IsNullOrEmpty(callbackJson)) throw new ArgumentNullException(callbackJson);
+            if (callbackJson == null) throw new ArgumentNullException(callbackJson);
 
             try
             {
@@ -58,7 +58,7 @@ namespace SKIT.FlurlHttpClient.Wechat.Work
             where TEvent : WechatWorkEvent
         {
             if (client == null) throw new ArgumentNullException(nameof(client));
-            if (string.IsNullOrEmpty(callbackXml)) throw new ArgumentNullException(callbackXml);
+            if (callbackXml == null) throw new ArgumentNullException(callbackXml);
 
             try
             {
@@ -159,7 +159,7 @@ namespace SKIT.FlurlHttpClient.Wechat.Work
                 string cipher = Utilities.WxMsgCryptor.AESEncrypt(
                     plainText: json,
                     encodingAESKey: client.Credentials.PushEncodingAESKey!,
-                    corpOrSuiteId: string.IsNullOrEmpty(client.Credentials.SuiteId) ? client.Credentials.CorpId : client.Credentials.SuiteId!
+                    corpId: string.IsNullOrEmpty(client.Credentials.SuiteId) ? client.Credentials.CorpId : client.Credentials.SuiteId!
                 );
                 string sign = Utilities.WxMsgCryptor.GenerateSignature(
                     sToken: client.Credentials.PushToken!,
@@ -215,7 +215,7 @@ namespace SKIT.FlurlHttpClient.Wechat.Work
                 string cipher = Utilities.WxMsgCryptor.AESEncrypt(
                     plainText: xml,
                     encodingAESKey: client.Credentials.PushEncodingAESKey!,
-                    corpOrSuiteId: string.IsNullOrEmpty(client.Credentials.SuiteId) ? client.Credentials.CorpId : client.Credentials.SuiteId!
+                    corpId: string.IsNullOrEmpty(client.Credentials.SuiteId) ? client.Credentials.CorpId : client.Credentials.SuiteId!
                 );
 
                 xml = Utilities.WxMsgCryptor.WrapXml(sToken: client.Credentials.PushToken!, sMsgEncrypt: cipher);

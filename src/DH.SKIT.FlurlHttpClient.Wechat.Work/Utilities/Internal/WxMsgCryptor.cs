@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Security;
 using System.Security.Cryptography;
@@ -137,9 +136,9 @@ namespace SKIT.FlurlHttpClient.Wechat.Work.Utilities
         /// </summary>
         /// <param name="cipherText">企业微信推送来的加密文本内容（即 `Encrypt` 字段的值）。</param>
         /// <param name="encodingAESKey">企业微信后台设置的 EncodingAESKey。</param>
-        /// <param name="corpOrSuiteId">企业微信 CorpId 或第三方应用的 SuiteId。</param>
+        /// <param name="corpId">企业微信 CorpId 或第三方应用的 SuiteId。</param>
         /// <returns>解密后的文本内容。</returns>
-        public static string AESDecrypt(string cipherText, string encodingAESKey, out string corpOrSuiteId)
+        public static string AESDecrypt(string cipherText, string encodingAESKey, out string corpId)
         {
             if (cipherText == null) throw new ArgumentNullException(nameof(cipherText));
             if (encodingAESKey == null) throw new ArgumentNullException(nameof(encodingAESKey));
@@ -158,7 +157,7 @@ namespace SKIT.FlurlHttpClient.Wechat.Work.Utilities
             Array.Copy(btmpMsg, 20, bMsg, 0, len);
             Array.Copy(btmpMsg, 20 + len, bCorpId, 0, btmpMsg.Length - 20 - len);
 
-            corpOrSuiteId = Encoding.UTF8.GetString(bCorpId);
+            corpId = Encoding.UTF8.GetString(bCorpId);
             return Encoding.UTF8.GetString(bMsg);
         }
 
@@ -167,13 +166,13 @@ namespace SKIT.FlurlHttpClient.Wechat.Work.Utilities
         /// </summary>
         /// <param name="plainText">返回给企业微信的原始文本内容。</param>
         /// <param name="encodingAESKey">企业微信后台设置的 EncodingAESKey。</param>
-        /// <param name="corpOrSuiteId">企业微信 CorpId 或第三方应用的 SuiteId。</param>
+        /// <param name="corpId">企业微信 CorpId 或第三方应用的 SuiteId。</param>
         /// <returns>加密后的文本内容。</returns>
-        public static string AESEncrypt(string plainText, string encodingAESKey, string corpOrSuiteId)
+        public static string AESEncrypt(string plainText, string encodingAESKey, string corpId)
         {
             if (plainText == null) throw new ArgumentNullException(nameof(plainText));
             if (encodingAESKey == null) throw new ArgumentNullException(nameof(encodingAESKey));
-            if (corpOrSuiteId == null) throw new ArgumentNullException(nameof(corpOrSuiteId));
+            if (corpId == null) throw new ArgumentNullException(nameof(corpId));
 
             byte[] keyBytes = Convert.FromBase64String(encodingAESKey + "=");
             byte[] ivBytes = new byte[16];
@@ -181,7 +180,7 @@ namespace SKIT.FlurlHttpClient.Wechat.Work.Utilities
 
             string randCode = CreateRandCode(16);
             byte[] bRand = Encoding.UTF8.GetBytes(randCode);
-            byte[] bCorpId = Encoding.UTF8.GetBytes(corpOrSuiteId);
+            byte[] bCorpId = Encoding.UTF8.GetBytes(corpId);
             byte[] bMsgTmp = Encoding.UTF8.GetBytes(plainText);
             byte[] bMsgLen = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(bMsgTmp.Length));
             byte[] bMsg = new byte[bRand.Length + bMsgLen.Length + bCorpId.Length + bMsgTmp.Length];
@@ -230,14 +229,11 @@ namespace SKIT.FlurlHttpClient.Wechat.Work.Utilities
             if (sNonce == null) throw new ArgumentNullException(nameof(sNonce));
             if (sMsgEncrypt == null) throw new ArgumentNullException(nameof(sMsgEncrypt));
 
-            ISet<string> set = new SortedSet<string>(StringComparer.Ordinal);
-            set.Add(sToken);
-            set.Add(sTimestamp);
-            set.Add(sNonce);
-            set.Add(sMsgEncrypt);
+            List<string> tmp = new List<string>(capacity: 4) { sToken, sTimestamp, sNonce, sMsgEncrypt };
+            tmp.Sort(StringComparer.Ordinal);
 
-            string rawText = string.Join(string.Empty, set.ToArray());
-            string signText = Utilities.SHA1Utility.Hash(rawText);
+            string rawText = string.Join(string.Empty, tmp);
+            string signText = SHA1Utility.Hash(rawText);
             return signText.ToLower();
         }
 
