@@ -20,7 +20,7 @@ namespace SKIT.FlurlHttpClient.Wechat.Api.Models
         public int Balance { get; set; }
 
         /// <summary>
-        /// 获取或设置本次扣的赠送币的数量。
+        /// 获取或设置本次扣除的赠送币的数量。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("used_present_amount")]
         [System.Text.Json.Serialization.JsonPropertyName("used_present_amount")]

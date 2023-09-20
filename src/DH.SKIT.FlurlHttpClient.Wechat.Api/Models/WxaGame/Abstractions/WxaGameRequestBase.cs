@@ -49,7 +49,7 @@ namespace SKIT.FlurlHttpClient.Wechat.Api.Models
         /// </summary>
         [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
-        public string SessionKey { get; set; } = string.Empty;
+        public string? SessionKey { get; set; }
 
         /// <summary>
         /// 获取或设置用于用户登录态签名的方式。
