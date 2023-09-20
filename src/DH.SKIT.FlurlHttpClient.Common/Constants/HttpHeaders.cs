@@ -1,4 +1,4 @@
-﻿namespace SKIT.FlurlHttpClient.Constants
+namespace SKIT.FlurlHttpClient.Constants
 {
     public static class HttpHeaders
     {

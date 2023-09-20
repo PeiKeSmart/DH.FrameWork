@@ -162,7 +162,7 @@ namespace SKIT.FlurlHttpClient
             {
                 if (header != null)
                 {
-                    foreach(var item in header)
+                    foreach (var item in header)
                     {
                         flurlRequest.WithHeader(item.Key, item.Value);
                     }

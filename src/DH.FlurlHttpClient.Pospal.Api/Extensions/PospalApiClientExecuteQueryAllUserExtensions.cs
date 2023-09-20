@@ -1,8 +1,7 @@
 ﻿using Flurl.Http;
 
 using NewLife;
-
-using SKIT.FlurlHttpClient.Common;
+using NewLife.Serialization;
 
 namespace DG.FlurlHttpClient.Pospal.Api;
 

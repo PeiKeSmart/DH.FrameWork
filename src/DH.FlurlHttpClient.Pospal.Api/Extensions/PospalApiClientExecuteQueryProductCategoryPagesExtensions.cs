@@ -1,11 +1,9 @@
 ﻿using Flurl.Http;
 
 using NewLife;
+using NewLife.Serialization;
 
-using SKIT.FlurlHttpClient.Common;
-
-namespace DG.FlurlHttpClient.Pospal.Api.Extensions
-{
+namespace DG.FlurlHttpClient.Pospal.Api.Extensions {
     public static class PospalApiClientExecuteQueryProductCategoryPagesExtensions
     {
         /// <summary>
