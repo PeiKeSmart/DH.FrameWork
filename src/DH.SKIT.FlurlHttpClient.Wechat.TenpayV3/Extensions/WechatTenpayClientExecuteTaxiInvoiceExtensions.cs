@@ -6,9 +6,6 @@ using Flurl.Http;
 
 namespace SKIT.FlurlHttpClient.Wechat.TenpayV3
 {
-    /// <summary>
-    /// 为 <see cref="WechatTenpayClient"/> 提供出租车电子发票相关的 API 扩展方法。
-    /// </summary>
     public static class WechatTenpayClientExecuteTaxiInvoiceExtensions
     {
         #region TaxiCompany
@@ -143,7 +140,7 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3
         /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public static async Task<Models.PunchTaxiInvoiceAttendanceResponse> ExecutePunchTaxiInvoiceAttendanceAsync(this WechatTenpayClient client, Models.PunchTaxiInvoiceAttendanceRequest request, CancellationToken cancellationToken = default)
+        public static async Task<Models.CreateTaxiInvoicePunchAttendanceResponse> ExecuteCreateTaxiInvoicePunchAttendanceAsync(this WechatTenpayClient client, Models.CreateTaxiInvoicePunchAttendanceRequest request, CancellationToken cancellationToken = default)
         {
             if (client is null) throw new ArgumentNullException(nameof(client));
             if (request is null) throw new ArgumentNullException(nameof(request));
@@ -151,7 +148,7 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3
             IFlurlRequest flurlReq = client
                 .CreateRequest(request, HttpMethod.Post, "taxi-invoice", "attendance", "punch");
 
-            return await client.SendRequestWithJsonAsync<Models.PunchTaxiInvoiceAttendanceResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.CreateTaxiInvoicePunchAttendanceResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
 

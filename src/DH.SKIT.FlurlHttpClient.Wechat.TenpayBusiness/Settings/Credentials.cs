@@ -20,6 +20,21 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayBusiness.Settings
         public string PlatformCertificatePrivateKey { get; }
 
         /// <summary>
+        /// 初始化客户端时 <see cref="WechatTenpayBusinessClientOptions.EnterpriseId"/> 的副本。
+        /// </summary>
+        public string? EnterpriseId { get; }
+
+        /// <summary>
+        /// 初始化客户端时 <see cref="WechatTenpayBusinessClientOptions.EnterpriseCertificateSerialNumber"/> 的副本。
+        /// </summary>
+        public string? EnterpriseCertificateSerialNumber { get; }
+
+        /// <summary>
+        /// 初始化客户端时 <see cref="WechatTenpayBusinessClientOptions.EnterpriseCertificatePrivateKey"/> 的副本。
+        /// </summary>
+        public string? EnterpriseCertificatePrivateKey { get; }
+
+        /// <summary>
         /// 初始化客户端时 <see cref="WechatTenpayBusinessClientOptions.TBEPCertificateSerialNumber"/> 的副本。
         /// </summary>
         public string TBEPCertificateSerialNumber { get; }
@@ -51,6 +66,9 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayBusiness.Settings
             PlatformId = options.PlatformId;
             PlatformCertificateSerialNumber = options.PlatformCertificateSerialNumber;
             PlatformCertificatePrivateKey = options.PlatformCertificatePrivateKey;
+            EnterpriseId = options.EnterpriseId;
+            EnterpriseCertificateSerialNumber = options.EnterpriseCertificateSerialNumber;
+            EnterpriseCertificatePrivateKey = options.EnterpriseCertificatePrivateKey;
             TBEPCertificateSerialNumber = options.TBEPCertificateSerialNumber;
             TBEPCertificatePublicKey = options.TBEPCertificatePublicKey;
             SensitivePropertyEncryptionAlgorithm = options.SensitivePropertyEncryptionAlgorithm;

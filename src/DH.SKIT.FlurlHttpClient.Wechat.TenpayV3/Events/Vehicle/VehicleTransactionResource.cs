@@ -3,9 +3,9 @@ using System;
 namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Events
 {
     /// <summary>
-    /// <para>表示 TRANSACTION.SUCCESS（仅限微信支付分停车服务）通知的数据。</para>
-    /// <para>表示 TRANSACTION.FAIL（仅限微信支付分停车服务）通知的数据。</para>
-    /// <para>表示 TRANSACTION.PAY_BACK（仅限微信支付分停车服务）通知的数据。</para>
+    /// <para>表示微信支付分停车服务 TRANSACTION.SUCCESS 通知的数据。</para>
+    /// <para>表示微信支付分停车服务 TRANSACTION.FAIL 通知的数据。</para>
+    /// <para>表示微信支付分停车服务 TRANSACTION.PAY_BACK 通知的数据。</para>
     /// </summary>
     public class VehicleTransactionResource : WechatTenpayEvent.Types.IDecryptedResource
     {

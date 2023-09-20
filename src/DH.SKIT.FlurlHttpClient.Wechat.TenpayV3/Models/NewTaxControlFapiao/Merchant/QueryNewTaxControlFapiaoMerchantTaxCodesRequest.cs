@@ -6,6 +6,13 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Models
     public class QueryNewTaxControlFapiaoMerchantTaxCodesRequest : WechatTenpayRequest
     {
         /// <summary>
+        /// 获取或设置子商户号。
+        /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
+        [System.Text.Json.Serialization.JsonIgnore]
+        public string? SubMerchantId { get; set; }
+
+        /// <summary>
         /// 获取或设置分页起始位置。
         /// </summary>
         [Newtonsoft.Json.JsonIgnore]
@@ -13,7 +20,7 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Models
         public int Offset { get; set; }
 
         /// <summary>
-        /// 获取或设置分页每页数量。
+        /// 获取或设置分页大小。
         /// <para>默认值：10</para>
         /// </summary>
         [Newtonsoft.Json.JsonIgnore]

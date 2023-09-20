@@ -7,9 +7,6 @@ using Flurl.Http;
 
 namespace SKIT.FlurlHttpClient.Wechat.TenpayV3
 {
-    /// <summary>
-    /// 为 <see cref="WechatTenpayClient"/> 提供商家券相关的 API 扩展方法。
-    /// </summary>
     public static class WechatTenpayClientExecuteMarketingBusifavorExtensions
     {
         /// <summary>
@@ -367,6 +364,31 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3
                 .CreateRequest(request, HttpMethod.Post, "marketing", "busifavor", "subsidy", "pay-receipts");
 
             return await client.SendRequestWithJsonAsync<Models.CreateMarketingBusifavorSubsidyPayReceiptResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+        }
+
+        /// <summary>
+        /// <para>异步调用 [GET] /marketing/busifavor/subsidy/pay-receipts 接口。</para>
+        /// <para>REF: https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter9_2_19.shtml </para>
+        /// <para>REF: https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter9_2_19.shtml </para>
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public static async Task<Models.QueryMarketingBusifavorSubsidyPayReceiptsResponse> ExecuteQueryMarketingBusifavorSubsidyPayReceiptsAsync(this WechatTenpayClient client, Models.QueryMarketingBusifavorSubsidyPayReceiptsRequest request, CancellationToken cancellationToken = default)
+        {
+            if (client is null) throw new ArgumentNullException(nameof(client));
+            if (request is null) throw new ArgumentNullException(nameof(request));
+
+            IFlurlRequest flurlReq = client
+                .CreateRequest(request, HttpMethod.Get, "marketing", "busifavor", "subsidy", "pay-receipts")
+                .SetQueryParam("stock_id", request.StockId)
+                .SetQueryParam("coupon_code", request.CouponCode);
+
+            if (request.OutSubsidyNumber != null)
+                flurlReq.SetQueryParam("out_subsidy_no", request.OutSubsidyNumber);
+
+            return await client.SendRequestWithJsonAsync<Models.QueryMarketingBusifavorSubsidyPayReceiptsResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>

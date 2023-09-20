@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace SKIT.FlurlHttpClient.Wechat.TenpayBusiness
 {
     /// <summary>
-    /// 表示腾讯微企付 API 响应的基类。
+    /// 表示微企付 API 响应的基类。
     /// </summary>
     public abstract class WechatTenpayBusinessResponse : ICommonResponse
     {
@@ -56,28 +56,28 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayBusiness
         }
 
         /// <summary>
-        /// 获取腾讯微企付 API 返回的敏感字段加密参数。
+        /// 获取微企付 API 返回的敏感字段加密参数。
         /// </summary>
         [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
-        public WechatTenpayBusinessResponseTBEPEncryption? TBEPEncryption { get; internal set; }
+        public WechatTenpayBusinessResponseEncryption? Encryption { get; internal set; }
 
         /// <summary>
-        /// 获取腾讯微企付请求链路 ID。
+        /// 获取微企付请求链路 ID。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("trace_id")]
         [System.Text.Json.Serialization.JsonPropertyName("trace_id")]
         public virtual string? TraceId { get; set; }
 
         /// <summary>
-        /// 获取腾讯微企付 API 返回的错误详细信息。
+        /// 获取微企付 API 返回的错误详细信息。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("error")]
         [System.Text.Json.Serialization.JsonPropertyName("error")]
         public virtual WechatTenpayBusinessResponseError? Error { get; set; }
 
         /// <summary>
-        /// 获取一个值，该值指示调用腾讯微企付 API 是否成功（即 HTTP 状态码为 200、202 或 204）。
+        /// 获取一个值，该值指示调用微企付 API 是否成功（即 HTTP 状态码为 200、202 或 204）。
         /// </summary>
         /// <returns></returns>
         public virtual bool IsSuccessful()
@@ -110,7 +110,7 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayBusiness
         public IDictionary<string, string>? Details { get; set; }
     }
 
-    public sealed class WechatTenpayBusinessResponseTBEPEncryption
+    public sealed class WechatTenpayBusinessResponseEncryption
     {
         /// <summary>
         /// 获取或设置平台账号。
@@ -118,6 +118,13 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayBusiness
         [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
         public string? PlatformId { get; set; }
+
+        /// <summary>
+        /// 获取或设置企业 ID。
+        /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
+        [System.Text.Json.Serialization.JsonIgnore]
+        public string? EnterpriseId { get; set; }
 
         /// <summary>
         /// 获取或设置加密后的密钥值。
@@ -138,7 +145,7 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayBusiness
         /// </summary>
         [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
-        public string? CertificateSerialNumber { get; set; }
+        public string? SerialNumber { get; set; }
 
         /// <summary>
         /// 获取或设置加密算法。

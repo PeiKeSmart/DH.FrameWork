@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -6,11 +6,84 @@ using Flurl.Http;
 
 namespace SKIT.FlurlHttpClient.Wechat.TenpayV3
 {
-    /// <summary>
-    /// 为 <see cref="WechatTenpayClient"/> 提供商户平台处置通知相关的 API 扩展方法。
-    /// </summary>
     public static class WechatTenpayClientExecuteMerchantRiskManageExtensions
     {
+        #region TradeRisk
+        /// <summary>
+        /// <para>异步调用 [POST] /merchant-risk-manage/report-trade-union-information 接口。</para>
+        /// <para>REF: https://pay.weixin.qq.com/docs/partner/apis/risk-manage/trade-risk/report-trade-risk-information.html </para>
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public static async Task<Models.CreateMerchantRiskManageTradeUnionInformationReportResponse> ExecuteCreateMerchantRiskManageTradeUnionInformationReportAsync(this WechatTenpayClient client, Models.CreateMerchantRiskManageTradeUnionInformationReportRequest request, CancellationToken cancellationToken = default)
+        {
+            if (client is null) throw new ArgumentNullException(nameof(client));
+            if (request is null) throw new ArgumentNullException(nameof(request));
+
+            IFlurlRequest flurlReq = client
+                .CreateRequest(request, HttpMethod.Post, "merchant-risk-manage", "report-trade-union-information");
+
+            return await client.SendRequestWithJsonAsync<Models.CreateMerchantRiskManageTradeUnionInformationReportResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+        }
+
+        /// <summary>
+        /// <para>异步调用 [GET] /merchant-risk-manage/trade-risk-information 接口。</para>
+        /// <para>REF: https://pay.weixin.qq.com/docs/partner/apis/risk-manage/trade-risk/query-trade-risk-information.html </para>
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public static async Task<Models.GetMerchantRiskManageTradeRiskInformationResponse> ExecuteGetMerchantRiskManageTradeRiskInformationAsync(this WechatTenpayClient client, Models.GetMerchantRiskManageTradeRiskInformationRequest request, CancellationToken cancellationToken = default)
+        {
+            if (client is null) throw new ArgumentNullException(nameof(client));
+            if (request is null) throw new ArgumentNullException(nameof(request));
+
+            IFlurlRequest flurlReq = client
+                .CreateRequest(request, HttpMethod.Get, "merchant-risk-manage", "trade-risk-information")
+                .SetQueryParam("out_trade_no", request.OutTradeNumber);
+
+            if (request.MerchantId != null)
+                flurlReq.SetQueryParam("sp_mchid", request.MerchantId);
+
+            if (request.AcquiringBankId != null)
+                flurlReq.SetQueryParam("acquiring_bank_id", request.AcquiringBankId);
+
+            if (request.ChannelId != null)
+                flurlReq.SetQueryParam("channel_id", request.ChannelId);
+
+            if (request.SubMerchantId != null)
+                flurlReq.SetQueryParam("sub_mchid", request.SubMerchantId);
+
+            if (request.ComplaintsInformation != null)
+                flurlReq.SetQueryParam("complaints_information", request.ComplaintsInformation);
+
+            return await client.SendRequestWithJsonAsync<Models.GetMerchantRiskManageTradeRiskInformationResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+        }
+
+        /// <summary>
+        /// <para>异步调用 [POST] /merchant-risk-manage/trade-risk-result 接口。</para>
+        /// <para>REF: https://pay.weixin.qq.com/docs/partner/apis/risk-manage/trade-risk/report-trade-risk-information.html </para>
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public static async Task<Models.CreateMerchantRiskManageTradeRiskResultResponse> ExecuteCreateMerchantRiskManageTradeRiskResultAsync(this WechatTenpayClient client, Models.CreateMerchantRiskManageTradeRiskResultRequest request, CancellationToken cancellationToken = default)
+        {
+            if (client is null) throw new ArgumentNullException(nameof(client));
+            if (request is null) throw new ArgumentNullException(nameof(request));
+
+            IFlurlRequest flurlReq = client
+                .CreateRequest(request, HttpMethod.Post, "merchant-risk-manage", "trade-risk-result");
+
+            return await client.SendRequestWithJsonAsync<Models.CreateMerchantRiskManageTradeRiskResultResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+        }
+        #endregion
+
+        #region ViolationNotification
         /// <summary>
         /// <para>异步调用 [POST] /merchant-risk-manage/violation-notifications 接口。</para>
         /// <para>REF: https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter10_3_1.shtml </para>
@@ -86,5 +159,6 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3
 
             return await client.SendRequestWithJsonAsync<Models.DeleteMerchantRiskManageViolationNotificationResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
+        #endregion
     }
 }
