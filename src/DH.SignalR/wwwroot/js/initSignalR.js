@@ -142,6 +142,7 @@ function initSignalr(option) {
 
                                                 storage.set("remember", Remember, seconds2);
 
+                                                option.accessTokenFactory = res.data.AccessToken;
                                                 initSignalr(option);
                                             }
                                         }
@@ -157,6 +158,7 @@ function initSignalr(option) {
 
                                 storage.set("remember", Remember, seconds2);
 
+                                option.accessTokenFactory = res.data.AccessToken;
                                 initSignalr(option);
                             }
                         }
