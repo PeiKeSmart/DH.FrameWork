@@ -665,7 +665,6 @@
         <Column Name="UpdateTime" DataType="DateTime" Nullable="False" Description="最后更新时间" />
       </Columns>
       <Indexes>
-        <Index Name="PRIMARY" Columns="Id" Unique="True" PrimaryKey="True" />
         <Index Columns="Id,Year,Month" Unique="True" />
         <Index Columns="UpdateTime" />
         <Index Columns="RoleId" />

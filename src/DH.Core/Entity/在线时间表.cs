@@ -17,7 +17,6 @@ namespace DH.Entity;
 [Serializable]
 [DataObject]
 [Description("在线时间表")]
-[BindIndex("PRIMARY", true, "Id")]
 [BindIndex("IU_DH_SysOnlineTime_Id_Year_Month", true, "Id,Year,Month")]
 [BindIndex("IX_DH_SysOnlineTime_UpdateTime", false, "UpdateTime")]
 [BindIndex("IX_DH_SysOnlineTime_RoleId", false, "RoleId")]
