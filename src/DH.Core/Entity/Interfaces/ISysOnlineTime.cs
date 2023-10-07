@@ -12,7 +12,10 @@ public partial interface ISysOnlineTime
 {
     #region 属性
     /// <summary>用户编号</summary>
-    Int32 Id { get; set; }
+    Int32 ID { get; set; }
+
+    /// <summary>用户编号</summary>
+    Int32 UId { get; set; }
 
     /// <summary>年</summary>
     Int32 Year { get; set; }

@@ -170,6 +170,19 @@ public partial class SysOnlineTime : DHEntityBase<SysOnlineTime> {
 
         return FindAll(_.UName == uName);
     }
+
+    /// <summary>根据用户编号查找</summary>
+    /// <param name="uId">用户编号</param>
+    /// <returns>实体列表</returns>
+    public static IList<SysOnlineTime> FindAllByUId(Int32 uId)
+    {
+        if (uId <= 0) return new List<SysOnlineTime>();
+
+        // 实体缓存
+        if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => e.UId == uId);
+
+        return FindAll(_.UId == uId);
+    }
     #endregion
 
     #region 高级查询

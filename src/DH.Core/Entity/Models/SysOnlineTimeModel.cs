@@ -12,7 +12,10 @@ public partial class SysOnlineTimeModel
 {
     #region 属性
     /// <summary>用户编号</summary>
-    public Int32 Id { get; set; }
+    public Int32 ID { get; set; }
+
+    /// <summary>用户编号</summary>
+    public Int32 UId { get; set; }
 
     /// <summary>年</summary>
     public Int32 Year { get; set; }
@@ -134,7 +137,8 @@ public partial class SysOnlineTimeModel
     /// <param name="model">模型</param>
     public void Copy(ISysOnlineTime model)
     {
-        Id = model.Id;
+        ID = model.ID;
+        UId = model.UId;
         Year = model.Year;
         RoleId = model.RoleId;
         UName = model.UName;

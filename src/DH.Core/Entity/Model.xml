@@ -624,7 +624,8 @@
     </Table>
     <Table Name="SysOnlineTime" TableName="DH_SysOnlineTime" Description="在线时间表" ConnName="Cube">
       <Columns>
-        <Column Name="Id" DataType="Int32" PrimaryKey="True" Description="用户编号" />
+        <Column Name="ID" DataType="Int32" PrimaryKey="True" Description="用户编号" />
+        <Column Name="UId" DataType="Int32" Description="用户编号" />
         <Column Name="Year" DataType="Int32" Description="年" />
         <Column Name="RoleId" DataType="Int32" Description="角色" />
         <Column Name="UName" DataType="String" Description="用户名" />
@@ -666,6 +667,7 @@
       </Columns>
       <Indexes>
         <Index Columns="Id,Year,Month" Unique="True" />
+        <Index Columns="UId" />
         <Index Columns="UpdateTime" />
         <Index Columns="RoleId" />
         <Index Columns="UName" />

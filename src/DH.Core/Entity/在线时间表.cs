@@ -18,6 +18,7 @@ namespace DH.Entity;
 [DataObject]
 [Description("在线时间表")]
 [BindIndex("IU_DH_SysOnlineTime_Id_Year_Month", true, "Id,Year,Month")]
+[BindIndex("IX_DH_SysOnlineTime_UId", false, "UId")]
 [BindIndex("IX_DH_SysOnlineTime_UpdateTime", false, "UpdateTime")]
 [BindIndex("IX_DH_SysOnlineTime_RoleId", false, "RoleId")]
 [BindIndex("IX_DH_SysOnlineTime_UName", false, "UName")]
@@ -25,13 +26,21 @@ namespace DH.Entity;
 public partial class SysOnlineTime : ISysOnlineTime, IEntity<ISysOnlineTime>
 {
     #region 属性
-    private Int32 _Id;
+    private Int32 _ID;
     /// <summary>用户编号</summary>
     [DisplayName("用户编号")]
     [Description("用户编号")]
     [DataObjectField(true, false, false, 0)]
-    [BindColumn("Id", "用户编号", "")]
-    public Int32 Id { get => _Id; set { if (OnPropertyChanging("Id", value)) { _Id = value; OnPropertyChanged("Id"); } } }
+    [BindColumn("ID", "用户编号", "")]
+    public Int32 ID { get => _ID; set { if (OnPropertyChanging("ID", value)) { _ID = value; OnPropertyChanged("ID"); } } }
+
+    private Int32 _UId;
+    /// <summary>用户编号</summary>
+    [DisplayName("用户编号")]
+    [Description("用户编号")]
+    [DataObjectField(false, false, false, 0)]
+    [BindColumn("UId", "用户编号", "")]
+    public Int32 UId { get => _UId; set { if (OnPropertyChanging("UId", value)) { _UId = value; OnPropertyChanged("UId"); } } }
 
     private Int32 _Year;
     /// <summary>年</summary>
@@ -343,7 +352,8 @@ public partial class SysOnlineTime : ISysOnlineTime, IEntity<ISysOnlineTime>
     /// <param name="model">模型</param>
     public void Copy(ISysOnlineTime model)
     {
-        Id = model.Id;
+        ID = model.ID;
+        UId = model.UId;
         Year = model.Year;
         RoleId = model.RoleId;
         UName = model.UName;
@@ -393,7 +403,8 @@ public partial class SysOnlineTime : ISysOnlineTime, IEntity<ISysOnlineTime>
     {
         get => name switch
         {
-            "Id" => _Id,
+            "ID" => _ID,
+            "UId" => _UId,
             "Year" => _Year,
             "RoleId" => _RoleId,
             "UName" => _UName,
@@ -438,7 +449,8 @@ public partial class SysOnlineTime : ISysOnlineTime, IEntity<ISysOnlineTime>
         {
             switch (name)
             {
-                case "Id": _Id = value.ToInt(); break;
+                case "ID": _ID = value.ToInt(); break;
+                case "UId": _UId = value.ToInt(); break;
                 case "Year": _Year = value.ToInt(); break;
                 case "RoleId": _RoleId = value.ToInt(); break;
                 case "UName": _UName = Convert.ToString(value); break;
@@ -491,7 +503,10 @@ public partial class SysOnlineTime : ISysOnlineTime, IEntity<ISysOnlineTime>
     public partial class _
     {
         /// <summary>用户编号</summary>
-        public static readonly Field Id = FindByName("Id");
+        public static readonly Field ID = FindByName("ID");
+
+        /// <summary>用户编号</summary>
+        public static readonly Field UId = FindByName("UId");
 
         /// <summary>年</summary>
         public static readonly Field Year = FindByName("Year");
@@ -614,7 +629,10 @@ public partial class SysOnlineTime : ISysOnlineTime, IEntity<ISysOnlineTime>
     public partial class __
     {
         /// <summary>用户编号</summary>
-        public const String Id = "Id";
+        public const String ID = "ID";
+
+        /// <summary>用户编号</summary>
+        public const String UId = "UId";
 
         /// <summary>年</summary>
         public const String Year = "Year";
