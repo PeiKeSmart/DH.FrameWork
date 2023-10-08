@@ -90,7 +90,7 @@ public partial class SysOnlineTime : DHEntityBase<SysOnlineTime> {
     /// <summary>用户</summary>
     [XmlIgnore, ScriptIgnore, IgnoreDataMember]
     //[ScriptIgnore]
-    public User User => Extends.Get(nameof(User), k => User.FindByID(Id));
+    public User User => Extends.Get(nameof(User), k => User.FindByID(UId));
 
     /// <summary>角色</summary>
     [XmlIgnore, ScriptIgnore, IgnoreDataMember]
@@ -107,7 +107,23 @@ public partial class SysOnlineTime : DHEntityBase<SysOnlineTime> {
         if (id <= 0) return null;
 
         // 实体缓存
-        if (Meta.Session.Count < 1000) return Meta.Cache.Find(e => e.Id == id);
+        if (Meta.Session.Count < 1000) return Meta.Cache.Find(e => e.ID == id);
+
+        // 单对象缓存
+        return Meta.SingleCache[id];
+
+        //return Find(_.Id == id);
+    }
+
+    /// <summary>根据编号查找</summary>
+    /// <param name="id">编号</param>
+    /// <returns>实体对象</returns>
+    public static SysOnlineTime FindByUId(Int32 id)
+    {
+        if (id <= 0) return null;
+
+        // 实体缓存
+        if (Meta.Session.Count < 1000) return Meta.Cache.Find(e => e.UId == id);
 
         // 单对象缓存
         return Meta.SingleCache[id];
@@ -126,10 +142,10 @@ public partial class SysOnlineTime : DHEntityBase<SysOnlineTime> {
 
         if (Meta.Session.Count < 1000)
         {
-            return Meta.Cache.FindAll(x => ids.SplitAsInt(",").Contains(x.Id));
+            return Meta.Cache.FindAll(x => ids.SplitAsInt(",").Contains(x.UId));
         }
 
-        return FindAll(_.Id.In(ids.Split(',')));
+        return FindAll(_.UId.In(ids.Split(',')));
     }
 
     /// <summary>根据用户编号、年、月查找</summary>
@@ -140,9 +156,9 @@ public partial class SysOnlineTime : DHEntityBase<SysOnlineTime> {
     public static SysOnlineTime FindByIdAndYearAndMonth(Int32 id, Int32 year, Int32 month)
     {
         // 实体缓存
-        if (Meta.Session.Count < 1000) return Meta.Cache.Find(e => e.Id == id && e.Year == year && e.Month == month);
+        if (Meta.Session.Count < 1000) return Meta.Cache.Find(e => e.UId == id && e.Year == year && e.Month == month);
 
-        return Find(_.Id == id & _.Year == year & _.Month == month);
+        return Find(_.UId == id & _.Year == year & _.Month == month);
     }
 
     /// <summary>根据角色查找</summary>
@@ -182,6 +198,19 @@ public partial class SysOnlineTime : DHEntityBase<SysOnlineTime> {
         if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => e.UId == uId);
 
         return FindAll(_.UId == uId);
+    }
+
+    /// <summary>根据用户编号、年、月查找</summary>
+    /// <param name="uId">用户编号</param>
+    /// <param name="year">年</param>
+    /// <param name="month">月</param>
+    /// <returns>实体对象</returns>
+    public static SysOnlineTime FindByUIdAndYearAndMonth(Int32 uId, Int32 year, Int32 month)
+    {
+        // 实体缓存
+        if (Meta.Session.Count < 1000) return Meta.Cache.Find(e => e.UId == uId && e.Year == year && e.Month == month);
+
+        return Find(_.UId == uId & _.Year == year & _.Month == month);
     }
     #endregion
 
@@ -315,7 +344,7 @@ public partial class SysOnlineTime : DHEntityBase<SysOnlineTime> {
         var model = FindByIdAndYearAndMonth(uid, updateTime.Year, updateTime.Month);
         if (model != null)
         {
-            model.Id = uid;
+            model.UId = uid;
             model.RoleId = roleId;
             model.UName = uName;
             model.Year = updateTime.Year;
@@ -340,7 +369,7 @@ public partial class SysOnlineTime : DHEntityBase<SysOnlineTime> {
         {
             model = new SysOnlineTime();
             model.UpdateTime = updateTime;
-            model.Id = uid;
+            model.UId = uid;
             model.UName = uName;
             model.Year = updateTime.Year;
             model.Month = updateTime.Month;
