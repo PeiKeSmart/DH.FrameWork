@@ -86,11 +86,18 @@ public class DHSetting : Config<DHSetting>
     public Boolean AllSslEnabled { get; set; }
 
     /// <summary>
-    /// API接口是否启用SSL。0为不处理，1为重定向（永久）到页面的HTTPS版本，2为（永久）重定向到页面的HTTP版本
+    /// HttpsRequirement是否启用SSL。0为不处理，1为重定向（永久）到页面的HTTPS版本，2为（永久）重定向到页面的HTTP版本
     /// </summary>
-    /// <summary>API接口是否启用SSL。0为不处理，1为重定向（永久）到页面的HTTPS版本，2为（永久）重定向到页面的HTTP版本</summary>
-    [Description("API接口是否启用SSL。0为不处理，1为重定向（永久）到页面的HTTPS版本，2为（永久）重定向到页面的HTTP版本")]
+    /// <summary>HttpsRequirement是否启用SSL。0为不处理，1为重定向（永久）到页面的HTTPS版本，2为（永久）重定向到页面的HTTP版本</summary>
+    [Description("HttpsRequirement是否启用SSL。0为不处理，1为重定向（永久）到页面的HTTPS版本，2为（永久）重定向到页面的HTTP版本")]
     public Int32 SslEnabled { get; set; } = 0;
+
+    /// <summary>
+    /// HttpsRequirement支持的类型。用英文逗号分隔
+    /// </summary>
+    /// <summary>HttpsRequirement支持的类型。用英文逗号分隔</summary>
+    [Description("HttpsRequirement支持的类型。用英文逗号分隔")]
+    public String SslPageType { get; set; }
 
     /// <summary>
     /// 是否为管理系统
