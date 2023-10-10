@@ -20,12 +20,10 @@ public sealed class HttpsRequirementAttribute : TypeFilterAttribute {
     /// 创建过滤器属性的实例
     /// </summary>
     /// <param name="ignore">是否忽略过滤操作的执行</param>
-    /// <param name="pageType">页面类型</param>
-    public HttpsRequirementAttribute(bool ignore = false, string pageType = "") : base(typeof(HttpsRequirementFilter))
+    public HttpsRequirementAttribute(bool ignore = false) : base(typeof(HttpsRequirementFilter))
     {
         IgnoreFilter = ignore;
-        PageType = pageType;
-        Arguments = new object[] { ignore, pageType };
+        Arguments = new object[] { ignore };
     }
 
     /// <summary>
@@ -34,23 +32,26 @@ public sealed class HttpsRequirementAttribute : TypeFilterAttribute {
     public bool IgnoreFilter { get; }
 
     /// <summary>
-    /// 页面类型
+    /// 页面类型名称
     /// </summary>
     public String PageType { get; }
+
+    /// <summary>
+    ///  是否接口
+    /// </summary>
+    public Boolean IsApi { get; }
 
     /// <summary>
     /// 确认检查当前连接是否安全并在必要时正确重定向
     /// </summary>
     private class HttpsRequirementFilter : IAsyncAuthorizationFilter {
         private readonly bool _ignoreFilter;
-        private readonly string _pageType;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IWebHelper _webHelper;
 
-        public HttpsRequirementFilter(bool ignoreFilter, String pageType, IWebHelper webHelper, IWebHostEnvironment webHostEnvironment)
+        public HttpsRequirementFilter(Boolean ignoreFilter, IWebHelper webHelper, IWebHostEnvironment webHostEnvironment)
         {
             _ignoreFilter = ignoreFilter;
-            _pageType = pageType;
             _webHostEnvironment = webHostEnvironment;
             _webHelper = webHelper;
         }
@@ -90,12 +91,6 @@ public sealed class HttpsRequirementAttribute : TypeFilterAttribute {
             if (!DHSetting.Current.IsInstalled)
                 return;
 
-            if (_pageType.IsNullOrWhiteSpace())
-                return;
-
-            if (!DHSetting.Current.SslPageType.Contains(_pageType, StringComparison.OrdinalIgnoreCase))
-                return;
-
             // 检查是否已为操作覆盖此筛选器
             var actionFilter = context.ActionDescriptor.FilterDescriptors
                 .Where(filterDescriptor => filterDescriptor.Scope == FilterScope.Action)
@@ -105,6 +100,15 @@ public sealed class HttpsRequirementAttribute : TypeFilterAttribute {
 
             if (actionFilter?.IgnoreFilter ?? _ignoreFilter)
                 return;
+
+            if (actionFilter?.IsApi == false)
+            {
+                if (actionFilter?.PageType.IsNullOrWhiteSpace() == true)
+                    return;
+
+                if (!DHSetting.Current.SslPageType.Contains(actionFilter?.PageType, StringComparison.OrdinalIgnoreCase))
+                    return;
+            }
 
             // 缓存的连接可能会导致不稳定的行为在开发环境中,当我们使用永久重定向
             var isPermanent = !_webHostEnvironment.IsDevelopment();
