@@ -36,7 +36,7 @@ public sealed class HttpsRequirementAttribute : TypeFilterAttribute {
     /// <summary>
     /// 页面类型
     /// </summary>
-    public String? PageType { get; }
+    public String PageType { get; }
 
     /// <summary>
     /// 确认检查当前连接是否安全并在必要时正确重定向
