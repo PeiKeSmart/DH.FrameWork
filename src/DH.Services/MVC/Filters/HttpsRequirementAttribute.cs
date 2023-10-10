@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Hosting;
 
+using NewLife;
+using NewLife.Log;
+
 using System.Net;
 
 namespace DH.Services.MVC.Filters;
@@ -29,16 +32,24 @@ public sealed class HttpsRequirementAttribute : TypeFilterAttribute {
     public bool IgnoreFilter { get; }
 
     /// <summary>
+    /// 页面类型
+    /// </summary>
+    public String PageType { get; }
+
+    /// <summary>
     /// 确认检查当前连接是否安全并在必要时正确重定向
     /// </summary>
     private class HttpsRequirementFilter : IAsyncAuthorizationFilter {
         private readonly bool _ignoreFilter;
+        private readonly string _pageType;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IWebHelper _webHelper;
 
-        public HttpsRequirementFilter(bool ignoreFilter, IWebHelper webHelper, IWebHostEnvironment webHostEnvironment)
+        public HttpsRequirementFilter(bool ignoreFilter, String pageType, IWebHelper webHelper, IWebHostEnvironment webHostEnvironment)
         {
+            XTrace.WriteLine($"获取到的页面类型：{pageType}");
             _ignoreFilter = ignoreFilter;
+            _pageType = pageType;
             _webHostEnvironment = webHostEnvironment;
             _webHelper = webHelper;
         }
@@ -76,6 +87,12 @@ public sealed class HttpsRequirementAttribute : TypeFilterAttribute {
                 return;
 
             if (!DHSetting.Current.IsInstalled)
+                return;
+
+            if (_pageType.IsNullOrWhiteSpace())
+                return;
+
+            if (!DHSetting.Current.SslPageType.Contains(_pageType, StringComparison.OrdinalIgnoreCase))
                 return;
 
             // 检查是否已为操作覆盖此筛选器
