@@ -22,7 +22,7 @@ namespace DH {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resource {
+    public class Resource {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace DH {
         ///   返回此类使用的缓存的 ResourceManager 实例。
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("DH.Resource", typeof(Resource).Assembly);
@@ -51,7 +51,7 @@ namespace DH {
         ///   使用此强类型资源类的所有资源查找执行重写。
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -61,9 +61,18 @@ namespace DH {
         }
         
         /// <summary>
+        ///   查找类似 其他用户正在执行该操作,请稍后再试 的本地化字符串。
+        /// </summary>
+        public static string GlobalDuplicateRequest {
+            get {
+                return ResourceManager.GetString("GlobalDuplicateRequest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 参数不合法 的本地化字符串。
         /// </summary>
-        internal static string InvalidArgument {
+        public static string InvalidArgument {
             get {
                 return ResourceManager.GetString("InvalidArgument", resourceCulture);
             }
@@ -72,7 +81,7 @@ namespace DH {
         /// <summary>
         ///   查找类似 参数类型不合法，参数类型不能是{0} 的本地化字符串。
         /// </summary>
-        internal static string InvalidArgumentType {
+        public static string InvalidArgumentType {
             get {
                 return ResourceManager.GetString("InvalidArgumentType", resourceCulture);
             }
@@ -81,7 +90,7 @@ namespace DH {
         /// <summary>
         ///   查找类似 操作失败 的本地化字符串。
         /// </summary>
-        internal static string InvokeFail {
+        public static string InvokeFail {
             get {
                 return ResourceManager.GetString("InvokeFail", resourceCulture);
             }
@@ -90,7 +99,7 @@ namespace DH {
         /// <summary>
         ///   查找类似 LogHelper 尚未初始化，请先初始化 LogHelper 的本地化字符串。
         /// </summary>
-        internal static string LogHelperNotInitialized {
+        public static string LogHelperNotInitialized {
             get {
                 return ResourceManager.GetString("LogHelperNotInitialized", resourceCulture);
             }
@@ -99,7 +108,7 @@ namespace DH {
         /// <summary>
         ///   查找类似 {0} must be lambda expression 的本地化字符串。
         /// </summary>
-        internal static string propertyExpression_must_be_lambda_expression {
+        public static string propertyExpression_must_be_lambda_expression {
             get {
                 return ResourceManager.GetString("propertyExpression_must_be_lambda_expression", resourceCulture);
             }
@@ -108,7 +117,7 @@ namespace DH {
         /// <summary>
         ///   查找类似 Task类型不能序列化 的本地化字符串。
         /// </summary>
-        internal static string TaskCanNotBeSerialized {
+        public static string TaskCanNotBeSerialized {
             get {
                 return ResourceManager.GetString("TaskCanNotBeSerialized", resourceCulture);
             }
@@ -117,9 +126,18 @@ namespace DH {
         /// <summary>
         ///   查找类似 不支持的LogHelperLevel 的本地化字符串。
         /// </summary>
-        internal static string UnSupportedLogHelperLevel {
+        public static string UnSupportedLogHelperLevel {
             get {
                 return ResourceManager.GetString("UnSupportedLogHelperLevel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 请不要重复提交 的本地化字符串。
+        /// </summary>
+        public static string UserDuplicateRequest {
+            get {
+                return ResourceManager.GetString("UserDuplicateRequest", resourceCulture);
             }
         }
     }
