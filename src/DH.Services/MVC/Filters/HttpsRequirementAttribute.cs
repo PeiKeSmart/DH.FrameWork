@@ -6,24 +6,26 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Hosting;
 
 using NewLife;
-using NewLife.Log;
 
 using System.Net;
 
 namespace DH.Services.MVC.Filters;
 
 /// <summary>
-/// 检查当前连接是否安全，并在必要时正确重定向
+/// 检查当前连接是否安全，并在必要时正确重定向。
+/// Linux下会因为反向代理导致存在问题
 /// </summary>
 public sealed class HttpsRequirementAttribute : TypeFilterAttribute {
     /// <summary>
     /// 创建过滤器属性的实例
     /// </summary>
     /// <param name="ignore">是否忽略过滤操作的执行</param>
-    public HttpsRequirementAttribute(bool ignore = false) : base(typeof(HttpsRequirementFilter))
+    /// <param name="pageType">页面类型</param>
+    public HttpsRequirementAttribute(bool ignore = false, string pageType = "") : base(typeof(HttpsRequirementFilter))
     {
         IgnoreFilter = ignore;
-        Arguments = new object[] { ignore };
+        PageType = pageType;
+        Arguments = new object[] { ignore, pageType };
     }
 
     /// <summary>
@@ -34,7 +36,7 @@ public sealed class HttpsRequirementAttribute : TypeFilterAttribute {
     /// <summary>
     /// 页面类型
     /// </summary>
-    public String PageType { get; }
+    public String? PageType { get; }
 
     /// <summary>
     /// 确认检查当前连接是否安全并在必要时正确重定向
@@ -47,7 +49,6 @@ public sealed class HttpsRequirementAttribute : TypeFilterAttribute {
 
         public HttpsRequirementFilter(bool ignoreFilter, String pageType, IWebHelper webHelper, IWebHostEnvironment webHostEnvironment)
         {
-            XTrace.WriteLine($"获取到的页面类型：{pageType}");
             _ignoreFilter = ignoreFilter;
             _pageType = pageType;
             _webHostEnvironment = webHostEnvironment;
@@ -73,7 +74,7 @@ public sealed class HttpsRequirementAttribute : TypeFilterAttribute {
             if (DHSetting.Current.AllSslEnabled) // 如果启用全站则全局起作用，此处无效
                 return;
 
-            if (DHSetting.Current.SslEnabled == 0)  // 如果API接口启用为不处理，此处无效
+            if (DHSetting.Current.SslEnabled == 0)  // 如果为不处理，此处无效
                 return;
 
             if (context == null)
