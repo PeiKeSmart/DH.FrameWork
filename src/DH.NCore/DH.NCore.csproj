@@ -11,6 +11,7 @@
 	<AssemblyTitle>DH组件核心库</AssemblyTitle>
 	<Description>DH框架的核心基础组件，日志（文件/网络）、配置（XML/Json/Http）、缓存（内存/Redis）、网络（Tcp/Udp/Http）、RPC框架、序列化（Binary/XML/Json）、APM性能追踪。参考X组件的NewLife.Core</Description>
     <Company>湖北登灏科技有限公司</Company>
+    <Nullable>enable</Nullable>
 	  
 	<OutputPath>..\Bin</OutputPath>
 	<DocumentationFile>$(OutputPath)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
