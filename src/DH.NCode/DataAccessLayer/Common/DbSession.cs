@@ -363,7 +363,7 @@ internal abstract partial class DbSession : DisposeBase, IDbSession, IAsyncDbSes
     /// <param name="sql">SQL语句</param>
     /// <param name="ps">命令参数</param>
     /// <returns></returns>
-    public virtual DbTable Query(String sql, IDataParameter[] ps)
+    public virtual DbTable Query(String sql, IDataParameter[]? ps)
     {
         using var cmd = OnCreateCommand(sql, CommandType.Text, ps);
         return Execute(cmd, true, cmd2 =>
@@ -524,7 +524,7 @@ internal abstract partial class DbSession : DisposeBase, IDbSession, IAsyncDbSes
     /// <param name="type">命令类型，默认SQL文本</param>
     /// <param name="ps">命令参数</param>
     /// <returns></returns>
-    public virtual DbCommand CreateCommand(String sql, CommandType type = CommandType.Text, params IDataParameter[] ps)
+    public virtual DbCommand CreateCommand(String sql, CommandType type = CommandType.Text, params IDataParameter[]? ps)
     {
         var cmd = OnCreateCommand(sql, type, ps);
         Transaction?.Check(cmd, true);
@@ -537,10 +537,10 @@ internal abstract partial class DbSession : DisposeBase, IDbSession, IAsyncDbSes
     /// <param name="type">命令类型，默认SQL文本</param>
     /// <param name="ps">命令参数</param>
     /// <returns></returns>
-    protected virtual DbCommand OnCreateCommand(String sql, CommandType type = CommandType.Text, params IDataParameter[] ps)
+    protected virtual DbCommand OnCreateCommand(String sql, CommandType type = CommandType.Text, params IDataParameter[]? ps)
     {
         var cmd = Database.Factory?.CreateCommand();
-        if (cmd == null) return null;
+        if (cmd == null) throw new InvalidOperationException();
 
         cmd.CommandType = type;
         cmd.CommandText = sql;
@@ -559,7 +559,7 @@ internal abstract partial class DbSession : DisposeBase, IDbSession, IAsyncDbSes
     /// <param name="sql">SQL语句</param>
     /// <param name="ps">命令参数</param>
     /// <returns></returns>
-    public virtual Task<DbTable> QueryAsync(String sql, IDataParameter[] ps)
+    public virtual Task<DbTable> QueryAsync(String sql, IDataParameter[]? ps)
     {
         using var cmd = OnCreateCommand(sql, CommandType.Text, ps);
         return ExecuteAsync(cmd, true, async cmd2 =>
@@ -624,7 +624,7 @@ internal abstract partial class DbSession : DisposeBase, IDbSession, IAsyncDbSes
     /// <param name="type">命令类型，默认SQL文本</param>
     /// <param name="ps">命令参数</param>
     /// <returns>新增行的自动编号</returns>
-    public virtual Task<Int64> InsertAndGetIdentityAsync(String sql, CommandType type = CommandType.Text, params IDataParameter[] ps)
+    public virtual Task<Int64> InsertAndGetIdentityAsync(String sql, CommandType type = CommandType.Text, params IDataParameter[]? ps)
     {
         using var cmd = OnCreateCommand(sql, type, ps);
 
@@ -643,7 +643,7 @@ internal abstract partial class DbSession : DisposeBase, IDbSession, IAsyncDbSes
     /// <param name="type">命令类型，默认SQL文本</param>
     /// <param name="ps">命令参数</param>
     /// <returns></returns>
-    public virtual Task<T> ExecuteScalarAsync<T>(String sql, CommandType type = CommandType.Text, params IDataParameter[] ps)
+    public virtual Task<T> ExecuteScalarAsync<T>(String sql, CommandType type = CommandType.Text, params IDataParameter[]? ps)
     {
         using var cmd = OnCreateCommand(sql, type, ps);
         return ExecuteAsync(cmd, true, async cmd2 =>
@@ -858,7 +858,7 @@ internal abstract partial class DbSession : DisposeBase, IDbSession, IAsyncDbSes
     /// <param name="collectionName">指定要返回的架构的名称。</param>
     /// <param name="restrictionValues">为请求的架构指定一组限制值。</param>
     /// <returns></returns>
-    public virtual DataTable GetSchema(DbConnection conn, String collectionName, String[] restrictionValues)
+    public virtual DataTable GetSchema(DbConnection? conn, String collectionName, String[]? restrictionValues)
     {
         // 小心collectionName为空，此时列出所有架构名称
         var key = "" + collectionName;
@@ -885,9 +885,9 @@ internal abstract partial class DbSession : DisposeBase, IDbSession, IAsyncDbSes
         return dt;
     }
 
-    private DataTable GetSchemaInternal(DbConnection conn, String key, String collectionName, String[] restrictionValues)
+    private DataTable GetSchemaInternal(DbConnection conn, String key, String collectionName, String[]? restrictionValues)
     {
-        DataTable dt = null;
+        DataTable? dt = null;
 
         var sw = Stopwatch.StartNew();
 
@@ -1023,7 +1023,7 @@ internal abstract partial class DbSession : DisposeBase, IDbSession, IAsyncDbSes
     ///// <summary>输出日志</summary>
     ///// <param name="format"></param>
     ///// <param name="args"></param>
-    //public static void WriteLog(String format, params Object[] args) => XTrace.WriteLine(format, args);
+    //public static void WriteLog(String format, params Object?[] args) => XTrace.WriteLine(format, args);
 
     /// <summary>设置是否显示SQL，退出作用域后恢复</summary>
     /// <param name="showSql"></param>
