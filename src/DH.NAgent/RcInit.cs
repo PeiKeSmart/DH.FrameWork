@@ -5,7 +5,7 @@ using NewLife.Log;
 namespace NewLife.Agent;
 
 /// <summary>Linux版进程守护</summary>
-public class RcInit : Host
+public class RcInit : DefaultHost
 {
     #region 静态
     private static readonly String _path;
@@ -96,21 +96,23 @@ public class RcInit : Host
     /// <summary>安装服务</summary>
     /// <param name="serviceName">服务名</param>
     /// <param name="displayName">显示名</param>
-    /// <param name="binPath">文件路径</param>
+    /// <param name="fileName">文件路径</param>
+    /// <param name="arguments">命令参数</param>
     /// <param name="description">描述信息</param>
     /// <returns></returns>
-    public override Boolean Install(String serviceName, String displayName, String binPath, String description) => Install(_path, serviceName, binPath, displayName, description);
+    public override Boolean Install(String serviceName, String displayName, String fileName, String arguments, String description) => Install(_path, serviceName, fileName, arguments, displayName, description);
 
     /// <summary>安装服务</summary>
     /// <param name="systemdPath">systemd目录有</param>
     /// <param name="serviceName">服务名</param>
     /// <param name="displayName">显示名</param>
-    /// <param name="binPath">文件路径</param>
+    /// <param name="fileName">文件路径</param>
+    /// <param name="arguments">命令参数</param>
     /// <param name="description">描述信息</param>
     /// <returns></returns>
-    public static Boolean Install(String systemdPath, String serviceName, String binPath, String displayName, String description)
+    public static Boolean Install(String systemdPath, String serviceName, String fileName, String arguments, String displayName, String description)
     {
-        XTrace.WriteLine("{0}.Install {1}, {2}, {3}, {4}", typeof(RcInit).Name, serviceName, displayName, binPath, description);
+        XTrace.WriteLine("{0}.Install {1}, {2}, {3}, {4}", typeof(RcInit).Name, serviceName, displayName, fileName, arguments, description);
 
         var file = systemdPath.CombinePath($"{serviceName}");
         XTrace.WriteLine(file);
@@ -124,7 +126,7 @@ public class RcInit : Host
 
         sb.AppendLine();
         sb.AppendLine($"cd {".".GetFullPath()}");
-        sb.AppendLine($"nohup {binPath} >/dev/null 2>&1 &");
+        sb.AppendLine($"nohup {fileName} {arguments} >/dev/null 2>&1 &");
         sb.AppendLine($"exit 0");
 
         //File.WriteAllText(file, sb.ToString());
@@ -133,8 +135,7 @@ public class RcInit : Host
         // 给予可执行权限
         Process.Start("chmod", $"+x {file}");
 
-        // 创建同级链接文件 [解决某些linux启动必须以Sxx开头的启动文件]
-        Process.Start("ln", $"-s {systemdPath}/{serviceName} {systemdPath}/S50{serviceName}");
+        var flag = false;
 
         // 创建链接文件
         for (var i = 0; i < 7; i++)
@@ -146,7 +147,26 @@ public class RcInit : Host
                     Process.Start("ln", $"-s {systemdPath}/{serviceName} {dir}K90{serviceName}");
                 else
                     Process.Start("ln", $"-s {systemdPath}/{serviceName} {dir}S10{serviceName}");
+
+                flag = true;
             }
+        }
+        // OpenWrt
+        {
+            var dir = "/etc/rc.d/";
+            if (Directory.Exists(dir))
+            {
+                Process.Start("ln", $"-s {systemdPath}/{serviceName} {dir}S50{serviceName}");
+
+                flag = true;
+            }
+        }
+
+        // init.d 目录存在其它Sxx文件时，才创建同级链接文件
+        if (!flag && systemdPath.AsDirectory().GetFiles().Any(e => e.Name.StartsWith("S")))
+        {
+            // 创建同级链接文件 [解决某些linux启动必须以Sxx开头的启动文件]
+            Process.Start("ln", $"-s {systemdPath}/{serviceName} {systemdPath}/S50{serviceName}");
         }
 
         return true;
@@ -176,6 +196,15 @@ public class RcInit : Host
                 if (File.Exists(file)) File.Delete(file);
 
                 file = $"{dir}K90{serviceName}";
+                if (File.Exists(file)) File.Delete(file);
+            }
+        }
+        // OpenWrt
+        {
+            var dir = "/etc/rc.d/";
+            if (Directory.Exists(dir))
+            {
+                file = dir.CombinePath($"S50{serviceName}");
                 if (File.Exists(file)) File.Delete(file);
             }
         }
