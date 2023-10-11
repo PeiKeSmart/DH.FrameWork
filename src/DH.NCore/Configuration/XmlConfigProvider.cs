@@ -102,7 +102,7 @@ public class XmlConfigProvider : FileConfigProvider
     /// <summary>获取字符串形式</summary>
     /// <param name="section">配置段</param>
     /// <returns></returns>
-    public override String GetString(IConfigSection section = null)
+    public override String GetString(IConfigSection? section = null)
     {
         section ??= Root;
 
@@ -128,10 +128,14 @@ public class XmlConfigProvider : FileConfigProvider
 
     private void WriteNode(XmlWriter writer, String name, IConfigSection section)
     {
+        if (section.Childs == null) return;
+
         writer.WriteStartElement(name);
 
         foreach (var item in section.Childs.ToArray())
         {
+            if (item.Key.IsNullOrEmpty()) continue;
+
             // 写注释
             if (!item.Comment.IsNullOrEmpty()) writer.WriteComment(item.Comment);
 
@@ -144,12 +148,14 @@ public class XmlConfigProvider : FileConfigProvider
                     writer.WriteStartElement(item.Key);
                     foreach (var elm in cs)
                     {
-                        WriteAttributeNode(writer, elm.Key, elm);
+                        if (!elm.Key.IsNullOrEmpty()) WriteAttributeNode(writer, elm.Key, elm);
                     }
                     writer.WriteEndElement();
                 }
                 else
+                {
                     WriteNode(writer, item.Key, item);
+                }
             }
             else
             {
@@ -168,10 +174,12 @@ public class XmlConfigProvider : FileConfigProvider
         writer.WriteStartElement(name);
         //writer.WriteStartAttribute(name);
 
-        if (section != null && section.Childs != null)
+        if (/*section != null &&*/ section.Childs != null)
         {
             foreach (var item in section.Childs.ToArray())
             {
+                if (item.Key.IsNullOrEmpty()) continue;
+
                 writer.WriteAttributeString(item.Key, item.Value + "");
             }
         }

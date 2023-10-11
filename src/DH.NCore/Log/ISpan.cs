@@ -1,7 +1,7 @@
 ﻿using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Net;
-using System.Reflection;
+using System.Net.Http;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Web.Script.Serialization;
@@ -17,13 +17,13 @@ namespace NewLife.Log;
 public interface ISpan : IDisposable
 {
     /// <summary>唯一标识。随线程上下文、Http、Rpc传递，作为内部片段的父级</summary>
-    String Id { get; set; }
+    String? Id { get; set; }
 
     /// <summary>父级片段标识</summary>
-    String ParentId { get; set; }
+    String? ParentId { get; set; }
 
     /// <summary>跟踪标识。可用于关联多个片段，建立依赖关系，随线程上下文、Http、Rpc传递</summary>
-    String TraceId { get; set; }
+    String? TraceId { get; set; }
 
     /// <summary>开始时间。Unix毫秒</summary>
     Int64 StartTime { get; set; }
@@ -32,15 +32,15 @@ public interface ISpan : IDisposable
     Int64 EndTime { get; set; }
 
     /// <summary>数据标签。记录一些附加数据</summary>
-    String Tag { get; set; }
+    String? Tag { get; set; }
 
     /// <summary>错误信息</summary>
-    String Error { get; set; }
+    String? Error { get; set; }
 
     /// <summary>设置错误信息，ApiException除外</summary>
     /// <param name="ex">异常</param>
     /// <param name="tag">标签</param>
-    void SetError(Exception ex, Object tag);
+    void SetError(Exception ex, Object? tag = null);
 
     /// <summary>设置数据标签。内部根据长度截断</summary>
     /// <param name="tag">标签</param>
@@ -56,16 +56,16 @@ public class DefaultSpan : ISpan
     #region 属性
     /// <summary>构建器</summary>
     [XmlIgnore, ScriptIgnore, IgnoreDataMember]
-    public ISpanBuilder Builder { get; private set; }
+    public ISpanBuilder? Builder { get; private set; }
 
     /// <summary>唯一标识。随线程上下文、Http、Rpc传递，作为内部片段的父级</summary>
-    public String Id { get; set; }
+    public String? Id { get; set; }
 
     /// <summary>父级片段标识</summary>
-    public String ParentId { get; set; }
+    public String? ParentId { get; set; }
 
     /// <summary>跟踪标识。可用于关联多个片段，建立依赖关系，随线程上下文、Http、Rpc传递</summary>
-    public String TraceId { get; set; }
+    public String? TraceId { get; set; }
 
     /// <summary>开始时间。Unix毫秒</summary>
     public Int64 StartTime { get; set; }
@@ -74,7 +74,7 @@ public class DefaultSpan : ISpan
     public Int64 EndTime { get; set; }
 
     /// <summary>数据标签。记录一些附加数据</summary>
-    public String Tag { get; set; }
+    public String? Tag { get; set; }
 
     ///// <summary>版本</summary>
     //public Byte Version { get; set; }
@@ -83,17 +83,17 @@ public class DefaultSpan : ISpan
     public Byte TraceFlag { get; set; }
 
     /// <summary>错误信息</summary>
-    public String Error { get; set; }
+    public String? Error { get; set; }
 
 #if NET45
-    private static readonly ThreadLocal<ISpan> _Current = new();
+    private static readonly ThreadLocal<ISpan?> _Current = new();
 #else
-    private static readonly AsyncLocal<ISpan> _Current = new();
+    private static readonly AsyncLocal<ISpan?> _Current = new();
 #endif
     /// <summary>当前线程正在使用的上下文</summary>
-    public static ISpan Current { get => _Current.Value; set => _Current.Value = value; }
+    public static ISpan? Current { get => _Current.Value; set => _Current.Value = value; }
 
-    private ISpan _parent;
+    private ISpan? _parent;
     private Int32 _finished;
     #endregion
 
@@ -111,7 +111,7 @@ public class DefaultSpan : ISpan
 
     static DefaultSpan()
     {
-        IPAddress ip;
+        IPAddress? ip;
         try
         {
             ip = NetHelper.MyIP();
@@ -203,9 +203,13 @@ public class DefaultSpan : ISpan
         // 从本线程中清除跟踪标识
         Current = _parent;
 
-        // Builder这一批可能已经上传，重新取一次，以防万一
-        var builder = Builder.Tracer.BuildSpan(Builder.Name);
-        builder.Finish(this);
+        var name = Builder?.Name;
+        if (!name.IsNullOrEmpty())
+        {
+            // Builder这一批可能已经上传，重新取一次，以防万一
+            var builder = Builder?.Tracer?.BuildSpan(name);
+            builder?.Finish(this);
+        }
 
         // 打断对Builder的引用，当前Span可能还被放在AsyncLocal字典中
         // 也有可能原来的Builder已经上传，现在加入了新的builder集合
@@ -215,7 +219,7 @@ public class DefaultSpan : ISpan
     /// <summary>设置错误信息，ApiException除外</summary>
     /// <param name="ex">异常</param>
     /// <param name="tag">标签</param>
-    public virtual void SetError(Exception ex, Object tag)
+    public virtual void SetError(Exception ex, Object? tag)
     {
         SetTag(tag);
 
@@ -230,7 +234,7 @@ public class DefaultSpan : ISpan
                 this.AppendTag($"Api[{aex.Code}]:{aex.Message}\r\n{aex.Source}");
             }
             else
-                Error = ex?.GetMessage();
+                Error = ex.GetMessage();
 
             // 所有异常，独立记录埋点，便于按异常分类统计
             using var span = Builder?.Tracer?.NewSpan(name, tag);
@@ -241,7 +245,7 @@ public class DefaultSpan : ISpan
 
     /// <summary>设置数据标签。内部根据长度截断</summary>
     /// <param name="tag">标签</param>
-    public virtual void SetTag(Object tag)
+    public virtual void SetTag(Object? tag)
     {
         if (tag == null) return;
 
@@ -274,7 +278,7 @@ public class DefaultSpan : ISpan
 public static class SpanExtension
 {
     #region 扩展方法
-    private static String GetAttachParameter(ISpan span)
+    private static String? GetAttachParameter(ISpan span)
     {
         var builder = (span as DefaultSpan)?.Builder;
         var tracer = (builder as DefaultSpanBuilder)?.Tracer;
@@ -287,7 +291,7 @@ public static class SpanExtension
     /// <returns></returns>
     public static HttpRequestMessage Attach(this ISpan span, HttpRequestMessage request)
     {
-        if (span == null || request == null) return request;
+        //if (span == null || request == null) return request;
 
         // 注入参数名
         var name = GetAttachParameter(span);
@@ -322,7 +326,7 @@ public static class SpanExtension
     /// <returns></returns>
     public static WebRequest Attach(this ISpan span, WebRequest request)
     {
-        if (span == null || request == null) return request;
+        //if (span == null || request == null) return request;
 
         // 注入参数名
         var name = GetAttachParameter(span);
@@ -340,7 +344,7 @@ public static class SpanExtension
     /// <returns></returns>
     public static Object Attach(this ISpan span, Object args)
     {
-        if (span == null || args == null || args is Packet || args is Byte[] || args is IAccessor) return args;
+        if (/*span == null || args == null ||*/ args is Packet || args is Byte[] || args is IAccessor) return args;
         if (Type.GetTypeCode(args.GetType()) != TypeCode.Object) return args;
 
         // 注入参数名
@@ -361,10 +365,10 @@ public static class SpanExtension
         if (span == null || headers == null || headers.Count == 0) return;
 
         // 不区分大小写比较头部
-        var dic = new Dictionary<String, String>(StringComparer.OrdinalIgnoreCase);
+        var dic = new Dictionary<String, String?>(StringComparer.OrdinalIgnoreCase);
         foreach (var item in headers.AllKeys)
         {
-            dic[item] = headers[item];
+            if (item != null) dic[item] = headers[item];
         }
 
         Detach2(span, dic);

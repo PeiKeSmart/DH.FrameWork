@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 using NewLife.Data;
 using NewLife.Log;
 using NewLife.Reflection;
@@ -13,7 +14,7 @@ public class MemoryCache : Cache
 {
     #region 属性
     /// <summary>缓存核心</summary>
-    protected ConcurrentDictionary<String, CacheItem> _cache;
+    protected ConcurrentDictionary<String, CacheItem> _cache = new();
 
     /// <summary>容量。容量超标时，采用LRU机制删除，默认100_000</summary>
     public Int32 Capacity { get; set; } = 100_000;
@@ -22,7 +23,7 @@ public class MemoryCache : Cache
     public Int32 Period { get; set; } = 60;
 
     /// <summary>缓存键过期</summary>
-    public event EventHandler<EventArgs<String>> KeyExpired;
+    public event EventHandler<EventArgs<String>>? KeyExpired;
     #endregion
 
     #region 静态默认实现
@@ -34,7 +35,7 @@ public class MemoryCache : Cache
     /// <summary>实例化一个内存字典缓存</summary>
     public MemoryCache()
     {
-        _cache = new ConcurrentDictionary<String, CacheItem>();
+        //_cache = new ConcurrentDictionary<String, CacheItem>();
         Name = "Memory";
 
         Init(null);
@@ -63,7 +64,7 @@ public class MemoryCache : Cache
     #region 方法
     /// <summary>初始化配置</summary>
     /// <param name="config"></param>
-    public override void Init(String config)
+    public override void Init(String? config)
     {
         if (clearTimer == null)
         {
@@ -82,21 +83,21 @@ public class MemoryCache : Cache
     /// <param name="value">值</param>
     /// <param name="expire">过期时间，秒</param>
     /// <returns></returns>
-    public virtual T GetOrAdd<T>(String key, T value, Int32 expire = -1)
+    public virtual T? GetOrAdd<T>(String key, T value, Int32 expire = -1)
     {
         if (expire < 0) expire = Expire;
 
-        CacheItem ci = null;
+        CacheItem? ci = null;
         do
         {
-            if (_cache.TryGetValue(key, out var item)) return (T)item.Visit();
+            if (_cache.TryGetValue(key, out var item)) return (T?)item.Visit();
 
             ci ??= new CacheItem(value, expire);
         } while (!_cache.TryAdd(key, ci));
 
         Interlocked.Increment(ref _count);
 
-        return (T)ci.Visit();
+        return (T?)ci.Visit();
     }
     #endregion
 
@@ -127,7 +128,7 @@ public class MemoryCache : Cache
         //    });
 
         // 不用AddOrUpdate，避免匿名委托带来的GC损耗
-        CacheItem ci = null;
+        CacheItem? ci = null;
         do
         {
             if (_cache.TryGetValue(key, out var item))
@@ -147,11 +148,15 @@ public class MemoryCache : Cache
     /// <summary>获取缓存项，不存在时返回默认值</summary>
     /// <param name="key">键</param>
     /// <returns></returns>
+    [return: MaybeNull]
     public override T Get<T>(String key)
     {
         if (!_cache.TryGetValue(key, out var item) || item == null || item.Expired) return default;
 
-        return item.Visit().ChangeType<T>();
+        var rs = item.Visit();
+        if (rs == null) return default;
+
+        return rs.ChangeType<T>();
     }
 
     /// <summary>批量移除缓存项</summary>
@@ -214,7 +219,7 @@ public class MemoryCache : Cache
     {
         if (expire < 0) expire = Expire;
 
-        CacheItem ci = null;
+        CacheItem? ci = null;
         do
         {
             if (_cache.TryGetValue(key, out _)) return false;
@@ -232,11 +237,12 @@ public class MemoryCache : Cache
     /// <param name="key">键</param>
     /// <param name="value">值</param>
     /// <returns></returns>
+    [return: MaybeNull]
     public override T Replace<T>(String key, T value)
     {
         var expire = Expire;
 
-        CacheItem ci = null;
+        CacheItem? ci = null;
         do
         {
             if (_cache.TryGetValue(key, out var item))
@@ -245,7 +251,7 @@ public class MemoryCache : Cache
                 // 如果已经过期，不要返回旧值
                 if (item.Expired) rs = default(T);
                 item.Set(value, expire);
-                return (T)rs;
+                return (T?)rs;
             }
 
             ci ??= new CacheItem(value, expire);
@@ -264,7 +270,7 @@ public class MemoryCache : Cache
     /// <param name="key">键</param>
     /// <param name="value">值。即使有值也不一定能够返回，可能缓存项刚好是默认值，或者只是反序列化失败</param>
     /// <returns>返回是否包含值，即使反序列化失败</returns>
-    public override Boolean TryGetValue<T>(String key, out T value)
+    public override Boolean TryGetValue<T>(String key, [MaybeNull] out T value)
     {
         value = default;
 
@@ -284,21 +290,22 @@ public class MemoryCache : Cache
     /// <param name="callback"></param>
     /// <param name="expire">过期时间，秒。小于0时采用默认缓存时间<seealso cref="Cache.Expire"/></param>
     /// <returns></returns>
+    [return: MaybeNull]
     public override T GetOrAdd<T>(String key, Func<String, T> callback, Int32 expire = -1)
     {
         if (expire < 0) expire = Expire;
 
-        CacheItem ci = null;
+        CacheItem? ci = null;
         do
         {
-            if (_cache.TryGetValue(key, out var item)) return (T)item.Visit();
+            if (_cache.TryGetValue(key, out var item)) return (T?)item.Visit();
 
             ci ??= new CacheItem(callback(key), expire);
         } while (!_cache.TryAdd(key, ci));
 
         Interlocked.Increment(ref _count);
 
-        return (T)ci.Visit();
+        return (T?)ci.Visit();
     }
 
     /// <summary>累加，原子操作</summary>
@@ -350,7 +357,7 @@ public class MemoryCache : Cache
     public override IList<T> GetList<T>(String key)
     {
         var item = GetOrAddItem(key, k => new List<T>());
-        return item.Visit() as IList<T>;
+        return (item.Visit() as IList<T>)!;
     }
 
     /// <summary>获取哈希</summary>
@@ -360,7 +367,7 @@ public class MemoryCache : Cache
     public override IDictionary<String, T> GetDictionary<T>(String key)
     {
         var item = GetOrAddItem(key, k => new ConcurrentDictionary<String, T>());
-        return item.Visit() as IDictionary<String, T>;
+        return (item.Visit() as IDictionary<String, T>)!;
     }
 
     /// <summary>获取队列</summary>
@@ -370,7 +377,7 @@ public class MemoryCache : Cache
     public override IProducerConsumer<T> GetQueue<T>(String key)
     {
         var item = GetOrAddItem(key, k => new MemoryQueue<T>());
-        return item.Visit() as IProducerConsumer<T>;
+        return (item.Visit() as IProducerConsumer<T>)!;
     }
 
     /// <summary>获取栈</summary>
@@ -380,7 +387,7 @@ public class MemoryCache : Cache
     public override IProducerConsumer<T> GetStack<T>(String key)
     {
         var item = GetOrAddItem(key, k => new MemoryQueue<T>(new ConcurrentStack<T>()));
-        return item.Visit() as IProducerConsumer<T>;
+        return (item.Visit() as IProducerConsumer<T>)!;
     }
 
     /// <summary>获取Set</summary>
@@ -391,7 +398,7 @@ public class MemoryCache : Cache
     public override ICollection<T> GetSet<T>(String key)
     {
         var item = GetOrAddItem(key, k => new HashSet<T>());
-        return item.Visit() as ICollection<T>;
+        return (item.Visit() as ICollection<T>)!;
     }
 
     /// <summary>获取 或 添加 缓存项</summary>
@@ -402,7 +409,7 @@ public class MemoryCache : Cache
     {
         var expire = Expire;
 
-        CacheItem ci = null;
+        CacheItem? ci = null;
         do
         {
             if (_cache.TryGetValue(key, out var item)) return item;
@@ -420,9 +427,9 @@ public class MemoryCache : Cache
     /// <summary>缓存项</summary>
     protected class CacheItem
     {
-        private Object _Value;
+        private Object? _Value;
         /// <summary>数值</summary>
-        public Object Value { get => _Value; set => _Value = value; }
+        public Object? Value { get => _Value; set => _Value = value; }
 
         /// <summary>过期时间</summary>
         public Int64 ExpiredTime { get; set; }
@@ -436,12 +443,12 @@ public class MemoryCache : Cache
         /// <summary>构造缓存项</summary>
         /// <param name="value"></param>
         /// <param name="expire"></param>
-        public CacheItem(Object value, Int32 expire) => Set(value, expire);
+        public CacheItem(Object? value, Int32 expire) => Set(value, expire);
 
         /// <summary>设置数值和过期时间</summary>
         /// <param name="value"></param>
         /// <param name="expire">过期时间，秒</param>
-        public void Set(Object value, Int32 expire)
+        public void Set(Object? value, Int32 expire)
         {
             Value = value;
 
@@ -454,7 +461,7 @@ public class MemoryCache : Cache
 
         /// <summary>更新访问时间并返回数值</summary>
         /// <returns></returns>
-        public Object Visit()
+        public Object? Visit()
         {
             VisitTime = Runtime.TickCount64;
             return Value;
@@ -540,10 +547,10 @@ public class MemoryCache : Cache
 
     #region 清理过期缓存
     /// <summary>清理会话计时器</summary>
-    private TimerX clearTimer;
+    private TimerX? clearTimer;
 
     /// <summary>移除过期的缓存项</summary>
-    private void RemoveNotAlive(Object state)
+    private void RemoveNotAlive(Object? state)
     {
         var tx = clearTimer;
         if (tx != null /*&& tx.Period == 60_000*/) tx.Period = Period * 1000;
@@ -665,7 +672,7 @@ public class MemoryCache : Cache
                 else
                 {
                     bn.Write(type.FullName);
-                    bn.Write(Binary.FastWrite(ci.Value));
+                    if (ci.Value != null) bn.Write(Binary.FastWrite(ci.Value));
                 }
             }
         }
@@ -702,30 +709,31 @@ public class MemoryCache : Cache
             var exp = bn.Read<Int32>();
             var code = (TypeCode)bn.ReadByte();
 
-            Object value = null;
+            Object? value = null;
             if (code == TypeCode.Empty)
             {
             }
             else if (code != TypeCode.Object)
             {
-                value = bn.Read(Type.GetType("System." + code));
+                var type = Type.GetType("System." + code);
+                if (type != null) value = bn.Read(type);
             }
             else
             {
                 var typeName = bn.Read<String>();
                 //var type = Type.GetType(typeName);
-                var type = typeName.GetTypeEx();
+                var type = typeName?.GetTypeEx();
 
                 var pk = bn.Read<Packet>();
                 value = pk;
-                if (type != null)
+                if (type != null && pk != null)
                 {
                     var bn2 = new Binary() { Stream = pk.GetStream(), EncodeInt = true };
                     value = bn2.Read(type);
                 }
             }
 
-            Set(key, value, exp - (Int32)(Runtime.TickCount64 / 1000));
+            if (key != null) Set(key, value, exp - (Int32)(Runtime.TickCount64 / 1000));
         }
     }
 
@@ -843,7 +851,7 @@ public class MemoryQueue<T> : DisposeBase, IProducerConsumer<T>
     /// <summary>消费一个</summary>
     /// <param name="timeout">超时。默认0秒，永久等待</param>
     /// <returns></returns>
-    public T TakeOne(Int32 timeout = 0)
+    public T? TakeOne(Int32 timeout = 0)
     {
         if (!_occupiedNodes.Wait(0))
         {
@@ -856,7 +864,7 @@ public class MemoryQueue<T> : DisposeBase, IProducerConsumer<T>
     /// <summary>消费获取，异步阻塞</summary>
     /// <param name="timeout">超时。单位秒，0秒表示永久等待</param>
     /// <returns></returns>
-    public async Task<T> TakeOneAsync(Int32 timeout = 0)
+    public async Task<T?> TakeOneAsync(Int32 timeout = 0)
     {
         if (!_occupiedNodes.Wait(0))
         {
@@ -872,7 +880,7 @@ public class MemoryQueue<T> : DisposeBase, IProducerConsumer<T>
     /// <param name="timeout">超时。单位秒，0秒表示永久等待</param>
     /// <param name="cancellationToken">取消令牌</param>
     /// <returns></returns>
-    public async Task<T> TakeOneAsync(Int32 timeout, CancellationToken cancellationToken)
+    public async Task<T?> TakeOneAsync(Int32 timeout, CancellationToken cancellationToken)
     {
         if (!_occupiedNodes.Wait(0, cancellationToken))
         {

@@ -23,6 +23,7 @@ public interface IHostedService
 /// <summary>轻量级应用主机</summary>
 /// <remarks>
 /// 文档 https://newlifex.com/core/host
+/// 销毁主机时，会触发所有服务的停止事件
 /// </remarks>
 public interface IHost
 {
@@ -40,13 +41,18 @@ public interface IHost
     /// <summary>异步允许，大循环阻塞</summary>
     /// <returns></returns>
     Task RunAsync();
+
+    /// <summary>关闭主机</summary>
+    /// <param name="reason"></param>
+    void Close(String? reason);
 }
 
 /// <summary>轻量级应用主机</summary>
 /// <remarks>
 /// 文档 https://newlifex.com/core/host
+/// 销毁主机时，会触发所有服务的停止事件
 /// </remarks>
-public class Host : IHost
+public class Host : DisposeBase, IHost
 {
     #region 属性
     /// <summary>服务提供者</summary>
@@ -63,18 +69,28 @@ public class Host : IHost
         AppDomain.CurrentDomain.ProcessExit += OnExit;
         Console.CancelKeyPress += OnExit;
 #if NETCOREAPP
-        System.Runtime.Loader.AssemblyLoadContext.Default.Unloading += ctx => OnExit(ctx, null);
+        System.Runtime.Loader.AssemblyLoadContext.Default.Unloading += ctx => OnExit(ctx, EventArgs.Empty);
 #endif
 #if NET6_0_OR_GREATER
-        PosixSignalRegistration.Create(PosixSignal.SIGINT, ctx => OnExit(ctx, null));
-        PosixSignalRegistration.Create(PosixSignal.SIGQUIT, ctx => OnExit(ctx, null));
-        PosixSignalRegistration.Create(PosixSignal.SIGTERM, ctx => OnExit(ctx, null));
+        PosixSignalRegistration.Create(PosixSignal.SIGINT, ctx => OnExit(ctx, EventArgs.Empty));
+        PosixSignalRegistration.Create(PosixSignal.SIGQUIT, ctx => OnExit(ctx, EventArgs.Empty));
+        PosixSignalRegistration.Create(PosixSignal.SIGTERM, ctx => OnExit(ctx, EventArgs.Empty));
 #endif
     }
 
     /// <summary>通过制定服务提供者来实例化一个应用主机</summary>
     /// <param name="serviceProvider"></param>
     public Host(IServiceProvider serviceProvider) => ServiceProvider = serviceProvider;
+
+    /// <summary>销毁</summary>
+    /// <param name="disposing"></param>
+    protected override void Dispose(Boolean disposing)
+    {
+        base.Dispose(disposing);
+
+        //_life?.TrySetResult(0);
+        Close(disposing ? "Dispose" : "GC");
+    }
     #endregion
 
     #region 服务集合
@@ -85,6 +101,7 @@ public class Host : IHost
         var type = typeof(TService);
         _serviceTypes.Add(type);
 
+        // 把服务类型注册到容器中，以便后续获取
         var ioc = (ServiceProvider as ServiceProvider)?.Container ?? ObjectContainer.Current;
         ioc.TryAddTransient(type, type);
     }
@@ -100,10 +117,13 @@ public class Host : IHost
     /// <returns></returns>
     public async Task StartAsync(CancellationToken cancellationToken)
     {
+        // 从容器中获取所有服务
         foreach (var item in _serviceTypes)
         {
             if (ServiceProvider.GetService(item) is IHostedService service) Services.Add(service);
         }
+
+        // 开始所有服务，任意服务出错都导致启动失败
         foreach (var item in Services)
         {
             await item.StartAsync(cancellationToken).ConfigureAwait(false);
@@ -130,7 +150,7 @@ public class Host : IHost
     #endregion
 
     #region 运行大循环
-    private TaskCompletionSource<Object> _life;
+    private TaskCompletionSource<Object>? _life;
     /// <summary>同步运行，大循环阻塞</summary>
     public void Run() => RunAsync().GetAwaiter().GetResult();
 
@@ -144,7 +164,7 @@ public class Host : IHost
 
         _life = new TaskCompletionSource<Object>();
 
-        RegisterExit((s, e) => _life.TrySetResult(null));
+        RegisterExit((s, e) => Close(s?.GetType().Name));
 
         await StartAsync(source.Token);
         XTrace.WriteLine("Application started. Press Ctrl+C to shut down.");
@@ -156,6 +176,15 @@ public class Host : IHost
         await StopAsync(source.Token);
 
         XTrace.WriteLine("Stopped!");
+    }
+
+    /// <summary>关闭主机</summary>
+    /// <param name="reason"></param>
+    public void Close(String? reason)
+    {
+        XTrace.WriteLine("Application closed. {0}", reason);
+
+        _life?.TrySetResult(0);
     }
     #endregion
 
@@ -172,7 +201,7 @@ public class Host : IHost
     /// <param name="onExit">回调函数</param>
     public static void RegisterExit(Action onExit) => _events2.Add(onExit);
 
-    private static void OnExit(Object sender, EventArgs e)
+    private static void OnExit(Object? sender, EventArgs e)
     {
         foreach (var item in _events)
         {
@@ -210,9 +239,9 @@ public class Host : IHost
 /// </remarks>
 public abstract class BackgroundService : IHostedService, IDisposable
 {
-    private Task _executingTask;
+    private Task? _executingTask;
 
-    private CancellationTokenSource _stoppingCts;
+    private CancellationTokenSource? _stoppingCts;
 
     /// <summary>执行</summary>
     /// <param name="stoppingToken"></param>
@@ -242,7 +271,7 @@ public abstract class BackgroundService : IHostedService, IDisposable
         {
             try
             {
-                _stoppingCts.Cancel();
+                _stoppingCts?.Cancel();
             }
             finally
             {

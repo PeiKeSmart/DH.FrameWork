@@ -12,7 +12,7 @@ public interface IMatchQueue
     /// <param name="request">请求消息</param>
     /// <param name="msTimeout">超时取消时间</param>
     /// <param name="source">任务源</param>
-    Task<Object> Add(Object owner, Object request, Int32 msTimeout, TaskCompletionSource<Object> source);
+    Task<Object> Add(Object? owner, Object request, Int32 msTimeout, TaskCompletionSource<Object> source);
 
     /// <summary>检查请求队列是否有匹配该响应的请求</summary>
     /// <param name="owner">拥有者</param>
@@ -20,7 +20,7 @@ public interface IMatchQueue
     /// <param name="result">任务结果</param>
     /// <param name="callback">用于检查匹配的回调</param>
     /// <returns></returns>
-    Boolean Match(Object owner, Object response, Object result, Func<Object, Object, Boolean> callback);
+    Boolean Match(Object? owner, Object response, Object result, Func<Object?, Object?, Boolean> callback);
 
     /// <summary>清空队列</summary>
     void Clear();
@@ -31,7 +31,7 @@ public class DefaultMatchQueue : IMatchQueue
 {
     private readonly ItemWrap[] Items;
     private Int32 _Count;
-    private TimerX _Timer;
+    private TimerX? _Timer;
 
     /// <summary>按指定大小来初始化队列</summary>
     /// <param name="size"></param>
@@ -42,7 +42,7 @@ public class DefaultMatchQueue : IMatchQueue
     /// <param name="request">请求的数据</param>
     /// <param name="msTimeout">超时取消时间</param>
     /// <param name="source">任务源</param>
-    public virtual Task<Object> Add(Object owner, Object request, Int32 msTimeout, TaskCompletionSource<Object> source)
+    public virtual Task<Object> Add(Object? owner, Object request, Int32 msTimeout, TaskCompletionSource<Object> source)
     {
         var now = Runtime.TickCount64;
 
@@ -86,7 +86,7 @@ public class DefaultMatchQueue : IMatchQueue
             }
         }
 
-        return source?.Task;
+        return source.Task;
     }
 
     /// <summary>检查请求队列是否有匹配该响应的请求</summary>
@@ -95,7 +95,7 @@ public class DefaultMatchQueue : IMatchQueue
     /// <param name="result">任务结果</param>
     /// <param name="callback">用于检查匹配的回调</param>
     /// <returns></returns>
-    public virtual Boolean Match(Object owner, Object response, Object result, Func<Object, Object, Boolean> callback)
+    public virtual Boolean Match(Object? owner, Object response, Object result, Func<Object?, Object?, Boolean> callback)
     {
         if (_Count <= 0) return false;
 
@@ -131,7 +131,7 @@ public class DefaultMatchQueue : IMatchQueue
 
     /// <summary>定时检查发送队列，超时未收到响应则重发</summary>
     /// <param name="state"></param>
-    void Check(Object state)
+    void Check(Object? state)
     {
         if (_Count <= 0) return;
 
@@ -187,14 +187,14 @@ public class DefaultMatchQueue : IMatchQueue
 
     class Item
     {
-        public Object Owner { get; set; }
-        public Object Request { get; set; }
+        public Object? Owner { get; set; }
+        public Object? Request { get; set; }
         public Int64 EndTime { get; set; }
-        public TaskCompletionSource<Object> Source { get; set; }
-        public ISpan Span { get; set; }
+        public TaskCompletionSource<Object>? Source { get; set; }
+        public ISpan? Span { get; set; }
     }
     struct ItemWrap
     {
-        public Item Value;
+        public Item? Value;
     }
 }

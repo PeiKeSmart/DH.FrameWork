@@ -8,10 +8,10 @@ public class WriteLogEventArgs : EventArgs
     public LogLevel Level { get; set; }
 
     /// <summary>日志信息</summary>
-    public String Message { get; set; }
+    public String? Message { get; set; }
 
     /// <summary>异常</summary>
-    public Exception Exception { get; set; }
+    public Exception? Exception { get; set; }
 
     /// <summary>时间</summary>
     public DateTime Time { get; set; }
@@ -26,7 +26,7 @@ public class WriteLogEventArgs : EventArgs
     public Boolean IsWeb { get; set; }
 
     /// <summary>线程名</summary>
-    public String ThreadName { get; set; }
+    public String? ThreadName { get; set; }
 
     /// <summary>任务编号</summary>
     public Int32 TaskID { get; set; }
@@ -43,7 +43,7 @@ public class WriteLogEventArgs : EventArgs
      * 原因是 Logger在进行扩展时，重载OnWrite需要用到该静态属性以及方法，internal无法满足扩展要求
      * */
     [ThreadStatic]
-    private static WriteLogEventArgs _Current;
+    private static WriteLogEventArgs? _Current;
     /// <summary>线程专有实例。线程静态，每个线程只用一个，避免GC浪费</summary>
     public static WriteLogEventArgs Current => _Current ??= new WriteLogEventArgs();
     #endregion
@@ -63,7 +63,7 @@ public class WriteLogEventArgs : EventArgs
     /// <param name="message">日志</param>
     /// <param name="exception">异常</param>
     /// <returns>返回自身，链式写法</returns>
-    public WriteLogEventArgs Set(String message, Exception exception)
+    public WriteLogEventArgs Set(String? message, Exception? exception)
     {
         Message = message;
         Exception = exception;
@@ -106,8 +106,8 @@ public class WriteLogEventArgs : EventArgs
 
     #region 日志线程名
     [ThreadStatic]
-    private static String _threadName;
+    private static String? _threadName;
     /// <summary>设置当前线程输出日志时的线程名</summary>
-    public static String CurrentThreadName { get => _threadName; set => _threadName = value; }
+    public static String? CurrentThreadName { get => _threadName; set => _threadName = value; }
     #endregion
 }

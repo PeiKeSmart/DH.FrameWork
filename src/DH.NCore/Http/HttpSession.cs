@@ -12,7 +12,7 @@ public class HttpSession : NetSession
 {
     #region 属性
     /// <summary>请求</summary>
-    public HttpRequest Request { get; set; }
+    public HttpRequest? Request { get; set; }
 
     /// <summary>忽略的头部</summary>
     public static String[] ExcludeHeaders { get; set; } = new[] {
@@ -24,8 +24,8 @@ public class HttpSession : NetSession
         "text/plain", "text/xml", "application/json", "application/xml", "application/x-www-form-urlencoded"
     };
 
-    private WebSocket _websocket;
-    private MemoryStream _cache;
+    private WebSocket? _websocket;
+    private MemoryStream? _cache;
     #endregion
 
     #region 收发数据
@@ -33,6 +33,7 @@ public class HttpSession : NetSession
     /// <param name="e"></param>
     protected override void OnReceive(ReceivedEventArgs e)
     {
+        if (e.Packet == null) return;
         if (e.Packet.Total == 0 /*|| !HttpBase.FastValidHeader(e.Packet)*/)
         {
             base.OnReceive(e);
@@ -76,21 +77,24 @@ public class HttpSession : NetSession
                 }
 
                 _cache = new MemoryStream(req.ContentLength);
-                req.Body.CopyTo(_cache);
+                req.Body?.CopyTo(_cache);
                 //req.Body = req.Body.Clone();
             }
         }
         else if (req != null)
         {
-            // 链式数据包
-            //req.Body.Append(e.Packet.Clone());
-            e.Packet.CopyTo(_cache);
-
-            if (_cache.Length >= req.ContentLength)
+            if (_cache != null)
             {
-                _cache.Position = 0;
-                req.Body = new Packet(_cache);
-                _cache = null;
+                // 链式数据包
+                //req.Body.Append(e.Packet.Clone());
+                e.Packet.CopyTo(_cache);
+
+                if (_cache.Length >= req.ContentLength)
+                {
+                    _cache.Position = 0;
+                    req.Body = new Packet(_cache);
+                    _cache = null;
+                }
             }
         }
 
@@ -101,7 +105,8 @@ public class HttpSession : NetSession
             if (rs != null)
             {
                 var server = (this as INetSession).Host as HttpServer;
-                if (!server.ServerName.IsNullOrEmpty() && !rs.Headers.ContainsKey("Server")) rs.Headers["Server"] = server.ServerName;
+                if (server != null && !server.ServerName.IsNullOrEmpty() && !rs.Headers.ContainsKey("Server"))
+                    rs.Headers["Server"] = server.ServerName;
 
                 var closing = !req.KeepAlive && _websocket == null;
                 if (closing && !rs.Headers.ContainsKey("Connection")) rs.Headers["Connection"] = "close";
@@ -135,7 +140,7 @@ public class HttpSession : NetSession
         if (p > 0) path = path[..p];
 
         // 埋点
-        using var span = (this as INetSession).Host.Tracer?.NewSpan(path);
+        using var span = (this as INetSession)?.Host.Tracer?.NewSpan(path);
         if (span != null)
         {
             // 解析上游请求链路
@@ -145,9 +150,9 @@ public class HttpSession : NetSession
             {
                 var tag = $"{Remote.EndPoint} {request.Method} {request.RequestUri.OriginalString}";
 
-                if (request.BodyLength > 0 && 
-                    request.Body != null && 
-                    request.Body.Total < 8 * 1024 && 
+                if (request.BodyLength > 0 &&
+                    request.Body != null &&
+                    request.Body.Total < 8 * 1024 &&
                     request.ContentType.EqualIgnoreCase(TagTypes))
                 {
                     tag += "\r\n" + request.Body.ToStr(null, 0, 1024);
@@ -166,17 +171,10 @@ public class HttpSession : NetSession
         // 路径安全检查，防止越界
         if (path.Contains("..")) return new HttpResponse { StatusCode = HttpStatusCode.Forbidden };
 
-        var handler = server.MatchHandler(path);
+        var handler = server?.MatchHandler(path);
         if (handler == null) return new HttpResponse { StatusCode = HttpStatusCode.NotFound };
 
-        var context = new DefaultHttpContext
-        {
-            Connection = this,
-            Request = request,
-            Response = new HttpResponse(),
-            Path = path,
-            Handler = handler,
-        };
+        var context = new DefaultHttpContext(this, request, path, handler);
 
         try
         {
@@ -209,7 +207,10 @@ public class HttpSession : NetSession
         //ps.Merge(req.Headers);
 
         // 地址参数
-        var url = req.RequestUri.OriginalString;
+        var uri = req.RequestUri;
+        if (uri == null) return;
+
+        var url = uri.OriginalString;
         var p = url.IndexOf('?');
         if (p > 0)
         {
@@ -219,7 +220,7 @@ public class HttpSession : NetSession
         }
 
         // POST提交参数，支持Url编码、表单提交、Json主体
-        if (req.Method == "POST" && req.BodyLength > 0)
+        if (req.Method == "POST" && req.BodyLength > 0 && req.Body != null)
         {
             var body = req.Body;
             if (req.ContentType.StartsWithIgnoreCase("application/x-www-form-urlencoded", "application/x-www-urlencoded"))
@@ -238,7 +239,7 @@ public class HttpSession : NetSession
             else if (body[0] == (Byte)'{' && body[body.Total - 1] == (Byte)'}')
             {
                 var js = body.ToStr().DecodeJson();
-                ps.Merge(js);
+                if (js != null) ps.Merge(js);
             }
         }
     }

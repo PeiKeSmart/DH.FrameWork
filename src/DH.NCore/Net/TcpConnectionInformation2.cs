@@ -137,7 +137,7 @@ public class TcpConnectionInformation2 : TcpConnectionInformation
             var tab =
                 (MIB_TCPTABLE_OWNER_PID)Marshal.PtrToStructure(
                     buffTable,
-                    typeof(MIB_TCPTABLE_OWNER_PID));
+                    typeof(MIB_TCPTABLE_OWNER_PID))!;
             var rowPtr = (IntPtr)((Int64)buffTable +
                 Marshal.SizeOf(tab.dwNumEntries));
             //tTable = new MIB_TCPROW_OWNER_PID[tab.dwNumEntries];
@@ -145,7 +145,7 @@ public class TcpConnectionInformation2 : TcpConnectionInformation
             for (var i = 0; i < tab.dwNumEntries; i++)
             {
                 var tcpRow = (MIB_TCPROW_OWNER_PID)Marshal
-                    .PtrToStructure(rowPtr, typeof(MIB_TCPROW_OWNER_PID));
+                    .PtrToStructure(rowPtr, typeof(MIB_TCPROW_OWNER_PID))!;
                 //tTable[i] = tcpRow;
                 list.Add(new TcpConnectionInformation2(tcpRow));
 
@@ -201,9 +201,9 @@ public class TcpConnectionInformation2 : TcpConnectionInformation
     /// <returns></returns>
     public static IList<TcpConnectionInformation2> ParseTcps(String text)
     {
-        if (text.IsNullOrEmpty()) return null;
-
         var list = new List<TcpConnectionInformation2>();
+
+        if (text.IsNullOrEmpty()) return list;
 
         // 逐行读取TCP连接信息
         foreach (var line in text.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))

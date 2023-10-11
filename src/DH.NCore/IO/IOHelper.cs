@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
+﻿using System.Globalization;
 using System.IO.Compression;
-using System.Linq;
 using System.Text;
 using NewLife.Collections;
 
@@ -29,7 +25,7 @@ public static class IOHelper
     /// <param name="inStream">输入流</param>
     /// <param name="outStream">输出流。如果不指定，则内部实例化一个内存流</param>
     /// <remarks>返回输出流，注意此时指针位于末端</remarks>
-    public static Stream Compress(this Stream inStream, Stream outStream = null)
+    public static Stream Compress(this Stream inStream, Stream? outStream = null)
     {
         var ms = outStream ?? new MemoryStream();
 
@@ -51,7 +47,7 @@ public static class IOHelper
     /// <param name="inStream">输入流</param>
     /// <param name="outStream">输出流。如果不指定，则内部实例化一个内存流</param>
     /// <remarks>返回输出流，注意此时指针位于末端</remarks>
-    public static Stream Decompress(this Stream inStream, Stream outStream = null)
+    public static Stream Decompress(this Stream inStream, Stream? outStream = null)
     {
         var ms = outStream ?? new MemoryStream();
 
@@ -92,7 +88,7 @@ public static class IOHelper
     /// <param name="inStream">输入流</param>
     /// <param name="outStream">输出流。如果不指定，则内部实例化一个内存流</param>
     /// <remarks>返回输出流，注意此时指针位于末端</remarks>
-    public static Stream CompressGZip(this Stream inStream, Stream outStream = null)
+    public static Stream CompressGZip(this Stream inStream, Stream? outStream = null)
     {
         var ms = outStream ?? new MemoryStream();
 
@@ -113,7 +109,7 @@ public static class IOHelper
     /// <param name="inStream">输入流</param>
     /// <param name="outStream">输出流。如果不指定，则内部实例化一个内存流</param>
     /// <remarks>返回输出流，注意此时指针位于末端</remarks>
-    public static Stream DecompressGZip(this Stream inStream, Stream outStream = null)
+    public static Stream DecompressGZip(this Stream inStream, Stream? outStream = null)
     {
         var ms = outStream ?? new MemoryStream();
 
@@ -269,7 +265,7 @@ public static class IOHelper
     /// <returns></returns>
     public static Byte[] ReadBytes(this Stream stream, Int64 length)
     {
-        if (stream == null) return null;
+        //if (stream == null) return null;
         if (length == 0) return new Byte[0];
 
         if (length > 0 && stream.CanSeek && stream.Length - stream.Position < length)
@@ -314,13 +310,13 @@ public static class IOHelper
     /// <param name="stream">目标流</param>
     /// <param name="encoding">编码格式</param>
     /// <returns></returns>
-    public static String ToStr(this Stream stream, Encoding encoding = null)
+    public static String ToStr(this Stream stream, Encoding? encoding = null)
     {
-        if (stream == null) return null;
+        if (stream == null) return String.Empty;
         encoding ??= Encoding.UTF8;
 
         var buf = stream.ReadBytes(-1);
-        if (buf == null || buf.Length <= 0) return null;
+        if (buf == null || buf.Length <= 0) return String.Empty;
 
         // 可能数据流前面有编码字节序列，需要先去掉
         var idx = 0;
@@ -339,9 +335,9 @@ public static class IOHelper
     /// <param name="offset">字节数组中的偏移</param>
     /// <param name="count">字节数组中的查找长度</param>
     /// <returns></returns>
-    public static String ToStr(this Byte[] buf, Encoding encoding = null, Int32 offset = 0, Int32 count = -1)
+    public static String ToStr(this Byte[] buf, Encoding? encoding = null, Int32 offset = 0, Int32 count = -1)
     {
-        if (buf == null || buf.Length <= 0 || offset >= buf.Length) return null;
+        if (buf == null || buf.Length <= 0 || offset >= buf.Length) return String.Empty;
         encoding ??= Encoding.UTF8;
 
         var size = buf.Length - offset;
@@ -349,7 +345,7 @@ public static class IOHelper
 
         // 可能数据流前面有编码字节序列，需要先去掉
         var idx = 0;
-        var preamble = encoding?.GetPreamble();
+        var preamble = encoding.GetPreamble();
         if (preamble != null && preamble.Length > 0 && buf.Length >= offset + preamble.Length)
         {
             if (buf.Skip(offset).Take(preamble.Length).SequenceEqual(preamble)) idx = preamble.Length;
@@ -671,7 +667,7 @@ public static class IOHelper
     }
 
     [ThreadStatic]
-    private static Byte[] _encodes;
+    private static Byte[]? _encodes;
     /// <summary>
     /// 以7位压缩格式写入32位整数，小于7位用1个字节，小于14位用2个字节。
     /// 由每次写入的一个字节的第一位标记后面的字节是否还是当前数据，所以每个字节实际可利用存储空间只有后7位。
@@ -723,7 +719,7 @@ public static class IOHelper
     /// <param name="offset">偏移</param>
     /// <param name="count">数量。超过实际数量时，使用实际数量</param>
     /// <returns></returns>
-    public static String ToHex(this Byte[] data, Int32 offset = 0, Int32 count = -1)
+    public static String ToHex(this Byte[]? data, Int32 offset = 0, Int32 count = -1)
     {
         if (data == null || data.Length <= 0) return "";
 
@@ -752,7 +748,7 @@ public static class IOHelper
     /// <param name="groupSize">分组大小，为0时对每个字节应用分隔符，否则对每个分组使用</param>
     /// <param name="maxLength">最大显示多少个字节。默认-1显示全部</param>
     /// <returns></returns>
-    public static String ToHex(this Byte[] data, String separate, Int32 groupSize = 0, Int32 maxLength = -1)
+    public static String ToHex(this Byte[]? data, String? separate, Int32 groupSize = 0, Int32 maxLength = -1)
     {
         if (data == null || data.Length <= 0) return "";
 
@@ -771,14 +767,14 @@ public static class IOHelper
         }
 
         var len = count * 2;
-        if (!String.IsNullOrEmpty(separate)) len += (count - 1) * separate.Length;
+        if (!separate.IsNullOrEmpty()) len += (count - 1) * separate.Length;
         if (groupSize > 0)
         {
             // 计算分组个数
             var g = (count - 1) / groupSize;
             len += g * 2;
             // 扣除间隔
-            if (!String.IsNullOrEmpty(separate)) _ = g * separate.Length;
+            if (!separate.IsNullOrEmpty()) _ = g * separate.Length;
         }
         var sb = Pool.StringBuilder.Get();
         for (var i = 0; i < count; i++)
@@ -796,7 +792,7 @@ public static class IOHelper
             sb.Append(GetHexValue(b & 0x0F));
         }
 
-        return sb.Put(true);
+        return sb.Put(true) ?? String.Empty;
     }
 
     /// <summary>1个字节转为2个16进制字符</summary>
@@ -821,9 +817,9 @@ public static class IOHelper
     /// <param name="startIndex">起始位置</param>
     /// <param name="length">长度</param>
     /// <returns></returns>
-    public static Byte[] ToHex(this String data, Int32 startIndex = 0, Int32 length = -1)
+    public static Byte[] ToHex(this String? data, Int32 startIndex = 0, Int32 length = -1)
     {
-        if (String.IsNullOrEmpty(data)) return new Byte[0];
+        if (data.IsNullOrEmpty()) return new Byte[0];
 
         // 过滤特殊字符
         data = data.Trim()
@@ -855,7 +851,7 @@ public static class IOHelper
     /// <returns></returns>
     public static String ToBase64(this Byte[] data, Int32 offset = 0, Int32 count = -1, Boolean lineBreak = false)
     {
-        if (data == null || data.Length <= 0) return "";
+        if (data == null || data.Length <= 0) return String.Empty;
 
         if (count <= 0)
             count = data.Length - offset;
@@ -881,7 +877,7 @@ public static class IOHelper
     /// <summary>Base64字符串转为字节数组</summary>
     /// <param name="data"></param>
     /// <returns></returns>
-    public static Byte[] ToBase64(this String data)
+    public static Byte[] ToBase64(this String? data)
     {
         if (data.IsNullOrWhiteSpace()) return new Byte[0];
 

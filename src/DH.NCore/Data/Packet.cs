@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Text;
 using NewLife.Collections;
 
 namespace NewLife.Data;
@@ -21,7 +22,7 @@ public class Packet
     public Int32 Count { get; private set; }
 
     /// <summary>下一个链式包</summary>
-    public Packet Next { get; set; }
+    public Packet? Next { get; set; }
 
     /// <summary>总长度</summary>
     public Int32 Total => Count + (Next != null ? Next.Total : 0);
@@ -36,7 +37,12 @@ public class Packet
 
     /// <summary>根据数组段实例化</summary>
     /// <param name="seg"></param>
-    public Packet(ArraySegment<Byte> seg) => Set(seg.Array, seg.Offset, seg.Count);
+    public Packet(ArraySegment<Byte> seg)
+    {
+        if (seg.Array == null) throw new ArgumentNullException(nameof(seg));
+
+        Set(seg.Array, seg.Offset, seg.Count);
+    }
 
     /// <summary>从可扩展内存流实例化，尝试窃取内存流内部的字节数组，失败后拷贝</summary>
     /// <remarks>因数据包内数组窃取自内存流，需要特别小心，避免多线程共用。常用于内存流转数据包，而内存流不再使用</remarks>
@@ -49,6 +55,8 @@ public class Packet
             // 尝试抠了内部存储区，下面代码需要.Net 4.6支持
             if (ms.TryGetBuffer(out var seg))
             {
+                if (seg.Array == null) throw new ArgumentNullException(nameof(seg));
+
                 Set(seg.Array, seg.Offset + (Int32)ms.Position, seg.Count - (Int32)ms.Position);
                 return;
             }
@@ -126,6 +134,7 @@ public class Packet
     /// <param name="data">数据区</param>
     /// <param name="offset">偏移</param>
     /// <param name="count">字节个数</param>
+    [MemberNotNull(nameof(Data))]
     public virtual void Set(Byte[] data, Int32 offset = 0, Int32 count = -1)
     {
         Data = data;
@@ -432,9 +441,9 @@ public class Packet
     /// <param name="offset"></param>
     /// <param name="count"></param>
     /// <returns></returns>
-    public String ToStr(Encoding encoding = null, Int32 offset = 0, Int32 count = -1)
+    public String ToStr(Encoding? encoding = null, Int32 offset = 0, Int32 count = -1)
     {
-        if (Data == null) return null;
+        if (Data == null) return String.Empty;
 
         encoding ??= Encoding.UTF8;
         if (count < 0) count = Total - offset;
@@ -449,9 +458,9 @@ public class Packet
     /// <param name="separate">分隔符</param>
     /// <param name="groupSize">分组大小，为0时对每个字节应用分隔符，否则对每个分组使用</param>
     /// <returns></returns>
-    public String ToHex(Int32 maxLength = 32, String separate = null, Int32 groupSize = 0)
+    public String ToHex(Int32 maxLength = 32, String? separate = null, Int32 groupSize = 0)
     {
-        if (Data == null) return null;
+        if (Data == null) return String.Empty;
 
         var hex = ReadBytes(0, maxLength).ToHex(separate, groupSize);
 
@@ -462,7 +471,7 @@ public class Packet
     /// <returns></returns>
     public String ToBase64()
     {
-        if (Data == null) return null;
+        if (Data == null) return String.Empty;
 
         if (Next == null) Data.ToBase64(Offset, Count);
 
@@ -484,7 +493,7 @@ public class Packet
     /// <summary>重载类型转换，字节数组直接转为Packet对象</summary>
     /// <param name="value"></param>
     /// <returns></returns>
-    public static implicit operator Packet(Byte[] value) => value == null ? null : new Packet(value);
+    public static implicit operator Packet(Byte[] value) => value == null ? null! : new Packet(value);
 
     /// <summary>重载类型转换，一维数组直接转为Packet对象</summary>
     /// <param name="value"></param>

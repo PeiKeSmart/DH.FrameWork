@@ -11,7 +11,7 @@ public abstract class FileConfigProvider : ConfigProvider
 {
     #region 属性
     /// <summary>文件名。最高优先级，优先于模型特性指定的文件名</summary>
-    public String FileName { get; set; }
+    public String? FileName { get; set; }
 
     /// <summary>更新周期。默认5秒</summary>
     public Int32 Period { get; set; } = 5;
@@ -104,13 +104,15 @@ public abstract class FileConfigProvider : ConfigProvider
     /// <typeparam name="T">模型</typeparam>
     /// <param name="model">模型实例</param>
     /// <param name="path">路径。配置树位置</param>
-    public override Boolean Save<T>(T model, String path = null)
+    public override Boolean Save<T>(T model, String? path = null)
     {
+        if (model == null) return false;
+
         // 加锁，避免多线程冲突
         lock (this)
         {
             // 文件存储，直接覆盖Root
-            Root.Childs.Clear();
+            Root.Childs?.Clear();
             Root.MapFrom(model);
 
             return SaveAll();
@@ -137,7 +139,7 @@ public abstract class FileConfigProvider : ConfigProvider
     /// <summary>获取字符串形式</summary>
     /// <param name="section">配置段</param>
     /// <returns></returns>
-    public virtual String GetString(IConfigSection section = null) => null;
+    public virtual String? GetString(IConfigSection? section = null) => null;
     #endregion
 
     #region 绑定
@@ -146,14 +148,14 @@ public abstract class FileConfigProvider : ConfigProvider
     /// <param name="model">模型实例</param>
     /// <param name="autoReload">是否自动更新。默认true</param>
     /// <param name="path">路径。配置树位置，配置中心等多对象混合使用时</param>
-    public override void Bind<T>(T model, Boolean autoReload = true, String path = null)
+    public override void Bind<T>(T model, Boolean autoReload = true, String? path = null)
     {
         base.Bind<T>(model, autoReload, path);
 
         if (autoReload) InitTimer();
     }
 
-    private TimerX _timer;
+    private TimerX? _timer;
     private void InitTimer()
     {
         if (_timer != null) return;
@@ -169,9 +171,10 @@ public abstract class FileConfigProvider : ConfigProvider
 
     private Boolean _reading;
     private DateTime _lastTime;
-    private void DoRefresh(Object state)
+    private void DoRefresh(Object? state)
     {
         if (_reading) return;
+        if (FileName.IsNullOrEmpty()) return;
 
         var fileName = FileName.GetBasePath();
         var fi = FileName.AsFile();

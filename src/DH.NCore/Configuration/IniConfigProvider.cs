@@ -66,9 +66,10 @@ public class InIConfigProvider : FileConfigProvider
     /// <summary>获取字符串形式</summary>
     /// <param name="section">配置段</param>
     /// <returns></returns>
-    public override String GetString(IConfigSection section = null)
+    public override String GetString(IConfigSection? section = null)
     {
         section ??= Root;
+        if (section.Childs == null) return String.Empty;
 
         // 分组写入
         var sb = new StringBuilder();

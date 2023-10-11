@@ -1,5 +1,4 @@
-﻿using System.IO;
-using System.Text;
+﻿using System.Text;
 using System.Xml;
 using NewLife.Reflection;
 
@@ -15,9 +14,9 @@ public static class XmlHelper
     /// <param name="attachComment">是否附加注释，附加成员的Description和DisplayName注释</param>
     /// <param name="useAttribute">是否使用特性输出</param>
     /// <returns>Xml字符串</returns>
-    public static String ToXml(this Object obj, Encoding encoding = null, Boolean attachComment = false, Boolean useAttribute = false)
+    public static String ToXml(this Object obj, Encoding? encoding = null, Boolean attachComment = false, Boolean useAttribute = false)
     {
-        if (obj == null) return null;
+        if (obj == null) return String.Empty;
 
         encoding ??= Encoding.UTF8;
 
@@ -36,7 +35,7 @@ public static class XmlHelper
     /// <returns>Xml字符串</returns>
     public static String ToXml(this Object obj, Encoding encoding, Boolean attachComment, Boolean useAttribute, Boolean omitXmlDeclaration)
     {
-        if (obj == null) return null;
+        if (obj == null) return String.Empty;
 
         using var stream = new MemoryStream();
         var xml = new Serialization.Xml
@@ -62,7 +61,7 @@ public static class XmlHelper
     /// <param name="encoding">编码</param>
     /// <param name="attachComment">是否附加注释，附加成员的Description和DisplayName注释</param>
     /// <param name="useAttribute">是否使用特性输出</param>
-    public static void ToXml(this Object obj, Stream stream, Encoding encoding = null, Boolean attachComment = false, Boolean useAttribute = false)
+    public static void ToXml(this Object obj, Stream stream, Encoding? encoding = null, Boolean attachComment = false, Boolean useAttribute = false)
     {
         if (obj == null) return;
 
@@ -82,15 +81,15 @@ public static class XmlHelper
     /// <param name="encoding">编码</param>
     /// <param name="attachComment">是否附加注释，附加成员的Description和DisplayName注释</param>
     /// <returns>Xml字符串</returns>
-    public static void ToXmlFile(this Object obj, String file, Encoding encoding = null, Boolean attachComment = true)
+    public static void ToXmlFile(this Object obj, String file, Encoding? encoding = null, Boolean attachComment = true)
     {
         if (File.Exists(file)) File.Delete(file);
         file.EnsureDirectory(true);
 
         // 如果是字符串字典，直接写入文件，其它设置无效
-        if (obj is IDictionary<String, String>)
+        if (obj is IDictionary<String, String> dic)
         {
-            var xml = (obj as IDictionary<String, String>).ToXml();
+            var xml = dic.ToXml();
             File.WriteAllText(file, xml, encoding ?? Encoding.UTF8);
             return;
         }
@@ -107,7 +106,7 @@ public static class XmlHelper
     /// <typeparam name="TEntity">实体类型</typeparam>
     /// <param name="xml">Xml字符串</param>
     /// <returns>Xml实体对象</returns>
-    public static TEntity ToXmlEntity<TEntity>(this String xml) where TEntity : class
+    public static TEntity? ToXmlEntity<TEntity>(this String xml) where TEntity : class
     {
         return xml.ToXmlEntity(typeof(TEntity)) as TEntity;
     }
@@ -116,7 +115,7 @@ public static class XmlHelper
     /// <param name="xml">Xml字符串</param>
     /// <param name="type">实体类型</param>
     /// <returns>Xml实体对象</returns>
-    public static Object ToXmlEntity(this String xml, Type type)
+    public static Object? ToXmlEntity(this String xml, Type type)
     {
         if (xml.IsNullOrWhiteSpace()) throw new ArgumentNullException(nameof(xml));
         if (type == null) throw new ArgumentNullException(nameof(type));
@@ -145,7 +144,7 @@ public static class XmlHelper
     /// <param name="stream">数据流</param>
     /// <param name="encoding">编码</param>
     /// <returns>Xml实体对象</returns>
-    public static TEntity ToXmlEntity<TEntity>(this Stream stream, Encoding encoding = null) where TEntity : class
+    public static TEntity? ToXmlEntity<TEntity>(this Stream stream, Encoding? encoding = null) where TEntity : class
     {
         return stream.ToXmlEntity(typeof(TEntity), encoding) as TEntity;
     }
@@ -155,7 +154,7 @@ public static class XmlHelper
     /// <param name="type">实体类型</param>
     /// <param name="encoding">编码</param>
     /// <returns>Xml实体对象</returns>
-    public static Object ToXmlEntity(this Stream stream, Type type, Encoding encoding = null)
+    public static Object? ToXmlEntity(this Stream stream, Type type, Encoding? encoding = null)
     {
         if (stream == null) throw new ArgumentNullException(nameof(stream));
         if (type == null) throw new ArgumentNullException(nameof(type));
@@ -186,7 +185,7 @@ public static class XmlHelper
     /// <param name="file">Xml文件</param>
     /// <param name="encoding">编码</param>
     /// <returns>Xml实体对象</returns>
-    public static TEntity ToXmlFileEntity<TEntity>(this String file, Encoding encoding = null) where TEntity : class
+    public static TEntity? ToXmlFileEntity<TEntity>(this String file, Encoding? encoding = null) where TEntity : class
     {
         if (file.IsNullOrWhiteSpace()) throw new ArgumentNullException(nameof(file));
         if (!File.Exists(file)) return null;
@@ -229,7 +228,7 @@ public static class XmlHelper
         return false;
     }
 
-    internal static String XmlConvertToString(Object value)
+    internal static String? XmlConvertToString(Object value)
     {
         if (value == null) return null;
 
@@ -242,12 +241,12 @@ public static class XmlHelper
         var method = typeof(XmlConvert).GetMethodEx("ToString", type);
         if (method == null) throw new XException("类型{0}不支持转为Xml字符串，请先用CanXmlConvert方法判断！", type);
 
-        return (String)"".Invoke(method, value);
+        return (String?)"".Invoke(method, value);
     }
 
-    internal static T XmlConvertFromString<T>(String xml) { return (T)XmlConvertFromString(typeof(T), xml); }
+    internal static T? XmlConvertFromString<T>(String xml) => (T?)XmlConvertFromString(typeof(T), xml);
 
-    internal static Object XmlConvertFromString(Type type, String xml)
+    internal static Object? XmlConvertFromString(Type type, String xml)
     {
         if (xml == null) return null;
 
@@ -267,28 +266,31 @@ public static class XmlHelper
     /// <summary>简单Xml转为字符串字典</summary>
     /// <param name="xml"></param>
     /// <returns></returns>
-    public static Dictionary<String, String> ToXmlDictionary(this String xml)
+    public static Dictionary<String, String>? ToXmlDictionary(this String xml)
     {
         if (String.IsNullOrEmpty(xml)) return null;
 
         var doc = new XmlDocument();
         doc.LoadXml(xml);
         var root = doc.DocumentElement;
+        if (root == null) return null;
 
         var dic = new Dictionary<String, String>();
 
         if (root.ChildNodes != null && root.ChildNodes.Count > 0)
         {
-            foreach (XmlNode item in root.ChildNodes)
+            foreach (var item in root.ChildNodes)
             {
-                if (item.ChildNodes != null && (item.ChildNodes.Count > 1 ||
-                    item.ChildNodes.Count == 1 && !(item.FirstChild is XmlText) && !(item.FirstChild is XmlCDataSection)))
+                if (item is not XmlNode node) continue;
+
+                if (node.ChildNodes != null && (node.ChildNodes.Count > 1 ||
+                    node.ChildNodes.Count == 1 && !(node.FirstChild is XmlText) && !(node.FirstChild is XmlCDataSection)))
                 {
-                    dic[item.Name] = item.InnerXml;
+                    dic[node.Name] = node.InnerXml;
                 }
                 else
                 {
-                    dic[item.Name] = item.InnerText;
+                    dic[node.Name] = node.InnerText;
                 }
             }
         }
@@ -300,7 +302,7 @@ public static class XmlHelper
     /// <param name="dic"></param>
     /// <param name="rootName"></param>
     /// <returns></returns>
-    public static String ToXml(this IDictionary<String, String> dic, String rootName = null)
+    public static String ToXml(this IDictionary<String, String> dic, String? rootName = null)
     {
         if (String.IsNullOrEmpty(rootName)) rootName = "xml";
 
