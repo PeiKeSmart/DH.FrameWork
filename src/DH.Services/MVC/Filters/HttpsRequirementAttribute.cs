@@ -5,8 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Hosting;
 
-using NewLife;
-
 using System.Net;
 
 namespace DH.Services.MVC.Filters;
@@ -30,16 +28,6 @@ public sealed class HttpsRequirementAttribute : TypeFilterAttribute {
     /// 得到一个值指示是否忽略过滤操作的执行
     /// </summary>
     public bool IgnoreFilter { get; }
-
-    /// <summary>
-    /// 页面类型名称
-    /// </summary>
-    public String PageType { get; }
-
-    /// <summary>
-    ///  是否接口
-    /// </summary>
-    public Boolean IsApi { get; }
 
     /// <summary>
     /// 确认检查当前连接是否安全并在必要时正确重定向
@@ -100,15 +88,6 @@ public sealed class HttpsRequirementAttribute : TypeFilterAttribute {
 
             if (actionFilter?.IgnoreFilter ?? _ignoreFilter)
                 return;
-
-            if (actionFilter?.IsApi == false)
-            {
-                if (actionFilter?.PageType.IsNullOrWhiteSpace() == true)
-                    return;
-
-                if (!DHSetting.Current.SslPageType.Contains(actionFilter?.PageType, StringComparison.OrdinalIgnoreCase))
-                    return;
-            }
 
             // 缓存的连接可能会导致不稳定的行为在开发环境中,当我们使用永久重定向
             var isPermanent = !_webHostEnvironment.IsDevelopment();

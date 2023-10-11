@@ -93,13 +93,6 @@ public class DHSetting : Config<DHSetting>
     public Int32 SslEnabled { get; set; } = 0;
 
     /// <summary>
-    /// HttpsRequirement支持的类型。用英文逗号分隔
-    /// </summary>
-    /// <summary>HttpsRequirement支持的类型。用英文逗号分隔</summary>
-    [Description("HttpsRequirement支持的类型。用英文逗号分隔")]
-    public String SslPageType { get; set; }
-
-    /// <summary>
     /// 是否为管理系统
     /// </summary>
     [Description("是否为管理系统")]
