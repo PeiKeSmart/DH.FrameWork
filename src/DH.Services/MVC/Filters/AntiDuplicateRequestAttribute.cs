@@ -19,7 +19,7 @@ public class AntiDuplicateRequestAttribute : ActionFilterAttribute {
     /// <summary>
     /// 业务标识
     /// </summary>
-    public string Key { get; set; }
+    public String Key { get; set; }
 
     /// <summary>
     /// 锁类型
@@ -30,6 +30,11 @@ public class AntiDuplicateRequestAttribute : ActionFilterAttribute {
     /// 再次提交时间间隔，单位：秒
     /// </summary>
     public int Interval { get; set; }
+
+    /// <summary>
+    /// 执行完是否自动解除锁定
+    /// </summary>
+    public Boolean AutoUnLock { get; set; }
 
     /// <summary>
     /// 执行
@@ -46,15 +51,16 @@ public class AntiDuplicateRequestAttribute : ActionFilterAttribute {
 
         var @lock = CreateLock();
         var key = GetKey(context);
-        var isSuccess = false;
         try
         {
-            isSuccess = @lock.Lock(key, GetExpiration());
+            bool isSuccess = @lock.Lock(key, GetExpiration());
             if (isSuccess == false)
             {
-                var result = new DResult();
-                result.msg = GetFailMessage();
-                result.code = 2;
+                var result = new DResult
+                {
+                    msg = GetFailMessage(),
+                    code = 2
+                };
 
                 context.Result = new JsonResult(result);
                 return;
@@ -71,10 +77,7 @@ public class AntiDuplicateRequestAttribute : ActionFilterAttribute {
         }
         finally
         {
-            if (isSuccess)
-            {
-                @lock.UnLock();
-            }
+            @lock.UnLock(AutoUnLock);
         }
     }
 

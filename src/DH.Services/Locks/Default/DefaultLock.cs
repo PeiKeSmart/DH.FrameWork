@@ -44,8 +44,10 @@ public class DefaultLock : ILock {
     /// <summary>
     /// 解除锁定
     /// </summary>
-    public void UnLock()
+    public void UnLock(Boolean autoUnLock)
     {
+        if (autoUnLock) _cache.Remove(_key);
+
         if (_expiration != 0)
             return;
         if (!_cache.ContainsKey(_key))

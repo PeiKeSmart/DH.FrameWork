@@ -15,5 +15,5 @@ public interface ILock {
     /// <summary>
     /// 解除锁定
     /// </summary>
-    void UnLock();
+    void UnLock(Boolean autoUnLock);
 }

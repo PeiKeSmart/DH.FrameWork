@@ -24,5 +24,5 @@ public class NullLock : ILock {
     /// <summary>
     /// 解除锁定
     /// </summary>
-    public void UnLock() { }
+    public void UnLock(Boolean autoUnLock) { }
 }
