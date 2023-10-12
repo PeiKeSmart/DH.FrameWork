@@ -316,7 +316,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SSE", "SSE", "{F58CD0FF-FFD
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DH.ServerSentEvent.Client", "src\DH.ServerSentEvent.Client\DH.ServerSentEvent.Client.csproj", "{171F6EF1-A998-4255-93DB-6642CCCF293F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DH.QRCode", "src\DH.QRCode\DH.QRCode.csproj", "{4566A34F-5215-448C-A3A8-BF8BB6B5D7DC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DH.QRCode", "src\DH.QRCode\DH.QRCode.csproj", "{4566A34F-5215-448C-A3A8-BF8BB6B5D7DC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

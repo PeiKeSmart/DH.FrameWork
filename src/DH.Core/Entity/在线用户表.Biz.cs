@@ -1,33 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
-using System.Web.Script.Serialization;
-using System.Xml.Serialization;
-
 using DH.Timing;
 
 using NewLife;
 using NewLife.Caching;
-using NewLife.Data;
 using NewLife.Log;
-using NewLife.Model;
-using NewLife.Reflection;
-using NewLife.Threading;
-using NewLife.Web;
+
+using System.Runtime.Serialization;
+using System.Web.Script.Serialization;
+using System.Xml.Serialization;
 
 using XCode;
-using XCode.Cache;
-using XCode.Configuration;
-using XCode.DataAccessLayer;
 using XCode.Membership;
-using XCode.Shards;
 
 namespace DH.Entity;
 
@@ -270,15 +252,34 @@ public partial class SysOnlineUsers : DHEntityBase<SysOnlineUsers> {
         }
         else
         {
-            onlineUserInfo = new SysOnlineUsers();
-            onlineUserInfo.Uid = uid;
-            onlineUserInfo.Sid = sid;
-            onlineUserInfo.NickName = nickName;
-            onlineUserInfo.Ip = ip;
-            onlineUserInfo.Region = region;
-            onlineUserInfo.UserAgent = userAgent;
-            onlineUserInfo.Clicks = 1;
-            onlineUserInfo.Insert();
+            try
+            {
+                onlineUserInfo = new SysOnlineUsers();
+                onlineUserInfo.Uid = uid;
+                onlineUserInfo.Sid = sid;
+                onlineUserInfo.NickName = nickName;
+                onlineUserInfo.Ip = ip;
+                onlineUserInfo.Region = region;
+                onlineUserInfo.UserAgent = userAgent;
+                onlineUserInfo.Clicks = 1;
+                onlineUserInfo.Insert();
+            }
+            catch (Exception ex)
+            {
+                XTrace.WriteException(ex);
+                onlineUserInfo = GetOnlineUserBySid(sid);
+                if (onlineUserInfo != null)
+                {
+                    onlineUserInfo.Uid = uid;
+                    onlineUserInfo.Sid = sid;
+                    onlineUserInfo.NickName = nickName;
+                    onlineUserInfo.Ip = ip;
+                    onlineUserInfo.Region = region;
+                    onlineUserInfo.UserAgent = userAgent;
+                    onlineUserInfo.Clicks++;
+                    onlineUserInfo.SaveAsync();
+                }
+            }
         }
 
         if (uid > 0)
