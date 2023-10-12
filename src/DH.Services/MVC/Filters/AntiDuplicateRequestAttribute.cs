@@ -1,8 +1,10 @@
 ﻿using DH.Core.Infrastructure;
+using DH.Entity;
 using DH.Helpers;
-using DH.Helpers.Internal;
+using DH.Models;
 using DH.Services.Locks;
 
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 using NewLife;
@@ -50,7 +52,11 @@ public class AntiDuplicateRequestAttribute : ActionFilterAttribute {
             isSuccess = @lock.Lock(key, GetExpiration());
             if (isSuccess == false)
             {
-                context.Result = new DGResult(StateCode.Fail, GetFailMessage());
+                var result = new DResult();
+                result.msg = GetFailMessage();
+                result.code = 2;
+
+                context.Result = new JsonResult(result);
                 return;
             }
 
@@ -122,8 +128,8 @@ public class AntiDuplicateRequestAttribute : ActionFilterAttribute {
     protected virtual string GetFailMessage()
     {
         if (Type == LockType.User)
-            return Resource.UserDuplicateRequest;
-        return Resource.GlobalDuplicateRequest;
+            return LocaleStringResource.GetResource("请不要重复提交");
+        return LocaleStringResource.GetResource("其他用户正在执行该操作,请稍后再试");
     }
 }
 

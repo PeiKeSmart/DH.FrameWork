@@ -117,9 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="GlobalDuplicateRequest" xml:space="preserve">
-    <value>其他用户正在执行该操作,请稍后再试</value>
-  </data>
   <data name="InvalidArgument" xml:space="preserve">
     <value>参数不合法</value>
     <comment>参数不合法</comment>
@@ -144,8 +141,5 @@
   </data>
   <data name="UnSupportedLogHelperLevel" xml:space="preserve">
     <value>不支持的LogHelperLevel</value>
-  </data>
-  <data name="UserDuplicateRequest" xml:space="preserve">
-    <value>请不要重复提交</value>
   </data>
 </root>

@@ -61,15 +61,6 @@ namespace DH {
         }
         
         /// <summary>
-        ///   查找类似 其他用户正在执行该操作,请稍后再试 的本地化字符串。
-        /// </summary>
-        public static string GlobalDuplicateRequest {
-            get {
-                return ResourceManager.GetString("GlobalDuplicateRequest", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   查找类似 参数不合法 的本地化字符串。
         /// </summary>
         public static string InvalidArgument {
@@ -129,15 +120,6 @@ namespace DH {
         public static string UnSupportedLogHelperLevel {
             get {
                 return ResourceManager.GetString("UnSupportedLogHelperLevel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 请不要重复提交 的本地化字符串。
-        /// </summary>
-        public static string UserDuplicateRequest {
-            get {
-                return ResourceManager.GetString("UserDuplicateRequest", resourceCulture);
             }
         }
     }
