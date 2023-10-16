@@ -28,7 +28,7 @@ public partial class SysOnlineUsers : ISysOnlineUsers, IEntity<ISysOnlineUsers>
     [DisplayName("编号")]
     [Description("编号")]
     [DataObjectField(true, true, false, 0)]
-    [BindColumn("Id", "编号", "int(11)")]
+    [BindColumn("Id", "编号", "")]
     public Int32 Id { get => _Id; set { if (OnPropertyChanging("Id", value)) { _Id = value; OnPropertyChanged("Id"); } } }
 
     private Int32 _Uid;

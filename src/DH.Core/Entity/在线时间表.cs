@@ -29,7 +29,7 @@ public partial class SysOnlineTime : ISysOnlineTime, IEntity<ISysOnlineTime>
     /// <summary>用户编号</summary>
     [DisplayName("用户编号")]
     [Description("用户编号")]
-    [DataObjectField(true, false, false, 0)]
+    [DataObjectField(true, true, false, 0)]
     [BindColumn("ID", "用户编号", "")]
     public Int32 ID { get => _ID; set { if (OnPropertyChanging("ID", value)) { _ID = value; OnPropertyChanged("ID"); } } }
 
