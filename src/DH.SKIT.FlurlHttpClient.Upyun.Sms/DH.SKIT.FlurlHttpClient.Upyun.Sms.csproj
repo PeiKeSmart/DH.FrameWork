@@ -1,73 +1,73 @@
 <Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
-  <Import Project="../../version.props" />
-	
-  <PropertyGroup>
-	<LangVersion>latest</LangVersion>
-    <OutputType>Library</OutputType>
-    <TargetFramework>net7.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-	<Nullable>enable</Nullable>
-	<RootNamespace>SKIT.FlurlHttpClient.Upyun.Sms</RootNamespace>
-	<AssemblyName>DH.SKIT.FlurlHttpClient.Upyun.Sms</AssemblyName>
-	<AssemblyTitle>DH框架又拍云客户端</AssemblyTitle>
-	<Description>用于DH框架的一个又拍云 API HTTP 客户端，基于 Flurl.Http 的又拍云短信服务（SMS）API 客户端。参考https://github.com/fudiwei/DotNetCore.SKIT.FlurlHttpClient.Upyun</Description>
-	<Company>湖北登灏科技有限公司</Company>
-	
-	<OutputPath>..\Bin</OutputPath>
-	<DocumentationFile>$(OutputPath)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-	<GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
-	  
-	<!--将此参数设置为true，以获取从NuGet缓存复制到项目输出的dll。
+	<Import Project="../../version.props" />
+
+	<PropertyGroup>
+		<LangVersion>latest</LangVersion>
+		<OutputType>Library</OutputType>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<RootNamespace>SKIT.FlurlHttpClient.Upyun.Sms</RootNamespace>
+		<AssemblyName>DH.SKIT.FlurlHttpClient.Upyun.Sms</AssemblyName>
+		<AssemblyTitle>DH框架又拍云客户端</AssemblyTitle>
+		<Description>用于DH框架的一个又拍云 API HTTP 客户端，基于 Flurl.Http 的又拍云短信服务（SMS）API 客户端。参考https://github.com/fudiwei/DotNetCore.SKIT.FlurlHttpClient.Upyun</Description>
+		<Company>湖北登灏科技有限公司</Company>
+
+		<OutputPath>..\Bin</OutputPath>
+		<DocumentationFile>$(OutputPath)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+		<GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
+
+		<!--将此参数设置为true，以获取从NuGet缓存复制到项目输出的dll。
      如果您的插件具有nuget包，则需要将此参数设置为true
      确保从NuGet缓存复制的dll到项目的输出-->
-	<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-	<!-- 对控制器/操作/方法没有阻止注释禁用警告 -->
-	<NoWarn>1701;1702;1705;1591</NoWarn>
-	<GenerateDocumentationFile>true</GenerateDocumentationFile>
-	<!--禁止生成launchSettings.json-->
-	<NoDefaultLaunchSettingsFile>True</NoDefaultLaunchSettingsFile>
-  </PropertyGroup>
-	
-  <PropertyGroup>
-	<IsPackable>true</IsPackable>
-	<PackageId>$(AssemblyName)</PackageId>
-	<Authors>$(Company)</Authors>
-	<PackageProjectUrl>https://www.haocoding.com/</PackageProjectUrl>
-	<PackageIcon>DH.png</PackageIcon>
-	<RepositoryUrl>https://gitee.com/chuangchu/DH.FrameWork</RepositoryUrl>
-	<RepositoryType>Git</RepositoryType>
-	<PackageTags>湖北登灏科技有限公司;DH组件;DH;$(AssemblyName)</PackageTags>
-	<PackageReleaseNotes>用于DH框架的一个又拍云 API HTTP 客户端，基于 Flurl.Http 的又拍云短信服务（SMS）API 客户端。</PackageReleaseNotes>
-	<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-	<PublishRepositoryUrl>true</PublishRepositoryUrl>
-	<EmbedUntrackedSources>true</EmbedUntrackedSources>
-	<IncludeSymbols>true</IncludeSymbols>
-	<SymbolPackageFormat>snupkg</SymbolPackageFormat>
-	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-	<GenerateDocumentationFile>true</GenerateDocumentationFile>
-	<PackageLicenseExpression>MIT</PackageLicenseExpression>
-  </PropertyGroup>
-	
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-	<DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
-	<DebugType>full</DebugType>
-	<Optimize>false</Optimize>
-	<WarningLevel>3</WarningLevel>
-  </PropertyGroup>
-	
-  <ItemGroup>
-    <ProjectReference Include="..\DH.SKIT.FlurlHttpClient.Common\DH.SKIT.FlurlHttpClient.Common.csproj" />
-  </ItemGroup>
-	
-  <ItemGroup>
-	<Content Include="..\..\Doc\DH.png" Link="DH.png" PackagePath="\" />
-  </ItemGroup>
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+		<!-- 对控制器/操作/方法没有阻止注释禁用警告 -->
+		<NoWarn>1701;1702;1705;1591</NoWarn>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<!--禁止生成launchSettings.json-->
+		<NoDefaultLaunchSettingsFile>True</NoDefaultLaunchSettingsFile>
+	</PropertyGroup>
 
-  <ItemGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
+	<PropertyGroup>
+		<IsPackable>true</IsPackable>
+		<PackageId>$(AssemblyName)</PackageId>
+		<Authors>$(Company)</Authors>
+		<PackageProjectUrl>https://www.haocoding.com/</PackageProjectUrl>
+		<PackageIcon>DH.png</PackageIcon>
+		<RepositoryUrl>https://gitee.com/chuangchu/DH.FrameWork</RepositoryUrl>
+		<RepositoryType>Git</RepositoryType>
+		<PackageTags>湖北登灏科技有限公司;DH组件;DH;$(AssemblyName)</PackageTags>
+		<PackageReleaseNotes>用于DH框架的一个又拍云 API HTTP 客户端，基于 Flurl.Http 的又拍云短信服务（SMS）API 客户端。</PackageReleaseNotes>
+		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
+		<DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
+		<DebugType>full</DebugType>
+		<Optimize>false</Optimize>
+		<WarningLevel>3</WarningLevel>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\DH.SKIT.FlurlHttpClient.Common\DH.SKIT.FlurlHttpClient.Common.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="..\..\Doc\DH.png" Link="DH.png" PackagePath="\" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
 
 </Project>

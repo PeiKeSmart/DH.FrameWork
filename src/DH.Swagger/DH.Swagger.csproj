@@ -1,21 +1,21 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="../../version.props" />
-	
+
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
     <OutputType>Library</OutputType>
     <ImplicitUsings>enable</ImplicitUsings>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <RootNamespace>DH.Swagger</RootNamespace>
     <AssemblyName>DH.Swagger</AssemblyName>
     <AssemblyTitle>Swagger扩展库</AssemblyTitle>
     <Description>用于DH框架的Swagger扩展库，包含认证，文件上传，公共参，个性主题，参考https://gitee.com/feiyit/fytapi.mui</Description>
     <Company>湖北登灏科技有限公司</Company>
-    
+
     <OutputPath>..\Bin</OutputPath>
     <DocumentationFile>$(OutputPath)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
     <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
-	<!--<StaticWebAssetsEnabled>false</StaticWebAssetsEnabled>-->
+    <!--<StaticWebAssetsEnabled>false</StaticWebAssetsEnabled>-->
 
     <!--将此参数设置为true，以获取从NuGet缓存复制到项目输出的dll。
      如果您的插件具有nuget包，则需要将此参数设置为true
@@ -33,8 +33,8 @@
     <PackageId>$(AssemblyName)</PackageId>
     <Authors>$(Company)</Authors>
     <PackageProjectUrl>https://www.haocoding.com/</PackageProjectUrl>
-	<PackageIcon>DH.png</PackageIcon>
-	<RepositoryUrl>https://gitee.com/chuangchu/DH.FrameWork</RepositoryUrl>
+    <PackageIcon>DH.png</PackageIcon>
+    <RepositoryUrl>https://gitee.com/chuangchu/DH.FrameWork</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <PackageTags>湖北登灏科技有限公司;DH组件;DH;$(AssemblyName)</PackageTags>
     <PackageReleaseNotes>用于DH框架的Swagger扩展库，包含认证，文件上传，公共参，个性主题</PackageReleaseNotes>
@@ -45,7 +45,7 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-	<PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
@@ -54,9 +54,9 @@
     <Optimize>false</Optimize>
     <WarningLevel>3</WarningLevel>
   </PropertyGroup>
-	
+
   <ItemGroup>
-	<Content Include="..\..\Doc\DH.png" Link="DH.png" PackagePath="\" />
+    <Content Include="..\..\Doc\DH.png" Link="DH.png" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -64,7 +64,7 @@
     <None Remove="IndexDark.html" />
     <None Remove="wwwroot\*\*\*\*.*" />
     <None Remove="wwwroot\*\*\*.*" />
-	<None Remove="wwwroot\*\*.*" />
+    <None Remove="wwwroot\*\*.*" />
   </ItemGroup>
 
   <ItemGroup>
@@ -72,7 +72,7 @@
     <EmbeddedResource Include="IndexDark.html" />
     <EmbeddedResource Include="wwwroot\*\*\*.*" />
     <EmbeddedResource Include="wwwroot\*\*.*" />
-	<EmbeddedResource Include="wwwroot\*\*\*\*.*" />
+    <EmbeddedResource Include="wwwroot\*\*\*\*.*" />
   </ItemGroup>
 
   <ItemGroup>

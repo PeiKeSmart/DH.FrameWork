@@ -1,55 +1,55 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
   <Import Project="../../version.props" />
-	
+
   <PropertyGroup>
-	<LangVersion>latest</LangVersion>
-	<OutputType>Library</OutputType>
+    <LangVersion>latest</LangVersion>
+    <OutputType>Library</OutputType>
     <ImplicitUsings>enable</ImplicitUsings>
-	<TargetFrameworks>net45;net461;netstandard2.0;netstandard2.1;netcoreapp3.1;net5.0;net6.0;net5.0-windows;net6.0-windows;net7.0;net7.0-windows</TargetFrameworks>
-	<RootNamespace>DH.NCore</RootNamespace>
-	<AssemblyName>DH.NCore</AssemblyName>
-	<AssemblyTitle>DH组件核心库</AssemblyTitle>
-	<Description>DH框架的核心基础组件，日志（文件/网络）、配置（XML/Json/Http）、缓存（内存/Redis）、网络（Tcp/Udp/Http）、RPC框架、序列化（Binary/XML/Json）、APM性能追踪。参考X组件的NewLife.Core</Description>
+    <TargetFrameworks>net45;net461;netstandard2.0;netstandard2.1;netcoreapp3.1;net5.0;net6.0;net5.0-windows;net6.0-windows;net7.0;net7.0-windows;net8.0;net8.0-windows</TargetFrameworks>
+    <RootNamespace>DH.NCore</RootNamespace>
+    <AssemblyName>DH.NCore</AssemblyName>
+    <AssemblyTitle>DH组件核心库</AssemblyTitle>
+    <Description>DH框架的核心基础组件，日志（文件/网络）、配置（XML/Json/Http）、缓存（内存/Redis）、网络（Tcp/Udp/Http）、RPC框架、序列化（Binary/XML/Json）、APM性能追踪。参考X组件的NewLife.Core</Description>
     <Company>湖北登灏科技有限公司</Company>
     <Nullable>enable</Nullable>
-	  
-	<OutputPath>..\Bin</OutputPath>
-	<DocumentationFile>$(OutputPath)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-	<GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
-	  
-	<!--将此参数设置为true，以获取从NuGet缓存复制到项目输出的dll。
+
+    <OutputPath>..\Bin</OutputPath>
+    <DocumentationFile>$(OutputPath)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+    <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
+
+    <!--将此参数设置为true，以获取从NuGet缓存复制到项目输出的dll。
      如果您的插件具有nuget包，则需要将此参数设置为true
      确保从NuGet缓存复制的dll到项目的输出-->
-	<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-	<!-- 对控制器/操作/方法没有阻止注释禁用警告 -->
-	<NoWarn>1701;1702;NU5104;NETSDK1138;CS7035</NoWarn>
-	<GenerateDocumentationFile>true</GenerateDocumentationFile>
-  </PropertyGroup>
-	
-  <PropertyGroup>
-	<IsPackable>true</IsPackable>
-	<PackageId>$(AssemblyName)</PackageId>
-	<Authors>$(Company)</Authors>
-	<PackageProjectUrl>https://www.haocoding.com/</PackageProjectUrl>
-	<PackageIcon>DH.png</PackageIcon>
-	<RepositoryUrl>https://gitee.com/chuangchu/DH.FrameWork</RepositoryUrl>
-	<RepositoryType>Git</RepositoryType>
-	<PackageTags>湖北登灏科技有限公司;DH组件;DH;$(AssemblyName)</PackageTags>
-	<PackageReleaseNotes>恢复支持net461和netstandard2.0；独立实现IndexRange</PackageReleaseNotes>
-	<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-	<PublishRepositoryUrl>true</PublishRepositoryUrl>
-	<EmbedUntrackedSources>true</EmbedUntrackedSources>
-	<IncludeSymbols>true</IncludeSymbols>
-	<SymbolPackageFormat>snupkg</SymbolPackageFormat>
-	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <!-- 对控制器/操作/方法没有阻止注释禁用警告 -->
+    <NoWarn>1701;1702;NU5104;NETSDK1138;CS7035</NoWarn>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-	<PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
-	
-  <PropertyGroup Condition="'$(TargetFramework)'=='net45' or '$(TargetFramework)'=='net461' or '$(TargetFramework)'=='net5.0-windows' or '$(TargetFramework)'=='net6.0-windows' or '$(TargetFramework)'=='net7.0-windows'">
+
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <PackageId>$(AssemblyName)</PackageId>
+    <Authors>$(Company)</Authors>
+    <PackageProjectUrl>https://www.haocoding.com/</PackageProjectUrl>
+    <PackageIcon>DH.png</PackageIcon>
+    <RepositoryUrl>https://gitee.com/chuangchu/DH.FrameWork</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
+    <PackageTags>湖北登灏科技有限公司;DH组件;DH;$(AssemblyName)</PackageTags>
+    <PackageReleaseNotes>恢复支持net461和netstandard2.0；独立实现IndexRange</PackageReleaseNotes>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)'=='net45' or '$(TargetFramework)'=='net461' or '$(TargetFramework)'=='net5.0-windows' or '$(TargetFramework)'=='net6.0-windows' or '$(TargetFramework)'=='net7.0-windows' or '$(TargetFramework)'=='net8.0-windows'">
     <DefineConstants>$(DefineConstants);__WIN__</DefineConstants>
   </PropertyGroup>
-	
+
   <ItemGroup Condition="'$(TargetFramework)'=='net5.0-windows'">
     <FrameworkReference Include="Microsoft.WindowsDesktop.App.WindowsForms" IsImplicitlyDefined="true" TargetingPackVersion="5.0.0" />
   </ItemGroup>
@@ -59,7 +59,10 @@
   <ItemGroup Condition="'$(TargetFramework)'=='net7.0-windows'">
     <FrameworkReference Include="Microsoft.WindowsDesktop.App.WindowsForms" IsImplicitlyDefined="true" TargetingPackVersion="7.0.0" />
   </ItemGroup>
-	
+  <ItemGroup Condition="'$(TargetFramework)'=='net8.0-windows'">
+    <FrameworkReference Include="Microsoft.WindowsDesktop.App.WindowsForms" IsImplicitlyDefined="true" TargetingPackVersion="8.0.0" />
+  </ItemGroup>
+
   <ItemGroup Condition="'$(TargetFramework)'!='netstandard2.1'">
     <!--<PackageReference Include="System.Management" Version="6.0.0" />-->
   </ItemGroup>
@@ -73,7 +76,7 @@
     <!--<PackageReference Include="System.Runtime.InteropServices.RuntimeInformation" Version="4.3.0" />-->
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
-	
+
   <ItemGroup Condition="'$(TargetFramework)'=='net45' or '$(TargetFramework)'=='net461'">
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System.Management" />
@@ -82,17 +85,17 @@
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
-	
+
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-	<DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
-	<DebugType>full</DebugType>
-	<Optimize>false</Optimize>
+    <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
   </PropertyGroup>
-	
+
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
-	<!--<GeneratePackageOnBuild>true</GeneratePackageOnBuild>-->
+    <!--<GeneratePackageOnBuild>true</GeneratePackageOnBuild>-->
   </PropertyGroup>
-	
+
   <ItemGroup>
     <Compile Remove="Agent\**" />
     <Compile Remove="Applications\**" />
@@ -205,11 +208,11 @@
     <None Remove="X组件.txt" />
     <None Remove="说明.txt" />
   </ItemGroup>
-	
+
   <ItemGroup>
-	<Content Include="..\..\Doc\DH.png" Link="DH.png" PackagePath="\" />
-  </ItemGroup>	
- 
+    <Content Include="..\..\Doc\DH.png" Link="DH.png" PackagePath="\" />
+  </ItemGroup>
+
   <ItemGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
       <PrivateAssets>all</PrivateAssets>

@@ -1,77 +1,77 @@
 <Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
-  <Import Project="../../version.props" />
-	
-  <PropertyGroup>
-	<LangVersion>latest</LangVersion>
-    <OutputType>Library</OutputType>
-    <TargetFramework>net7.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-	<Nullable>enable</Nullable>
-	<RootNamespace>SKIT.FlurlHttpClient.Wechat.Work</RootNamespace>
-	<AssemblyName>DH.SKIT.FlurlHttpClient.Wechat.Work</AssemblyName>
-	<AssemblyTitle>DH框架企业微信 API 客户端</AssemblyTitle>
-	<Description>用于DH框架的一个企业微信 API 客户端，基于 Flurl.Http 的企业微信 API 客户端，支持企业内部开发、第三方应用开发、服务商代开发、智慧硬件开发模式，支持基础服务、通讯录管理、身份验证、企业互联、上下游、消息推送、应用管理、素材管理、电子发票、客户联系、微信客服、企业支付、会话内容存档、家校沟通、家校应用、政民沟通、邮件、文档、日程、会议、微盘、直播、公费电话、打卡、审批、汇报、会议室、紧急通知应用、硬件云端接入等功能。参考https://github.com/fudiwei/DotNetCore.SKIT.FlurlHttpClient.Wechat</Description>
-	<Company>湖北登灏科技有限公司</Company>
-	
-	<OutputPath>..\Bin</OutputPath>
-	<DocumentationFile>$(OutputPath)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-	<GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
-	  
-	<!--将此参数设置为true，以获取从NuGet缓存复制到项目输出的dll。
+	<Import Project="../../version.props" />
+
+	<PropertyGroup>
+		<LangVersion>latest</LangVersion>
+		<OutputType>Library</OutputType>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<RootNamespace>SKIT.FlurlHttpClient.Wechat.Work</RootNamespace>
+		<AssemblyName>DH.SKIT.FlurlHttpClient.Wechat.Work</AssemblyName>
+		<AssemblyTitle>DH框架企业微信 API 客户端</AssemblyTitle>
+		<Description>用于DH框架的一个企业微信 API 客户端，基于 Flurl.Http 的企业微信 API 客户端，支持企业内部开发、第三方应用开发、服务商代开发、智慧硬件开发模式，支持基础服务、通讯录管理、身份验证、企业互联、上下游、消息推送、应用管理、素材管理、电子发票、客户联系、微信客服、企业支付、会话内容存档、家校沟通、家校应用、政民沟通、邮件、文档、日程、会议、微盘、直播、公费电话、打卡、审批、汇报、会议室、紧急通知应用、硬件云端接入等功能。参考https://github.com/fudiwei/DotNetCore.SKIT.FlurlHttpClient.Wechat</Description>
+		<Company>湖北登灏科技有限公司</Company>
+
+		<OutputPath>..\Bin</OutputPath>
+		<DocumentationFile>$(OutputPath)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+		<GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
+
+		<!--将此参数设置为true，以获取从NuGet缓存复制到项目输出的dll。
      如果您的插件具有nuget包，则需要将此参数设置为true
      确保从NuGet缓存复制的dll到项目的输出-->
-	<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-	<!-- 对控制器/操作/方法没有阻止注释禁用警告 -->
-	<NoWarn>1701;1702;1705;1591</NoWarn>
-	<GenerateDocumentationFile>true</GenerateDocumentationFile>
-	<!--禁止生成launchSettings.json-->
-	<NoDefaultLaunchSettingsFile>True</NoDefaultLaunchSettingsFile>
-  </PropertyGroup>
-	
-  <PropertyGroup>
-	<IsPackable>true</IsPackable>
-	<PackageId>$(AssemblyName)</PackageId>
-	<Authors>$(Company)</Authors>
-	<PackageProjectUrl>https://www.haocoding.com/</PackageProjectUrl>
-	<PackageIcon>DH.png</PackageIcon>
-	<RepositoryUrl>https://gitee.com/chuangchu/DH.FrameWork</RepositoryUrl>
-	<RepositoryType>Git</RepositoryType>
-	<PackageTags>湖北登灏科技有限公司;DH组件;DH;$(AssemblyName)</PackageTags>
-	<PackageReleaseNotes>用于DH框架的一个企业微信 API 客户端，支持企业内部开发、第三方应用开发、智慧硬件开发模式，支持基础服务、通讯录管理、客户联系、身份验证、应用管理、素材管理、设备管理、消息推送、OA、效率工具、企业互联、电子发票、家校沟通、家校应用、政民沟通等功能。</PackageReleaseNotes>
-	<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-	<PublishRepositoryUrl>true</PublishRepositoryUrl>
-	<EmbedUntrackedSources>true</EmbedUntrackedSources>
-	<IncludeSymbols>true</IncludeSymbols>
-	<SymbolPackageFormat>snupkg</SymbolPackageFormat>
-	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-	<GenerateDocumentationFile>true</GenerateDocumentationFile>
-	<PackageLicenseExpression>MIT</PackageLicenseExpression>
-  </PropertyGroup>
-	
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-	<DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
-	<DebugType>full</DebugType>
-	<Optimize>false</Optimize>
-	<WarningLevel>3</WarningLevel>
-  </PropertyGroup>
-	 
-  <ItemGroup>
-    <ProjectReference Include="..\DH.SKIT.FlurlHttpClient.Common\DH.SKIT.FlurlHttpClient.Common.csproj" />
-  </ItemGroup>
-	
-  <ItemGroup>
-	<Content Include="..\..\Doc\DH.png" Link="DH.png" PackagePath="\" />
-  </ItemGroup>
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+		<!-- 对控制器/操作/方法没有阻止注释禁用警告 -->
+		<NoWarn>1701;1702;1705;1591</NoWarn>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<!--禁止生成launchSettings.json-->
+		<NoDefaultLaunchSettingsFile>True</NoDefaultLaunchSettingsFile>
+	</PropertyGroup>
 
-  <ItemGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
+	<PropertyGroup>
+		<IsPackable>true</IsPackable>
+		<PackageId>$(AssemblyName)</PackageId>
+		<Authors>$(Company)</Authors>
+		<PackageProjectUrl>https://www.haocoding.com/</PackageProjectUrl>
+		<PackageIcon>DH.png</PackageIcon>
+		<RepositoryUrl>https://gitee.com/chuangchu/DH.FrameWork</RepositoryUrl>
+		<RepositoryType>Git</RepositoryType>
+		<PackageTags>湖北登灏科技有限公司;DH组件;DH;$(AssemblyName)</PackageTags>
+		<PackageReleaseNotes>用于DH框架的一个企业微信 API 客户端，支持企业内部开发、第三方应用开发、智慧硬件开发模式，支持基础服务、通讯录管理、客户联系、身份验证、应用管理、素材管理、设备管理、消息推送、OA、效率工具、企业互联、电子发票、家校沟通、家校应用、政民沟通等功能。</PackageReleaseNotes>
+		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="BouncyCastle.Cryptography" Version="2.2.1" />
-  </ItemGroup>
+	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
+		<DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
+		<DebugType>full</DebugType>
+		<Optimize>false</Optimize>
+		<WarningLevel>3</WarningLevel>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\DH.SKIT.FlurlHttpClient.Common\DH.SKIT.FlurlHttpClient.Common.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="..\..\Doc\DH.png" Link="DH.png" PackagePath="\" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="BouncyCastle.Cryptography" Version="2.2.1" />
+	</ItemGroup>
 
 </Project>

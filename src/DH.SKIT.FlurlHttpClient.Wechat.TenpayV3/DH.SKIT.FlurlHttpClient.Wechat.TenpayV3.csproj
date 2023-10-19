@@ -1,77 +1,77 @@
 <Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
-  <Import Project="../../version.props" />
-	
-  <PropertyGroup>
-	<LangVersion>latest</LangVersion>
-    <OutputType>Library</OutputType>
-    <TargetFramework>net7.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-	<Nullable>enable</Nullable>
-	<RootNamespace>SKIT.FlurlHttpClient.Wechat.TenpayV3</RootNamespace>
-	<AssemblyName>DH.SKIT.FlurlHttpClient.Wechat.TenpayV3</AssemblyName>
-	<AssemblyTitle>DH框架微信支付 API v2 版客户端</AssemblyTitle>
-	<Description>用于DH框架的一个微信支付 API v3 版客户端，支持直连商户、服务商模式，支持基础支付、代金券、商家券、委托营销、消费卡、支付有礼、银行定向促活、微信支付分、微信先享卡、支付即服务、点金计划、智慧商圈、电商收付通、二级商户进件、小微商户进件、消费者投诉、商户违规通知、批量转账到零钱、银行组件、海关报关、融合钱包等功能。参考https://github.com/fudiwei/DotNetCore.SKIT.FlurlHttpClient.Wechat</Description>
-	<Company>湖北登灏科技有限公司</Company>
-	
-	<OutputPath>..\Bin</OutputPath>
-	<DocumentationFile>$(OutputPath)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-	<GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
-	  
-	<!--将此参数设置为true，以获取从NuGet缓存复制到项目输出的dll。
+	<Import Project="../../version.props" />
+
+	<PropertyGroup>
+		<LangVersion>latest</LangVersion>
+		<OutputType>Library</OutputType>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<RootNamespace>SKIT.FlurlHttpClient.Wechat.TenpayV3</RootNamespace>
+		<AssemblyName>DH.SKIT.FlurlHttpClient.Wechat.TenpayV3</AssemblyName>
+		<AssemblyTitle>DH框架微信支付 API v2 版客户端</AssemblyTitle>
+		<Description>用于DH框架的一个微信支付 API v3 版客户端，支持直连商户、服务商模式，支持基础支付、代金券、商家券、委托营销、消费卡、支付有礼、银行定向促活、微信支付分、微信先享卡、支付即服务、点金计划、智慧商圈、电商收付通、二级商户进件、小微商户进件、消费者投诉、商户违规通知、批量转账到零钱、银行组件、海关报关、融合钱包等功能。参考https://github.com/fudiwei/DotNetCore.SKIT.FlurlHttpClient.Wechat</Description>
+		<Company>湖北登灏科技有限公司</Company>
+
+		<OutputPath>..\Bin</OutputPath>
+		<DocumentationFile>$(OutputPath)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+		<GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
+
+		<!--将此参数设置为true，以获取从NuGet缓存复制到项目输出的dll。
      如果您的插件具有nuget包，则需要将此参数设置为true
      确保从NuGet缓存复制的dll到项目的输出-->
-	<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-	<!-- 对控制器/操作/方法没有阻止注释禁用警告 -->
-	<NoWarn>1701;1702;1705;1591</NoWarn>
-	<GenerateDocumentationFile>true</GenerateDocumentationFile>
-	<!--禁止生成launchSettings.json-->
-	<NoDefaultLaunchSettingsFile>True</NoDefaultLaunchSettingsFile>
-  </PropertyGroup>
-	
-  <PropertyGroup>
-	<IsPackable>true</IsPackable>
-	<PackageId>$(AssemblyName)</PackageId>
-	<Authors>$(Company)</Authors>
-	<PackageProjectUrl>https://www.haocoding.com/</PackageProjectUrl>
-	<PackageIcon>DH.png</PackageIcon>
-	<RepositoryUrl>https://gitee.com/chuangchu/DH.FrameWork</RepositoryUrl>
-	<RepositoryType>Git</RepositoryType>
-	<PackageTags>湖北登灏科技有限公司;DH组件;DH;$(AssemblyName)</PackageTags>
-	<PackageReleaseNotes>用于DH框架的一个微信支付 API v3 版客户端，支持直连商户、服务商模式，支持基础支付、代金券、商家券、委托营销、消费卡、支付有礼、银行定向促活、微信支付分、微信先享卡、支付即服务、点金计划、智慧商圈、电商收付通、二级商户进件、小微商户进件、消费者投诉、商户违规通知、批量转账到零钱、银行组件、海关报关、融合钱包等功能。</PackageReleaseNotes>
-	<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-	<PublishRepositoryUrl>true</PublishRepositoryUrl>
-	<EmbedUntrackedSources>true</EmbedUntrackedSources>
-	<IncludeSymbols>true</IncludeSymbols>
-	<SymbolPackageFormat>snupkg</SymbolPackageFormat>
-	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-	<GenerateDocumentationFile>true</GenerateDocumentationFile>
-	<PackageLicenseExpression>MIT</PackageLicenseExpression>
-  </PropertyGroup>
-	
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-	<DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
-	<DebugType>full</DebugType>
-	<Optimize>false</Optimize>
-	<WarningLevel>3</WarningLevel>
-  </PropertyGroup>
-	 
-  <ItemGroup>
-    <ProjectReference Include="..\DH.SKIT.FlurlHttpClient.Common\DH.SKIT.FlurlHttpClient.Common.csproj" />
-  </ItemGroup>
-	
-  <ItemGroup>
-	<PackageReference Include="BouncyCastle.Cryptography" Version="2.2.1" />
-  </ItemGroup>
-	
-  <ItemGroup>
-	<Content Include="..\..\Doc\DH.png" Link="DH.png" PackagePath="\" />
-  </ItemGroup>
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+		<!-- 对控制器/操作/方法没有阻止注释禁用警告 -->
+		<NoWarn>1701;1702;1705;1591</NoWarn>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<!--禁止生成launchSettings.json-->
+		<NoDefaultLaunchSettingsFile>True</NoDefaultLaunchSettingsFile>
+	</PropertyGroup>
 
-  <ItemGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
+	<PropertyGroup>
+		<IsPackable>true</IsPackable>
+		<PackageId>$(AssemblyName)</PackageId>
+		<Authors>$(Company)</Authors>
+		<PackageProjectUrl>https://www.haocoding.com/</PackageProjectUrl>
+		<PackageIcon>DH.png</PackageIcon>
+		<RepositoryUrl>https://gitee.com/chuangchu/DH.FrameWork</RepositoryUrl>
+		<RepositoryType>Git</RepositoryType>
+		<PackageTags>湖北登灏科技有限公司;DH组件;DH;$(AssemblyName)</PackageTags>
+		<PackageReleaseNotes>用于DH框架的一个微信支付 API v3 版客户端，支持直连商户、服务商模式，支持基础支付、代金券、商家券、委托营销、消费卡、支付有礼、银行定向促活、微信支付分、微信先享卡、支付即服务、点金计划、智慧商圈、电商收付通、二级商户进件、小微商户进件、消费者投诉、商户违规通知、批量转账到零钱、银行组件、海关报关、融合钱包等功能。</PackageReleaseNotes>
+		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
+		<DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
+		<DebugType>full</DebugType>
+		<Optimize>false</Optimize>
+		<WarningLevel>3</WarningLevel>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\DH.SKIT.FlurlHttpClient.Common\DH.SKIT.FlurlHttpClient.Common.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="BouncyCastle.Cryptography" Version="2.2.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="..\..\Doc\DH.png" Link="DH.png" PackagePath="\" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
 
 </Project>

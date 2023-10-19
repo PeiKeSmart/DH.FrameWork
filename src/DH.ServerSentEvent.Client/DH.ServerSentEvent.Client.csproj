@@ -1,69 +1,69 @@
 <Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
   <Import Project="../../version.props" />
-	
+
   <PropertyGroup>
-	<LangVersion>latest</LangVersion>
+    <LangVersion>latest</LangVersion>
     <OutputType>Library</OutputType>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-	<RootNamespace>DH.ServerSentEvent</RootNamespace>
-	<AssemblyName>DH.ServerSentEvent.Client</AssemblyName>
-	<AssemblyTitle>基于DH框架的SSE客户端支持库</AssemblyTitle>
-	<Description>基于DH框架的SSE客户端支持库，适用于 .NET 的服务器发送事件 （SSE） 客户端实现。参考https://github.com/launchdarkly/dotnet-eventsource</Description>
-	<Company>湖北登灏科技有限公司</Company>
-	
-	<OutputPath>..\Bin</OutputPath>
-	<DocumentationFile>$(OutputPath)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-	<GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
-	  
-	<!--将此参数设置为true，以获取从NuGet缓存复制到项目输出的dll。
+    <RootNamespace>DH.ServerSentEvent</RootNamespace>
+    <AssemblyName>DH.ServerSentEvent.Client</AssemblyName>
+    <AssemblyTitle>基于DH框架的SSE客户端支持库</AssemblyTitle>
+    <Description>基于DH框架的SSE客户端支持库，适用于 .NET 的服务器发送事件 （SSE） 客户端实现。参考https://github.com/launchdarkly/dotnet-eventsource</Description>
+    <Company>湖北登灏科技有限公司</Company>
+
+    <OutputPath>..\Bin</OutputPath>
+    <DocumentationFile>$(OutputPath)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+    <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
+
+    <!--将此参数设置为true，以获取从NuGet缓存复制到项目输出的dll。
      如果您的插件具有nuget包，则需要将此参数设置为true
      确保从NuGet缓存复制的dll到项目的输出-->
-	<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-	<!-- 对控制器/操作/方法没有阻止注释禁用警告 -->
-	<NoWarn>1701;1702;1705;1591</NoWarn>
-	<GenerateDocumentationFile>true</GenerateDocumentationFile>
-	<!--禁止生成launchSettings.json-->
-	<NoDefaultLaunchSettingsFile>True</NoDefaultLaunchSettingsFile>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <!-- 对控制器/操作/方法没有阻止注释禁用警告 -->
+    <NoWarn>1701;1702;1705;1591</NoWarn>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <!--禁止生成launchSettings.json-->
+    <NoDefaultLaunchSettingsFile>True</NoDefaultLaunchSettingsFile>
   </PropertyGroup>
-	
+
   <PropertyGroup>
-	<IsPackable>true</IsPackable>
-	<PackageId>$(AssemblyName)</PackageId>
-	<Authors>$(Company)</Authors>
-	<PackageProjectUrl>https://www.haocoding.com/</PackageProjectUrl>
-	<PackageIcon>DH.png</PackageIcon>
-	<RepositoryUrl>https://gitee.com/chuangchu/DH.FrameWork</RepositoryUrl>
-	<RepositoryType>Git</RepositoryType>
-	<PackageTags>湖北登灏科技有限公司;DH组件;DH;$(AssemblyName)</PackageTags>
-	<PackageReleaseNotes>基于DH框架的SSE客户端支持库，适用于 .NET 的服务器发送事件 （SSE） 客户端实现。</PackageReleaseNotes>
-	<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-	<PublishRepositoryUrl>true</PublishRepositoryUrl>
-	<EmbedUntrackedSources>true</EmbedUntrackedSources>
-	<IncludeSymbols>true</IncludeSymbols>
-	<SymbolPackageFormat>snupkg</SymbolPackageFormat>
-	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-	<GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <IsPackable>true</IsPackable>
+    <PackageId>$(AssemblyName)</PackageId>
+    <Authors>$(Company)</Authors>
+    <PackageProjectUrl>https://www.haocoding.com/</PackageProjectUrl>
+    <PackageIcon>DH.png</PackageIcon>
+    <RepositoryUrl>https://gitee.com/chuangchu/DH.FrameWork</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
+    <PackageTags>湖北登灏科技有限公司;DH组件;DH;$(AssemblyName)</PackageTags>
+    <PackageReleaseNotes>基于DH框架的SSE客户端支持库，适用于 .NET 的服务器发送事件 （SSE） 客户端实现。</PackageReleaseNotes>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
-	
+
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-	<DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
-	<DebugType>full</DebugType>
-	<Optimize>false</Optimize>
-	<WarningLevel>3</WarningLevel>
+    <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <WarningLevel>3</WarningLevel>
   </PropertyGroup>
-	
+
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>$(DefineConstants);</DefineConstants>
   </PropertyGroup>
-	
+
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DefineConstants>$(DefineConstants);</DefineConstants>
   </PropertyGroup>
-	
+
   <ItemGroup>
-	<Content Include="..\..\Doc\DH.png" Link="DH.png" PackagePath="\" />
+    <Content Include="..\..\Doc\DH.png" Link="DH.png" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
