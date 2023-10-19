@@ -6,6 +6,8 @@ using NewLife.Security;
 using NewLife.Serialization;
 using NewLife.Threading;
 
+using System.Net.Http;
+
 #nullable enable
 namespace NewLife.Yun;
 

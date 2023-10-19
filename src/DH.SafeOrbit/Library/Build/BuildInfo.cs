@@ -35,6 +35,8 @@
             return Platform.Net60;
 #elif NET7_0
             return Platform.Net70;
+#elif NET8_0
+            return Platform.Net80;
 #endif
         }
 

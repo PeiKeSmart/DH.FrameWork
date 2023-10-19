@@ -70,7 +70,7 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'!='net461' and '$(TargetFramework)'!='net45'">
-		<PackageReference Include="System.IO.Ports" Version="7.0.0" />
+		<PackageReference Include="System.IO.Ports" Version="8.0.0-rc.2.23479.6" />
 	</ItemGroup>
 
 </Project>

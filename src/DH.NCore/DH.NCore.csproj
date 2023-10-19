@@ -5,7 +5,7 @@
     <LangVersion>latest</LangVersion>
     <OutputType>Library</OutputType>
     <ImplicitUsings>enable</ImplicitUsings>
-    <TargetFrameworks>net45;net461;netstandard2.0;netstandard2.1;netcoreapp3.1;net5.0;net6.0;net5.0-windows;net6.0-windows;net7.0;net7.0-windows;net8.0;net8.0-windows</TargetFrameworks>
+    <TargetFrameworks>net45;net461;netstandard2.0;netstandard2.1;netcoreapp3.1;net5.0;net6.0;net5.0-windows;net6.0-windows;net7.0;net7.0-windows;net8.0</TargetFrameworks>
     <RootNamespace>DH.NCore</RootNamespace>
     <AssemblyName>DH.NCore</AssemblyName>
     <AssemblyTitle>DH组件核心库</AssemblyTitle>
@@ -60,7 +60,7 @@
     <FrameworkReference Include="Microsoft.WindowsDesktop.App.WindowsForms" IsImplicitlyDefined="true" TargetingPackVersion="7.0.0" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)'=='net8.0-windows'">
-    <FrameworkReference Include="Microsoft.WindowsDesktop.App.WindowsForms" IsImplicitlyDefined="true" TargetingPackVersion="8.0.0" />
+    <FrameworkReference Include="Microsoft.WindowsDesktop.App.WindowsForms" IsImplicitlyDefined="true" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)'!='netstandard2.1'">

@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 	<Company>湖北登灏科技有限公司</Company>
@@ -10,7 +10,7 @@
   </PropertyGroup>
 	
   <ItemGroup>
-    <PackageReference Include="RestSharp" Version="110.2.1-alpha.0.3" />
+    <PackageReference Include="RestSharp" Version="110.2.1-alpha.0.13" />
   </ItemGroup>
 
   <ItemGroup>
