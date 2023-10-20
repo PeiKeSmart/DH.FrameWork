@@ -568,10 +568,18 @@ public class EntityBuilder : ClassBuilder
 
         var type = dc.Properties["Type"];
         if (type.IsNullOrEmpty()) type = dc.DataType?.Name;
-        if (type == "String") type = "String?";
+        if (type == "String" && Option.Nullable && column.Nullable) type = "String?";
 
         // 字段
-        WriteLine("private {0} _{1};", type, dc.Name);
+        if (type == "String" && Option.Nullable)
+        {
+            if (column.Nullable)
+                WriteLine("private {0} _{1};", type, dc.Name);
+            else
+                WriteLine("private {0} _{1} = null!;", type, dc.Name);
+        }
+        else
+            WriteLine("private {0} _{1};", type, dc.Name);
 
         // 注释
         var des = dc.Description;
@@ -630,7 +638,10 @@ public class EntityBuilder : ClassBuilder
         WriteLine("/// <summary>获取/设置 字段值</summary>");
         WriteLine("/// <param name=\"name\">字段名</param>");
         WriteLine("/// <returns></returns>");
-        WriteLine("public override Object? this[String name]");
+        if (Option.Nullable)
+            WriteLine("public override Object? this[String name]");
+        else
+            WriteLine("public override Object this[String name]");
         WriteLine("{");
 
         // get
@@ -822,7 +833,10 @@ public class EntityBuilder : ClassBuilder
 
             WriteLine("/// <summary>{0}</summary>", dis);
             WriteLine("[XmlIgnore, IgnoreDataMember, ScriptIgnore]");
-            WriteLine("public {0}? {1} => Extends.Get(nameof({1}), k => {0}.FindBy{2}({3}));", fullName, name, mapIdName, column.Name);
+            if (Option.Nullable)
+                WriteLine("public {0}? {1} => Extends.Get(nameof({1}), k => {0}.FindBy{2}({3}));", fullName, name, mapIdName, column.Name);
+            else
+                WriteLine("public {0} {1} => Extends.Get(nameof({1}), k => {0}.FindBy{2}({3}));", fullName, name, mapIdName, column.Name);
 
             var myName = ss.Length > 3 ? ss[3] : null;
             if (myName.IsNullOrEmpty())
@@ -834,19 +848,21 @@ public class EntityBuilder : ClassBuilder
             // 扩展属性有可能恰巧跟已有字段同名
             if (!myName.IsNullOrEmpty() && !Table.Columns.Any(e => e.Name.EqualIgnoreCase(myName)))
             {
+                var type = Option.Nullable ? "String?" : "String";
+
                 WriteLine();
                 WriteLine("/// <summary>{0}</summary>", dis);
                 WriteLine("[Map(nameof({0}), typeof({1}), \"{2}\")]", column.Name, fullName, mapIdName);
                 if (column.Properties.TryGetValue("Category", out var att) && !att.IsNullOrEmpty())
                     WriteLine("[Category(\"{0}\")]", att);
                 if (ss.Length > 2 && ss[2] == "$")
-                    WriteLine("public String? {0} => {1}?.ToString();", myName, name);
+                    WriteLine("public {2} {0} => {1}?.ToString();", myName, name, type);
                 else if (mapName != null)
                 {
                     if (ss.Length > 2 && mapName.DataType == typeof(String))
-                        WriteLine("public String? {0} => {1}?.{2};", myName, name, ss[2]);
+                        WriteLine("public {3} {0} => {1}?.{2};", myName, name, ss[2], type);
                     else if (mapName.DataType == typeof(String))
-                        WriteLine("public String? {0} => {1}?.{2};", myName, name, mapName.Name);
+                        WriteLine("public {3} {0} => {1}?.{2};", myName, name, mapName.Name, type);
                     else
                         WriteLine("public {3} {0} => {1} != null ? {1}.{2} : 0;", myName, name, mapName.Name, mapName.DataType.Name);
                 }
@@ -957,6 +973,7 @@ public class EntityBuilder : ClassBuilder
         WriteLine("}");
     }
 
+    static String[] _validExcludes = new[] { "CreateUser", "CreateUserIP", "UpdateUser", "UpdateUserIP", "TraceId" };
     /// <summary>数据验证</summary>
     protected virtual void BuildValid()
     {
@@ -968,15 +985,35 @@ public class EntityBuilder : ClassBuilder
             WriteLine("// 如果没有脏数据，则不需要进行任何处理");
             WriteLine("if (!HasDirty) return;");
 
-            // 非空判断
-            var cs = Table.Columns.Where(e => !e.Nullable && e.DataType == typeof(String)).ToArray();
+            // 非空判断，字符串且没有默认值
+            var cs = Table.Columns.Where(e => !e.Nullable && e.DataType == typeof(String) && e.DefaultValue.IsNullOrEmpty()).ToArray();
+            // 剔除CreateUser/UpdateUser等特殊字段
+            cs = cs.Where(e => !e.Name.EqualIgnoreCase(_validExcludes)).ToArray();
             if (cs.Length > 0)
             {
+                // 有索引的字段判断Empty，不允许空字符串（不利于索引），其它判断null
+                var ds = new HashSet<String>(StringComparer.OrdinalIgnoreCase);
+                foreach (var di in Table.Indexes)
+                {
+                    foreach (var item in Table.GetColumns(di.Columns))
+                    {
+                        if (!ds.Contains(item.Name)) ds.Add(item.Name);
+                    }
+                }
+                // 主要字段也判断
+                foreach (var item in Table.Columns)
+                {
+                    if (item.Master && !ds.Contains(item.Name)) ds.Add(item.Name);
+                }
+
                 WriteLine();
                 WriteLine("// 这里验证参数范围，建议抛出参数异常，指定参数名，前端用户界面可以捕获参数异常并聚焦到对应的参数输入框");
                 foreach (var item in cs)
                 {
-                    WriteLine("if ({0}.IsNullOrEmpty()) throw new ArgumentNullException({1}, \"{2}不能为空！\");", item.Name, NameOf(item.Name), item.DisplayName ?? item.Name);
+                    if (ds.Contains(item.Name))
+                        WriteLine("if ({0}.IsNullOrEmpty()) throw new ArgumentNullException({1}, \"{2}不能为空！\");", item.Name, NameOf(item.Name), item.DisplayName ?? item.Name);
+                    else
+                        WriteLine("if ({0} == null) throw new ArgumentNullException({1}, \"{2}不能为空！\");", item.Name, NameOf(item.Name), item.DisplayName ?? item.Name);
                 }
             }
 
@@ -1227,7 +1264,10 @@ public class EntityBuilder : ClassBuilder
 
                 WriteLine("/// <summary>{0}</summary>", dis);
                 WriteLine("[XmlIgnore, IgnoreDataMember, ScriptIgnore]");
-                WriteLine("public {1}? {1} => Extends.Get({0}, k => {1}.FindBy{3}({2}));", NameOf(pname), dt.Name, column.Name, pk.Name);
+                if (Option.Nullable)
+                    WriteLine("public {1}? {1} => Extends.Get({0}, k => {1}.FindBy{3}({2}));", NameOf(pname), dt.Name, column.Name, pk.Name);
+                else
+                    WriteLine("public {1} {1} => Extends.Get({0}, k => {1}.FindBy{3}({2}));", NameOf(pname), dt.Name, column.Name, pk.Name);
 
                 // 主字段
                 var master = dt.Master ?? dt.GetColumn("Name");
@@ -1240,7 +1280,12 @@ public class EntityBuilder : ClassBuilder
                     if (column.Properties.TryGetValue("Category", out var att) && !att.IsNullOrEmpty())
                         WriteLine("[Category(\"{0}\")]", att);
                     if (master.DataType == typeof(String))
-                        WriteLine("public {2}? {0}{1} => {0}?.{1};", pname, master.Name, master.DataType.Name);
+                    {
+                        if (Option.Nullable)
+                            WriteLine("public {2}? {0}{1} => {0}?.{1};", pname, master.Name, master.DataType.Name);
+                        else
+                            WriteLine("public {2} {0}{1} => {0}?.{1};", pname, master.Name, master.DataType.Name);
+                    }
                     else
                         WriteLine("public {2} {0}{1} => {0} != null ? {0}.{1} : 0;", pname, master.Name, master.DataType.Name);
                 }
