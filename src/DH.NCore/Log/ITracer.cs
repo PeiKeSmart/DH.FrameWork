@@ -149,9 +149,12 @@ public class DefaultTracer : DisposeBase, ITracer, ILogFeature
                 WriteLog("Tracer[{0}] Total={1:n0} Errors={2:n0} Speed={3:n2}tps Cost={4:n0}ms MaxCost={5:n0}ms MinCost={6:n0}ms", bd.Name, bd.Total, bd.Errors, speed, bd.Cost / bd.Total, bd.MaxCost, bd.MinCost);
 
 #if DEBUG
-                foreach (var span in bd.Samples)
+                if (bd.Samples != null)
                 {
-                    WriteLog("Span Id={0} ParentId={1} TraceId={2} Tag={3} Error={4}", span.Id, span.ParentId, span.TraceId, span.Tag, span.Error);
+                    foreach (var span in bd.Samples)
+                    {
+                        WriteLog("Span Id={0} ParentId={1} TraceId={2} Tag={3} Error={4}", span.Id, span.ParentId, span.TraceId, span.Tag, span.Error);
+                    }
                 }
 #endif
             }
@@ -303,10 +306,10 @@ public static class TracerExtension
     }
 
     /// <summary>支持作为标签数据的内容类型</summary>
-    static String[] _TagTypes = new[] {
+    static readonly String[] _TagTypes = new[] {
         "text/plain", "text/xml", "application/json", "application/xml", "application/x-www-form-urlencoded"
     };
-    static String[] _ExcludeHeaders = new[] { "traceparent", "Cookie" };
+    static readonly String[] _ExcludeHeaders = new[] { "traceparent", "Cookie" };
     private static ISpan CreateSpan(ITracer tracer, String method, Uri uri, HttpRequestMessage? request)
     {
         var url = uri.ToString();
@@ -383,6 +386,29 @@ public static class TracerExtension
             span.SetError(ex, null);
         else
             span.Error = error + "";
+
+        span.Dispose();
+
+        return span;
+    }
+
+    /// <summary>直接创建错误Span</summary>
+    /// <param name="tracer">跟踪器</param>
+    /// <param name="name">操作名</param>
+    /// <param name="error">Exception 异常对象，或错误信息</param>
+    /// <param name="tag">数据标签</param>
+    /// <returns></returns>
+    public static ISpan NewError(this ITracer tracer, String name, Object error, Object tag)
+    {
+        //if (tracer == null) return null;
+
+        var span = tracer.NewSpan(name);
+        if (error is Exception ex)
+            span.SetError(ex, null);
+        else
+            span.Error = error + "";
+
+        span.SetTag(tag);
 
         span.Dispose();
 

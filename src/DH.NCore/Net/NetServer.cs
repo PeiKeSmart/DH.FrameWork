@@ -453,7 +453,7 @@ public class NetServer : DisposeBase, IServer, ILogFeature
     #endregion
 
     #region 会话
-    private ConcurrentDictionary<Int32, INetSession> _Sessions = new();
+    private readonly ConcurrentDictionary<Int32, INetSession> _Sessions = new();
     /// <summary>会话集合。用自增的数字ID作为标识，业务应用自己维持ID与业务主键的对应关系。</summary>
     public IDictionary<Int32, INetSession> Sessions => _Sessions;
 
@@ -580,9 +580,9 @@ public class NetServer : DisposeBase, IServer, ILogFeature
             case NetType.Http:
             case NetType.WebSocket:
                 var ss = CreateServer<TcpServer>(address, port, family);
-                foreach (TcpServer item in ss)
+                foreach (var item in ss)
                 {
-                    item.EnableHttp = true;
+                    if (item is TcpServer tcp) tcp.EnableHttp = true;
                 }
                 return ss;
             case NetType.Udp:
@@ -650,7 +650,11 @@ public class NetServer : DisposeBase, IServer, ILogFeature
     public String GetStat()
     {
         var sb = Pool.StringBuilder.Get();
-        if (MaxSessionCount > 0) sb.AppendFormat("在线：{0:n0}/{1:n0} ", SessionCount, MaxSessionCount);
+        if (MaxSessionCount > 0)
+        {
+            SessionCount = _Sessions.Count;
+            sb.AppendFormat("在线：{0:n0}/{1:n0} ", SessionCount, MaxSessionCount);
+        }
 
         return sb.Put(true);
     }

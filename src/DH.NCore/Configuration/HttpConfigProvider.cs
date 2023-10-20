@@ -14,13 +14,13 @@ public class HttpConfigProvider : ConfigProvider
 {
     #region 属性
     /// <summary>服务器</summary>
-    public String? Server { get; set; }
+    public String Server { get; set; } = null!;
 
     /// <summary>服务操作 默认:Config/GetAll</summary>
     public String Action { get; set; } = "Config/GetAll";
 
     /// <summary>应用标识</summary>
-    public String? AppId { get; set; }
+    public String AppId { get; set; } = null!;
 
     /// <summary>应用密钥</summary>
     public String? Secret { get; set; }
@@ -110,8 +110,7 @@ public class HttpConfigProvider : ConfigProvider
     /// <returns></returns>
     protected virtual IDictionary<String, Object?>? GetAll()
     {
-        var client = GetClient() as ApiHttpClient;
-        if (client == null) throw new ArgumentNullException(nameof(Client));
+        var client = GetClient() as ApiHttpClient ?? throw new ArgumentNullException(nameof(Client));
 
         ValidClientId();
 
@@ -155,9 +154,7 @@ public class HttpConfigProvider : ConfigProvider
     {
         ValidClientId();
 
-        var client = GetClient() as ApiHttpClient;
-        if (client == null) throw new ArgumentNullException(nameof(Client));
-
+        var client = GetClient() as ApiHttpClient ?? throw new ArgumentNullException(nameof(Client));
         return client.Post<Int32>("Config/SetAll", new
         {
             appId = AppId,
