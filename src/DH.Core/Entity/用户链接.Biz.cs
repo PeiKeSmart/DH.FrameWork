@@ -17,7 +17,7 @@ namespace DH.Entity;
 
 
 /// <summary>用户链接。第三方绑定</summary>
-public partial class UserConnect : Entity<UserConnect> {
+public partial class UserConnect : DHEntityBase<UserConnect> {
     #region 对象操作
     static UserConnect()
     {

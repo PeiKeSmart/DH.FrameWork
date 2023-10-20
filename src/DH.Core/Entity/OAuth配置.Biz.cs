@@ -37,7 +37,7 @@ namespace DH.Entity
     }
 
     /// <summary>OAuth配置。需要连接的OAuth认证方</summary>
-    public partial class OAuthConfig : Entity<OAuthConfig> {
+    public partial class OAuthConfig : DHEntityBase<OAuthConfig> {
         #region 对象操作
         static OAuthConfig()
         {

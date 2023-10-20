@@ -9,7 +9,7 @@ using XCode.Membership;
 namespace DH.Entity;
 
 /// <summary>附件。用于记录各系统模块使用的文件</summary>
-public partial class Attachment : Entity<Attachment> {
+public partial class Attachment : DHEntityBase<Attachment> {
     #region 对象操作
     static Attachment()
     {

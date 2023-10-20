@@ -26,18 +26,16 @@ using XCode.Shards;
 
 namespace DH.Entity;
 
-public partial class OrderManager : DHEntityBase<OrderManager> {
+public partial class SmsInfo : DHEntityBase<SmsInfo>
+{
     #region 对象操作
-    static OrderManager()
+    static SmsInfo()
     {
         // 累加字段，生成 Update xx Set Count=Count+1234 Where xxx
         //var df = Meta.Factory.AdditionalFields;
-        //df.Add(nameof(CreateUserId));
+        //df.Add(nameof(SType));
 
         // 过滤器 UserModule、TimeModule、IPModule
-        Meta.Modules.Add<UserModule>();
-        Meta.Modules.Add<TimeModule>();
-        Meta.Modules.Add<IPModule>();
     }
 
     /// <summary>验证并修补数据，通过抛出异常的方式提示验证失败。</summary>
@@ -47,21 +45,16 @@ public partial class OrderManager : DHEntityBase<OrderManager> {
         // 如果没有脏数据，则不需要进行任何处理
         if (!HasDirty) return;
 
+        // 这里验证参数范围，建议抛出参数异常，指定参数名，前端用户界面可以捕获参数异常并聚焦到对应的参数输入框
+        if (Code.IsNullOrEmpty()) throw new ArgumentNullException(nameof(Code), "编码不能为空！");
+
         // 建议先调用基类方法，基类方法会做一些统一处理
         base.Valid(isNew);
 
         // 在新插入数据或者修改了指定字段时进行修正
-        // 处理当前已登录用户信息，可以由UserModule过滤器代劳
-        /*var user = ManageProvider.User;
-        if (user != null)
-        {
-            if (isNew && !Dirtys[nameof(CreateUserId)]) CreateUserId = user.ID;
-            if (!Dirtys[nameof(UpdateUserId)]) UpdateUserId = user.ID;
-        }*/
-        //if (isNew && !Dirtys[nameof(CreateTime)]) CreateTime = DateTime.Now;
-        //if (!Dirtys[nameof(UpdateTime)]) UpdateTime = DateTime.Now;
-        //if (isNew && !Dirtys[nameof(CreateIP)]) CreateIP = ManageProvider.UserHost;
-        //if (!Dirtys[nameof(UpdateIP)]) UpdateIP = ManageProvider.UserHost;
+
+        // 检查唯一索引
+        // CheckExist(isNew, nameof(Code));
     }
 
     ///// <summary>首次连接数据库时初始化数据，仅用于实体类重载，用户不应该调用该方法</summary>
@@ -71,27 +64,20 @@ public partial class OrderManager : DHEntityBase<OrderManager> {
     //    // InitData一般用于当数据表没有数据时添加一些默认数据，该实体类的任何第一次数据库操作都会触发该方法，默认异步调用
     //    if (Meta.Session.Count > 0) return;
 
-    //    if (XTrace.Debug) XTrace.WriteLine("开始初始化OrderManager[指令管理]数据……");
+    //    if (XTrace.Debug) XTrace.WriteLine("开始初始化SmsInfo[短信配置]数据……");
 
-    //    var entity = new OrderManager();
-    //    entity.Name = "abc";
+    //    var entity = new SmsInfo();
     //    entity.Code = "abc";
-    //    entity.OptCategory = "abc";
-    //    entity.Enable = true;
-    //    entity.Data = "abc";
-    //    entity.DataType = "abc";
-    //    entity.Url = "abc";
-    //    entity.Method = "abc";
-    //    entity.CreateUserId = 0;
-    //    entity.CreateTime = DateTime.Now;
-    //    entity.CreateIP = "abc";
-    //    entity.UpdateUserId = 0;
-    //    entity.UpdateTime = DateTime.Now;
-    //    entity.UpdateIP = "abc";
-    //    entity.Remark = "abc";
+    //    entity.SType = 0;
+    //    entity.IsEnabled = true;
+    //    entity.IsDefault = true;
+    //    entity.AccessKey = "abc";
+    //    entity.AccessKeySecret = "abc";
+    //    entity.PassKey = "abc";
+    //    entity.Content = "abc";
     //    entity.Insert();
 
-    //    if (XTrace.Debug) XTrace.WriteLine("完成初始化OrderManager[指令管理]数据！");
+    //    if (XTrace.Debug) XTrace.WriteLine("完成初始化SmsInfo[短信配置]数据！");
     //}
 
     ///// <summary>已重载。基类先调用Valid(true)验证数据，然后在事务保护内调用OnInsert</summary>
@@ -116,7 +102,7 @@ public partial class OrderManager : DHEntityBase<OrderManager> {
     /// <summary>根据编号查找</summary>
     /// <param name="id">编号</param>
     /// <returns>实体对象</returns>
-    public static OrderManager FindById(Int32 id)
+    public static SmsInfo FindById(Int32 id)
     {
         if (id <= 0) return null;
 
@@ -129,45 +115,53 @@ public partial class OrderManager : DHEntityBase<OrderManager> {
         //return Find(_.Id == id);
     }
 
-    /// <summary>根据编号查询</summary>
-    /// <param name="code"></param>
-    /// <returns></returns>
-    public static OrderManager FindByCode(String code)
+    /// <summary>根据编码查找</summary>
+    /// <param name="code">编码</param>
+    /// <returns>实体对象</returns>
+    public static SmsInfo FindByCode(String code)
     {
         if (code.IsNullOrEmpty()) return null;
 
-        if (Meta.Session.Count < 1000) return Meta.Cache.Find(e => e.Code == code);
+        // 实体缓存
+        if (Meta.Session.Count < 1000) return Meta.Cache.Find(e => e.Code.EqualIgnoreCase(code));
 
-        return Meta.SingleCache[code];
+        return Find(_.Code == code);
     }
 
-    /// <summary>根据编号集合查询</summary>
-    /// <param name="codes"></param>
-    /// <returns></returns>
-    public static IList<OrderManager> FindAllByCodes(List<String> codes)
+    /// <summary>根据类型查找</summary>
+    /// <param name="sType">类型</param>
+    /// <returns>实体列表</returns>
+    public static IList<SmsInfo> FindAllBySType(Int32 sType)
     {
-        if (codes == null || codes.Count <= 0) return new List<OrderManager>();
+        if (sType <= 0) return new List<SmsInfo>();
 
-        if (Meta.Session.Count < 1000) return Meta.Cache.Entities.FindAll(e => codes.Contains(e.Code));
+        // 实体缓存
+        if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => e.SType == sType);
 
-        return FindAll(_.Code.In(codes));
-    }
-
-    /// <summary></summary>
-    /// <param name="codes"></param>
-    /// <returns></returns>
-    public static IList<OrderManager> FindAllByCodes(String codes)
-    {
-        var clist = codes.Split(',').ToList();
-
-        return FindAllByCodes(clist);
+        return FindAll(_.SType == sType);
     }
     #endregion
 
     #region 高级查询
+    /// <summary>高级查询</summary>
+    /// <param name="code">编码</param>
+    /// <param name="sType">类型。0为通知类，1为营销类</param>
+    /// <param name="key">关键字</param>
+    /// <param name="page">分页参数信息。可携带统计和数据权限扩展查询等信息</param>
+    /// <returns>实体列表</returns>
+    public static IList<SmsInfo> Search(String code, Int32 sType, String key, PageParameter page)
+    {
+        var exp = new WhereExpression();
 
-    // Select Count(Id) as Id,Category From OrderManager Where CreateTime>'2020-01-24 00:00:00' Group By Category Order By Id Desc limit 20
-    //static readonly FieldCache<OrderManager> _CategoryCache = new FieldCache<OrderManager>(nameof(Category))
+        if (!code.IsNullOrEmpty()) exp &= _.Code == code;
+        if (sType >= 0) exp &= _.SType == sType;
+        if (!key.IsNullOrEmpty()) exp &= _.Code.Contains(key) | _.AccessKey.Contains(key) | _.AccessKeySecret.Contains(key) | _.PassKey.Contains(key) | _.Content.Contains(key);
+
+        return FindAll(exp, page);
+    }
+
+    // Select Count(Id) as Id,Category From DH_SmsInfo Where CreateTime>'2020-01-24 00:00:00' Group By Category Order By Id Desc limit 20
+    //static readonly FieldCache<SmsInfo> _CategoryCache = new FieldCache<SmsInfo>(nameof(Category))
     //{
     //Where = _.CreateTime > DateTime.Today.AddDays(-30) & Expression.Empty
     //};
@@ -178,5 +172,13 @@ public partial class OrderManager : DHEntityBase<OrderManager> {
     #endregion
 
     #region 业务操作
+    public ISmsInfo ToModel()
+    {
+        var model = new SmsInfo();
+        model.Copy(this);
+
+        return model;
+    }
+
     #endregion
 }

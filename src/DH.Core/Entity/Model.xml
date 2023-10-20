@@ -672,5 +672,22 @@
         <Index Columns="UName" />
       </Indexes>
     </Table>
+    <Table Name="SmsInfo" TableName="DH_SmsInfo" Description="短信配置">
+      <Columns>
+        <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
+        <Column Name="Code" DataType="String" Nullable="False" Description="编码" />
+        <Column Name="SType" DataType="Int32" Description="类型。0为通知类，1为营销类" />
+        <Column Name="IsEnabled" DataType="Boolean" Description="是否启用" />
+        <Column Name="IsDefault" DataType="Boolean" Description="是否默认" />
+        <Column Name="AccessKey" DataType="String" Description="AccessKey" />
+        <Column Name="AccessKeySecret" DataType="String" Description="AccessKeySecret" />
+        <Column Name="PassKey" DataType="String" Description="短信签名" />
+        <Column Name="Content" DataType="String" Description="允许的短信类型，以逗号分隔。SmsLogin为登录短信,SmsRegister为注册短信,SmsPassword为找回密码短信" />
+      </Columns>
+      <Indexes>
+        <Index Columns="Code" Unique="True" />
+        <Index Columns="SType" />
+      </Indexes>
+    </Table>
   </Tables>
 </EntityModel>
