@@ -17,7 +17,7 @@ public partial class SmsInfoModel
     /// <summary>编码</summary>
     public String Code { get; set; }
 
-    /// <summary>类型。0为通知类，1为营销类</summary>
+    /// <summary>类型。0为国内通知类，1为国内营销类，2为国际通知类，3为国际营销类</summary>
     public Int32 SType { get; set; }
 
     /// <summary>是否启用</summary>

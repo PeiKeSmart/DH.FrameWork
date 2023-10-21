@@ -40,11 +40,11 @@ public partial class SmsInfo : ISmsInfo, IEntity<ISmsInfo>
     public String Code { get => _Code; set { if (OnPropertyChanging("Code", value)) { _Code = value; OnPropertyChanged("Code"); } } }
 
     private Int32 _SType;
-    /// <summary>类型。0为通知类，1为营销类</summary>
+    /// <summary>类型。0为国内通知类，1为国内营销类，2为国际通知类，3为国际营销类</summary>
     [DisplayName("类型")]
-    [Description("类型。0为通知类，1为营销类")]
+    [Description("类型。0为国内通知类，1为国内营销类，2为国际通知类，3为国际营销类")]
     [DataObjectField(false, false, false, 0)]
-    [BindColumn("SType", "类型。0为通知类，1为营销类", "")]
+    [BindColumn("SType", "类型。0为国内通知类，1为国内营销类，2为国际通知类，3为国际营销类", "")]
     public Int32 SType { get => _SType; set { if (OnPropertyChanging("SType", value)) { _SType = value; OnPropertyChanged("SType"); } } }
 
     private Boolean _IsEnabled;
@@ -164,7 +164,7 @@ public partial class SmsInfo : ISmsInfo, IEntity<ISmsInfo>
         /// <summary>编码</summary>
         public static readonly Field Code = FindByName("Code");
 
-        /// <summary>类型。0为通知类，1为营销类</summary>
+        /// <summary>类型。0为国内通知类，1为国内营销类，2为国际通知类，3为国际营销类</summary>
         public static readonly Field SType = FindByName("SType");
 
         /// <summary>是否启用</summary>
@@ -197,7 +197,7 @@ public partial class SmsInfo : ISmsInfo, IEntity<ISmsInfo>
         /// <summary>编码</summary>
         public const String Code = "Code";
 
-        /// <summary>类型。0为通知类，1为营销类</summary>
+        /// <summary>类型。0为国内通知类，1为国内营销类，2为国际通知类，3为国际营销类</summary>
         public const String SType = "SType";
 
         /// <summary>是否启用</summary>

@@ -676,7 +676,7 @@
       <Columns>
         <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
         <Column Name="Code" DataType="String" Nullable="False" Description="编码" />
-        <Column Name="SType" DataType="Int32" Description="类型。0为通知类，1为营销类" />
+        <Column Name="SType" DataType="Int32" Description="类型。0为国内通知类，1为国内营销类，2为国际通知类，3为国际营销类" />
         <Column Name="IsEnabled" DataType="Boolean" Description="是否启用" />
         <Column Name="IsDefault" DataType="Boolean" Description="是否默认" />
         <Column Name="AccessKey" DataType="String" Description="AccessKey" />
@@ -688,6 +688,21 @@
         <Index Columns="Code" Unique="True" />
         <Index Columns="SType" />
       </Indexes>
+    </Table>
+    <Table Name="MailInfo" TableName="DH_MailInfo" Description="邮箱配置">
+      <Columns>
+        <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
+        <Column Name="Name" DataType="String" Master="True" Nullable="False" Description="名称" />
+        <Column Name="IsEnabled" DataType="Boolean" Description="是否启用" />
+        <Column Name="IsDefault" DataType="Boolean" Description="是否默认" />
+        <Column Name="Host" DataType="String" Description="邮箱SMTP 服务器" />
+        <Column Name="Port" DataType="String" Description="邮箱SMTP 端口" />
+        <Column Name="UserName" DataType="String" Description="邮箱账号" />
+        <Column Name="Password" DataType="String" Description="邮箱密码" />
+        <Column Name="From" DataType="String" Description="发信人邮件地址" />
+        <Column Name="FromName" DataType="String" Description="发送邮箱昵称" />
+        <Column Name="IsSSL" DataType="Boolean" Description="SMTP 协议" />
+      </Columns>
     </Table>
   </Tables>
 </EntityModel>
