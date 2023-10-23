@@ -20,7 +20,7 @@ internal class HttpChallengeResponseMiddleware : IMiddleware
     {
         // assumes that this middleware has been mapped
         var token = context.Request.Path.ToString();
-        if (token.StartsWith("/"))
+        if (token.StartsWith('/'))
         {
             token = token.Substring(1);
         }

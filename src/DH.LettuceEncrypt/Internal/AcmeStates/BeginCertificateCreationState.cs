@@ -1,6 +1,7 @@
-using System.Security.Cryptography.X509Certificates;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+
+using System.Security.Cryptography.X509Certificates;
 
 namespace LettuceEncrypt.Internal.AcmeStates;
 
@@ -32,14 +33,14 @@ internal class BeginCertificateCreationState : AcmeState
         try
         {
             var account = await _acmeCertificateFactory.GetOrCreateAccountAsync(cancellationToken);
-            _logger.LogInformation("Using account {accountId}", account.Id);
+            _logger.LogInformation("使用帐户 {accountId}", account.Id);
 
-            _logger.LogInformation("Creating certificate for {hostname}",
+            _logger.LogInformation("为{hostname}创建证书",
                 string.Join(",", domainNames));
 
             var cert = await _acmeCertificateFactory.CreateCertificateAsync(cancellationToken);
 
-            _logger.LogInformation("Created certificate {subjectName} ({thumbprint})",
+            _logger.LogInformation("创建的证书 {subjectName} ({thumbprint})",
                 cert.Subject,
                 cert.Thumbprint);
 
@@ -47,7 +48,7 @@ internal class BeginCertificateCreationState : AcmeState
         }
         catch (Exception ex)
         {
-            _logger.LogError(0, ex, "Failed to automatically create a certificate for {hostname}", domainNames);
+            _logger.LogError(0, ex, "无法自动为{hostname}创建证书", domainNames);
             throw;
         }
 
@@ -81,7 +82,7 @@ internal class BeginCertificateCreationState : AcmeState
 
         if (errors.Count > 0)
         {
-            throw new AggregateException("Failed to save cert to repositories", errors);
+            throw new AggregateException("无法将证书保存到存储库", errors);
         }
     }
 }

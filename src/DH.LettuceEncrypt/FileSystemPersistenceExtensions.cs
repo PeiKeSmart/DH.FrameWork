@@ -1,6 +1,7 @@
 ﻿using LettuceEncrypt.Accounts;
 using LettuceEncrypt.Acme;
 using LettuceEncrypt.Internal;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
@@ -8,33 +9,27 @@ using Microsoft.Extensions.Logging;
 namespace LettuceEncrypt;
 
 /// <summary>
-/// Extensions for configuring certificate persistence
+/// 用于配置证书持久性的扩展
 /// </summary>
 public static class FileSystemStorageExtensions
 {
     /// <summary>
-    /// Save certificates and account data to a directory.
-    /// Certificates are stored in the .pfx (PKCS #12) format in a subdirectory of <paramref name="directory"/>.
-    /// Account key information is stored in a JSON format in a different subdirectory of <paramref name="directory"/>.
+    /// 将证书和帐户数据保存到目录中。
+    /// 证书以 .pfx （PKCS #12） 格式存储在<paramref name="directory"/> 的子目录中。
+    /// 帐户密钥信息以 JSON 格式存储在 <paramref name="directory"/> 的不同子目录中。
     /// </summary>
     /// <param name="builder"></param>
-    /// <param name="directory">The root directory for storing information. Information may be stored in subdirectories.</param>
-    /// <param name="pfxPassword">Set to null or empty for password-less .pfx files.</param>
+    /// <param name="directory">用于存储信息的根目录。信息可能存储在子目录中。</param>
+    /// <param name="pfxPassword">对于无密码的 .pfx 文件，设置为 null 或空。</param>
     /// <returns></returns>
     public static ILettuceEncryptServiceBuilder PersistDataToDirectory(
         this ILettuceEncryptServiceBuilder builder,
         DirectoryInfo directory,
         string? pfxPassword)
     {
-        if (builder is null)
-        {
-            throw new ArgumentNullException(nameof(builder));
-        }
+        ArgumentNullException.ThrowIfNull(builder);
 
-        if (directory is null)
-        {
-            throw new ArgumentNullException(nameof(directory));
-        }
+        ArgumentNullException.ThrowIfNull(directory);
 
         var otherFileSystemRepoServices = builder
             .Services
@@ -49,7 +44,7 @@ public static class FileSystemStorageExtensions
             {
                 if (otherRepo.PfxPassword != pfxPassword)
                 {
-                    throw new ArgumentException($"Another file system repo has been configured for {directory}, but with a different password.");
+                    throw new ArgumentException($"已为 {directory} 配置了另一个文件系统存储库，但密码不同。");
                 }
                 return builder;
             }

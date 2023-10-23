@@ -3,6 +3,8 @@ using Certes.Acme.Resource;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
+using NewLife.Log;
+
 namespace LettuceEncrypt.Internal;
 
 internal class Http01DomainValidator : DomainOwnershipValidator

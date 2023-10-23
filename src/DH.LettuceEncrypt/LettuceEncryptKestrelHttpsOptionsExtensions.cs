@@ -3,7 +3,6 @@ using McMaster.AspNetCore.Kestrel.Certificates;
 using Microsoft.AspNetCore.Server.Kestrel.Https;
 using Microsoft.Extensions.DependencyInjection;
 
-// ReSharper disable once CheckNamespace
 namespace Microsoft.AspNetCore.Hosting;
 
 /// <summary>

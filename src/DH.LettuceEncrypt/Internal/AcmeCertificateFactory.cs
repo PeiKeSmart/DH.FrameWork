@@ -266,7 +266,7 @@ internal class AcmeCertificateFactory
             try
             {
                 await validator.ValidateOwnershipAsync(authorizationContext, cancellationToken);
-                // The method above raises if validation fails. If no exception occurs, we assume validation completed successfully.
+                // 如果验证失败，则会引发上面的方法。如果没有出现异常，我们假设验证已成功完成。
                 return;
             }
             catch (Exception ex)

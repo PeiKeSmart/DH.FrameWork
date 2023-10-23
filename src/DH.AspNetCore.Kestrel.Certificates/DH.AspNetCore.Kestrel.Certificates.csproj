@@ -69,4 +69,8 @@
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\DH.NCore\DH.NCore.csproj" />
+	</ItemGroup>
+
 </Project>
