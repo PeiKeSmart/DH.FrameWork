@@ -1,6 +1,9 @@
 using LettuceEncrypt.Internal.IO;
+
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+
+using NewLife.Log;
 
 namespace LettuceEncrypt.Internal.AcmeStates;
 
@@ -26,22 +29,22 @@ internal class CheckForRenewalState : AcmeState
 
     public override async Task<IAcmeState> MoveNextAsync(CancellationToken cancellationToken)
     {
+        XTrace.WriteLine($"进来了吗？CheckForRenewalState");
+
         while (!cancellationToken.IsCancellationRequested)
         {
             var checkPeriod = _options.Value.RenewalCheckPeriod;
             var daysInAdvance = _options.Value.RenewDaysInAdvance;
             if (!checkPeriod.HasValue || !daysInAdvance.HasValue)
             {
-                _logger.LogInformation("Automatic certificate renewal is not configured. Stopping {service}",
-                    nameof(AcmeCertificateLoader));
+                XTrace.Log.Info($"未配置自动证书续订。正在停止{nameof(AcmeCertificateLoader)}");
                 return MoveTo<TerminalState>();
             }
 
             var domainNames = _options.Value.DomainNames;
-            if (_logger.IsEnabled(LogLevel.Debug))
+            if (_logger.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
             {
-                _logger.LogDebug("Checking certificates' renewals for {hostname}",
-                    string.Join(", ", domainNames));
+                XTrace.Log.Debug($"正在检查{string.Join(", ", domainNames)}的证书续订");
             }
 
             foreach (var domainName in domainNames)

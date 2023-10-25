@@ -71,6 +71,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\DH.AspNetCore.Kestrel.Certificates\DH.AspNetCore.Kestrel.Certificates.csproj" />
+	  <ProjectReference Include="..\DH.Ftp\DH.Ftp.csproj" />
 	</ItemGroup>
 
 </Project>

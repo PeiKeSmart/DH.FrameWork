@@ -1,5 +1,10 @@
+using Certes;
+using Certes.Acme;
+
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+
+using NewLife.Log;
 
 using System.Security.Cryptography.X509Certificates;
 
@@ -28,34 +33,34 @@ internal class BeginCertificateCreationState : AcmeState
 
     public override async Task<IAcmeState> MoveNextAsync(CancellationToken cancellationToken)
     {
+        XTrace.WriteLine($"进来了吗？BeginCertificateCreationState");
+
         var domainNames = _options.Value.DomainNames;
 
         try
         {
             var account = await _acmeCertificateFactory.GetOrCreateAccountAsync(cancellationToken);
-            _logger.LogInformation("使用帐户 {accountId}", account.Id);
+            XTrace.Log.Info($"使用帐户 {account.Id}");
 
-            _logger.LogInformation("为{hostname}创建证书",
-                string.Join(",", domainNames));
+            XTrace.Log.Info($"为{string.Join(",", domainNames)}创建证书");
 
             var cert = await _acmeCertificateFactory.CreateCertificateAsync(cancellationToken);
 
-            _logger.LogInformation("创建的证书 {subjectName} ({thumbprint})",
-                cert.Subject,
-                cert.Thumbprint);
+            XTrace.Log.Info($"创建的证书 {cert.Item1.Subject} ({cert.Item1.Thumbprint})");
 
-            await SaveCertificateAsync(cert, cancellationToken);
+            await SaveCertificateAsync(cert.Item1, cert.Item2, cert.Item3, cancellationToken);
         }
         catch (Exception ex)
         {
-            _logger.LogError(0, ex, "无法自动为{hostname}创建证书", domainNames);
+            XTrace.WriteLine($"无法自动为{domainNames}创建证书");
+            XTrace.WriteException(ex);
             throw;
         }
 
         return MoveTo<CheckForRenewalState>();
     }
 
-    private async Task SaveCertificateAsync(X509Certificate2 cert, CancellationToken cancellationToken)
+    private async Task SaveCertificateAsync(X509Certificate2 cert, IKey privateKey, CertificateChain acmeCert, CancellationToken cancellationToken)
     {
         _selector.Add(cert);
 
@@ -69,11 +74,11 @@ internal class BeginCertificateCreationState : AcmeState
         {
             try
             {
-                saveTasks.Add(repo.SaveAsync(cert, cancellationToken));
+                saveTasks.Add(repo.SaveAsync(cert, privateKey, acmeCert, cancellationToken));
             }
             catch (Exception ex)
             {
-                // synchronous saves may fail immediately
+                // 同步保存可能会立即失败
                 errors.Add(ex);
             }
         }

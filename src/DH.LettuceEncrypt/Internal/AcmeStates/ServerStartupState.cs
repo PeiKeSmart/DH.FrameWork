@@ -1,6 +1,9 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
+using NewLife;
+using NewLife.Log;
+
 namespace LettuceEncrypt.Internal.AcmeStates;
 
 internal class ServerStartupState : SyncAcmeState
@@ -27,7 +30,7 @@ internal class ServerStartupState : SyncAcmeState
         var hasCertForAllDomains = domainNames.All(_selector.HasCertForDomain);
         if (hasCertForAllDomains)
         {
-            _logger.LogDebug("Certificate for {domainNames} already found.", domainNames);
+            XTrace.Log.Debug($"已找到{domainNames.Join()}的证书。");
             return MoveTo<CheckForRenewalState>();
         }
 

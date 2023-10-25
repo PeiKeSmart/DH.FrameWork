@@ -1,9 +1,7 @@
-﻿// ReSharper disable InconsistentNaming
-
-namespace LettuceEncrypt;
+﻿namespace LettuceEncrypt;
 
 /// <summary>
-/// The supported algorithms.
+/// 支持的算法。
 /// </summary>
 public enum KeyAlgorithm
 {

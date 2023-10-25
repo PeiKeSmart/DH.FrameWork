@@ -1,11 +1,16 @@
-using System.Security.Cryptography.X509Certificates;
+using Certes;
+using Certes.Acme;
+
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
+using NewLife.Log;
+
+using System.Security.Cryptography.X509Certificates;
+
 namespace LettuceEncrypt.Internal;
 
-internal class X509CertStore : ICertificateSource, ICertificateRepository, IDisposable
-{
+internal class X509CertStore : ICertificateSource, ICertificateRepository, IDisposable {
     private readonly X509Store _store;
     private readonly IOptions<LettuceEncryptOptions> _options;
     private readonly ILogger<X509CertStore> _logger;
@@ -22,6 +27,8 @@ internal class X509CertStore : ICertificateSource, ICertificateRepository, IDisp
 
     public Task<IEnumerable<X509Certificate2>> GetCertificatesAsync(CancellationToken cancellationToken)
     {
+        XTrace.WriteLine($"½øÀ´ÁËÂð£¿X509CertStore");
+
         var domainNames = new HashSet<string>(_options.Value.DomainNames);
         var result = new List<X509Certificate2>();
         var certs = _store.Certificates.Find(X509FindType.FindByTimeValid,
@@ -48,7 +55,7 @@ internal class X509CertStore : ICertificateSource, ICertificateRepository, IDisp
         return Task.FromResult(result.AsEnumerable());
     }
 
-    public Task SaveAsync(X509Certificate2 certificate, CancellationToken cancellationToken)
+    public Task SaveAsync(X509Certificate2 certificate, IKey privateKey, CertificateChain acmeCert, CancellationToken cancellationToken)
     {
         try
         {

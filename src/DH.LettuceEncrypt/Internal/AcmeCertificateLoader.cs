@@ -8,10 +8,12 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
+using NewLife.Log;
+
 namespace LettuceEncrypt.Internal;
 
 /// <summary>
-/// This starts the ACME state machine, which handles certificate generation and renewal
+/// 这将启动ACME状态机，该状态机处理证书生成和续订
 /// </summary>
 internal class AcmeCertificateLoader : BackgroundService
 {
@@ -38,27 +40,29 @@ internal class AcmeCertificateLoader : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        XTrace.WriteLine($"进来了吗？AcmeCertificateLoader");
+
         if (!_server.GetType().Name.StartsWith(nameof(KestrelServer)))
         {
             var serverType = _server.GetType().FullName;
-            _logger.LogWarning(
-                "LettuceEncrypt can only be used with Kestrel and is not supported on {serverType} servers. Skipping certificate provisioning.",
+            XTrace.Log.Warn(
+                "LettuceEncrypt只能与Kestrel一起使用，在{serverType}服务器上不受支持。正在跳过证书设置。",
                 serverType);
             return;
         }
 
         if (_config.GetValue<bool>("UseIISIntegration"))
         {
-            _logger.LogWarning(
-                "LettuceEncrypt does not work with apps hosting in IIS. IIS does not allow for dynamic HTTPS certificate binding." +
-                "Skipping certificate provisioning.");
+            XTrace.Log.Warn(
+                "LettuceEncrypt不适用于IIS中托管的应用程序。IIS不允许动态HTTPS证书绑定。" +
+                "正在跳过证书设置。");
             return;
         }
 
-        // load certificates in the background
+        // 在后台加载证书
         if (!LettuceEncryptDomainNamesWereConfigured())
         {
-            _logger.LogInformation("No domain names were configured");
+            XTrace.Log.Info("未配置域名");
             return;
         }
 
@@ -70,21 +74,23 @@ internal class AcmeCertificateLoader : BackgroundService
 
             while (!stoppingToken.IsCancellationRequested)
             {
-                _logger.LogTrace("ACME state transition: moving to {stateName}", state.GetType().Name);
+                XTrace.WriteLine($"ACME状态转换：移动到{state.GetType().Name}");
                 state = await state.MoveNextAsync(stoppingToken);
             }
         }
         catch (OperationCanceledException)
         {
-            _logger.LogDebug("State machine cancellation requested. Exiting...");
+            XTrace.Log.Debug("已请求状态机取消。正在退出。。。");
         }
         catch (AggregateException ex) when (ex.InnerException != null)
         {
-            _logger.LogError(0, ex.InnerException, "ACME state machine encountered unhandled error");
+            XTrace.WriteLine("ACME状态机遇到未处理的错误");
+            XTrace.WriteException(ex.InnerException);
         }
         catch (Exception ex)
         {
-            _logger.LogError(0, ex, "ACME state machine encountered unhandled error");
+            XTrace.WriteLine("ACME状态机遇到未处理的错误");
+            XTrace.WriteException(ex);
         }
     }
 

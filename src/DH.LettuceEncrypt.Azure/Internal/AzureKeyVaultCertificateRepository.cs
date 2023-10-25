@@ -2,6 +2,9 @@
 using Azure.Identity;
 using Azure.Security.KeyVault.Certificates;
 
+using Certes;
+using Certes.Acme;
+
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -113,7 +116,7 @@ internal class AzureKeyVaultCertificateRepository : ICertificateRepository, ICer
         return null;
     }
 
-    public async Task SaveAsync(X509Certificate2 certificate, CancellationToken cancellationToken)
+    public async Task SaveAsync(X509Certificate2 certificate, IKey privateKey, CertificateChain acmeCert, CancellationToken cancellationToken)
     {
         var domainName = certificate.GetNameInfo(X509NameType.DnsName, false);
 

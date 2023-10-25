@@ -1,14 +1,19 @@
-﻿using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using Certes;
+﻿using Certes;
 using Certes.Acme;
 using Certes.Acme.Resource;
+
 using LettuceEncrypt.Accounts;
 using LettuceEncrypt.Acme;
 using LettuceEncrypt.Internal.PfxBuilder;
+
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+
+using NewLife.Log;
+
+using System.Security.Cryptography.X509Certificates;
+using System.Text;
 
 namespace LettuceEncrypt.Internal;
 
@@ -150,7 +155,7 @@ internal class AcmeCertificateFactory
         return true;
     }
 
-    public async Task<X509Certificate2> CreateCertificateAsync(CancellationToken cancellationToken)
+    public async Task<(X509Certificate2, IKey, CertificateChain)> CreateCertificateAsync(CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         if (_client == null)
@@ -178,7 +183,7 @@ internal class AcmeCertificateFactory
 
                 if (expectedDomains.SetEquals(orderDomains))
                 {
-                    _logger.LogDebug("Found an existing order for a certificate");
+                    XTrace.Log.Debug("找到证书的现有订单");
                     orderContext = order;
                     break;
                 }
@@ -187,7 +192,7 @@ internal class AcmeCertificateFactory
 
         if (orderContext == null)
         {
-            _logger.LogDebug("Creating new order for a certificate");
+            XTrace.Log.Debug("为证书创建新订单");
             orderContext = await _client.CreateOrderAsync(_options.Value.DomainNames);
         }
 
@@ -228,7 +233,7 @@ internal class AcmeCertificateFactory
             return;
         }
 
-        _logger.LogDebug("Requesting authorization to create certificate for {domainName}", domainName);
+        _logger.LogDebug("请求授权为{domainName}创建证书", domainName);
 
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -243,7 +248,7 @@ internal class AcmeCertificateFactory
         if (_options.Value.AllowedChallengeTypes.HasFlag(ChallengeType.Http01))
         {
             validators.Add(new Http01DomainValidator(
-                _challengeStore, _appLifetime, _client, _logger, domainName));
+                _challengeStore, _appLifetime, _client, _logger, domainName, _options.Value));
         }
 
         if (_options.Value.AllowedChallengeTypes.HasFlag(ChallengeType.Dns01))
@@ -256,8 +261,8 @@ internal class AcmeCertificateFactory
         {
             var challengeTypes = string.Join(", ", Enum.GetNames(typeof(ChallengeType)));
             throw new InvalidOperationException(
-                "Could not find a method for validating domain ownership. " +
-                "Ensure at least one kind of these challenge types is configured: " + challengeTypes);
+                "找不到验证域所有权的方法。" +
+                "确保至少配置了其中一种挑战类型：" + challengeTypes);
         }
 
         foreach (var validator in validators)
@@ -271,15 +276,15 @@ internal class AcmeCertificateFactory
             }
             catch (Exception ex)
             {
-                _logger.LogDebug(ex, "Validation with {validatorType} failed with error: {error}",
+                _logger.LogDebug(ex, "使用{validatorType}进行验证失败，出现错误: {error}",
                     validator.GetType().Name, ex.Message);
             }
         }
 
-        throw new InvalidOperationException($"Failed to validate ownership of domainName '{domainName}'");
+        throw new InvalidOperationException($"无法验证域名的所有权 '{domainName}'");
     }
 
-    private async Task<X509Certificate2> CompleteCertificateRequestAsync(IOrderContext order,
+    private async Task<(X509Certificate2, IKey, CertificateChain)> CompleteCertificateRequestAsync(IOrderContext order,
         CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
@@ -289,7 +294,7 @@ internal class AcmeCertificateFactory
         }
 
         var commonName = _options.Value.DomainNames[0];
-        _logger.LogDebug("Creating cert for {commonName}", commonName);
+        XTrace.Log.Debug($"正在为{commonName}创建证书");
 
         var csrInfo = new CsrInfo
         {
@@ -302,16 +307,14 @@ internal class AcmeCertificateFactory
 
         var pfxBuilder = CreatePfxBuilder(acmeCert, privateKey);
         var pfx = pfxBuilder.Build("HTTPS Cert - " + _options.Value.DomainNames, string.Empty);
-        return new X509Certificate2(pfx, string.Empty, X509KeyStorageFlags.Exportable);
+        return (new X509Certificate2(pfx, string.Empty, X509KeyStorageFlags.Exportable), privateKey, acmeCert);
     }
 
     internal IPfxBuilder CreatePfxBuilder(CertificateChain certificateChain, IKey certKey)
     {
         var pfxBuilder = _pfxBuilderFactory.FromChain(certificateChain, certKey);
 
-        _logger.LogDebug(
-            "Adding {IssuerCount} additional issuers to certes before building pfx certificate file",
-            _options.Value.AdditionalIssuers.Length + _certificateAuthority.IssuerCertificates.Length);
+        XTrace.Log.Debug($"在生成pfx证书文件之前，向证书添加{_options.Value.AdditionalIssuers.Length + _certificateAuthority.IssuerCertificates.Length}个其他颁发者");
 
         foreach (var issuer in _options.Value.AdditionalIssuers.Concat(_certificateAuthority.IssuerCertificates))
         {

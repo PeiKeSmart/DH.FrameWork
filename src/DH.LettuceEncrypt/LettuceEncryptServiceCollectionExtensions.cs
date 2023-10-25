@@ -12,7 +12,6 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
-// ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
@@ -73,18 +72,18 @@ public static class LettuceEncryptServiceCollectionExtensions
 
         services.Configure(configure);
 
-        // The state machine should run in its own scope
+        // 状态机应该在自己的作用域中运行
         services.AddScoped<AcmeStateMachineContext>();
 
         services.AddSingleton(TerminalState.Singleton);
 
-        // States should always be transient
+        // 状态应始终是瞬态的
         services
             .AddTransient<ServerStartupState>()
             .AddTransient<CheckForRenewalState>()
             .AddTransient<BeginCertificateCreationState>();
 
-        // PfxBuilderFactory is stateless, so there's no need for a transient registration
+        // PfxBuilderFactory是无状态的，因此不需要临时注册
         services.AddSingleton<IPfxBuilderFactory, PfxBuilderFactory>();
 
         return new LettuceEncryptServiceBuilder(services);

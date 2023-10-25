@@ -4,7 +4,7 @@ using LettuceEncrypt.Acme;
 namespace LettuceEncrypt;
 
 /// <summary>
-/// Options for configuring an ACME server to automatically generate HTTPS certificates.
+/// 用于将ACME服务器配置为自动生成HTTPS证书的选项。
 /// </summary>
 public class LettuceEncryptOptions
 {
@@ -12,7 +12,7 @@ public class LettuceEncryptOptions
     private bool? _useStagingServer;
 
     /// <summary>
-    /// The domain names for which to generate certificates.
+    /// 要为其生成证书的域名。
     /// </summary>
     public string[] DomainNames
     {
@@ -21,20 +21,20 @@ public class LettuceEncryptOptions
     }
 
     /// <summary>
-    /// Indicate that you agree with ACME server's terms of service.
+    /// 表示您同意ACME服务器的服务条款。
     /// </summary>
     public bool AcceptTermsOfService { get; set; }
 
     /// <summary>
-    /// The email address used to register with the certificate authority.
+    /// 用于向证书颁发机构注册的电子邮件地址。
     /// </summary>
     public string EmailAddress { get; set; } = string.Empty;
 
     /// <summary>
-    /// Use Let's Encrypt staging server.
+    /// 使用Let's Encrypt临时服务器。
     /// <para>
-    /// This is recommended during development of the application and is automatically enabled
-    /// if the hosting environment name is 'Development'.
+    /// 这是在应用程序开发期间建议的，并且会自动启用
+    /// 如果托管环境名称为 Development 
     /// </para>
     /// </summary>
     public bool UseStagingServer
@@ -46,8 +46,8 @@ public class LettuceEncryptOptions
     internal bool UseStagingServerExplicitlySet => _useStagingServer.HasValue;
 
     /// <summary>
-    /// Additional issuers passed to certes before building the successfully downloaded certificate,
-    /// used internally by certes to verify the issuer for authenticity.
+    /// 在构建成功下载的证书之前，将其他颁发者传递给证书，
+    /// 证书内部用来验证颁发者的真实性。
     /// <para>
     /// This is useful especially when using a staging server (e.g. for integration tests) with a root certificate
     /// that is not part of certes' embedded resources.
@@ -70,29 +70,44 @@ public class LettuceEncryptOptions
     public X509Certificate2? FallbackCertificate { get; set; }
 
     /// <summary>
-    /// How long before certificate expiration will be renewal attempted.
-    /// Set to <c>null</c> to disable automatic renewal.
+    /// 尝试续订证书的期限。
+    /// 设置为<c>null</c>可禁用自动续订。
     /// </summary>
     public TimeSpan? RenewDaysInAdvance { get; set; } = TimeSpan.FromDays(30);
 
     /// <summary>
-    /// How often will be certificates checked for renewal
+    /// 证书更新检查频率
     /// </summary>
     public TimeSpan? RenewalCheckPeriod { get; set; } = TimeSpan.FromDays(1);
 
     /// <summary>
-    /// The asymmetric algorithm used for generating a private key for certificates: RS256, ES256, ES384, ES512
+    /// 用于为证书生成私钥的非对称算法：RS256、ES256、ES384、ES512
     /// </summary>
     public KeyAlgorithm KeyAlgorithm { get; set; } = KeyAlgorithm.ES256;
 
     /// <summary>
-    /// Specifies which kinds of ACME challenges LettuceEncrypt can use to verify domain ownership.
-    /// Defaults to <see cref="ChallengeType.Any"/>.
+    /// 指定LettuceEncrypt可以使用哪种ACME质询来验证域所有权。
+    /// 默认值为<see cref="ChallengeType.Any"/>。
     /// </summary>
     public ChallengeType AllowedChallengeTypes { get; set; } = ChallengeType.Any;
 
     /// <summary>
-    /// Optional EAB (External Account Binding) account credentials used for creating new account.
+    /// 用于创建新帐户的可选EAB（外部帐户绑定）帐户凭据。
     /// </summary>
     public EabCredentials EabCredentials { get; set; } = new();
+
+    /// <summary>
+    /// Ftp连接
+    /// </summary>
+    public String? FtpDomain { get; set; }
+
+    /// <summary>
+    /// Ftp用户名
+    /// </summary>
+    public String? FtpUser { get; set; }
+
+    /// <summary>
+    /// Ftp密码
+    /// </summary>
+    public String? FtpPassWord { get; set; }
 }
