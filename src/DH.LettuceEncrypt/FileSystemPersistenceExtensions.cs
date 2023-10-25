@@ -5,6 +5,7 @@ using LettuceEncrypt.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace LettuceEncrypt;
 
@@ -50,7 +51,9 @@ public static class FileSystemStorageExtensions
             }
         }
 
-        var implementationInstance = new FileSystemCertificateRepository(directory, pfxPassword);
+        var lettuceEncryptOptions = builder.Services.BuildServiceProvider().GetRequiredService<IOptions<LettuceEncryptOptions>>();
+
+        var implementationInstance = new FileSystemCertificateRepository(lettuceEncryptOptions, directory, pfxPassword);
         builder.Services
             .AddSingleton<ICertificateRepository>(implementationInstance)
             .AddSingleton<ICertificateSource>(implementationInstance);

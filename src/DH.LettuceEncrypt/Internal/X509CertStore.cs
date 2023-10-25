@@ -27,10 +27,11 @@ internal class X509CertStore : ICertificateSource, ICertificateRepository, IDisp
 
     public Task<IEnumerable<X509Certificate2>> GetCertificatesAsync(CancellationToken cancellationToken)
     {
-        XTrace.WriteLine($"进来了吗？X509CertStore");
+        XTrace.WriteLine($"进来了吗？X509CertStore:");
 
         var domainNames = new HashSet<string>(_options.Value.DomainNames);
         var result = new List<X509Certificate2>();
+
         var certs = _store.Certificates.Find(X509FindType.FindByTimeValid,
             DateTime.Now,
             validOnly: !AllowInvalidCerts);
@@ -63,7 +64,7 @@ internal class X509CertStore : ICertificateSource, ICertificateRepository, IDisp
         }
         catch (Exception ex)
         {
-            _logger.LogError(0, ex, "Failed to save certificate to store");
+            _logger.LogError(0, ex, "无法将证书保存到存储");
             throw;
         }
 

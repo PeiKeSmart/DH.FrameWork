@@ -1,5 +1,6 @@
-using System.Security.Cryptography.X509Certificates;
 using LettuceEncrypt.Acme;
+
+using System.Security.Cryptography.X509Certificates;
 
 namespace LettuceEncrypt;
 
@@ -49,22 +50,22 @@ public class LettuceEncryptOptions
     /// 在构建成功下载的证书之前，将其他颁发者传递给证书，
     /// 证书内部用来验证颁发者的真实性。
     /// <para>
-    /// This is useful especially when using a staging server (e.g. for integration tests) with a root certificate
-    /// that is not part of certes' embedded resources.
-    /// See https://github.com/fszlin/certes/tree/v3.0.0/src/Certes/Resources/Certificates for context.
+    /// 这在使用带有根证书的暂存服务器（例如用于集成测试）时尤其有用
+    /// 这不是 Certes 嵌入式资源的一部分。
+    /// 有关上下文，请参阅 https://github.com/fszlin/certes/tree/v3.0.0/src/Certes/Resources/Certificates
     /// </para>
     /// </summary>
     /// <remarks>
-    /// Lettuce encrypt uses certes internally, while certes depends on BouncyCastle.Cryptography to parse
-    /// certificates. See https://github.com/bcgit/bc-csharp/blob/830d9b8c7bdfcec511bff0a6cf4a0e8ed568e7c1/crypto/src/x509/X509CertificateParser.cs#L20
-    /// if you're wondering what certificate formats are supported.
+    /// 在内部使用certes，而certes依赖于BouncyCastle.Cryptography来解析
+    /// 证书 见 https://github.com/bcgit/bc-csharp/blob/830d9b8c7bdfcec511bff0a6cf4a0e8ed568e7c1/crypto/src/x509/X509CertificateParser.cs#L20
+    /// 如果您想知道支持哪些证书格式。
     /// </remarks>
     public string[] AdditionalIssuers { get; set; } = Array.Empty<string>();
 
     /// <summary>
-    /// A certificate to use if a certificates cannot be created automatically.
+    /// 无法自动创建证书时要使用的证书。
     /// <para>
-    /// This can be null if there is not fallback certificate.
+    /// 如果没有回退证书，则此值可能为 null。
     /// </para>
     /// </summary>
     public X509Certificate2? FallbackCertificate { get; set; }
@@ -97,17 +98,22 @@ public class LettuceEncryptOptions
     public EabCredentials EabCredentials { get; set; } = new();
 
     /// <summary>
-    /// Ftp连接
+    /// Http-01检验时域名的Ftp连接
     /// </summary>
     public String? FtpDomain { get; set; }
 
     /// <summary>
-    /// Ftp用户名
+    /// Http-01检验时域名的Ftp用户名
     /// </summary>
     public String? FtpUser { get; set; }
 
     /// <summary>
-    /// Ftp密码
+    /// Http-01检验时域名的Ftp密码
     /// </summary>
     public String? FtpPassWord { get; set; }
+
+    /// <summary>
+    /// Linux环境下Pem证书部署路径
+    /// </summary>
+    public String? PemDeployPath { get; set; }
 }

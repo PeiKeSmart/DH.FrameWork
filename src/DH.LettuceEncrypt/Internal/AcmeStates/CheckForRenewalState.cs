@@ -55,6 +55,7 @@ internal class CheckForRenewalState : AcmeState
                 {
                     return MoveTo<BeginCertificateCreationState>();
                 }
+                XTrace.WriteLine($"获取证书的时间：{domainName}_{cert.NotAfter}_{_clock.Now.DateTime}_{daysInAdvance.Value}");
             }
 
             await Task.Delay(checkPeriod.Value, cancellationToken);

@@ -1,6 +1,9 @@
 ﻿using Certes;
 using Certes.Acme;
 
+using Microsoft.Extensions.Options;
+
+using NewLife;
 using NewLife.Log;
 
 using System.Security.Cryptography.X509Certificates;
@@ -11,9 +14,11 @@ namespace LettuceEncrypt.Internal;
 internal class FileSystemCertificateRepository : ICertificateRepository, ICertificateSource
 {
     private readonly DirectoryInfo _certDir;
+    private readonly IOptions<LettuceEncryptOptions> _options;
 
-    public FileSystemCertificateRepository(DirectoryInfo directory, string? pfxPassword)
+    public FileSystemCertificateRepository(IOptions<LettuceEncryptOptions> options, DirectoryInfo directory, string? pfxPassword)
     {
+        _options = options;
         RootDir = directory;
         PfxPassword = pfxPassword;
         _certDir = directory.CreateSubdirectory("certs");
@@ -55,13 +60,25 @@ internal class FileSystemCertificateRepository : ICertificateRepository, ICertif
         File.Move(tmpFile, output);
 
         privateKey.ToPem();
-        fileName = certificate.Thumbprint + ".privatekey.pem";
+        fileName = "privkey.pem";
         output = Path.Combine(_certDir.FullName, fileName);
-        output.AsFile().WriteBytes(Encoding.UTF8.GetBytes(privateKey.ToPem()));
+        var privkey = output.AsFile().WriteBytes(Encoding.UTF8.GetBytes(privateKey.ToPem()));
 
-        fileName = certificate.Thumbprint + ".pem";
+        fileName = "fullchain.pem";
         output = Path.Combine(_certDir.FullName, fileName);
-        output.AsFile().WriteBytes(Encoding.UTF8.GetBytes(acmeCert.ToPem()));
+        var fullchain = output.AsFile().WriteBytes(Encoding.UTF8.GetBytes(acmeCert.ToPem()));
+
+        if (!_options.Value.PemDeployPath.IsNullOrWhiteSpace())
+        {
+            XTrace.WriteLine($"部署Pem证书");
+
+            var savePath = $"{_options.Value.PemDeployPath.CombinePath("privkey.pem")}".AsFile();
+            savePath.FullName.EnsureDirectory();
+            privkey.CopyTo(savePath.FullName, true);
+
+            savePath = $"{_options.Value.PemDeployPath.CombinePath("fullchain.pem")}".AsFile();
+            fullchain.CopyTo(savePath.FullName, true);
+        }
 
         return Task.CompletedTask;
     }
