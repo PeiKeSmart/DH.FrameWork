@@ -4,7 +4,9 @@ using LettuceEncrypt.Internal;
 using LettuceEncrypt.Internal.AcmeStates;
 using LettuceEncrypt.Internal.IO;
 using LettuceEncrypt.Internal.PfxBuilder;
+
 using McMaster.AspNetCore.Kestrel.Certificates;
+
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Configuration;
@@ -15,7 +17,7 @@ using Microsoft.Extensions.Options;
 namespace Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
-/// Helper methods for configuring Lettuce Encrypt services.
+/// 用于配置Lettuce Encrypt服务的Helper方法。
 /// </summary>
 public static class LettuceEncryptServiceCollectionExtensions
 {

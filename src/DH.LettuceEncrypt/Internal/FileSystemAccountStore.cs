@@ -1,7 +1,9 @@
-﻿using System.Text.Json;
-using LettuceEncrypt.Accounts;
+﻿using LettuceEncrypt.Accounts;
 using LettuceEncrypt.Acme;
+
 using Microsoft.Extensions.Logging;
+
+using System.Text.Json;
 
 namespace LettuceEncrypt.Internal;
 
@@ -32,21 +34,21 @@ internal class FileSystemAccountStore : IAccountStore
 
     public async Task<AccountModel?> GetAccountAsync(CancellationToken cancellationToken)
     {
-        _logger.LogTrace("Looking for account information in {path}", _accountDir.FullName);
+        _logger.LogTrace("正在{path}中查找帐户信息", _accountDir.FullName);
 
         foreach (var jsonFile in _accountDir.GetFiles("*.json"))
         {
-            _logger.LogTrace("Parsing {path} for account info", jsonFile);
+            _logger.LogTrace("正在分析帐户信息的{path}", jsonFile);
 
             var accountModel = await Deserialize(jsonFile, cancellationToken);
             if (accountModel != null)
             {
-                _logger.LogDebug("Loaded account information from {path}", _accountDir.FullName);
+                _logger.LogDebug("已从{path}加载帐户信息", _accountDir.FullName);
                 return accountModel;
             }
         }
 
-        _logger.LogDebug("Could not find account information in {path}", _accountDir.FullName);
+        _logger.LogDebug("在{path}中找不到帐户信息", _accountDir.FullName);
         return default;
     }
 
@@ -67,7 +69,7 @@ internal class FileSystemAccountStore : IAccountStore
         _accountDir.Create();
 
         var jsonFile = new FileInfo(Path.Combine(_accountDir.FullName, $"{account.Id}.json"));
-        _logger.LogTrace("Saving account information to {path}", jsonFile.FullName);
+        _logger.LogTrace("正在将帐户信息保存到{path}", jsonFile.FullName);
 
         using var writeStream = jsonFile.OpenWrite();
         var serializerOptions = new JsonSerializerOptions
@@ -76,6 +78,6 @@ internal class FileSystemAccountStore : IAccountStore
         };
         await JsonSerializer.SerializeAsync(writeStream, account, serializerOptions, cancellationToken);
 
-        _logger.LogDebug("Saved account information to {path}", jsonFile.FullName);
+        _logger.LogDebug("已将帐户信息保存到{path}", jsonFile.FullName);
     }
 }

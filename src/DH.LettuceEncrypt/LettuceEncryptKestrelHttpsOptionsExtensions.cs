@@ -48,7 +48,7 @@ public static class LettuceEncryptKestrelHttpsOptionsExtensions
         IServerCertificateSelector selector,
         TlsAlpnChallengeResponder tlsAlpnChallengeResponder)
     {
-        // Check if this handler is already set. If so, chain our handler before it.
+        // 检查是否已设置此处理程序。如果是这样的话，就把我们的处理程序挂在它之前。
         var otherHandler = httpsOptions.OnAuthenticate;
         httpsOptions.OnAuthenticate = (ctx, options) =>
         {

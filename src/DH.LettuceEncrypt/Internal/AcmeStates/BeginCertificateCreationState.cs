@@ -4,6 +4,7 @@ using Certes.Acme;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
+using NewLife;
 using NewLife.Log;
 
 using System.Security.Cryptography.X509Certificates;
@@ -52,7 +53,7 @@ internal class BeginCertificateCreationState : AcmeState
         }
         catch (Exception ex)
         {
-            XTrace.WriteLine($"无法自动为{domainNames}创建证书");
+            XTrace.WriteLine($"无法自动为{domainNames.Join()}创建证书");
             XTrace.WriteException(ex);
             throw;
         }
