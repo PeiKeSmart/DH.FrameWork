@@ -93,13 +93,6 @@ public class DHSetting : Config<DHSetting>
     public Int32 SslEnabled { get; set; } = 0;
 
     /// <summary>
-    /// 使用Let's Encrypt时的文件夹目录
-    /// </summary>
-    /// <summary>使用Let's Encrypt时的文件夹目录</summary>
-    [Description("使用Let's Encrypt时的文件夹目录")]
-    public String LetsEncryptPath { get; set; } = ".well-known";
-
-    /// <summary>
     /// 是否为管理系统
     /// </summary>
     [Description("是否为管理系统")]

@@ -59,8 +59,10 @@ internal class Http01DomainValidator : DomainOwnershipValidator {
 
         if (!_options.FtpDomain.IsNullOrWhiteSpace() && !_options.FtpUser.IsNullOrWhiteSpace() && !_options.FtpPassWord.IsNullOrWhiteSpace())
         {
-            FtpClient client = new FtpClient(_options.FtpDomain);
-            client.Credentials = new NetworkCredential(_options.FtpUser, _options.FtpPassWord);
+            FtpClient client = new(_options.FtpDomain)
+            {
+                Credentials = new NetworkCredential(_options.FtpUser, _options.FtpPassWord)
+            };
             client.Connect();
 
             if (client.IsConnected)

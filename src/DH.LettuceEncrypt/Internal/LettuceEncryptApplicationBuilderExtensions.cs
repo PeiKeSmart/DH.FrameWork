@@ -1,18 +1,17 @@
 using LettuceEncrypt.Internal;
 
-// ReSharper disable once CheckNamespace
 namespace Microsoft.AspNetCore.Builder;
 
 /// <summary>
-/// Helper methods
+/// 辅助方法
 /// </summary>
 internal static class LettuceEncryptApplicationBuilderExtensions
 {
     /// <summary>
-    /// Adds middleware use to verify domain ownership.
+    /// 添加了用于验证域所有权的中间件
     /// </summary>
-    /// <param name="app">The application builder</param>
-    /// <returns>The application builder</returns>
+    /// <param name="app">应用程序生成器</param>
+    /// <returns>应用程序生成器</returns>
     public static IApplicationBuilder UseHttpChallengeResponseMiddleware(this IApplicationBuilder app)
     {
         app.Map("/.well-known/acme-challenge", mapped =>

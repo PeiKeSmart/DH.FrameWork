@@ -53,18 +53,18 @@ internal abstract class DomainOwnershipValidator
                     throw InvalidAuthorizationError(authorization);
                 case AuthorizationStatus.Revoked:
                     throw new InvalidOperationException(
-                        $"The authorization to verify domainName '{_domainName}' has been revoked.");
+                        $"验证域名'{_domainName}'的授权已被吊销。");
                 case AuthorizationStatus.Expired:
                     throw new InvalidOperationException(
-                        $"The authorization to verify domainName '{_domainName}' has expired.");
+                        $"验证域名'{_domainName}'的授权已过期。");
                 case AuthorizationStatus.Deactivated:
                 default:
                     throw new ArgumentOutOfRangeException("authorization",
-                        "Unexpected response from server while validating domain ownership.");
+                        "验证域所有权时来自服务器的意外响应。");
             }
         }
 
-        throw new TimeoutException("Timed out waiting for domain ownership validation.");
+        throw new TimeoutException("等待域所有权验证时超时。");
     }
 
     private Exception InvalidAuthorizationError(Authorization authorization)
@@ -79,12 +79,12 @@ internal abstract class DomainOwnershipValidator
         }
         catch
         {
-            _logger.LogTrace("Could not determine reason why validation failed. Response: {resp}", authorization);
+            _logger.LogTrace("无法确定验证失败的原因。响应：{resp}", authorization);
         }
 
-        _logger.LogError("Failed to validate ownership of domainName '{domainName}'. Reason: {reason}", domainName,
+        _logger.LogError("未能验证域名'{domainName}'的所有权。原因：{reason}", domainName,
             reason);
 
-        return new InvalidOperationException($"Failed to validate ownership of domainName '{domainName}'");
+        return new InvalidOperationException($"无法验证域名'{domainName}'的所有权");
     }
 }

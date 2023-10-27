@@ -98,7 +98,7 @@ internal class AcmeCertificateFactory
         _tosChecker.EnsureTermsAreAccepted(tosUri);
 
         var options = _options.Value;
-        _logger.LogInformation("Creating new account for {email}", options.EmailAddress);
+        XTrace.Log.Info($"正在为{options.EmailAddress}创建新帐户");
         var accountId = await _client.CreateAccountAsync(options.EmailAddress);
 
         var accountModel = new AccountModel
@@ -128,22 +128,17 @@ internal class AcmeCertificateFactory
         }
         catch (AcmeRequestException exception)
         {
-            _logger.LogWarning(
-                "An account key was found, but could not be matched to a valid account. Validation error: {acmeError}",
-                exception.Error);
+            XTrace.Log.Warn($"找到了帐户密钥，但无法与有效帐户匹配。验证错误：{exception.Error}");
             return false;
         }
 
         if (existingAccount.Status != AccountStatus.Valid)
         {
-            _logger.LogWarning(
-                "An account key was found, but the account is no longer valid. Account status: {status}." +
-                "A new account will be registered.",
-                existingAccount.Status);
+            XTrace.Log.Warn($"找到了帐户密钥，但该帐户不再有效。帐户状态：{existingAccount.Status}。将注册一个新帐户。");
             return false;
         }
 
-        _logger.LogInformation("Using existing account for {contact}", existingAccount.Contact);
+        XTrace.Log.Info($"正在使用{existingAccount.Contact}的现有帐户");
 
         if (existingAccount.TermsOfServiceAgreed != true)
         {
@@ -199,6 +194,9 @@ internal class AcmeCertificateFactory
         cancellationToken.ThrowIfCancellationRequested();
         var authorizations = await _client.GetOrderAuthorizations(orderContext);
 
+        // 增加休眠来延迟校验，避免因为反向代理或者其他导致的检验失败。
+        await Task.Delay(TimeSpan.FromSeconds(10));
+
         cancellationToken.ThrowIfCancellationRequested();
         await Task.WhenAll(BeginValidateAllAuthorizations(authorizations, cancellationToken));
 
@@ -229,11 +227,11 @@ internal class AcmeCertificateFactory
 
         if (authorization.Status == AuthorizationStatus.Valid)
         {
-            // Short circuit if authorization is already complete
+            // 如果授权已经完成，则短路
             return;
         }
 
-        _logger.LogDebug("请求授权为{domainName}创建证书", domainName);
+        XTrace.Log.Debug($"请求授权为{domainName}创建证书");
 
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -276,8 +274,7 @@ internal class AcmeCertificateFactory
             }
             catch (Exception ex)
             {
-                _logger.LogDebug(ex, "使用{validatorType}进行验证失败，出现错误: {error}",
-                    validator.GetType().Name, ex.Message);
+                XTrace.Log.Debug($"使用{validator.GetType().Name}进行验证失败，出现错误: {ex.Message}");
             }
         }
 
