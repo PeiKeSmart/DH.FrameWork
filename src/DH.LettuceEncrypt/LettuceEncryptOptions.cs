@@ -116,4 +116,9 @@ public class LettuceEncryptOptions
     /// Linux环境下Pem证书部署路径
     /// </summary>
     public String? PemDeployPath { get; set; }
+
+    /// <summary>
+    /// 是否内部LocalHost访问而非域名访问。如反向代理或者内部以Localhost访问
+    /// </summary>
+    public Boolean IsLocalHost { get; set; } = true;
 }

@@ -9,15 +9,20 @@ internal class KestrelOptionsSetup : IConfigureOptions<KestrelServerOptions>
 {
     private readonly IServerCertificateSelector _certificateSelector;
     private readonly TlsAlpnChallengeResponder _tlsAlpnChallengeResponder;
+    private readonly IOptions<LettuceEncryptOptions> _options;
 
-    public KestrelOptionsSetup(IServerCertificateSelector certificateSelector, TlsAlpnChallengeResponder tlsAlpnChallengeResponder)
+    public KestrelOptionsSetup(IServerCertificateSelector certificateSelector, TlsAlpnChallengeResponder tlsAlpnChallengeResponder, IOptions<LettuceEncryptOptions> options)
     {
         _certificateSelector = certificateSelector ?? throw new ArgumentNullException(nameof(certificateSelector));
         _tlsAlpnChallengeResponder = tlsAlpnChallengeResponder ?? throw new ArgumentNullException(nameof(tlsAlpnChallengeResponder));
+        _options = options;
     }
 
     public void Configure(KestrelServerOptions options)
     {
-        options.ConfigureHttpsDefaults(o => o.UseLettuceEncrypt(_certificateSelector, _tlsAlpnChallengeResponder));
+        if (!_options.Value.IsLocalHost)
+        {
+            options.ConfigureHttpsDefaults(o => o.UseLettuceEncrypt(_certificateSelector, _tlsAlpnChallengeResponder));
+        }
     }
 }

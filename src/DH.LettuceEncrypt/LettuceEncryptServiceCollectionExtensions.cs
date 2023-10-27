@@ -4,9 +4,7 @@ using LettuceEncrypt.Internal;
 using LettuceEncrypt.Internal.AcmeStates;
 using LettuceEncrypt.Internal.IO;
 using LettuceEncrypt.Internal.PfxBuilder;
-
 using McMaster.AspNetCore.Kestrel.Certificates;
-
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Configuration;
@@ -22,8 +20,8 @@ namespace Microsoft.Extensions.DependencyInjection;
 public static class LettuceEncryptServiceCollectionExtensions
 {
     /// <summary>
-    /// Add services that will automatically generate HTTPS certificates for this server.
-    /// By default, this uses Let's Encrypt (<see href="https://letsencrypt.org/">https://letsencrypt.org/</see>).
+    /// 添加将自动为此服务器生成HTTPS证书的服务。
+    /// 默认情况下，它使用Let's Encrypt (<see href="https://letsencrypt.org/">https://letsencrypt.org/</see>).
     /// </summary>
     /// <param name="services"></param>
     /// <returns></returns>
@@ -31,15 +29,16 @@ public static class LettuceEncryptServiceCollectionExtensions
         => services.AddLettuceEncrypt(_ => { });
 
     /// <summary>
-    /// Add services that will automatically generate HTTPS certificates for this server.
-    /// By default, this uses Let's Encrypt (<see href="https://letsencrypt.org/">https://letsencrypt.org/</see>).
+    /// 添加将自动为此服务器生成HTTPS证书的服务。
+    /// 默认情况下，它使用Let's Encrypt(<see href="https://letsencrypt.org/">https://letsencrypt.org/</see>).
     /// </summary>
     /// <param name="services"></param>
-    /// <param name="configure">A callback to configure options.</param>
+    /// <param name="configure">用于配置选项的回调</param>
     /// <returns></returns>
     public static ILettuceEncryptServiceBuilder AddLettuceEncrypt(this IServiceCollection services,
         Action<LettuceEncryptOptions> configure)
     {
+        // 疑似因此导致部署localhost的https无法正常使用,增加配置项
         services.AddTransient<IConfigureOptions<KestrelServerOptions>, KestrelOptionsSetup>();
 
         services.TryAddSingleton<ICertificateAuthorityConfiguration, DefaultCertificateAuthorityConfiguration>();
