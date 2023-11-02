@@ -4,6 +4,8 @@ using NewLife.Reflection;
 using NewLife.Serialization;
 using NewLife.Threading;
 
+using System.Net.Http;
+
 #nullable enable
 namespace NewLife.Map;
 
