@@ -1,10 +1,9 @@
-using DH.Cookies;
-using DH.Core.Infrastructure;
 using DH.Timing;
 
 using NewLife;
-using NewLife.Collections;
 using NewLife.Data;
+using NewLife.Log;
+using NewLife.Serialization;
 
 using System.Runtime.Serialization;
 using System.Web.Script.Serialization;
@@ -212,6 +211,17 @@ public partial class SysOnlineTime : DHEntityBase<SysOnlineTime> {
 
         return Find(_.UId == uId & _.Year == year & _.Month == month);
     }
+
+    /// <summary>根据编号查找</summary>
+    /// <param name="selects">字段</param>
+    /// <returns>实体对象</returns>
+    public static IList<SysOnlineTime> GetAll(String selects = null)
+    {
+        // 实体缓存
+        if (Meta.Session.Count < 10000) return Meta.Cache.Entities;
+
+        return FindAll(null, null, selects);
+    }
     #endregion
 
     #region 高级查询
@@ -303,20 +313,27 @@ public partial class SysOnlineTime : DHEntityBase<SysOnlineTime> {
         if (uid <= 0) return;
 
         int updateOnlineTimeSpan = DHSetting.Current.UpdateOnlineTimeSpan;
-        if (updateOnlineTimeSpan == 0)
-            return;
+        if (updateOnlineTimeSpan == 0) return;
 
-        var _cookie = EngineContext.Current.Resolve<ICookie>();
-        var lastUpdateTime = _cookie.GetValue<Int32>($"oltime");
+        var modelUser = UserDetail.FindById(uid);
+        if (modelUser == null) return;
 
-        if (lastUpdateTime > 0 && lastUpdateTime <= DateTime.Now.AddMinutes(-updateOnlineTimeSpan).ToTimeStamp())
+        var lastUpdateTime = modelUser.LastUpdateTime;
+
+        if (lastUpdateTime == 0)
         {
-            UpdateUserOnlineTime(uid, updateOnlineTimeSpan, DateTime.Now, roleId, uName);
-            _cookie.SetValue("oltime", DateTime.Now.ToTimeStamp(), 24 * 60);
+            modelUser.LastUpdateTime = DateTime.Now.ToTimeStamp();
+            modelUser.Update();
         }
         else
         {
-            _cookie.SetValue("oltime", DateTime.Now.ToTimeStamp(), 24 * 60);
+            if (lastUpdateTime <= DateTime.Now.AddMinutes(-updateOnlineTimeSpan).ToTimeStamp())
+            {
+                UpdateUserOnlineTime(uid, updateOnlineTimeSpan, DateTime.Now, roleId, uName);
+
+                modelUser.LastUpdateTime = DateTime.Now.ToTimeStamp();
+                modelUser.Update();
+            }
         }
     }
 
@@ -363,6 +380,8 @@ public partial class SysOnlineTime : DHEntityBase<SysOnlineTime> {
 
             model.SetItem($"Day{updateTime.Day}", model.DayTimes);
 
+            XTrace.WriteLine($"测试写入在线时间表的数据：{onlineTime}_{model.ToJson()}");
+
             model.SaveAsync();
         }
         else
@@ -388,6 +407,8 @@ public partial class SysOnlineTime : DHEntityBase<SysOnlineTime> {
                     model.SetItem($"Day{i}", 0);
                 }
             }
+
+            XTrace.WriteLine($"测试写入在线时间表的数据1：{onlineTime}_{model.ToJson()}");
 
             model.Insert();
         }

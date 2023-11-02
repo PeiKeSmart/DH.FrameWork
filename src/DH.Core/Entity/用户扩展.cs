@@ -484,12 +484,21 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
 
     private Int32 _OnlineTime;
     /// <summary>在线时间。累计在线总时间，单位秒</summary>
-    [Category("登录信息")]
+    [Category("在线信息")]
     [DisplayName("在线时间")]
     [Description("在线时间。累计在线总时间，单位秒")]
     [DataObjectField(false, false, false, 0)]
     [BindColumn("OnlineTime", "在线时间。累计在线总时间，单位秒", "", ItemType = "TimeSpan")]
     public Int32 OnlineTime { get => _OnlineTime; set { if (OnPropertyChanging("OnlineTime", value)) { _OnlineTime = value; OnPropertyChanged("OnlineTime"); } } }
+
+    private Int64 _LastUpdateTime;
+    /// <summary>记录上一次在线时间写入的时间戳</summary>
+    [Category("在线信息")]
+    [DisplayName("记录上一次在线时间写入的时间戳")]
+    [Description("记录上一次在线时间写入的时间戳")]
+    [DataObjectField(false, false, false, 0)]
+    [BindColumn("LastUpdateTime", "记录上一次在线时间写入的时间戳", "")]
+    public Int64 LastUpdateTime { get => _LastUpdateTime; set { if (OnPropertyChanging("LastUpdateTime", value)) { _LastUpdateTime = value; OnPropertyChanged("LastUpdateTime"); } } }
 
     private String _CreateUser;
     /// <summary>创建者</summary>
@@ -619,6 +628,7 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
         Question3 = model.Question3;
         Answer3 = model.Answer3;
         OnlineTime = model.OnlineTime;
+        LastUpdateTime = model.LastUpdateTime;
         CreateUser = model.CreateUser;
         CreateUserID = model.CreateUserID;
         CreateTime = model.CreateTime;
@@ -696,6 +706,7 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
             "Question3" => _Question3,
             "Answer3" => _Answer3,
             "OnlineTime" => _OnlineTime,
+            "LastUpdateTime" => _LastUpdateTime,
             "CreateUser" => _CreateUser,
             "CreateUserID" => _CreateUserID,
             "CreateTime" => _CreateTime,
@@ -768,6 +779,7 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
                 case "Question3": _Question3 = Convert.ToString(value); break;
                 case "Answer3": _Answer3 = Convert.ToString(value); break;
                 case "OnlineTime": _OnlineTime = value.ToInt(); break;
+                case "LastUpdateTime": _LastUpdateTime = value.ToLong(); break;
                 case "CreateUser": _CreateUser = Convert.ToString(value); break;
                 case "CreateUserID": _CreateUserID = value.ToInt(); break;
                 case "CreateTime": _CreateTime = value.ToDateTime(); break;
@@ -962,6 +974,9 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
 
         /// <summary>在线时间。累计在线总时间，单位秒</summary>
         public static readonly Field OnlineTime = FindByName("OnlineTime");
+
+        /// <summary>记录上一次在线时间写入的时间戳</summary>
+        public static readonly Field LastUpdateTime = FindByName("LastUpdateTime");
 
         /// <summary>创建者</summary>
         public static readonly Field CreateUser = FindByName("CreateUser");
@@ -1166,6 +1181,9 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
 
         /// <summary>在线时间。累计在线总时间，单位秒</summary>
         public const String OnlineTime = "OnlineTime";
+
+        /// <summary>记录上一次在线时间写入的时间戳</summary>
+        public const String LastUpdateTime = "LastUpdateTime";
 
         /// <summary>创建者</summary>
         public const String CreateUser = "CreateUser";

@@ -177,6 +177,17 @@ public partial class SysOnlineUsers : DHEntityBase<SysOnlineUsers> {
 
         return Find(_.Sid == sid);
     }
+
+    /// <summary>根据编号查找</summary>
+    /// <param name="selects">字段</param>
+    /// <returns>实体对象</returns>
+    public static IList<SysOnlineUsers> GetAll(String selects = null)
+    {
+        // 实体缓存
+        if (Meta.Session.Count < 10000) return Meta.Cache.Entities;
+
+        return FindAll(null, null, selects);
+    }
     #endregion
 
     #region 高级查询
@@ -220,6 +231,8 @@ public partial class SysOnlineUsers : DHEntityBase<SysOnlineUsers> {
     /// <param name="userAgent">特征字符串</param>
     public static void UpdateOnlineUser(Int32 uid, Int64 sid, string nickName, string ip, String region, String userAgent)
     {
+        using var span = DefaultTracer.Instance?.NewSpan(nameof(UpdateOnlineUser));
+
         if (sid <= 0) return;
 
         var onlineUserInfo = GetOnlineUserBySid(sid);
@@ -238,7 +251,8 @@ public partial class SysOnlineUsers : DHEntityBase<SysOnlineUsers> {
             }
             catch (Exception ex)
             {
-                XTrace.WriteException(ex);
+                span.SetError(ex, null);
+
                 onlineUserInfo = new SysOnlineUsers();
                 onlineUserInfo.Uid = uid;
                 onlineUserInfo.Sid = sid;
@@ -266,7 +280,8 @@ public partial class SysOnlineUsers : DHEntityBase<SysOnlineUsers> {
             }
             catch (Exception ex)
             {
-                XTrace.WriteException(ex);
+                span.SetError(ex, null);
+
                 onlineUserInfo = GetOnlineUserBySid(sid);
                 if (onlineUserInfo != null)
                 {
@@ -325,7 +340,7 @@ public partial class SysOnlineUsers : DHEntityBase<SysOnlineUsers> {
 
             var list = GetExpiredOnlineUser(expiretime);
 
-            foreach(var item in list)
+            foreach (var item in list)
             {
                 if (item.Uid > 0)
                 {

@@ -3,6 +3,8 @@ using DH.Helpers;
 
 using Microsoft.AspNetCore.Http;
 
+using NewLife;
+
 using System.ComponentModel;
 
 namespace DH.AspNetCore.Cookies;
@@ -31,7 +33,7 @@ public class Cookie : ICookie
 
         if (_httpContext.Request.Cookies.TryGetValue(name, out string valuStr))
         {
-            if (!string.IsNullOrWhiteSpace(valuStr))
+            if (!valuStr.IsNullOrWhiteSpace())
             {
                 TypeConverter converter = TypeDescriptor.GetConverter(typeof(T));
 
@@ -112,7 +114,7 @@ public class Cookie : ICookie
             }
         }
 
-        if (!string.IsNullOrWhiteSpace(cookieValue))
+        if (!cookieValue.IsNullOrWhiteSpace())
         {
 
             if (expireWithBrowser)

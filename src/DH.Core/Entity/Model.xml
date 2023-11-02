@@ -96,7 +96,8 @@
         <Column Name="Answer2" DataType="String" Length="100" Description="回答2" />
         <Column Name="Question3" DataType="String" Length="100" Description="问题3" />
         <Column Name="Answer3" DataType="String" Length="100" Description="回答3" />
-        <Column Name="OnlineTime" DataType="Int32" ItemType="TimeSpan" Description="在线时间。累计在线总时间，单位秒" Category="登录信息" />
+        <Column Name="OnlineTime" DataType="Int32" ItemType="TimeSpan" Description="在线时间。累计在线总时间，单位秒" Category="在线信息" />
+        <Column Name="LastUpdateTime" DataType="Int64" Description="记录上一次在线时间写入的时间戳" Category="在线信息" />
         <Column Name="CreateUser" DataType="String" Description="创建者" />
         <Column Name="CreateUserID" DataType="Int32" Description="创建者" />
         <Column Name="CreateTime" DataType="DateTime" Description="创建时间" />

@@ -185,6 +185,9 @@ public partial class UserDetailModel
     /// <summary>在线时间。累计在线总时间，单位秒</summary>
     public Int32 OnlineTime { get; set; }
 
+    /// <summary>记录上一次在线时间写入的时间戳</summary>
+    public Int64 LastUpdateTime { get; set; }
+
     /// <summary>创建者</summary>
     public String CreateUser { get; set; }
 
@@ -273,6 +276,7 @@ public partial class UserDetailModel
         Question3 = model.Question3;
         Answer3 = model.Answer3;
         OnlineTime = model.OnlineTime;
+        LastUpdateTime = model.LastUpdateTime;
         CreateUser = model.CreateUser;
         CreateUserID = model.CreateUserID;
         CreateTime = model.CreateTime;

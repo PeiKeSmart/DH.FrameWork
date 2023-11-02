@@ -185,6 +185,9 @@ public partial interface IUserDetail
     /// <summary>在线时间。累计在线总时间，单位秒</summary>
     Int32 OnlineTime { get; set; }
 
+    /// <summary>记录上一次在线时间写入的时间戳</summary>
+    Int64 LastUpdateTime { get; set; }
+
     /// <summary>创建者</summary>
     String CreateUser { get; set; }
 
