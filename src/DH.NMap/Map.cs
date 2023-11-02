@@ -1,15 +1,11 @@
-﻿using NewLife.Caching;
-using NewLife.Data;
+﻿using NewLife.Data;
 using NewLife.Log;
 using NewLife.Reflection;
-using NewLife.Security;
 using NewLife.Serialization;
 using NewLife.Threading;
 
-using System.Net.Http;
-
 #nullable enable
-namespace NewLife.Yun;
+namespace NewLife.Map;
 
 /// <summary>地图提供者接口</summary>
 public interface IMap
@@ -92,7 +88,7 @@ public class Map : DisposeBase
     public String? LastString { get; private set; }
 
     /// <summary>最后结果</summary>
-    public IDictionary<String, Object>? LastResult { get; private set; }
+    public IDictionary<String, Object?>? LastResult { get; private set; }
 
     /// <summary>收到异常响应时是否抛出异常</summary>
     public Boolean ThrowException { get; set; }
@@ -159,7 +155,7 @@ public class Map : DisposeBase
 
         LastResult = rs;
 
-        return (T)rs;
+        return rs == null ? null : JsonHelper.Convert<T>(rs);
     }
     #endregion
 
@@ -203,7 +199,7 @@ public class Map : DisposeBase
                 _timer ??= new TimerX(CheckPending, null, 5_000, 60_000)
                 {
                     Async = true,
-                    CanExecute = () => _pendingKeys.Any()
+                    //CanExecute = () => _pendingKeys.Any()
                 };
             }
 
