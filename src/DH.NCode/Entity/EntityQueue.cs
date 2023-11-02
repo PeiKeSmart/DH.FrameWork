@@ -86,7 +86,7 @@ public class EntityQueue : DisposeBase
                 _Timer ??= new TimerX(Work, null, Period, Period, "EQ")
                 {
                     Async = true,
-                    CanExecute = () => DelayEntities.Any() || Entities.Any()
+                    //CanExecute = () => DelayEntities.Any() || Entities.Any()
                 };
             }
         }
@@ -261,7 +261,7 @@ public class EntityQueue : DisposeBase
         var ss = Session;
 
         // 实体队列SaveAsync异步保存时，如果只插入表，直接走批量Insert，而不是Upsert
-        if (InsertOnly || ss.Table.InsertOnly)
+        if (InsertOnly)
             batch.Insert(null, ss);
         else
             batch.SaveWithoutValid(null, ss);

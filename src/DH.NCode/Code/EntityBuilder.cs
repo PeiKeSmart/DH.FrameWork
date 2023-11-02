@@ -239,7 +239,7 @@ public class EntityBuilder : ClassBuilder
 
         if (Business)
         {
-            us.Add("System.ComponentModel.DataAnnotations");//属性验证
+            //us.Add("System.ComponentModel.DataAnnotations");//属性验证
             us.Add("System.IO");
             us.Add("System.Linq");
             us.Add("System.Reflection");
@@ -619,8 +619,9 @@ public class EntityBuilder : ClassBuilder
         if (dc.Precision > 0 || dc.Scale > 0) sb.AppendFormat(", Precision = {0}, Scale = {1}", dc.Precision, dc.Scale);
 
         if (!dc.DefaultValue.IsNullOrEmpty()) sb.AppendFormat(", DefaultValue = \"{0}\"", dc.DefaultValue);
-        //添加自定义控件默认值
-        if (!dc.ItemDefaultValue.IsNullOrEmpty()) sb.AppendFormat(", ItemDefaultValue = \"{0}\"", dc.ItemDefaultValue);
+
+        ////添加自定义控件默认值
+        //if (!dc.ItemDefaultValue.IsNullOrEmpty()) sb.AppendFormat(", ItemDefaultValue = \"{0}\"", dc.ItemDefaultValue);
 
         if (dc.Master) sb.Append(", Master = true");
 
@@ -1024,14 +1025,15 @@ public class EntityBuilder : ClassBuilder
             WriteLine();
             WriteLine("// 在新插入数据或者修改了指定字段时进行修正");
 
-            // 货币类型保留小数位数
-            cs = Table.Columns.Where(e => e.DataType == typeof(Decimal)).ToArray();
+            // 保留小数位数
+            cs = Table.Columns.Where(e => e.DataType == typeof(Double)).ToArray();
             if (cs.Length > 0)
             {
-                WriteLine("// 货币保留6位小数");
+                WriteLine();
+                WriteLine("// 保留6位小数");
                 foreach (var item in cs)
                 {
-                    WriteLine("{0} = Math.Round({0}, 6);", item.Name);
+                    WriteLine("//{0} = Math.Round({0}, 6);", item.Name);
                 }
             }
 
@@ -1039,6 +1041,7 @@ public class EntityBuilder : ClassBuilder
             cs = Table.Columns.Where(e => e.DataType == typeof(Int32) && e.Name.EqualIgnoreCase("CreateUserID", "UpdateUserID")).ToArray();
             if (cs.Length > 0)
             {
+                WriteLine();
                 WriteLine("// 处理当前已登录用户信息，可以由UserModule过滤器代劳");
                 WriteLine("/*var user = ManageProvider.User;");
                 WriteLine("if (user != null)");

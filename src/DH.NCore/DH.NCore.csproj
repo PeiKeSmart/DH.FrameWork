@@ -35,7 +35,7 @@
     <RepositoryUrl>https://gitee.com/chuangchu/DH.FrameWork</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <PackageTags>湖北登灏科技有限公司;DH组件;DH;$(AssemblyName)</PackageTags>
-    <PackageReleaseNotes>恢复支持net461和netstandard2.0；独立实现IndexRange</PackageReleaseNotes>
+    <PackageReleaseNotes>启用可空特性；新增AddHostedService；修正MemoryCache内存泄漏；粘包处理器抛弃过期缓存数据</PackageReleaseNotes>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>

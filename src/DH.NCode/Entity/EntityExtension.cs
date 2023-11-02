@@ -77,7 +77,8 @@ public static class EntityExtension
 
         foreach (var item in fact.Fields)
         {
-            dps.Add(db.CreateParameter(item.ColumnName ?? item.Name, entity[item.Name], item.Field));
+            if (item.Field != null)
+                dps.Add(db.CreateParameter(item.ColumnName ?? item.Name, entity[item.Name], item.Field));
         }
 
         return dps.ToArray();
@@ -100,8 +101,11 @@ public static class EntityExtension
 
         foreach (var item in fact.Fields)
         {
-            var vs = list.Select(e => e[item.Name]).ToArray();
-            dps.Add(db.CreateParameter(item.ColumnName ?? item.Name, vs, item.Field));
+            if (item.Field != null)
+            {
+                var vs = list.Select(e => e[item.Name]).ToArray();
+                dps.Add(db.CreateParameter(item.ColumnName ?? item.Name, vs, item.Field));
+            }
         }
 
         return dps.ToArray();
@@ -132,7 +136,7 @@ public static class EntityExtension
             foreach (IEntity item in es.ToArray())
             {
                 if (item is EntityBase entity2) entity2.Valid(item.IsNullKey);
-                if (!fact.Modules.Valid(item, item.IsNullKey)) es.Remove((T)item);
+                //if (!fact.Modules.Valid(item, item.IsNullKey)) es.Remove((T)item);
             }
 
             // 如果未指定会话，需要支持自动分表，并且需要考虑实体列表可能落入不同库表
@@ -415,7 +419,8 @@ public static class EntityExtension
         foreach (IEntity item in list)
         {
             if (item is EntityBase entity2) entity2.Valid(isNew);
-            if (modules.Valid(item, isNew)) rs.Add((T)item);
+            //if (modules.Valid(item, isNew)) rs.Add((T)item);
+            rs.Add((T)item);
         }
 
         return rs;
@@ -457,7 +462,7 @@ public static class EntityExtension
         var fact = entity.GetType().AsFactory();
         if (option.Columns == null)
         {
-            var columns = fact.Fields.Select(e => e.Field).ToArray();
+            var columns = fact.Fields.Where(e => e.Field != null).Select(e => e.Field!).ToArray();
 
             // 第一列数据包含非零自增，表示要插入自增值
             var id = columns.FirstOrDefault(e => e.Identity);
@@ -545,7 +550,7 @@ public static class EntityExtension
         var fact = entity.GetType().AsFactory();
         if (option.Columns == null)
         {
-            var columns = fact.Fields.Select(e => e.Field).ToArray();
+            var columns = fact.Fields.Where(e => e.Field != null).Select(e => e.Field!).ToArray();
 
             // 第一列数据包含非零自增，表示要插入自增值
             var id = columns.FirstOrDefault(e => e.Identity);
@@ -626,7 +631,7 @@ public static class EntityExtension
         var fact = entity.GetType().AsFactory();
         if (option.Columns == null)
         {
-            var columns = fact.Fields.Select(e => e.Field).ToArray();
+            var columns = fact.Fields.Where(e => e.Field != null).Select(e => e.Field!).ToArray();
 
             // 第一列数据包含非零自增，表示要插入自增值
             var id = columns.FirstOrDefault(e => e.Identity);
@@ -712,7 +717,7 @@ public static class EntityExtension
 
         var entity = list.First();
         var fact = entity.GetType().AsFactory();
-        option.Columns ??= fact.Fields.Select(e => e.Field).Where(e => !e.Identity).ToArray();
+        option.Columns ??= fact.Fields.Where(e => e.Field != null).Select(e => e.Field!).Where(e => !e.Identity).ToArray();
         //if (updateColumns == null) updateColumns = entity.Dirtys.Keys;
         if (option.UpdateColumns == null)
         {
@@ -803,7 +808,7 @@ public static class EntityExtension
         // 批量Upsert需要主键参与，哪怕是自增，构建update的where时用到主键
         if (option.Columns == null)
         {
-            var columns = fact.Fields.Select(e => e.Field).ToArray();
+            var columns = fact.Fields.Where(e => e.Field != null).Select(e => e.Field!).ToArray();
 
             if (!option.FullInsert && !fact.FullInsert)
             {
@@ -932,7 +937,8 @@ public static class EntityExtension
         var fact = entity.GetType().AsFactory();
         if (option.Columns == null)
         {
-            var columns = fact.Fields.Select(e => e.Field).Where(e => !e.Identity).ToArray();
+            var columns = fact.Fields.Where(e => e.Field != null).Select(e => e.Field!).ToArray();
+            columns = columns.Where(e => !e.Identity).ToArray();
 
             // 每个列要么有脏数据，要么允许空。不允许空又没有脏数据的字段插入没有意义
             //var dirtys = GetDirtyColumns(fact, new[] { entity });
@@ -1132,7 +1138,7 @@ public static class EntityExtension
         var fact = typeof(T).AsFactory();
         var fis = fact.Fields;
         return displayName
-            ? SaveCsv(list, file, fis.Select(e => e.Name).ToArray(), fis.Select(e => e.DisplayName).ToArray())
+            ? SaveCsv(list, file, fis.Select(e => e.Name).ToArray(), fis.Select(e => e.DisplayName + "").ToArray())
             : SaveCsv(list, file, fis.Select(e => e.Name).ToArray(), null);
 
 
