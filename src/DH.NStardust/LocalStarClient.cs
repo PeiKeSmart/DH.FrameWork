@@ -2,18 +2,14 @@
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
-using System.Net.Http;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
-
 using NewLife;
 using NewLife.Http;
 using NewLife.Log;
 using NewLife.Messaging;
 using NewLife.Remoting;
-
 using Stardust.Models;
-
 #if NET45_OR_GREATER || NETCOREAPP || NETSTANDARD
 using TaskEx = System.Threading.Tasks.Task;
 #endif
@@ -117,6 +113,25 @@ public class LocalStarClient
             throw;
         }
     }
+
+    /// <summary>向StarAgent发送心跳</summary>
+    /// <returns></returns>
+    public async Task<PingResponse?> PingAsync(AppInfo appInfo, Int32 watchdogTimeout)
+    {
+        Init();
+
+        var info = new LocalPingInfo
+        {
+            ProcessId = appInfo.Id,
+            ProcessName = appInfo.Name,
+            Version = appInfo.Version,
+            AppName = appInfo.AppName,
+
+            WatchdogTimeout = watchdogTimeout,
+        };
+
+        return await _client.InvokeAsync<PingResponse>("Ping", info);
+    }
     #endregion
 
     #region 进程控制
@@ -127,8 +142,13 @@ public class LocalStarClient
         Init();
 
         var p = Process.GetCurrentProcess();
-        var fileName = p.MainModule.FileName;
-        var args = Environment.CommandLine.TrimStart(Path.ChangeExtension(fileName, ".dll")).Trim();
+        var fileName = p.MainModule?.FileName;
+        var args = "";
+        if (!fileName.IsNullOrEmpty())
+        {
+            var ext = Path.ChangeExtension(fileName, ".dll");
+            args = Environment.CommandLine.TrimStart(ext).Trim();
+        }
 
         // 发起命令
         var rs = _client.Invoke<String>("KillAndStart", new
@@ -152,7 +172,7 @@ public class LocalStarClient
     /// <param name="url">zip包下载源</param>
     /// <param name="version">版本号</param>
     /// <param name="target">目标目录</param>
-    public Boolean ProbeAndInstall(String url = null, String version = null, String target = null)
+    public Boolean ProbeAndInstall(String? url = null, String? version = null, String? target = null)
     {
         //if (url.IsNullOrEmpty()) throw new ArgumentNullException(nameof(url));
         if (url.IsNullOrEmpty())
@@ -160,7 +180,11 @@ public class LocalStarClient
             var set = NewLife.Setting.Current;
             url = set.PluginServer.EnsureEnd("/");
             url += "star/";
-            if (Environment.Version.Major >= 6)
+            if (Environment.Version.Major >= 8)
+                url += "staragent80.zip";
+            else if (Environment.Version.Major >= 7)
+                url += "staragent70.zip";
+            else if (Environment.Version.Major >= 6)
                 url += "staragent60.zip";
             else if (Environment.Version.Major >= 5)
                 url += "staragent50.zip";
@@ -187,7 +211,7 @@ public class LocalStarClient
         }
         catch (Exception ex)
         {
-            WriteLog("没有探测到StarAgent，{0}", ex.GetTrue().Message);
+            WriteLog("没有探测到StarAgent，{0}", ex.GetTrue()?.Message);
         }
 
         if (target.IsNullOrEmpty())
@@ -198,12 +222,12 @@ public class LocalStarClient
             {
                 try
                 {
-                    target = Path.GetDirectoryName(p.MainModule.FileName);
+                    if (p.MainModule != null)
+                        target = Path.GetDirectoryName(p.MainModule.FileName);
                 }
-                catch
-                {
-                    target = Path.GetDirectoryName(p.MainWindowTitle);
-                }
+                catch { }
+
+                if (target.IsNullOrEmpty()) target = Path.GetDirectoryName(p.MainWindowTitle);
 
                 WriteLog("发现进程StarAgent，ProcessId={0}，target={1}", p.Id, target);
             }
@@ -259,7 +283,7 @@ public class LocalStarClient
             }
 
             var fileName = info?.FileName;
-            if (!fileName.IsNullOrEmpty() && Path.GetFullPath(fileName).EqualIgnoreCase("dotnet.exe")) fileName = info.Arguments;
+            if (!fileName.IsNullOrEmpty() && Path.GetFullPath(fileName).EqualIgnoreCase("dotnet.exe")) fileName = info?.Arguments;
 
             var rs = false;
             if (Runtime.Windows)
@@ -273,7 +297,7 @@ public class LocalStarClient
         return true;
     }
 
-    private Boolean RunAgentOnWindows(String fileName, String target, Boolean inService)
+    private Boolean RunAgentOnWindows(String? fileName, String target, Boolean inService)
     {
         if (!fileName.IsNullOrEmpty() && Path.GetExtension(fileName) == ".dll") return false;
         if (fileName.IsNullOrEmpty()) fileName = target.CombinePath("StarAgent.exe").GetFullPath();
@@ -297,13 +321,13 @@ public class LocalStarClient
             };
             var p = Process.Start(si);
 
-            WriteLog("启动进程成功 pid={0}", p.Id);
+            WriteLog("启动进程成功 pid={0}", p?.Id);
         }
 
         return true;
     }
 
-    private Boolean RunAgentOnLinux(String fileName, String target, Boolean inService)
+    private Boolean RunAgentOnLinux(String? fileName, String target, Boolean inService)
     {
         if (!fileName.IsNullOrEmpty() && Path.GetExtension(fileName) == ".dll") return false;
         if (fileName.IsNullOrEmpty()) fileName = target.CombinePath("StarAgent").GetFullPath();
@@ -330,13 +354,13 @@ public class LocalStarClient
             };
             var p = Process.Start(si);
 
-            WriteLog("启动进程成功 pid={0}", p.Id);
+            WriteLog("启动进程成功 pid={0}", p?.Id);
         }
 
         return true;
     }
 
-    private Boolean RunAgentOnDotnet(String fileName, String target, Boolean inService)
+    private Boolean RunAgentOnDotnet(String? fileName, String target, Boolean inService)
     {
         if (fileName.IsNullOrEmpty()) fileName = target.CombinePath("StarAgent.dll").GetFullPath();
         if (!File.Exists(fileName)) return false;
@@ -359,7 +383,7 @@ public class LocalStarClient
             };
             var p = Process.Start(si);
 
-            WriteLog("启动进程成功 pid={0}", p.Id);
+            WriteLog("启动进程成功 pid={0}", p?.Id);
         }
 
         return true;
@@ -427,7 +451,7 @@ public class LocalStarClient
     /// <param name="local">本地信息，用于告知对方我是谁</param>
     /// <param name="timeout"></param>
     /// <returns></returns>
-    public static IEnumerable<AgentInfo> Scan(AgentInfo local = null, Int32 timeout = 15_000)
+    public static IEnumerable<AgentInfo> Scan(AgentInfo? local = null, Int32 timeout = 15_000)
     {
         var encoder = new JsonEncoder { Log = XTrace.Log };
         // 构造请求消息
@@ -442,7 +466,8 @@ public class LocalStarClient
         //};
         //var buf = msg.ToPacket().ToArray();
 
-        var buf = encoder.CreateRequest("Info", null).ToPacket().ToArray();
+        var buf = encoder.CreateRequest("Info", null).ToPacket()?.ToArray();
+        if (buf == null) yield break;
 
         // 在局域网中广播消息
         var udp = new UdpClient();
@@ -452,7 +477,7 @@ public class LocalStarClient
         while (DateTime.Now < end)
         {
             var rs = new DefaultMessage();
-            IPEndPoint ep = null;
+            IPEndPoint? ep = null;
             buf = udp.Receive(ref ep);
             if (buf != null && rs.Read(buf))
             {
@@ -471,7 +496,7 @@ public class LocalStarClient
 
     #region 日志
     /// <summary>日志</summary>
-    public ILog Log { get; set; }
+    public ILog Log { get; set; } = Logger.Null;
 
     /// <summary>写日志</summary>
     /// <param name="format"></param>

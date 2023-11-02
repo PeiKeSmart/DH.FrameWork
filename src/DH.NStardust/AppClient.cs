@@ -11,8 +11,6 @@ using Stardust.Models;
 using Stardust.Registry;
 using Stardust.Services;
 using NewLife.Caching;
-using System;
-using System.Net.Http;
 #if NET45_OR_GREATER || NETCOREAPP || NETSTANDARD
 using System.Net.WebSockets;
 using TaskEx = System.Threading.Tasks.Task;
@@ -38,6 +36,16 @@ public class AppClient : ApiHttpClient, ICommandClient, IRegistry, IEventProvide
 
     /// <summary>WebSocket长连接。建立长连接后，可以实时感知配置更新和注册服务更新，默认false</summary>
     public Boolean UseWebSocket { get; set; }
+
+    /// <summary>看门狗超时时间。默认0秒</summary>
+    /// <remarks>
+    /// 设置看门狗超时时间，超过该时间未收到心跳，将会重启本应用进程。
+    /// 0秒表示不启用看门狗。
+    /// </remarks>
+    public Int32 WatchdogTimeout { get; set; }
+
+    /// <summary>星尘工厂</summary>
+    public StarFactory Factory { get; set; }
 
     private ConcurrentDictionary<String, Delegate> _commands = new(StringComparer.OrdinalIgnoreCase);
     /// <summary>命令集合</summary>
@@ -185,7 +193,7 @@ public class AppClient : ApiHttpClient, ICommandClient, IRegistry, IEventProvide
 
     /// <summary>心跳</summary>
     /// <returns></returns>
-    public async Task<Object> Ping()
+    public async Task<Object?> Ping()
     {
         try
         {
@@ -194,7 +202,7 @@ public class AppClient : ApiHttpClient, ICommandClient, IRegistry, IEventProvide
             else
                 _appInfo.Refresh();
 
-            PingResponse rs = null;
+            PingResponse? rs = null;
             try
             {
                 rs = await PostAsync<PingResponse>("App/Ping", _appInfo);
@@ -255,6 +263,21 @@ public class AppClient : ApiHttpClient, ICommandClient, IRegistry, IEventProvide
 
             throw;
         }
+    }
+
+    /// <summary>向本地StarAgent发送心跳</summary>
+    /// <param name="appInfo"></param>
+    /// <returns></returns>
+    public async Task<Object?> PingLocal()
+    {
+        if (WatchdogTimeout <= 0) return null;
+
+        var local = Factory?.Local;
+        if (local == null || local.Info == null) return null;
+
+        if (_appInfo == null) return null;
+
+        return await local.PingAsync(_appInfo, WatchdogTimeout);
     }
 
     private TimeSpan _span;
@@ -391,7 +414,9 @@ public class AppClient : ApiHttpClient, ICommandClient, IRegistry, IEventProvide
                 if (rs == null) return;
             }
 
+            // 向服务端发送心跳后，再向本地发送心跳
             await Ping();
+            await PingLocal();
 
             await RefreshPublish();
             await RefreshConsume();
