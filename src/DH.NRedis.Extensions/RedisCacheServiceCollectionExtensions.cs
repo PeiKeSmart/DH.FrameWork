@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using NewLife.Caching;
 
-namespace NewLife.Extensions.Caching.Redis;
+namespace NewLife.Redis.Extensions;
 
 /// <summary>
 /// Redis分布式缓存扩展
