@@ -1,3 +1,4 @@
+using DH.Helpers;
 using DH.Timing;
 
 using NewLife;
@@ -368,7 +369,8 @@ public partial class SysOnlineTime : DHEntityBase<SysOnlineTime> {
             model.Month = updateTime.Month;
             model.MonthTimes += onlineTime;
 
-            if (model.UpdateTime.Date != updateTime.Date)
+            var dayTimes = model[$"Day{updateTime.Day}"].ToDGInt();
+            if (dayTimes == 0)
             {
                 model.DayTimes = onlineTime;
             }
@@ -376,11 +378,10 @@ public partial class SysOnlineTime : DHEntityBase<SysOnlineTime> {
             {
                 model.DayTimes += onlineTime;
             }
+
             model.UpdateTime = updateTime;
 
             model.SetItem($"Day{updateTime.Day}", model.DayTimes);
-
-            XTrace.WriteLine($"测试写入在线时间表的数据：{onlineTime}_{model.ToJson()}");
 
             model.SaveAsync();
         }
