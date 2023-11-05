@@ -381,7 +381,14 @@ public partial class SysOnlineTime : DHEntityBase<SysOnlineTime> {
 
             model.UpdateTime = updateTime;
 
-            model.SetItem($"Day{updateTime.Day}", model.DayTimes);
+            if (updateTime.Day == 1)
+            {
+                model[$"Day1"] = model.DayTimes;
+            }
+
+            //model[$"Day{updateTime.Day}"] = model.DayTimes;
+
+            //model.SetItem($"Day{updateTime.Day}", model.DayTimes);
 
             model.SaveAsync();
         }
@@ -401,11 +408,13 @@ public partial class SysOnlineTime : DHEntityBase<SysOnlineTime> {
             {
                 if (i == updateTime.Day)
                 {
-                    model.SetItem($"Day{i}", model.DayTimes);
+                    //model.SetItem($"Day{i}", model.DayTimes);
+                    //model[$"Day{i}"] = model.DayTimes;
                 }
                 else
                 {
                     model.SetItem($"Day{i}", 0);
+                    //model[$"Day{i}"] = 0;
                 }
             }
 
