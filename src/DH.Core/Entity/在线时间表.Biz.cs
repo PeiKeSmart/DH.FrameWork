@@ -383,11 +383,130 @@ public partial class SysOnlineTime : DHEntityBase<SysOnlineTime> {
 
             if (updateTime.Day == 1)
             {
-                model[$"Day1"] = model.DayTimes;
+                model.Day1 = model.DayTimes;
+            }
+            else if (updateTime.Day == 2)
+            {
+                model.Day2 = model.DayTimes;
+            }
+            else if (updateTime.Day == 3)
+            {
+                model.Day3 = model.DayTimes;
+            }
+            else if (updateTime.Day == 4)
+            {
+                model.Day4 = model.DayTimes;
+            }
+            else if (updateTime.Day == 5)
+            {
+                model.Day5 = model.DayTimes;
+            }
+            else if (updateTime.Day == 6)
+            {
+                model.Day6 = model.DayTimes;
+            }
+            else if (updateTime.Day == 7)
+            {
+                model.Day7 = model.DayTimes;
+            }
+            else if (updateTime.Day == 8)
+            {
+                model.Day8 = model.DayTimes;
+            }
+            else if (updateTime.Day == 9)
+            {
+                model.Day9 = model.DayTimes;
+            }
+            else if (updateTime.Day == 10)
+            {
+                model.Day10 = model.DayTimes;
+            }
+            else if (updateTime.Day == 11)
+            {
+                model.Day11 = model.DayTimes;
+            }
+            else if (updateTime.Day == 12)
+            {
+                model.Day12 = model.DayTimes;
+            }
+            else if (updateTime.Day == 13)
+            {
+                model.Day13 = model.DayTimes;
+            }
+            else if (updateTime.Day == 14)
+            {
+                model.Day14 = model.DayTimes;
+            }
+            else if (updateTime.Day == 15)
+            {
+                model.Day15 = model.DayTimes;
+            }
+            else if (updateTime.Day == 16)
+            {
+                model.Day16 = model.DayTimes;
+            }
+            else if (updateTime.Day == 17)
+            {
+                model.Day17 = model.DayTimes;
+            }
+            else if (updateTime.Day == 18)
+            {
+                model.Day18 = model.DayTimes;
+            }
+            else if (updateTime.Day == 19)
+            {
+                model.Day19 = model.DayTimes;
+            }
+            else if (updateTime.Day == 20)
+            {
+                model.Day20 = model.DayTimes;
+            }
+            else if (updateTime.Day == 21)
+            {
+                model.Day21 = model.DayTimes;
+            }
+            else if (updateTime.Day == 22)
+            {
+                model.Day22 = model.DayTimes;
+            }
+            else if (updateTime.Day == 23)
+            {
+                model.Day23 = model.DayTimes;
+            }
+            else if (updateTime.Day == 24)
+            {
+                model.Day24 = model.DayTimes;
+            }
+            else if (updateTime.Day == 25)
+            {
+                model.Day25 = model.DayTimes;
+            }
+            else if (updateTime.Day == 26)
+            {
+                model.Day26 = model.DayTimes;
+            }
+            else if (updateTime.Day == 27)
+            {
+                model.Day27 = model.DayTimes;
+            }
+            else if (updateTime.Day == 28)
+            {
+                model.Day28 = model.DayTimes;
+            }
+            else if (updateTime.Day == 29)
+            {
+                model.Day29 = model.DayTimes;
+            }
+            else if (updateTime.Day == 30)
+            {
+                model.Day30 = model.DayTimes;
+            }
+            else if (updateTime.Day == 31)
+            {
+                model.Day31 = model.DayTimes;
             }
 
             //model[$"Day{updateTime.Day}"] = model.DayTimes;
-
             //model.SetItem($"Day{updateTime.Day}", model.DayTimes);
 
             model.SaveAsync();
@@ -410,11 +529,261 @@ public partial class SysOnlineTime : DHEntityBase<SysOnlineTime> {
                 {
                     //model.SetItem($"Day{i}", model.DayTimes);
                     //model[$"Day{i}"] = model.DayTimes;
+
+                    if (updateTime.Day == 1)
+                    {
+                        model.Day1 = model.DayTimes;
+                    }
+                    else if (updateTime.Day == 2)
+                    {
+                        model.Day2 = model.DayTimes;
+                    }
+                    else if (updateTime.Day == 3)
+                    {
+                        model.Day3 = model.DayTimes;
+                    }
+                    else if (updateTime.Day == 4)
+                    {
+                        model.Day4 = model.DayTimes;
+                    }
+                    else if (updateTime.Day == 5)
+                    {
+                        model.Day5 = model.DayTimes;
+                    }
+                    else if (updateTime.Day == 6)
+                    {
+                        model.Day6 = model.DayTimes;
+                    }
+                    else if (updateTime.Day == 7)
+                    {
+                        model.Day7 = model.DayTimes;
+                    }
+                    else if (updateTime.Day == 8)
+                    {
+                        model.Day8 = model.DayTimes;
+                    }
+                    else if (updateTime.Day == 9)
+                    {
+                        model.Day9 = model.DayTimes;
+                    }
+                    else if (updateTime.Day == 10)
+                    {
+                        model.Day10 = model.DayTimes;
+                    }
+                    else if (updateTime.Day == 11)
+                    {
+                        model.Day11 = model.DayTimes;
+                    }
+                    else if (updateTime.Day == 12)
+                    {
+                        model.Day12 = model.DayTimes;
+                    }
+                    else if (updateTime.Day == 13)
+                    {
+                        model.Day13 = model.DayTimes;
+                    }
+                    else if (updateTime.Day == 14)
+                    {
+                        model.Day14 = model.DayTimes;
+                    }
+                    else if (updateTime.Day == 15)
+                    {
+                        model.Day15 = model.DayTimes;
+                    }
+                    else if (updateTime.Day == 16)
+                    {
+                        model.Day16 = model.DayTimes;
+                    }
+                    else if (updateTime.Day == 17)
+                    {
+                        model.Day17 = model.DayTimes;
+                    }
+                    else if (updateTime.Day == 18)
+                    {
+                        model.Day18 = model.DayTimes;
+                    }
+                    else if (updateTime.Day == 19)
+                    {
+                        model.Day19 = model.DayTimes;
+                    }
+                    else if (updateTime.Day == 20)
+                    {
+                        model.Day20 = model.DayTimes;
+                    }
+                    else if (updateTime.Day == 21)
+                    {
+                        model.Day21 = model.DayTimes;
+                    }
+                    else if (updateTime.Day == 22)
+                    {
+                        model.Day22 = model.DayTimes;
+                    }
+                    else if (updateTime.Day == 23)
+                    {
+                        model.Day23 = model.DayTimes;
+                    }
+                    else if (updateTime.Day == 24)
+                    {
+                        model.Day24 = model.DayTimes;
+                    }
+                    else if (updateTime.Day == 25)
+                    {
+                        model.Day25 = model.DayTimes;
+                    }
+                    else if (updateTime.Day == 26)
+                    {
+                        model.Day26 = model.DayTimes;
+                    }
+                    else if (updateTime.Day == 27)
+                    {
+                        model.Day27 = model.DayTimes;
+                    }
+                    else if (updateTime.Day == 28)
+                    {
+                        model.Day28 = model.DayTimes;
+                    }
+                    else if (updateTime.Day == 29)
+                    {
+                        model.Day29 = model.DayTimes;
+                    }
+                    else if (updateTime.Day == 30)
+                    {
+                        model.Day30 = model.DayTimes;
+                    }
+                    else if (updateTime.Day == 31)
+                    {
+                        model.Day31 = model.DayTimes;
+                    }
                 }
                 else
                 {
                     model.SetItem($"Day{i}", 0);
                     //model[$"Day{i}"] = 0;
+
+                    if (updateTime.Day == 1)
+                    {
+                        model.Day1 = 0;
+                    }
+                    else if (updateTime.Day == 2)
+                    {
+                        model.Day2 = 0;
+                    }
+                    else if (updateTime.Day == 3)
+                    {
+                        model.Day3 = 0;
+                    }
+                    else if (updateTime.Day == 4)
+                    {
+                        model.Day4 = 0;
+                    }
+                    else if (updateTime.Day == 5)
+                    {
+                        model.Day5 = 0;
+                    }
+                    else if (updateTime.Day == 6)
+                    {
+                        model.Day6 = 0;
+                    }
+                    else if (updateTime.Day == 7)
+                    {
+                        model.Day7 = 0;
+                    }
+                    else if (updateTime.Day == 8)
+                    {
+                        model.Day8 = 0;
+                    }
+                    else if (updateTime.Day == 9)
+                    {
+                        model.Day9 = 0;
+                    }
+                    else if (updateTime.Day == 10)
+                    {
+                        model.Day10 = 0;
+                    }
+                    else if (updateTime.Day == 11)
+                    {
+                        model.Day11 = 0;
+                    }
+                    else if (updateTime.Day == 12)
+                    {
+                        model.Day12 = 0;
+                    }
+                    else if (updateTime.Day == 13)
+                    {
+                        model.Day13 = 0;
+                    }
+                    else if (updateTime.Day == 14)
+                    {
+                        model.Day14 = 0;
+                    }
+                    else if (updateTime.Day == 15)
+                    {
+                        model.Day15 = 0;
+                    }
+                    else if (updateTime.Day == 16)
+                    {
+                        model.Day16 = 0;
+                    }
+                    else if (updateTime.Day == 17)
+                    {
+                        model.Day17 = 0;
+                    }
+                    else if (updateTime.Day == 18)
+                    {
+                        model.Day18 = 0;
+                    }
+                    else if (updateTime.Day == 19)
+                    {
+                        model.Day19 = 0;
+                    }
+                    else if (updateTime.Day == 20)
+                    {
+                        model.Day20 = 0;
+                    }
+                    else if (updateTime.Day == 21)
+                    {
+                        model.Day21 = 0;
+                    }
+                    else if (updateTime.Day == 22)
+                    {
+                        model.Day22 = 0;
+                    }
+                    else if (updateTime.Day == 23)
+                    {
+                        model.Day23 = 0;
+                    }
+                    else if (updateTime.Day == 24)
+                    {
+                        model.Day24 = 0;
+                    }
+                    else if (updateTime.Day == 25)
+                    {
+                        model.Day25 = 0;
+                    }
+                    else if (updateTime.Day == 26)
+                    {
+                        model.Day26 = 0;
+                    }
+                    else if (updateTime.Day == 27)
+                    {
+                        model.Day27 = 0;
+                    }
+                    else if (updateTime.Day == 28)
+                    {
+                        model.Day28 = 0;
+                    }
+                    else if (updateTime.Day == 29)
+                    {
+                        model.Day29 = 0;
+                    }
+                    else if (updateTime.Day == 30)
+                    {
+                        model.Day30 = 0;
+                    }
+                    else if (updateTime.Day == 31)
+                    {
+                        model.Day31 = 0;
+                    }
                 }
             }
 
