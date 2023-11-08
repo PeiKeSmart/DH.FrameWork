@@ -6,7 +6,7 @@ namespace DH.NamedPipe;
 /// <summary>
 /// 客户端管道
 /// </summary>
-class NamedPipeClient {
+public class NamedPipeClient {
     private NamedPipeClientStream Client { get; set; }
     private byte[] Buffer { get; set; }
     private bool IsReadEnd { get; set; }

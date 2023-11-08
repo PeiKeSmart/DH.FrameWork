@@ -13,7 +13,7 @@ public class AsyncState {
 /// <summary>
 /// 服务端管道
 /// </summary>
-class NamedPipeServer {
+public class NamedPipeServer {
     private NamedPipeServerStream Server { get; set; }
     private byte[] Buffer;
     private int BufferSize = 10;
