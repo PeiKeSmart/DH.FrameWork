@@ -338,7 +338,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DH.EasyNotice.QyWeixin", "s
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DH.NRedis.Extensions", "src\DH.NRedis.Extensions\DH.NRedis.Extensions.csproj", "{2D2B44E3-FFCD-499A-AE28-0C745A093B9E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DH.EnumsNet", "src\DH.EnumsNet\DH.EnumsNet.csproj", "{9147C851-F962-46C0-A280-9F0C546BD29C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DH.EnumsNet", "src\DH.EnumsNet\DH.EnumsNet.csproj", "{9147C851-F962-46C0-A280-9F0C546BD29C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DH.Platform.Windows", "src\DH.Platform.Windows\DH.Platform.Windows.csproj", "{8DDD49FB-5EC0-48B2-8F39-E561AA63531B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -842,6 +844,10 @@ Global
 		{9147C851-F962-46C0-A280-9F0C546BD29C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9147C851-F962-46C0-A280-9F0C546BD29C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9147C851-F962-46C0-A280-9F0C546BD29C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8DDD49FB-5EC0-48B2-8F39-E561AA63531B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8DDD49FB-5EC0-48B2-8F39-E561AA63531B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8DDD49FB-5EC0-48B2-8F39-E561AA63531B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8DDD49FB-5EC0-48B2-8F39-E561AA63531B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1007,6 +1013,7 @@ Global
 		{6E242033-9F70-4CD9-A21A-00A266687EA5} = {83CE8A16-09D5-4FE4-ABD9-92DEEF4A7590}
 		{2D2B44E3-FFCD-499A-AE28-0C745A093B9E} = {2B88F595-EBF2-48D6-AE8B-7C7E7755A687}
 		{9147C851-F962-46C0-A280-9F0C546BD29C} = {8ED504DD-57C1-47D3-82E7-9F7E4CDE4137}
+		{8DDD49FB-5EC0-48B2-8F39-E561AA63531B} = {AD7AB001-3AF0-48C7-B277-513A2A2D6275}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8C334959-AE8C-42FF-B144-7B36F5C1B16A}
