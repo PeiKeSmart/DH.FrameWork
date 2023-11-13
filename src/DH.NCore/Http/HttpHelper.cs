@@ -139,7 +139,7 @@ public static class HttpHelper
     /// <param name="headers"></param>
     /// <param name="pk"></param>
     /// <returns></returns>
-    public static Packet MakeRequest(String method, Uri uri, IDictionary<String, Object>? headers, Packet? pk)
+    public static Packet MakeRequest(String method, Uri uri, IDictionary<String, Object?>? headers, Packet? pk)
     {
         if (method.IsNullOrEmpty()) method = pk?.Count > 0 ? "POST" : "GET";
 
@@ -197,7 +197,7 @@ public static class HttpHelper
     /// <param name="headers"></param>
     /// <param name="pk"></param>
     /// <returns></returns>
-    public static Packet MakeResponse(HttpStatusCode code, IDictionary<String, Object>? headers, Packet? pk)
+    public static Packet MakeResponse(HttpStatusCode code, IDictionary<String, Object?>? headers, Packet? pk)
     {
         // 构建头部
         var sb = Pool.StringBuilder.Get();
@@ -423,7 +423,7 @@ public static class HttpHelper
 
         foreach (var item in data.ToDictionary())
         {
-            if (item.Value == null) continue;
+            //if (item.Value == null) continue;
 
             if (item.Value is FileStream fs)
                 content.Add(new StreamContent(fs), item.Key, Path.GetFileName(fs.Name));
@@ -433,7 +433,7 @@ public static class HttpHelper
                 content.Add(new StringContent(str), item.Key);
             else if (item.Value is Byte[] buf)
                 content.Add(new ByteArrayContent(buf), item.Key);
-            else if (item.Value.GetType().GetTypeCode() != TypeCode.Object)
+            else if (item.Value == null || item.Value.GetType().GetTypeCode() != TypeCode.Object)
                 content.Add(new StringContent(item.Value + ""), item.Key);
             else
                 content.Add(new StringContent(item.Value.ToJson()), item.Key);
@@ -583,13 +583,13 @@ public static class HttpHelper
         {
             foreach (var item in data.ToDictionary())
             {
-                if (item.Value == null) continue;
+                //if (item.Value == null) continue;
 
                 if (item.Value is String str)
                     content.Add(new StringContent(str), item.Key);
                 else if (item.Value is Byte[] buf)
                     content.Add(new ByteArrayContent(buf), item.Key);
-                else if (item.Value.GetType().GetTypeCode() != TypeCode.Object)
+                else if (item.Value == null || item.Value.GetType().GetTypeCode() != TypeCode.Object)
                     content.Add(new StringContent(item.Value + ""), item.Key);
                 else
                     content.Add(new StringContent(item.Value.ToJson()), item.Key);

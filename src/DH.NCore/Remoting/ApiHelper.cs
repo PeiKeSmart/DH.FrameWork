@@ -1,5 +1,4 @@
 ﻿using System.Net;
-using System.Net.Http;
 using System.Net.Http.Headers;
 using NewLife.Collections;
 using NewLife.Data;
@@ -336,7 +335,8 @@ public static class ApiHelper
         // 反序列化
         if (data == null) return default;
 
-        if (data is not IDictionary<String, Object> and not IList<Object>) throw new InvalidDataException("未识别响应数据");
+        if (data is not IDictionary<String, Object> and not IList<Object>)
+            throw new InvalidDataException("Unrecognized response data");
 
         return JsonHelper.Convert<TResult>(data);
     }
