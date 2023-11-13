@@ -7,8 +7,6 @@ using NewLife.Threading;
 using Stardust.Models;
 using Stardust.Services;
 
-using System.Net.Http;
-
 namespace Stardust.Managers;
 
 /// <summary>应用服务管理</summary>

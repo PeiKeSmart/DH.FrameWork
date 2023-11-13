@@ -14,8 +14,6 @@ using NewLife.Threading;
 using Stardust.Managers;
 using Stardust.Models;
 using Stardust.Services;
-using System.Net.Http;
-
 #if NET45_OR_GREATER || NETCOREAPP || NETSTANDARD
 using System.Net.WebSockets;
 using WebSocket = System.Net.WebSockets.WebSocket;
