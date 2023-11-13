@@ -7,14 +7,14 @@ using NewLife.Net.Handlers;
 namespace NewLife.Remoting;
 
 /// <summary>Api主机</summary>
-public abstract class ApiHost : DisposeBase, IApiHost, IExtend, ILogFeature
+public abstract class ApiHost : DisposeBase, IApiHost, IExtend, ILogFeature, ITracerFeature
 {
     #region 属性
     /// <summary>名称</summary>
-    public String Name { get; set; }
+    public String Name { get; set; } = null!;
 
     /// <summary>编码器</summary>
-    public IEncoder? Encoder { get; set; }
+    public IEncoder Encoder { get; set; } = null!;
 
     /// <summary>调用超时时间。请求发出后，等待响应的最大时间，默认15_000ms</summary>
     public Int32 Timeout { get; set; } = 15_000;
@@ -49,6 +49,9 @@ public abstract class ApiHost : DisposeBase, IApiHost, IExtend, ILogFeature
 
     /// <summary>显示调用和处理错误。默认false</summary>
     public Boolean ShowError { get; set; }
+
+    /// <summary>性能跟踪器</summary>
+    public ITracer? Tracer { get; set; } = DefaultTracer.Instance;
 
     /// <summary>写日志</summary>
     /// <param name="format"></param>

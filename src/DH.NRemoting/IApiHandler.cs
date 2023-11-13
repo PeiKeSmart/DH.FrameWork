@@ -3,11 +3,11 @@ using System.Reflection;
 using NewLife.Caching;
 using NewLife.Collections;
 using NewLife.Data;
-using NewLife.Http;
 using NewLife.Log;
 using NewLife.Messaging;
 using NewLife.Net;
 using NewLife.Reflection;
+using NewLife.Remoting.Http;
 
 namespace NewLife.Remoting;
 
@@ -20,7 +20,7 @@ public interface IApiHandler
     /// <param name="args">参数</param>
     /// <param name="msg">消息</param>
     /// <returns></returns>
-    Object Execute(IApiSession session, String action, Packet args, IMessage msg);
+    Object? Execute(IApiSession session, String action, Packet? args, IMessage msg);
 }
 
 /// <summary>默认处理器</summary>
@@ -41,14 +41,15 @@ public class ApiHandler : IApiHandler
     /// <param name="args">参数</param>
     /// <param name="msg">消息</param>
     /// <returns></returns>
-    public virtual Object Execute(IApiSession session, String action, Packet args, IMessage msg)
+    public virtual Object? Execute(IApiSession session, String action, Packet? args, IMessage msg)
     {
         if (action.IsNullOrEmpty()) action = "Api/Info";
 
-        var api = session.FindAction(action) ?? throw new ApiException(404, $"无法找到名为[{action}]的服务！");
+        var manager = (Host as ApiServer)?.Manager;
+        var api = manager?.Find(action) ?? throw new ApiException(404, $"无法找到名为[{action}]的服务！");
 
         // 全局共用控制器，或者每次创建对象实例
-        var controller = session.CreateController(api) ?? throw new ApiException(403, $"无法创建名为[{api.Name}]的服务！");
+        var controller = manager.CreateController(api) ?? throw new ApiException(403, $"无法创建名为[{api.Name}]的服务！");
         if (controller is IApi capi) capi.Session = session;
         if (session is INetSession ss)
             api.LastSession = ss.Remote + "";
@@ -58,11 +59,12 @@ public class ApiHandler : IApiHandler
         var st = api.StatProcess;
         var sw = st.StartCount();
 
+        // 准备调用上下文
         var ctx = Prepare(session, action, args, api, msg);
         ctx.Controller = controller;
 
         // 释放参数到跟踪片段
-        DefaultSpan.Current?.Detach(ctx.Parameters);
+        if (ctx.Parameters != null) DefaultSpan.Current?.Detach(ctx.Parameters);
 
         Object? rs = null;
         try
@@ -80,7 +82,9 @@ public class ApiHandler : IApiHandler
                 // 特殊处理参数和返回类型都是Packet的服务
                 if (api.IsPacketParameter && api.IsPacketReturn)
                 {
-                    var func = api.Method.As<Func<Packet, Packet>>(controller);
+                    var func = api.Method.As<Func<Packet?, Packet?>>(controller);
+                    if (func == null) throw new ArgumentOutOfRangeException(nameof(api.Method));
+
                     rs = func(args);
                 }
                 else if (api.IsPacketParameter)
@@ -89,8 +93,7 @@ public class ApiHandler : IApiHandler
                 }
                 else
                 {
-                    var ps = ctx.ActionParameters;
-                    rs = controller.InvokeWithParams(api.Method, ps as IDictionary);
+                    rs = controller.InvokeWithParams(api.Method, ctx.ActionParameters as IDictionary);
                 }
                 ctx.Result = rs;
             }
@@ -133,7 +136,7 @@ public class ApiHandler : IApiHandler
     /// <param name="api"></param>
     /// <param name="msg">消息内容，辅助数据解析</param>
     /// <returns></returns>
-    public virtual ControllerContext Prepare(IApiSession session, String action, Packet args, ApiAction api, IMessage msg)
+    public virtual ControllerContext Prepare(IApiSession session, String action, Packet? args, ApiAction api, IMessage msg)
     {
         //var enc = Host.Encoder;
         var enc = session["Encoder"] as IEncoder ?? Host.Encoder;
@@ -151,32 +154,31 @@ public class ApiHandler : IApiHandler
         ctx.Request = args;
 
         // 如果服务只有一个二进制参数，则走快速通道
-        if (!api.IsPacketParameter)
+        if (api.IsPacketParameter) return ctx;
+
+        // 不允许参数字典为空。接口只有一个入参时，客户端可能用基础类型封包传递
+        IDictionary<String, Object?>? dic = null;
+        if (args != null && args.Total > 0) dic = enc.DecodeParameters(action, args, msg);
+        dic ??= new NullableDictionary<String, Object?>(StringComparer.OrdinalIgnoreCase);
+        if (dic != null)
         {
-            // 不允许参数字典为空
-            var dic = args == null || args.Total == 0 ?
-                new NullableDictionary<String, Object?>(StringComparer.OrdinalIgnoreCase) :
-                enc.DecodeParameters(action, args, msg);
-            if (dic != null)
+            ctx.Parameters = dic;
+            //session.Parameters = dic;
+
+            // 令牌，作为参数或者http头传递
+            if (dic.TryGetValue("Token", out var token)) session.Token = token + "";
+            if (session.Token.IsNullOrEmpty() && msg is HttpMessage hmsg && hmsg.Headers != null)
             {
-                ctx.Parameters = dic;
-                session.Parameters = dic;
-
-                // 令牌，作为参数或者http头传递
-                if (dic.TryGetValue("Token", out var token)) session.Token = token + "";
-                if (session.Token.IsNullOrEmpty() && msg is HttpMessage hmsg && hmsg.Headers != null)
-                {
-                    // post、package、byte三种情况将token 写入请求头
-                    if (hmsg.Headers.TryGetValue("x-token", out var token2))
-                        session.Token = token2;
-                    else if (hmsg.Headers.TryGetValue("Authorization", out token2))
-                        session.Token = token2.TrimStart("Bearer ");
-                }
-
-                // 准备好参数
-                var ps = GetParams(api.Method, dic, enc);
-                ctx.ActionParameters = ps;
+                // post、package、byte三种情况将token 写入请求头
+                if (hmsg.Headers.TryGetValue("x-token", out var token2))
+                    session.Token = token2;
+                else if (hmsg.Headers.TryGetValue("Authorization", out token2))
+                    session.Token = token2.TrimStart("Bearer ");
             }
+
+            // 准备好参数
+            var ps = GetParams(api.Method, dic, args, enc);
+            ctx.ActionParameters = ps;
         }
 
         return ctx;
@@ -184,10 +186,11 @@ public class ApiHandler : IApiHandler
 
     /// <summary>获取参数</summary>
     /// <param name="method"></param>
+    /// <param name="dic"></param>
     /// <param name="args"></param>
     /// <param name="encoder"></param>
     /// <returns></returns>
-    protected virtual IDictionary<String, Object?> GetParams(MethodInfo method, IDictionary<String, Object?> args, IEncoder encoder)
+    protected virtual IDictionary<String, Object?> GetParams(MethodInfo method, IDictionary<String, Object?> dic, Packet? args, IEncoder encoder)
     {
         var ps = new Dictionary<String, Object?>();
 
@@ -195,12 +198,22 @@ public class ApiHandler : IApiHandler
         var pis = method.GetParameters();
         if (pis == null || pis.Length <= 0) return ps;
 
+        // 接口只有一个基础类型入参时，客户端可能用基础类型封包传递（字符串）。
+        // 例如接口 Say(String text)，客户端可用 InvokeAsync<Object>("Say", "Hello NewLife!")
+        if (pis.Length == 1 && pis[0].ParameterType.GetTypeCode() != TypeCode.Object && dic.Count == 0 && args != null)
+        {
+            var pi = pis[0];
+            ps[pi.Name] = args.ToStr().ChangeType(pi.ParameterType);
+
+            return ps;
+        }
+
         foreach (var pi in pis)
         {
             var name = pi.Name;
 
             Object? v = null;
-            if (args != null && args.ContainsKey(name)) v = args[name];
+            if (dic != null && dic.TryGetValue(name, out var v2)) v = v2;
 
             // 基本类型
             if (pi.ParameterType.GetTypeCode() != TypeCode.Object)
@@ -215,7 +228,7 @@ public class ApiHandler : IApiHandler
                     ps[name] = Convert.FromBase64String(v + "");
                 else
                 {
-                    v ??= args;
+                    v ??= dic;
                     if (v != null)
                         ps[name] = encoder.Convert(v, pi.ParameterType);
                 }
@@ -234,8 +247,8 @@ public class ApiHandler : IApiHandler
 /// </remarks>
 public class TokenApiHandler : ApiHandler
 {
-    /// <summary>会话存储</summary>
-    public ICache Cache { get; set; } = new MemoryCache { Expire = 20 * 60 };
+    ///// <summary>会话存储</summary>
+    //public ICache Cache { get; set; } = new MemoryCache { Expire = 20 * 60 };
 
     /// <summary>准备上下文，可以借助Token重写Session会话集合</summary>
     /// <param name="session"></param>
@@ -244,7 +257,7 @@ public class TokenApiHandler : ApiHandler
     /// <param name="api"></param>
     /// <param name="msg"></param>
     /// <returns></returns>
-    public override ControllerContext Prepare(IApiSession session, String action, Packet args, ApiAction api, IMessage msg)
+    public override ControllerContext Prepare(IApiSession session, String action, Packet? args, ApiAction api, IMessage msg)
     {
         var ctx = base.Prepare(session, action, args, api, msg);
 
@@ -254,9 +267,9 @@ public class TokenApiHandler : ApiHandler
             // 第一用户数据是本地字典，用于记录是否启用了第二数据
             if (session is ApiNetSession ns && ns.Items["Token"] + "" != token)
             {
-                var key = GetKey(token);
-                // 采用哈希结构。内存缓存用并行字段，Redis用Set
-                ns.Items2 = Cache.GetDictionary<Object>(key);
+                //var key = GetKey(token);
+                //// 采用哈希结构。内存缓存用并行字典，Redis用Set
+                //ns.Items2 = Cache.GetDictionary<Object>(key);
                 ns.Items["Token"] = token;
             }
         }

@@ -17,12 +17,17 @@ public interface IApiManager
     /// <summary>注册服务</summary>
     /// <param name="controller">控制器对象</param>
     /// <param name="method">动作名称。为空时遍历控制器所有公有成员方法</param>
-    void Register(Object controller, String method);
+    void Register(Object controller, String? method);
 
     /// <summary>查找服务</summary>
     /// <param name="action"></param>
     /// <returns></returns>
     ApiAction? Find(String action);
+
+    /// <summary>创建控制器实例</summary>
+    /// <param name="api"></param>
+    /// <returns></returns>
+    Object CreateController(ApiAction api);
 }
 
 class ApiManager : IApiManager
@@ -74,7 +79,7 @@ class ApiManager : IApiManager
     /// <summary>注册服务</summary>
     /// <param name="controller">控制器对象</param>
     /// <param name="method">动作名称。为空时遍历控制器所有公有成员方法</param>
-    public void Register(Object controller, String method)
+    public void Register(Object controller, String? method)
     {
         if (controller == null) throw new ArgumentNullException(nameof(controller));
 
@@ -114,5 +119,21 @@ class ApiManager : IApiManager
         if (Services.TryGetValue("*", out mi)) return mi;
 
         return null;
+    }
+
+    /// <summary>创建控制器实例</summary>
+    /// <param name="api"></param>
+    /// <returns></returns>
+    public virtual Object CreateController(ApiAction api)
+    {
+        var controller = api.Controller;
+        if (controller != null) return controller;
+
+        controller = _server.ServiceProvider?.GetService(api.Type);
+
+        controller ??= api.Type.CreateInstance();
+        if (controller == null) throw new InvalidDataException($"无法创建[{api.Type.FullName}]的实例");
+
+        return controller;
     }
 }
