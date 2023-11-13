@@ -137,14 +137,18 @@ internal class Program
                 row.Key.Delete();
             }
         }
-        var process = Process.GetProcessesByName("PushNuget");
-        foreach (var p in process)
-        {
-            if (!p.CloseMainWindow())
-            {
-                p.Kill();
-            }
-        }
+
+        // 使用代码退出，状态代码为0
+        Environment.Exit(0);
+
+        //var process = Process.GetProcessesByName("PushNuget");
+        //foreach (var p in process)
+        //{
+        //    if (!p.CloseMainWindow())
+        //    {
+        //        p.Kill();
+        //    }
+        //}
     }
 
     private static void GlobalScheduledTasks(object? state)
