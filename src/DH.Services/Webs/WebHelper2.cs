@@ -21,6 +21,7 @@ using NewLife.Serialization;
 using System.Net;
 
 using XCode;
+using XCode.Membership;
 
 namespace DH.Core.Webs;
 
@@ -174,6 +175,24 @@ public static class WebHelper2
     /// <returns></returns>
     public static String GetReferer(this HttpRequest request) => request.Headers["Referer"].FirstOrDefault();
     #endregion
+
+    /// <summary>修正多租户菜单</summary>
+    public static void FixTenantMenu()
+    {
+        var root = Menu.FindByName("Admin");
+        if (root != null)
+        {
+            var set = DHSetting.Current;
+            foreach (var item in root.Childs)
+            {
+                if (item.Name.Contains("Tenant"))
+                {
+                    item.Visible = set.EnableTenant;
+                    item.Update();
+                }
+            }
+        }
+    }
 
     /// <summary>
     /// 获取当前的HTTP请求协议
