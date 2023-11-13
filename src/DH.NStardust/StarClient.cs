@@ -4,6 +4,7 @@ using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
+
 using NewLife;
 using NewLife.Caching;
 using NewLife.Log;
@@ -11,11 +12,16 @@ using NewLife.Reflection;
 using NewLife.Remoting;
 using NewLife.Serialization;
 using NewLife.Threading;
+
 using Stardust.Managers;
 using Stardust.Models;
 using Stardust.Services;
+
+using System.Net.Http;
+
 #if NET45_OR_GREATER || NETCOREAPP || NETSTANDARD
 using System.Net.WebSockets;
+
 using WebSocket = System.Net.WebSockets.WebSocket;
 #endif
 

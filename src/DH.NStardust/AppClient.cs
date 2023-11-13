@@ -11,6 +11,8 @@ using Stardust.Models;
 using Stardust.Registry;
 using Stardust.Services;
 using NewLife.Caching;
+using System.Net.Http;
+
 #if NET45_OR_GREATER || NETCOREAPP || NETSTANDARD
 using System.Net.WebSockets;
 using TaskEx = System.Threading.Tasks.Task;
