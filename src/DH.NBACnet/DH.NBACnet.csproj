@@ -62,7 +62,7 @@
 	<Reference Include="System.Net.Http" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)'!='net462' and '$(TargetFramework)'!='net45'">
-    <PackageReference Include="System.IO.Ports" Version="8.0.0-rc.2.23479.6" />
+    <PackageReference Include="System.IO.Ports" Version="8.0.0" />
   </ItemGroup>
 	
   <ItemGroup>

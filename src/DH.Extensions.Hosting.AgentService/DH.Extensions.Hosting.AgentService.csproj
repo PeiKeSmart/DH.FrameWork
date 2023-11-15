@@ -56,7 +56,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\DH.NAgent\DH.NAgent.csproj" />
-		<PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0-rc.2.23479.6" />
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
