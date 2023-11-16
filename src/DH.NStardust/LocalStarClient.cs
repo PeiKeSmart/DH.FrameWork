@@ -484,7 +484,7 @@ public class LocalStarClient
                 var msg = encoder.Decode(rs);
                 if (msg != null)
                 {
-                    var js = encoder.DecodeResult(msg.Action, msg.Data, rs);
+                    var js = encoder.DecodeResult(msg.Action, msg.Data, rs, null);
                     var info = (AgentInfo)encoder.Convert(js, typeof(AgentInfo));
 
                     yield return info;
