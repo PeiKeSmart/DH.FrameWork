@@ -22,7 +22,7 @@
      确保从NuGet缓存复制的dll到项目的输出-->
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <!-- 对控制器/操作/方法没有阻止注释禁用警告 -->
-    <NoWarn>1701;1702;NU5104;NETSDK1138;CS7035</NoWarn>
+	<NoWarn>1701;1702;NU5104;NU1505;NETSDK1138;CS7035</NoWarn>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
