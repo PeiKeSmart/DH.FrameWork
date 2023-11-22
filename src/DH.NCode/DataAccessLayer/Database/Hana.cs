@@ -7,31 +7,21 @@ using NewLife.Data;
 
 namespace XCode.DataAccessLayer;
 
-internal class MySql : RemoteDb
+internal class Hana : RemoteDb
 {
     #region 属性
 
     /// <summary>返回数据库类型。</summary>
-    public override DatabaseType Type => DatabaseType.MySql;
+    public override DatabaseType Type => DatabaseType.Hana;
 
     /// <summary>创建工厂</summary>
     /// <returns></returns>
     protected override DbProviderFactory CreateFactory()
     {
-        //_Factory = GetProviderFactory("NewLife.MySql.dll", "NewLife.MySql.MySqlClientFactory") ??
-        //           GetProviderFactory("MySql.Data.dll", "MySql.Data.MySqlClient.MySqlClientFactory");
-        // MewLife.MySql 在开发过程中，数据驱动下载站点没有它的包，暂时不支持下载
-        return GetProviderFactory("NewLife.MySql", null, "NewLife.MySql.MySqlClientFactory", true, true) ??
-            GetProviderFactory(null, "MySql.Data.dll", "MySql.Data.MySqlClient.MySqlClientFactory");
+        return GetProviderFactory("Sap.Data.Hana", "Sap.Data.Hana.Core.v2.1.dll", "Sap.Data.Hana.HanaFactory");
     }
 
     private const String Server_Key = "Server";
-    private const String CharSet = "CharSet";
-
-    //const String AllowZeroDatetime = "Allow Zero Datetime";
-    private const String MaxPoolSize = "MaxPoolSize";
-
-    private const String Sslmode = "Sslmode";
 
     protected override void OnSetConnectionString(ConnectionStringBuilder builder)
     {
@@ -43,24 +33,6 @@ internal class MySql : RemoteDb
             //builder[Server_Key] = "127.0.0.1";
             builder[Server_Key] = IPAddress.Loopback.ToString();
         }
-
-        // 默认设置为utf8mb4，支持表情符
-        builder.TryAdd(CharSet, "utf8mb4");
-
-        //if (!builder.ContainsKey(AllowZeroDatetime)) builder[AllowZeroDatetime] = "True";
-        // 默认最大连接数1000
-        if (builder["Pooling"].ToBoolean()) builder.TryAdd(MaxPoolSize, "1000");
-
-        // 如未设置Sslmode，默认为none
-        if (builder[Sslmode] == null) builder.TryAdd(Sslmode, "none");
-    }
-
-    protected override void OnGetConnectionString(ConnectionStringBuilder builder)
-    {
-        // 如果是新版驱动v8.0，需要设置获取公钥
-        var factory = GetFactory(true);
-        var version = factory?.GetType().Assembly.GetName().Version;
-        if (version == null || version.Major >= 8) builder.TryAdd("AllowPublicKeyRetrieval", "true");
     }
 
     #endregion 属性
@@ -69,17 +41,17 @@ internal class MySql : RemoteDb
 
     /// <summary>创建数据库会话</summary>
     /// <returns></returns>
-    protected override IDbSession OnCreateSession() => new MySqlSession(this);
+    protected override IDbSession OnCreateSession() => new HanaSession(this);
 
     /// <summary>创建元数据对象</summary>
     /// <returns></returns>
-    protected override IMetaData OnCreateMetaData() => new MySqlMetaData();
+    protected override IMetaData OnCreateMetaData() => new HanaMetaData();
 
     public override Boolean Support(String providerName)
     {
         providerName = providerName.ToLower();
-        if (providerName.Contains("mysql.data.mysqlclient")) return true;
-        if (providerName.Contains("mysql")) return true;
+        if (providerName.Contains("hana")) return true;
+        if (providerName.Contains("sap")) return true;
 
         return false;
     }
@@ -164,14 +136,14 @@ internal class MySql : RemoteDb
     /// <param name="value">值</param>
     /// <param name="type">类型</param>
     /// <returns></returns>
-    public override IDataParameter CreateParameter(String name, Object value, Type type = null)
+    public override IDataParameter CreateParameter(String name, Object value, Type? type = null)
     {
         var dp = base.CreateParameter(name, value, type);
 
         //var type = field?.DataType;
         if (type == null) type = value?.GetType();
 
-        // MySql的枚举要用 DbType.String
+        // Hana的枚举要用 DbType.String
         if (type == typeof(Boolean))
         {
             var v = value.ToBoolean();
@@ -191,7 +163,7 @@ internal class MySql : RemoteDb
     }
 
     /// <summary>系统数据库名</summary>
-    public override String SystemDatabaseName => "mysql";
+    public override String SystemDatabaseName => "hana";
 
     /// <summary>字符串相加</summary>
     /// <param name="left"></param>
@@ -209,12 +181,12 @@ internal class MySql : RemoteDb
     #endregion 跨版本兼容
 }
 
-/// <summary>MySql数据库</summary>
-internal class MySqlSession : RemoteDbSession
+/// <summary>Hana数据库</summary>
+internal class HanaSession : RemoteDbSession
 {
     #region 构造函数
 
-    public MySqlSession(IDatabase db) : base(db)
+    public HanaSession(IDatabase db) : base(db)
     {
     }
 
@@ -340,10 +312,10 @@ internal class MySqlSession : RemoteDbSession
     #endregion 批量操作
 }
 
-/// <summary>MySql元数据</summary>
-internal class MySqlMetaData : RemoteDbMetaData
+/// <summary>Hana元数据</summary>
+internal class HanaMetaData : RemoteDbMetaData
 {
-    public MySqlMetaData() => Types = _DataTypes;
+    public HanaMetaData() => Types = _DataTypes;
 
     #region 数据类型
 
@@ -378,7 +350,7 @@ internal class MySqlMetaData : RemoteDbMetaData
         { typeof(Double), new String[] { "DOUBLE" } },
         { typeof(Decimal), new String[] { "DECIMAL({0}, {1})" } },
         { typeof(DateTime), new String[] { "DATETIME", "DATE", "TIMESTAMP", "TIME" } },
-        // mysql中nvarchar会变成utf8字符集的varchar，而不会取数据库的utf8mb4
+        // nvarchar会变成utf8字符集的varchar，而不会取数据库的utf8mb4
         { typeof(String), new String[] { "VARCHAR({0})", "LONGTEXT", "TEXT", "CHAR({0})", "NCHAR({0})", "NVARCHAR({0})", "SET", "ENUM", "TINYTEXT", "TEXT", "MEDIUMTEXT" } },
         { typeof(Boolean), new String[] { "TINYINT" } },
     };
@@ -438,7 +410,7 @@ internal class MySqlMetaData : RemoteDbMetaData
                         if (field.RawType.StartsWithIgnoreCase("varchar", "nvarchar")) field.DataType = typeof(String);
                     }
 
-                    // MySql中没有布尔型，这里处理YN枚举作为布尔型
+                    // Hana中没有布尔型，这里处理YN枚举作为布尔型
                     if (field.RawType is "enum('N','Y')" or "enum('Y','N')") field.DataType = typeof(Boolean);
 
                     field.Fix();
@@ -482,7 +454,7 @@ internal class MySqlMetaData : RemoteDbMetaData
         }
 
         // 找到使用枚举作为布尔型的旧表
-        var es = (Database as MySql).EnumTables;
+        var es = (Database as Hana).EnumTables;
         foreach (var table in list)
         {
             if (!es.Contains(table.TableName))
@@ -493,7 +465,7 @@ internal class MySqlMetaData : RemoteDbMetaData
                 {
                     es.Add(table.TableName);
 
-                    WriteLog("发现MySql中旧格式的布尔型字段 {0} {1}", table.TableName, dc);
+                    WriteLog("发现Hana中旧格式的布尔型字段 {0} {1}", table.TableName, dc);
                 }
             }
         }
