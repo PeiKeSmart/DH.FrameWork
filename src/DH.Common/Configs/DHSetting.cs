@@ -270,6 +270,12 @@ public class DHSetting : Config<DHSetting>
     public DateTime UniversalCaptchaEndTime { get; set; }
 
     /// <summary>
+    /// 用于接口调测时使用的密码
+    /// </summary>
+    [Description("用于接口调测时使用的密码")]
+    public String DebugPassWord { get; set; } = Rand.NextString(32);
+
+    /// <summary>
     /// 禁止访问时间
     /// </summary>
     [Description("禁止访问时间")]
