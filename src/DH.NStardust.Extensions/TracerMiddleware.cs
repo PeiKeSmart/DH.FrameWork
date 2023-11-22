@@ -61,6 +61,11 @@ public class TracerMiddleware
                         span.Tag = Environment.NewLine + buf.ToStr(null, 0, count);
                         req.Body.Position = 0;
                     }
+                    else
+                    {
+                        span.AppendTag($"ContentLength: {req.ContentLength}");
+                        span.AppendTag($"ContentType: {req.ContentType}");
+                    }
 
                     if (span.Tag.Length < 500)
                     {
@@ -82,7 +87,7 @@ public class TracerMiddleware
             if (span != null)
             {
                 var code = ctx.Response.StatusCode;
-                if (code >= 400 && code != 404) span.SetError(new HttpRequestException($"Http Error {code} {(HttpStatusCode)code}"), null);
+                if (code == 400 || code > 404) span.SetError(new HttpRequestException($"Http Error {code} {(HttpStatusCode)code}"), null);
             }
         }
         catch (Exception ex)
