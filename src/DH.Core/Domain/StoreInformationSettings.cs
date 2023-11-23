@@ -25,7 +25,7 @@ namespace DH.Core.Domain
         /// <summary>
         /// 获取或设置默认存储主题
         /// </summary>
-        public string DefaultStoreTheme { get; set; }
+        public string DefaultStoreTheme { get; set; } = "DefaultClean";
 
         /// <summary>
         /// 获取或设置一个值，该值指示是否允许客户选择主题
