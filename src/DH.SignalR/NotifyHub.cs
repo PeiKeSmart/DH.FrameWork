@@ -61,6 +61,10 @@ public class NotifyHub : Hub<IClientNotifyHub>, IServerNotifyHub
         if (DHUtilSetting.Current.RedisEnabled)
         {
             _cache = EngineContext.Current.Resolve<FullRedis>();
+            if (_cache == null)
+            {
+                XTrace.WriteLine($"Redis缓存对象为空，请检查是否注入FullRedis");
+            }
         }
         else
         {
