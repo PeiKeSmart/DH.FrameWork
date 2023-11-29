@@ -4,7 +4,7 @@
 	<PropertyGroup>
 		<LangVersion>latest</LangVersion>
 		<OutputType>Library</OutputType>
-		<TargetFrameworks>netcoreapp3.1;net5.0;net6.0;net7.0;net8.0</TargetFrameworks>
+		<TargetFrameworks>net8.0</TargetFrameworks>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<RootNamespace>NewLife.Redis.Extensions</RootNamespace>
 		<AssemblyName>DH.NRedis.Extensions</AssemblyName>
@@ -58,30 +58,6 @@
 		<ProjectReference Include="..\DH.NRedis\DH.NRedis.csproj" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='netcoreapp3.1'">
-		<PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="3.1.0" />
-		<PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="3.1.0" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.0" />
-		<PackageReference Include="Microsoft.Extensions.Options" Version="3.1.0" />
-	</ItemGroup>
-	<ItemGroup Condition="'$(TargetFramework)'=='net5.0'">
-		<PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="5.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="5.0.0" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Options" Version="5.0.0" />
-	</ItemGroup>
-	<ItemGroup Condition="'$(TargetFramework)'=='net6.0'">
-		<PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="6.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="6.0.0" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
-	</ItemGroup>
-	<ItemGroup Condition="'$(TargetFramework)'=='net7.0'">
-		<PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="7.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="7.0.0" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Options" Version="7.0.0" />
-	</ItemGroup>
 	<ItemGroup Condition="'$(TargetFramework)'=='net8.0'">
 		<PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="8.0.0" />
