@@ -3,6 +3,9 @@ using Baidu.Yingyan.Entity;
 using Baidu.Yingyan.Export;
 using Baidu.Yingyan.Fence;
 using Baidu.Yingyan.Track;
+
+using DH;
+
 using NewLife;
 using NewLife.Log;
 using System;
@@ -129,6 +132,11 @@ namespace Baidu.Yingyan
                 }
                 else
                     requestUri += "?" + q;
+            }
+
+            if (DHSetting.Current.Debug)
+            {
+                XTrace.WriteLine($"百度鹰眼：{requestUri}");
             }
 
             var response = await client.GetAsync(requestUri);

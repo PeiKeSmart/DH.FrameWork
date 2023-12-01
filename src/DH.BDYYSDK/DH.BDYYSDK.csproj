@@ -70,6 +70,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\DH.Common\DH.Common.csproj" />
 		<ProjectReference Include="..\DH.NCore\DH.NCore.csproj" />
 	</ItemGroup>
 
