@@ -149,6 +149,9 @@ public partial class UserDetailModel
     /// <summary>冻结充值卡余额</summary>
     public Decimal FreezeRcBalance { get; set; }
 
+    /// <summary>国家区号</summary>
+    public Int32 CountryCode { get; set; }
+
     /// <summary>国家ID</summary>
     public Int32 CountryId { get; set; }
 
@@ -264,6 +267,7 @@ public partial class UserDetailModel
         FreezePredeposit = model.FreezePredeposit;
         AvailableRcBalance = model.AvailableRcBalance;
         FreezeRcBalance = model.FreezeRcBalance;
+        CountryCode = model.CountryCode;
         CountryId = model.CountryId;
         AreaId = model.AreaId;
         CityId = model.CityId;

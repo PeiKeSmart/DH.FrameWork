@@ -394,6 +394,14 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
     [BindColumn("FreezeRcBalance", "冻结充值卡余额", "")]
     public Decimal FreezeRcBalance { get => _FreezeRcBalance; set { if (OnPropertyChanging("FreezeRcBalance", value)) { _FreezeRcBalance = value; OnPropertyChanged("FreezeRcBalance"); } } }
 
+    private Int32 _CountryCode;
+    /// <summary>国家区号</summary>
+    [DisplayName("国家区号")]
+    [Description("国家区号")]
+    [DataObjectField(false, false, false, 0)]
+    [BindColumn("CountryCode", "国家区号", "")]
+    public Int32 CountryCode { get => _CountryCode; set { if (OnPropertyChanging("CountryCode", value)) { _CountryCode = value; OnPropertyChanged("CountryCode"); } } }
+
     private Int32 _CountryId;
     /// <summary>国家ID</summary>
     [DisplayName("国家ID")]
@@ -616,6 +624,7 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
         FreezePredeposit = model.FreezePredeposit;
         AvailableRcBalance = model.AvailableRcBalance;
         FreezeRcBalance = model.FreezeRcBalance;
+        CountryCode = model.CountryCode;
         CountryId = model.CountryId;
         AreaId = model.AreaId;
         CityId = model.CityId;
@@ -694,6 +703,7 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
             "FreezePredeposit" => _FreezePredeposit,
             "AvailableRcBalance" => _AvailableRcBalance,
             "FreezeRcBalance" => _FreezeRcBalance,
+            "CountryCode" => _CountryCode,
             "CountryId" => _CountryId,
             "AreaId" => _AreaId,
             "CityId" => _CityId,
@@ -767,6 +777,7 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
                 case "FreezePredeposit": _FreezePredeposit = Convert.ToDecimal(value); break;
                 case "AvailableRcBalance": _AvailableRcBalance = Convert.ToDecimal(value); break;
                 case "FreezeRcBalance": _FreezeRcBalance = Convert.ToDecimal(value); break;
+                case "CountryCode": _CountryCode = value.ToInt(); break;
                 case "CountryId": _CountryId = value.ToInt(); break;
                 case "AreaId": _AreaId = value.ToInt(); break;
                 case "CityId": _CityId = value.ToInt(); break;
@@ -938,6 +949,9 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
 
         /// <summary>冻结充值卡余额</summary>
         public static readonly Field FreezeRcBalance = FindByName("FreezeRcBalance");
+
+        /// <summary>国家区号</summary>
+        public static readonly Field CountryCode = FindByName("CountryCode");
 
         /// <summary>国家ID</summary>
         public static readonly Field CountryId = FindByName("CountryId");
@@ -1145,6 +1159,9 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
 
         /// <summary>冻结充值卡余额</summary>
         public const String FreezeRcBalance = "FreezeRcBalance";
+
+        /// <summary>国家区号</summary>
+        public const String CountryCode = "CountryCode";
 
         /// <summary>国家ID</summary>
         public const String CountryId = "CountryId";

@@ -149,6 +149,9 @@ public partial interface IUserDetail
     /// <summary>冻结充值卡余额</summary>
     Decimal FreezeRcBalance { get; set; }
 
+    /// <summary>国家区号</summary>
+    Int32 CountryCode { get; set; }
+
     /// <summary>国家ID</summary>
     Int32 CountryId { get; set; }
 
