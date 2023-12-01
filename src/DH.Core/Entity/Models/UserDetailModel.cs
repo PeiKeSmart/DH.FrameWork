@@ -150,7 +150,7 @@ public partial class UserDetailModel
     public Decimal FreezeRcBalance { get; set; }
 
     /// <summary>国家区号</summary>
-    public Int32 CountryCode { get; set; }
+    public String CountryCode { get; set; }
 
     /// <summary>国家ID</summary>
     public Int32 CountryId { get; set; }

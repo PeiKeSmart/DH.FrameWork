@@ -150,7 +150,7 @@ public partial interface IUserDetail
     Decimal FreezeRcBalance { get; set; }
 
     /// <summary>国家区号</summary>
-    Int32 CountryCode { get; set; }
+    String CountryCode { get; set; }
 
     /// <summary>国家ID</summary>
     Int32 CountryId { get; set; }

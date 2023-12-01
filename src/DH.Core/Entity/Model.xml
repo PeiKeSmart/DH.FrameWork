@@ -87,7 +87,7 @@
         <Column Name="FreezePredeposit" DataType="Decimal" Description="预存款冻结金额" />
         <Column Name="AvailableRcBalance" DataType="Decimal" Description="可用充值卡余额" />
         <Column Name="FreezeRcBalance" DataType="Decimal" Description="冻结充值卡余额" />
-        <Column Name="CountryCode" DataType="Int32" Description="国家区号" />
+        <Column Name="CountryCode" DataType="String" Description="国家区号" />
         <Column Name="CountryId" DataType="Int32" Description="国家ID" />
         <Column Name="AreaId" DataType="Int32" Description="地区ID" />
         <Column Name="CityId" DataType="Int32" Description="城市ID" />
