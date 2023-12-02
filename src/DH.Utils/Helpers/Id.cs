@@ -87,17 +87,17 @@ public static class Id
     public static string GetString() => StringGenerator.Create();
 
     /// <summary>
-    /// 获取13位Id字符串
-    /// </summary>
-    /// <example>0HLV413UK2B7R</example>
-    public static string GetIdString() => IDGenerator.Instance.Generate;
-
-    /// <summary>
-    /// 获取新的13位Id字符串
+    /// 微软获取新的13位Id字符串
     /// </summary>
     /// <example>0HLV413GIHKK5</example>
     /// <returns></returns>
     public static String GetNextId() => CorrelationIdGenerator.GetNextId();
+
+    /// <summary>
+    /// 微软获取Id的字符串方法
+    /// </summary>
+    /// <returns></returns>
+    public static String GetIdString() => FastGuid.NewGuid().IdString;
 
     /// <summary>
     /// 生成sessionid
