@@ -327,6 +327,12 @@ public class DHSetting : Config<DHSetting>
     [Description("在线用户过期时间(单位为分钟)")]
     public int OnlineUserExpire { get; set; } = 8;
 
+    /// <summary>
+    /// 项目启动时间
+    /// </summary>
+    [Description("项目启动时间")]
+    public DateTime StartTime { get; set; }
+
     #region 系统功能
     /// <summary>多租户。是否支持多租户，租户模式禁止访问系统管理，平台管理模式禁止访问租户页面</summary>
     [Description("多租户。是否支持多租户，租户模式禁止访问系统管理，平台管理模式禁止访问租户页面")]
