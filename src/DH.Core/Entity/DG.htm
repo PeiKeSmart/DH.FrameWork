@@ -2448,6 +2448,221 @@
     </tbody>
 </table>
 <br></br>
+<h3>OAuth日志（OAuthLog）</h3>
+<table>
+    <thead>
+        <tr>
+            <th>名称</th>
+            <th>显示名</th>
+            <th>类型</th>
+            <th>长度</th>
+            <th>精度</th>
+            <th>主键</th>
+            <th>允许空</th>
+            <th>备注</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Id</td>
+            <td>编号</td>
+            <td>Int64</td>
+            <td></td>
+            <td></td>
+            <td title="主键">PK</td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>Provider</td>
+            <td>提供商</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>ConnectId</td>
+            <td>链接</td>
+            <td>Int32</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>UserId</td>
+            <td>用户</td>
+            <td>Int32</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>Action</td>
+            <td>操作</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>Success</td>
+            <td>成功</td>
+            <td>Boolean</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>RedirectUri</td>
+            <td>回调地址</td>
+            <td>String</td>
+            <td>500</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>ResponseType</td>
+            <td>响应类型</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>默认code</td>
+        </tr>
+
+        <tr>
+            <td>Scope</td>
+            <td>授权域</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>State</td>
+            <td>状态数据</td>
+            <td>String</td>
+            <td>500</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>Source</td>
+            <td>来源</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>AccessToken</td>
+            <td>访问令牌</td>
+            <td>String</td>
+            <td>2000</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>RefreshToken</td>
+            <td>刷新令牌</td>
+            <td>String</td>
+            <td>2000</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>TraceId</td>
+            <td>追踪</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>链路追踪，用于APM性能追踪定位，还原该事件的调用链</td>
+        </tr>
+
+        <tr>
+            <td>Remark</td>
+            <td>详细信息</td>
+            <td>String</td>
+            <td>2000</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>CreateIP</td>
+            <td>创建地址</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>CreateTime</td>
+            <td>创建时间</td>
+            <td>DateTime</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>UpdateTime</td>
+            <td>更新时间</td>
+            <td>DateTime</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>
+<br></br>
 <h3>用户在线（UserOnline）</h3>
 <table>
     <thead>
@@ -5626,6 +5841,210 @@
             <td></td>
             <td>N</td>
             <td>SMTP 协议</td>
+        </tr>
+    </tbody>
+</table>
+<br></br>
+<h3>定时作业（CronJob）</h3>
+<table>
+    <thead>
+        <tr>
+            <th>名称</th>
+            <th>显示名</th>
+            <th>类型</th>
+            <th>长度</th>
+            <th>精度</th>
+            <th>主键</th>
+            <th>允许空</th>
+            <th>备注</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Id</td>
+            <td>编号</td>
+            <td>Int32</td>
+            <td></td>
+            <td></td>
+            <td title="自增">AI</td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>Name</td>
+            <td>名称</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td title="唯一索引">UQ</td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>DisplayName</td>
+            <td>显示名</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>Cron</td>
+            <td>Cron表达式</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>用于定时执行的Cron表达式</td>
+        </tr>
+
+        <tr>
+            <td>Method</td>
+            <td>命令</td>
+            <td>String</td>
+            <td>200</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>作业方法全名，含命名空间和类名，静态方法，包含一个String参数</td>
+        </tr>
+
+        <tr>
+            <td>Argument</td>
+            <td>参数</td>
+            <td>String</td>
+            <td>2000</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>方法参数，时间日期、网址、SQL等</td>
+        </tr>
+
+        <tr>
+            <td>Enable</td>
+            <td>启用</td>
+            <td>Boolean</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>EnableLog</td>
+            <td>启用日志</td>
+            <td>Boolean</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>LastTime</td>
+            <td>最后时间</td>
+            <td>DateTime</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>最后一次执行作业的时间</td>
+        </tr>
+
+        <tr>
+            <td>NextTime</td>
+            <td>下一次时间</td>
+            <td>DateTime</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>下一次执行作业的时间</td>
+        </tr>
+
+        <tr>
+            <td>CreateUserID</td>
+            <td>创建者</td>
+            <td>Int32</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>CreateTime</td>
+            <td>创建时间</td>
+            <td>DateTime</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>CreateIP</td>
+            <td>创建地址</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>UpdateUserID</td>
+            <td>更新者</td>
+            <td>Int32</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>UpdateTime</td>
+            <td>更新时间</td>
+            <td>DateTime</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>UpdateIP</td>
+            <td>更新地址</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>Remark</td>
+            <td>内容</td>
+            <td>String</td>
+            <td>500</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
     </tbody>
 </table>

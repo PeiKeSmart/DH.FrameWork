@@ -227,6 +227,10 @@ public class DHSetting : Config<DHSetting>
     [Category("通用")]
     public Int32 RobotError { get; set; }
 
+    /// <summary>数据保留时间。审计日期与OAuth日志，默认30天</summary>
+    [Description("数据保留时间。审计日期与OAuth日志，默认30天")]
+    public Int32 DataRetention { get; set; } = 30;
+
     /// <summary>下拉选择框。使用Bootstrap，美观，但有呈现方面的性能损耗</summary>
     [Description("下拉选择框。使用Bootstrap，美观，但有呈现方面的性能损耗")]
     [Category("界面配置")]
