@@ -60,17 +60,17 @@
           </xs:documentation>
         </xs:annotation>
       </xs:element>
+      <xs:element name="BaseClass" type="xs:string">
+        <xs:annotation>
+          <xs:documentation xml:lang="zh-cn">
+            基类。可能包含基类和接口，其中{name}替换为Table.Name
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
       <xs:element name="Namespace" type="xs:string">
         <xs:annotation>
           <xs:documentation xml:lang="zh-cn">
             实体类的命名空间
-          </xs:documentation>
-        </xs:annotation>
-      </xs:element>
-      <xs:element name="ConnName" type="xs:string">
-        <xs:annotation>
-          <xs:documentation xml:lang="zh-cn">
-            实体类的数据库连接名
           </xs:documentation>
         </xs:annotation>
       </xs:element>
@@ -81,10 +81,38 @@
           </xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="BaseClass" type="xs:string">
+      <xs:element name="ChineseFileName" type="BooleanType">
         <xs:annotation>
           <xs:documentation xml:lang="zh-cn">
-            实体类的基类
+            是否使用中文作为实体类文件名
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="ModelNameForCopy" type="xs:string">
+        <xs:annotation>
+          <xs:documentation xml:lang="zh-cn">
+            用于生成Copy函数的参数类型。例如{name}或I{name}
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="HasIModel" type="BooleanType">
+        <xs:annotation>
+          <xs:documentation xml:lang="zh-cn">
+            带有索引器。实现IModel接口
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Nullable" type="BooleanType">
+        <xs:annotation>
+          <xs:documentation xml:lang="zh-cn">
+            可为null上下文。生成String?等
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="ConnName" type="xs:string">
+        <xs:annotation>
+          <xs:documentation xml:lang="zh-cn">
+            实体类的数据库连接名
           </xs:documentation>
         </xs:annotation>
       </xs:element>
@@ -95,10 +123,31 @@
           </xs:documentation>
         </xs:annotation>
       </xs:element>
+      <xs:element name="ModelsOutput" type="xs:string">
+        <xs:annotation>
+          <xs:documentation xml:lang="zh-cn">
+            模型类输出目录。默认当前目录的Models子目录
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
       <xs:element name="ModelInterface" type="xs:string">
         <xs:annotation>
           <xs:documentation xml:lang="zh-cn">
             简易模型接口名称，如{name}Model。指定后将生成简易模型接口，可用于数据传输
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="InterfacesOutput" type="xs:string">
+        <xs:annotation>
+          <xs:documentation xml:lang="zh-cn">
+            模型接口输出目录。默认当前目录的Interfaces子目录
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="ModelNameForToModel" type="xs:string">
+        <xs:annotation>
+          <xs:documentation xml:lang="zh-cn">
+            用户实体转为模型类的模型类。例如{name}或{name}DTO
           </xs:documentation>
         </xs:annotation>
       </xs:element>
@@ -109,52 +158,17 @@
           </xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="ChineseFileName" type="BooleanType">
-        <xs:annotation>
-          <xs:documentation xml:lang="zh-cn">
-            是否使用中文作为实体类文件名
-          </xs:documentation>
-        </xs:annotation>
-      </xs:element>
-      <xs:element name="OverwriteBizFile" type="BooleanType">
-        <xs:annotation>
-          <xs:documentation xml:lang="zh-cn">
-            是否在生成.biz.cs文件时覆盖已存在的文件
-          </xs:documentation>
-        </xs:annotation>
-      </xs:element>
-      <xs:element name="CreateCustomBizFile" type="BooleanType">
-        <xs:annotation>
-          <xs:documentation xml:lang="zh-cn">
-            是否创建用户自定义业务文件
-          </xs:documentation>
-        </xs:annotation>
-      </xs:element>
       <xs:element name="DisplayName" type="xs:string">
         <xs:annotation>
           <xs:documentation xml:lang="zh-cn">
-            模块名称
+            魔方区域显示名
           </xs:documentation>
         </xs:annotation>
       </xs:element>
       <xs:element name="CubeOutput" type="xs:string">
         <xs:annotation>
           <xs:documentation xml:lang="zh-cn">
-            魔方输出目录
-          </xs:documentation>
-        </xs:annotation>
-      </xs:element>
-      <xs:element name="Version" type="xs:string">
-        <xs:annotation>
-          <xs:documentation xml:lang="zh-cn">
-            XCode版本
-          </xs:documentation>
-        </xs:annotation>
-      </xs:element>
-      <xs:element name="Document" type="xs:string">
-        <xs:annotation>
-          <xs:documentation xml:lang="zh-cn">
-            文档教程
+            魔方控制器输出目录
           </xs:documentation>
         </xs:annotation>
       </xs:element>
@@ -391,7 +405,7 @@
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>
-    <xs:attribute name="DefaultValue" type="BooleanType">
+    <xs:attribute name="DefaultValue" type="xs:string">
       <xs:annotation>
         <xs:documentation>
           默认值
@@ -436,7 +450,7 @@
     <xs:attribute name="Map" type="xs:string">
       <xs:annotation>
         <xs:documentation xml:lang="zh-cn">
-          映射，表间关联，用于生成扩展属性
+          映射，表间关联，用于生成扩展属性，例如 XCode.Membership.Area@Id@Path@AreaPath，又如 Tenant@Id@$
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>
