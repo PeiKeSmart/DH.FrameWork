@@ -7,8 +7,8 @@
 	<TargetFrameworks>netstandard2.1;netstandard2.0;net461;net45</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
 	<Nullable>enable</Nullable>
-    <RootNamespace>DH.NStardust</RootNamespace>
-    <AssemblyName>DH.NStardust</AssemblyName>
+    <RootNamespace>DH.NLoRa</RootNamespace>
+    <AssemblyName>DH.NLoRa</AssemblyName>
     <AssemblyTitle>LoRa协议</AssemblyTitle>
     <Description>DH框架的LoRa协议。超低功耗的物联网远程通信协议LoRaWAN</Description>
     <Company>湖北登灏科技有限公司</Company>
