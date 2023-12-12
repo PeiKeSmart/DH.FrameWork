@@ -59,11 +59,11 @@ public partial interface IUserOnline
     /// <summary>最后错误</summary>
     DateTime LastError { get; set; }
 
-    /// <summary>追踪。链路追踪，用于APM性能追踪定位，还原该事件的调用链</summary>
-    String TraceId { get; set; }
-
     /// <summary>地址。根据IP计算</summary>
     String Address { get; set; }
+
+    /// <summary>追踪。链路追踪，用于APM性能追踪定位，还原该事件的调用链</summary>
+    String TraceId { get; set; }
 
     /// <summary>创建地址</summary>
     String CreateIP { get; set; }

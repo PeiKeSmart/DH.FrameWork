@@ -13,15 +13,13 @@ using XCode.DataAccessLayer;
 
 namespace DH.Entity;
 
-/// <summary>OAuth日志。用于记录OAuth客户端请求，同时Id作为state，避免向OAuthServer泄漏本机Url</summary>
+/// <summary>应用日志。用于OAuthServer的子系统</summary>
 [Serializable]
 [DataObject]
-[Description("OAuth日志。用于记录OAuth客户端请求，同时Id作为state，避免向OAuthServer泄漏本机Url")]
-[BindIndex("IX_OAuthLog_Provider", false, "Provider")]
-[BindIndex("IX_OAuthLog_ConnectId", false, "ConnectId")]
-[BindIndex("IX_OAuthLog_UserId", false, "UserId")]
-[BindTable("OAuthLog", Description = "OAuth日志。用于记录OAuth客户端请求，同时Id作为state，避免向OAuthServer泄漏本机Url", ConnName = "DG", DbType = DatabaseType.None)]
-public partial class OAuthLog : IOAuthLog, IEntity<IOAuthLog>
+[Description("应用日志。用于OAuthServer的子系统")]
+[BindIndex("IX_AppLog_AppId", false, "AppId")]
+[BindTable("AppLog", Description = "应用日志。用于OAuthServer的子系统", ConnName = "DG", DbType = DatabaseType.None)]
+public partial class AppLog : IAppLog, IEntity<IAppLog>
 {
     #region 属性
     private Int64 _Id;
@@ -32,29 +30,13 @@ public partial class OAuthLog : IOAuthLog, IEntity<IOAuthLog>
     [BindColumn("Id", "编号", "")]
     public Int64 Id { get => _Id; set { if (OnPropertyChanging("Id", value)) { _Id = value; OnPropertyChanged("Id"); } } }
 
-    private String _Provider;
-    /// <summary>提供商</summary>
-    [DisplayName("提供商")]
-    [Description("提供商")]
-    [DataObjectField(false, false, true, 50)]
-    [BindColumn("Provider", "提供商", "")]
-    public String Provider { get => _Provider; set { if (OnPropertyChanging("Provider", value)) { _Provider = value; OnPropertyChanged("Provider"); } } }
-
-    private Int32 _ConnectId;
-    /// <summary>链接</summary>
-    [DisplayName("链接")]
-    [Description("链接")]
+    private Int32 _AppId;
+    /// <summary>应用</summary>
+    [DisplayName("应用")]
+    [Description("应用")]
     [DataObjectField(false, false, false, 0)]
-    [BindColumn("ConnectId", "链接", "")]
-    public Int32 ConnectId { get => _ConnectId; set { if (OnPropertyChanging("ConnectId", value)) { _ConnectId = value; OnPropertyChanged("ConnectId"); } } }
-
-    private Int32 _UserId;
-    /// <summary>用户</summary>
-    [DisplayName("用户")]
-    [Description("用户")]
-    [DataObjectField(false, false, false, 0)]
-    [BindColumn("UserId", "用户", "")]
-    public Int32 UserId { get => _UserId; set { if (OnPropertyChanging("UserId", value)) { _UserId = value; OnPropertyChanged("UserId"); } } }
+    [BindColumn("AppId", "应用", "")]
+    public Int32 AppId { get => _AppId; set { if (OnPropertyChanging("AppId", value)) { _AppId = value; OnPropertyChanged("AppId"); } } }
 
     private String _Action;
     /// <summary>操作</summary>
@@ -71,6 +53,14 @@ public partial class OAuthLog : IOAuthLog, IEntity<IOAuthLog>
     [DataObjectField(false, false, false, 0)]
     [BindColumn("Success", "成功", "")]
     public Boolean Success { get => _Success; set { if (OnPropertyChanging("Success", value)) { _Success = value; OnPropertyChanged("Success"); } } }
+
+    private String _ClientId;
+    /// <summary>应用标识</summary>
+    [DisplayName("应用标识")]
+    [Description("应用标识")]
+    [DataObjectField(false, false, true, 50)]
+    [BindColumn("ClientId", "应用标识", "")]
+    public String ClientId { get => _ClientId; set { if (OnPropertyChanging("ClientId", value)) { _ClientId = value; OnPropertyChanged("ClientId"); } } }
 
     private String _RedirectUri;
     /// <summary>回调地址</summary>
@@ -104,14 +94,6 @@ public partial class OAuthLog : IOAuthLog, IEntity<IOAuthLog>
     [BindColumn("State", "状态数据", "")]
     public String State { get => _State; set { if (OnPropertyChanging("State", value)) { _State = value; OnPropertyChanged("State"); } } }
 
-    private String _Source;
-    /// <summary>来源</summary>
-    [DisplayName("来源")]
-    [Description("来源")]
-    [DataObjectField(false, false, true, 50)]
-    [BindColumn("Source", "来源", "")]
-    public String Source { get => _Source; set { if (OnPropertyChanging("Source", value)) { _Source = value; OnPropertyChanged("Source"); } } }
-
     private String _AccessToken;
     /// <summary>访问令牌</summary>
     [DisplayName("访问令牌")]
@@ -130,20 +112,28 @@ public partial class OAuthLog : IOAuthLog, IEntity<IOAuthLog>
 
     private String _TraceId;
     /// <summary>追踪。链路追踪，用于APM性能追踪定位，还原该事件的调用链</summary>
-    [Category("扩展")]
     [DisplayName("追踪")]
     [Description("追踪。链路追踪，用于APM性能追踪定位，还原该事件的调用链")]
     [DataObjectField(false, false, true, 200)]
     [BindColumn("TraceId", "追踪。链路追踪，用于APM性能追踪定位，还原该事件的调用链", "")]
     public String TraceId { get => _TraceId; set { if (OnPropertyChanging("TraceId", value)) { _TraceId = value; OnPropertyChanged("TraceId"); } } }
 
-    private String _Remark;
-    /// <summary>详细信息</summary>
-    [DisplayName("详细信息")]
-    [Description("详细信息")]
-    [DataObjectField(false, false, true, 2000)]
-    [BindColumn("Remark", "详细信息", "")]
-    public String Remark { get => _Remark; set { if (OnPropertyChanging("Remark", value)) { _Remark = value; OnPropertyChanged("Remark"); } } }
+    private String _Provider;
+    /// <summary>OAuth提供商</summary>
+    [DisplayName("OAuth提供商")]
+    [Description("OAuth提供商")]
+    [DataObjectField(false, false, true, 50)]
+    [BindColumn("Provider", "OAuth提供商", "")]
+    public String Provider { get => _Provider; set { if (OnPropertyChanging("Provider", value)) { _Provider = value; OnPropertyChanged("Provider"); } } }
+
+    private String _CreateUser;
+    /// <summary>创建者。可以是设备编码等唯一使用者标识</summary>
+    [Category("扩展")]
+    [DisplayName("创建者")]
+    [Description("创建者。可以是设备编码等唯一使用者标识")]
+    [DataObjectField(false, false, true, 50)]
+    [BindColumn("CreateUser", "创建者。可以是设备编码等唯一使用者标识", "")]
+    public String CreateUser { get => _CreateUser; set { if (OnPropertyChanging("CreateUser", value)) { _CreateUser = value; OnPropertyChanged("CreateUser"); } } }
 
     private String _CreateIP;
     /// <summary>创建地址</summary>
@@ -163,39 +153,48 @@ public partial class OAuthLog : IOAuthLog, IEntity<IOAuthLog>
     [BindColumn("CreateTime", "创建时间", "")]
     public DateTime CreateTime { get => _CreateTime; set { if (OnPropertyChanging("CreateTime", value)) { _CreateTime = value; OnPropertyChanged("CreateTime"); } } }
 
-    private DateTime _UpdateTime;
-    /// <summary>更新时间</summary>
+    private String _UpdateIP;
+    /// <summary>更新地址</summary>
     [Category("扩展")]
-    [DisplayName("更新时间")]
-    [Description("更新时间")]
-    [DataObjectField(false, false, true, 0)]
-    [BindColumn("UpdateTime", "更新时间", "")]
-    public DateTime UpdateTime { get => _UpdateTime; set { if (OnPropertyChanging("UpdateTime", value)) { _UpdateTime = value; OnPropertyChanged("UpdateTime"); } } }
+    [DisplayName("更新地址")]
+    [Description("更新地址")]
+    [DataObjectField(false, false, true, 50)]
+    [BindColumn("UpdateIP", "更新地址", "")]
+    public String UpdateIP { get => _UpdateIP; set { if (OnPropertyChanging("UpdateIP", value)) { _UpdateIP = value; OnPropertyChanged("UpdateIP"); } } }
+
+    private String _Remark;
+    /// <summary>备注</summary>
+    [Category("扩展")]
+    [DisplayName("备注")]
+    [Description("备注")]
+    [DataObjectField(false, false, true, 2000)]
+    [BindColumn("Remark", "备注", "")]
+    public String Remark { get => _Remark; set { if (OnPropertyChanging("Remark", value)) { _Remark = value; OnPropertyChanged("Remark"); } } }
     #endregion
 
     #region 拷贝
     /// <summary>拷贝模型对象</summary>
     /// <param name="model">模型</param>
-    public void Copy(IOAuthLog model)
+    public void Copy(IAppLog model)
     {
         Id = model.Id;
-        Provider = model.Provider;
-        ConnectId = model.ConnectId;
-        UserId = model.UserId;
+        AppId = model.AppId;
         Action = model.Action;
         Success = model.Success;
+        ClientId = model.ClientId;
         RedirectUri = model.RedirectUri;
         ResponseType = model.ResponseType;
         Scope = model.Scope;
         State = model.State;
-        Source = model.Source;
         AccessToken = model.AccessToken;
         RefreshToken = model.RefreshToken;
         TraceId = model.TraceId;
-        Remark = model.Remark;
+        Provider = model.Provider;
+        CreateUser = model.CreateUser;
         CreateIP = model.CreateIP;
         CreateTime = model.CreateTime;
-        UpdateTime = model.UpdateTime;
+        UpdateIP = model.UpdateIP;
+        Remark = model.Remark;
     }
     #endregion
 
@@ -208,23 +207,23 @@ public partial class OAuthLog : IOAuthLog, IEntity<IOAuthLog>
         get => name switch
         {
             "Id" => _Id,
-            "Provider" => _Provider,
-            "ConnectId" => _ConnectId,
-            "UserId" => _UserId,
+            "AppId" => _AppId,
             "Action" => _Action,
             "Success" => _Success,
+            "ClientId" => _ClientId,
             "RedirectUri" => _RedirectUri,
             "ResponseType" => _ResponseType,
             "Scope" => _Scope,
             "State" => _State,
-            "Source" => _Source,
             "AccessToken" => _AccessToken,
             "RefreshToken" => _RefreshToken,
             "TraceId" => _TraceId,
-            "Remark" => _Remark,
+            "Provider" => _Provider,
+            "CreateUser" => _CreateUser,
             "CreateIP" => _CreateIP,
             "CreateTime" => _CreateTime,
-            "UpdateTime" => _UpdateTime,
+            "UpdateIP" => _UpdateIP,
+            "Remark" => _Remark,
             _ => base[name]
         };
         set
@@ -232,23 +231,23 @@ public partial class OAuthLog : IOAuthLog, IEntity<IOAuthLog>
             switch (name)
             {
                 case "Id": _Id = value.ToLong(); break;
-                case "Provider": _Provider = Convert.ToString(value); break;
-                case "ConnectId": _ConnectId = value.ToInt(); break;
-                case "UserId": _UserId = value.ToInt(); break;
+                case "AppId": _AppId = value.ToInt(); break;
                 case "Action": _Action = Convert.ToString(value); break;
                 case "Success": _Success = value.ToBoolean(); break;
+                case "ClientId": _ClientId = Convert.ToString(value); break;
                 case "RedirectUri": _RedirectUri = Convert.ToString(value); break;
                 case "ResponseType": _ResponseType = Convert.ToString(value); break;
                 case "Scope": _Scope = Convert.ToString(value); break;
                 case "State": _State = Convert.ToString(value); break;
-                case "Source": _Source = Convert.ToString(value); break;
                 case "AccessToken": _AccessToken = Convert.ToString(value); break;
                 case "RefreshToken": _RefreshToken = Convert.ToString(value); break;
                 case "TraceId": _TraceId = Convert.ToString(value); break;
-                case "Remark": _Remark = Convert.ToString(value); break;
+                case "Provider": _Provider = Convert.ToString(value); break;
+                case "CreateUser": _CreateUser = Convert.ToString(value); break;
                 case "CreateIP": _CreateIP = Convert.ToString(value); break;
                 case "CreateTime": _CreateTime = value.ToDateTime(); break;
-                case "UpdateTime": _UpdateTime = value.ToDateTime(); break;
+                case "UpdateIP": _UpdateIP = Convert.ToString(value); break;
+                case "Remark": _Remark = Convert.ToString(value); break;
                 default: base[name] = value; break;
             }
         }
@@ -259,26 +258,23 @@ public partial class OAuthLog : IOAuthLog, IEntity<IOAuthLog>
     #endregion
 
     #region 字段名
-    /// <summary>取得OAuth日志字段信息的快捷方式</summary>
+    /// <summary>取得应用日志字段信息的快捷方式</summary>
     public partial class _
     {
         /// <summary>编号</summary>
         public static readonly Field Id = FindByName("Id");
 
-        /// <summary>提供商</summary>
-        public static readonly Field Provider = FindByName("Provider");
-
-        /// <summary>链接</summary>
-        public static readonly Field ConnectId = FindByName("ConnectId");
-
-        /// <summary>用户</summary>
-        public static readonly Field UserId = FindByName("UserId");
+        /// <summary>应用</summary>
+        public static readonly Field AppId = FindByName("AppId");
 
         /// <summary>操作</summary>
         public static readonly Field Action = FindByName("Action");
 
         /// <summary>成功</summary>
         public static readonly Field Success = FindByName("Success");
+
+        /// <summary>应用标识</summary>
+        public static readonly Field ClientId = FindByName("ClientId");
 
         /// <summary>回调地址</summary>
         public static readonly Field RedirectUri = FindByName("RedirectUri");
@@ -292,9 +288,6 @@ public partial class OAuthLog : IOAuthLog, IEntity<IOAuthLog>
         /// <summary>状态数据</summary>
         public static readonly Field State = FindByName("State");
 
-        /// <summary>来源</summary>
-        public static readonly Field Source = FindByName("Source");
-
         /// <summary>访问令牌</summary>
         public static readonly Field AccessToken = FindByName("AccessToken");
 
@@ -304,8 +297,11 @@ public partial class OAuthLog : IOAuthLog, IEntity<IOAuthLog>
         /// <summary>追踪。链路追踪，用于APM性能追踪定位，还原该事件的调用链</summary>
         public static readonly Field TraceId = FindByName("TraceId");
 
-        /// <summary>详细信息</summary>
-        public static readonly Field Remark = FindByName("Remark");
+        /// <summary>OAuth提供商</summary>
+        public static readonly Field Provider = FindByName("Provider");
+
+        /// <summary>创建者。可以是设备编码等唯一使用者标识</summary>
+        public static readonly Field CreateUser = FindByName("CreateUser");
 
         /// <summary>创建地址</summary>
         public static readonly Field CreateIP = FindByName("CreateIP");
@@ -313,32 +309,32 @@ public partial class OAuthLog : IOAuthLog, IEntity<IOAuthLog>
         /// <summary>创建时间</summary>
         public static readonly Field CreateTime = FindByName("CreateTime");
 
-        /// <summary>更新时间</summary>
-        public static readonly Field UpdateTime = FindByName("UpdateTime");
+        /// <summary>更新地址</summary>
+        public static readonly Field UpdateIP = FindByName("UpdateIP");
+
+        /// <summary>备注</summary>
+        public static readonly Field Remark = FindByName("Remark");
 
         static Field FindByName(String name) => Meta.Table.FindByName(name);
     }
 
-    /// <summary>取得OAuth日志字段名称的快捷方式</summary>
+    /// <summary>取得应用日志字段名称的快捷方式</summary>
     public partial class __
     {
         /// <summary>编号</summary>
         public const String Id = "Id";
 
-        /// <summary>提供商</summary>
-        public const String Provider = "Provider";
-
-        /// <summary>链接</summary>
-        public const String ConnectId = "ConnectId";
-
-        /// <summary>用户</summary>
-        public const String UserId = "UserId";
+        /// <summary>应用</summary>
+        public const String AppId = "AppId";
 
         /// <summary>操作</summary>
         public const String Action = "Action";
 
         /// <summary>成功</summary>
         public const String Success = "Success";
+
+        /// <summary>应用标识</summary>
+        public const String ClientId = "ClientId";
 
         /// <summary>回调地址</summary>
         public const String RedirectUri = "RedirectUri";
@@ -352,9 +348,6 @@ public partial class OAuthLog : IOAuthLog, IEntity<IOAuthLog>
         /// <summary>状态数据</summary>
         public const String State = "State";
 
-        /// <summary>来源</summary>
-        public const String Source = "Source";
-
         /// <summary>访问令牌</summary>
         public const String AccessToken = "AccessToken";
 
@@ -364,8 +357,11 @@ public partial class OAuthLog : IOAuthLog, IEntity<IOAuthLog>
         /// <summary>追踪。链路追踪，用于APM性能追踪定位，还原该事件的调用链</summary>
         public const String TraceId = "TraceId";
 
-        /// <summary>详细信息</summary>
-        public const String Remark = "Remark";
+        /// <summary>OAuth提供商</summary>
+        public const String Provider = "Provider";
+
+        /// <summary>创建者。可以是设备编码等唯一使用者标识</summary>
+        public const String CreateUser = "CreateUser";
 
         /// <summary>创建地址</summary>
         public const String CreateIP = "CreateIP";
@@ -373,8 +369,11 @@ public partial class OAuthLog : IOAuthLog, IEntity<IOAuthLog>
         /// <summary>创建时间</summary>
         public const String CreateTime = "CreateTime";
 
-        /// <summary>更新时间</summary>
-        public const String UpdateTime = "UpdateTime";
+        /// <summary>更新地址</summary>
+        public const String UpdateIP = "UpdateIP";
+
+        /// <summary>备注</summary>
+        public const String Remark = "Remark";
     }
     #endregion
 }

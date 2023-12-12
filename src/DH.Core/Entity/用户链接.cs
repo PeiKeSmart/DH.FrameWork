@@ -197,6 +197,7 @@ public partial class UserConnect : IUserConnect, IEntity<IUserConnect>
 
     private String _Remark;
     /// <summary>备注</summary>
+    [Category("扩展")]
     [DisplayName("备注")]
     [Description("备注")]
     [DataObjectField(false, false, true, 5000)]

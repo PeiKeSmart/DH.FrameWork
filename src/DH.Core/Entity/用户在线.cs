@@ -152,14 +152,6 @@ public partial class UserOnline : IUserOnline, IEntity<IUserOnline>
     [BindColumn("LastError", "最后错误", "")]
     public DateTime LastError { get => _LastError; set { if (OnPropertyChanging("LastError", value)) { _LastError = value; OnPropertyChanged("LastError"); } } }
 
-    private String _TraceId;
-    /// <summary>追踪。链路追踪，用于APM性能追踪定位，还原该事件的调用链</summary>
-    [DisplayName("追踪")]
-    [Description("追踪。链路追踪，用于APM性能追踪定位，还原该事件的调用链")]
-    [DataObjectField(false, false, true, 50)]
-    [BindColumn("TraceId", "追踪。链路追踪，用于APM性能追踪定位，还原该事件的调用链", "")]
-    public String TraceId { get => _TraceId; set { if (OnPropertyChanging("TraceId", value)) { _TraceId = value; OnPropertyChanged("TraceId"); } } }
-
     private String _Address;
     /// <summary>地址。根据IP计算</summary>
     [DisplayName("地址")]
@@ -167,6 +159,15 @@ public partial class UserOnline : IUserOnline, IEntity<IUserOnline>
     [DataObjectField(false, false, true, 200)]
     [BindColumn("Address", "地址。根据IP计算", "")]
     public String Address { get => _Address; set { if (OnPropertyChanging("Address", value)) { _Address = value; OnPropertyChanged("Address"); } } }
+
+    private String _TraceId;
+    /// <summary>追踪。链路追踪，用于APM性能追踪定位，还原该事件的调用链</summary>
+    [Category("扩展")]
+    [DisplayName("追踪")]
+    [Description("追踪。链路追踪，用于APM性能追踪定位，还原该事件的调用链")]
+    [DataObjectField(false, false, true, 200)]
+    [BindColumn("TraceId", "追踪。链路追踪，用于APM性能追踪定位，还原该事件的调用链", "")]
+    public String TraceId { get => _TraceId; set { if (OnPropertyChanging("TraceId", value)) { _TraceId = value; OnPropertyChanged("TraceId"); } } }
 
     private String _CreateIP;
     /// <summary>创建地址</summary>
@@ -226,8 +227,8 @@ public partial class UserOnline : IUserOnline, IEntity<IUserOnline>
         Status = model.Status;
         OnlineTime = model.OnlineTime;
         LastError = model.LastError;
-        TraceId = model.TraceId;
         Address = model.Address;
+        TraceId = model.TraceId;
         CreateIP = model.CreateIP;
         CreateTime = model.CreateTime;
         UpdateIP = model.UpdateIP;
@@ -259,8 +260,8 @@ public partial class UserOnline : IUserOnline, IEntity<IUserOnline>
             "Status" => _Status,
             "OnlineTime" => _OnlineTime,
             "LastError" => _LastError,
-            "TraceId" => _TraceId,
             "Address" => _Address,
+            "TraceId" => _TraceId,
             "CreateIP" => _CreateIP,
             "CreateTime" => _CreateTime,
             "UpdateIP" => _UpdateIP,
@@ -287,8 +288,8 @@ public partial class UserOnline : IUserOnline, IEntity<IUserOnline>
                 case "Status": _Status = Convert.ToString(value); break;
                 case "OnlineTime": _OnlineTime = value.ToInt(); break;
                 case "LastError": _LastError = value.ToDateTime(); break;
-                case "TraceId": _TraceId = Convert.ToString(value); break;
                 case "Address": _Address = Convert.ToString(value); break;
+                case "TraceId": _TraceId = Convert.ToString(value); break;
                 case "CreateIP": _CreateIP = Convert.ToString(value); break;
                 case "CreateTime": _CreateTime = value.ToDateTime(); break;
                 case "UpdateIP": _UpdateIP = Convert.ToString(value); break;
@@ -354,11 +355,11 @@ public partial class UserOnline : IUserOnline, IEntity<IUserOnline>
         /// <summary>最后错误</summary>
         public static readonly Field LastError = FindByName("LastError");
 
-        /// <summary>追踪。链路追踪，用于APM性能追踪定位，还原该事件的调用链</summary>
-        public static readonly Field TraceId = FindByName("TraceId");
-
         /// <summary>地址。根据IP计算</summary>
         public static readonly Field Address = FindByName("Address");
+
+        /// <summary>追踪。链路追踪，用于APM性能追踪定位，还原该事件的调用链</summary>
+        public static readonly Field TraceId = FindByName("TraceId");
 
         /// <summary>创建地址</summary>
         public static readonly Field CreateIP = FindByName("CreateIP");
@@ -426,11 +427,11 @@ public partial class UserOnline : IUserOnline, IEntity<IUserOnline>
         /// <summary>最后错误</summary>
         public const String LastError = "LastError";
 
-        /// <summary>追踪。链路追踪，用于APM性能追踪定位，还原该事件的调用链</summary>
-        public const String TraceId = "TraceId";
-
         /// <summary>地址。根据IP计算</summary>
         public const String Address = "Address";
+
+        /// <summary>追踪。链路追踪，用于APM性能追踪定位，还原该事件的调用链</summary>
+        public const String TraceId = "TraceId";
 
         /// <summary>创建地址</summary>
         public const String CreateIP = "CreateIP";

@@ -59,11 +59,11 @@ public partial class UserOnlineModel
     /// <summary>最后错误</summary>
     public DateTime LastError { get; set; }
 
-    /// <summary>追踪。链路追踪，用于APM性能追踪定位，还原该事件的调用链</summary>
-    public String TraceId { get; set; }
-
     /// <summary>地址。根据IP计算</summary>
     public String Address { get; set; }
+
+    /// <summary>追踪。链路追踪，用于APM性能追踪定位，还原该事件的调用链</summary>
+    public String TraceId { get; set; }
 
     /// <summary>创建地址</summary>
     public String CreateIP { get; set; }
@@ -99,8 +99,8 @@ public partial class UserOnlineModel
         Status = model.Status;
         OnlineTime = model.OnlineTime;
         LastError = model.LastError;
-        TraceId = model.TraceId;
         Address = model.Address;
+        TraceId = model.TraceId;
         CreateIP = model.CreateIP;
         CreateTime = model.CreateTime;
         UpdateIP = model.UpdateIP;
