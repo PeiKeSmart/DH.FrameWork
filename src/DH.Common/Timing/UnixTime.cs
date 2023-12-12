@@ -43,4 +43,59 @@ public static class UnixTime
     {
         return EpochTime.AddMilliseconds(timestamp).ToLocalTime();
     }
+
+    /// <summary>
+    /// 转换为Utc DateTime时区为0的时间
+    /// </summary>
+    /// <param name="timestamp">时间戳。毫秒</param>
+    /// <returns></returns>
+    public static DateTimeOffset ToUtcDateTime(Int64 timestamp)
+    {
+        DateTimeOffset utcTime = DateTimeOffset.FromUnixTimeSeconds(timestamp);
+        DateTimeOffset zeroOffsetTime = utcTime.ToOffset(TimeSpan.Zero);
+
+        return zeroOffsetTime;
+    }
+
+    /// <summary>
+    /// 当前时间转换为Utc DateTime时区为0的时间
+    /// </summary>
+    /// <returns></returns>
+    public static DateTimeOffset ToUtcZeroDateTime()
+    {
+        // 获取当前时间
+        DateTimeOffset localTime = DateTimeOffset.Now;
+
+        // 获取时区为0的时间
+        DateTimeOffset utcTime = TimeZoneInfo.ConvertTime(localTime, TimeZoneInfo.Utc);
+
+        return utcTime;
+    }
+
+    /// <summary>
+    /// 指定时间转换为Utc DateTime时区为0的时间
+    /// </summary>
+    /// <param name="dateTime">带时区的UTC时间</param>
+    /// <returns></returns>
+    public static DateTimeOffset ToUtcZeroDateTime(DateTimeOffset dateTime)
+    {
+        // 获取时区为0的时间
+        DateTimeOffset utcTime = TimeZoneInfo.ConvertTime(dateTime, TimeZoneInfo.Utc);
+
+        return utcTime;
+    }
+
+    /// <summary>
+    /// 指定Utc DateTime时区为0的时间转化为本地时间
+    /// </summary>
+    /// <param name="dateTime">带时区的UTC时间</param>
+    /// <returns></returns>
+    public static DateTimeOffset ToUtcZeroDateTime(DateTime dateTime)
+    {
+        DateTimeOffset inputTime = DateTime.SpecifyKind(dateTime, DateTimeKind.Utc);  // 时区为0的时间
+
+        DateTimeOffset utcTime = inputTime.ToUniversalTime().ToLocalTime();
+
+        return utcTime;
+    }
 }
