@@ -870,5 +870,418 @@
         <Index Columns="Version" />
       </Indexes>
     </Table>
+    <Table Name="UserToken" Description="用户令牌。授权指定用户访问接口数据，支持有效期" ConnName="Membership">
+      <Columns>
+        <Column Name="ID" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
+        <Column Name="Token" DataType="String" Description="令牌" />
+        <Column Name="Url" DataType="String" Length="200" Description="地址。锁定该令牌只能访问该资源路径" />
+        <Column Name="UserID" DataType="Int32" Description="用户。本地用户" />
+        <Column Name="Expire" DataType="DateTime" Description="过期时间" />
+        <Column Name="Enable" DataType="Boolean" Description="启用" />
+        <Column Name="Times" DataType="Int32" Description="次数。该令牌使用次数" />
+        <Column Name="FirstIP" DataType="String" Description="首次地址" />
+        <Column Name="FirstTime" DataType="DateTime" Description="首次时间" />
+        <Column Name="LastIP" DataType="String" Description="最后地址" />
+        <Column Name="LastTime" DataType="DateTime" Description="最后时间" />
+        <Column Name="CreateUserID" DataType="Int32" Description="创建用户" Category="扩展" />
+        <Column Name="CreateIP" DataType="String" Description="创建地址" Category="扩展" />
+        <Column Name="CreateTime" DataType="DateTime" Description="创建时间" Category="扩展" />
+        <Column Name="UpdateUserID" DataType="Int32" Description="更新用户" Category="扩展" />
+        <Column Name="UpdateIP" DataType="String" Description="更新地址" Category="扩展" />
+        <Column Name="UpdateTime" DataType="DateTime" Description="更新时间" Category="扩展" />
+        <Column Name="Remark" DataType="String" Length="500" Description="备注" Category="扩展" />
+      </Columns>
+      <Indexes>
+        <Index Columns="Token" Unique="True" />
+        <Index Columns="UserID" />
+      </Indexes>
+    </Table>
+    <Table Name="Country" TableName="DG_Country" Description="国家" ConnName="Regions">
+      <Columns>
+        <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
+        <Column Name="Name" DataType="String" RawType="varchar(100)" Master="True" Length="100" Description="国家名称" />
+        <Column Name="TwoLetterIsoCode" DataType="String" Length="2" Description="两个字母ISO代码" />
+        <Column Name="ThreeLetterIsoCode" DataType="String" Length="3" Description="三个字母ISO代码" />
+        <Column Name="DisplayOrder" DataType="Int32" RawType="int(11)" Nullable="True" Description="排序" />
+        <Column Name="NumericIsoCode" DataType="Int32" Description="ISO数字代码" />
+        <Column Name="IsEnabled" DataType="Boolean" Description="是否启用" />
+        <Column Name="IsDefault" DataType="Boolean" Description="是否默认" />
+        <Column Name="CreateUser" DataType="String" Description="创建者" />
+        <Column Name="CreateUserID" DataType="Int32" Description="创建者" />
+        <Column Name="CreateTime" DataType="DateTime" Description="创建时间" />
+        <Column Name="CreateIP" DataType="String" Description="创建地址" />
+        <Column Name="UpdateUser" DataType="String" Description="更新者" />
+        <Column Name="UpdateUserID" DataType="Int32" Description="更新者" />
+        <Column Name="UpdateTime" DataType="DateTime" Description="更新时间" />
+        <Column Name="UpdateIP" DataType="String" Description="更新地址" />
+      </Columns>
+    </Table>
+    <Table Name="CountryLan" TableName="DG_CountryLan" Description="国家翻译" ConnName="Regions">
+      <Columns>
+        <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
+        <Column Name="CId" DataType="Int32" Description="关联国家Id" />
+        <Column Name="LId" DataType="Int32" Description="关联所属语言Id" />
+        <Column Name="Name" DataType="String" RawType="varchar(100)" Master="True" Length="100" Description="国家名称" />
+      </Columns>
+      <Indexes>
+        <Index Columns="CId,LId" Unique="True" />
+      </Indexes>
+    </Table>
+    <Table Name="Regions" TableName="DG_Regions" Description="全球区域" ConnName="Regions">
+      <Columns>
+        <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
+        <Column Name="CId" DataType="Int32" Description="国家编号" />
+        <Column Name="Level" DataType="Int32" RawType="tinyint(1)" Description="层级" />
+        <Column Name="ParentCode" DataType="Int64" Description="父级行政代码" />
+        <Column Name="AreaCode" DataType="Int64" Description="行政代码" />
+        <Column Name="ZipCode" DataType="String" Length="6" Description="邮政编码" />
+        <Column Name="CityCode" DataType="String" Length="6" Description="区号" />
+        <Column Name="Name" DataType="String" Master="True" Description="名称" />
+        <Column Name="AliasName" DataType="String" Master="True" Description="别名" />
+        <Column Name="ShortName" DataType="String" Description="简称" />
+        <Column Name="OtherName" DataType="String" Description="自定义简称" />
+        <Column Name="Regional" DataType="String" Description="大区名称" />
+        <Column Name="MergerName" DataType="String" Description="组合名" />
+        <Column Name="PinYin" DataType="String" Description="拼音" />
+        <Column Name="Lng" DataType="Decimal" Description="经度" />
+        <Column Name="Lat" DataType="Decimal" Description="纬度" />
+        <Column Name="CityId" DataType="Int32" Description="城市Id" />
+        <Column Name="Sort" DataType="Int32" Description="排序" />
+        <Column Name="CreateUser" DataType="String" Description="创建者" />
+        <Column Name="CreateUserID" DataType="Int32" Description="创建者" />
+        <Column Name="CreateTime" DataType="DateTime" Description="创建时间" />
+        <Column Name="CreateIP" DataType="String" Description="创建地址" />
+        <Column Name="UpdateUser" DataType="String" Description="更新者" />
+        <Column Name="UpdateUserID" DataType="Int32" Description="更新者" />
+        <Column Name="UpdateTime" DataType="DateTime" Description="更新时间" />
+        <Column Name="UpdateIP" DataType="String" Description="更新地址" />
+      </Columns>
+      <Indexes>
+        <Index Columns="CId,Level" />
+        <Index Columns="ParentCode" />
+        <Index Columns="AreaCode" Unique="True" />
+        <Index Columns="CityId" />
+      </Indexes>
+    </Table>
+    <Table Name="RegionsLan" TableName="DG_RegionsLan" Description="全球区域翻译" ConnName="Regions">
+      <Columns>
+        <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
+        <Column Name="RId" DataType="Int32" Description="关联区域Id" />
+        <Column Name="LId" DataType="Int32" Description="关联所属语言Id" />
+        <Column Name="Name" DataType="String" Master="True" Description="名称" />
+        <Column Name="AliasName" DataType="String" Master="True" Description="别名" />
+        <Column Name="ShortName" DataType="String" Master="True" Description="简称" />
+        <Column Name="MergerName" DataType="String" Master="True" Description="组合名" />
+        <Column Name="OtherName" DataType="String" Description="自定义简称" />
+      </Columns>
+      <Indexes>
+        <Index Columns="RId,LId" Unique="True" />
+      </Indexes>
+    </Table>
+    <Table Name="PointsLog" TableName="DG_PointsLog" Description="会员积分日志表">
+      <Columns>
+        <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
+        <Column Name="UId" DataType="Int32" Description="会员ID" />
+        <Column Name="UName" DataType="String" Length="100" Description="会员名称" />
+        <Column Name="AdminId" DataType="Int32" Description="管理员ID" />
+        <Column Name="AdminName" DataType="String" Length="100" Description="管理员名称" />
+        <Column Name="Points" DataType="Int32" Description="积分数,负数为扣除" />
+        <Column Name="Desc" DataType="String" Length="100" Description="积分操作描述" />
+        <Column Name="Stage" DataType="String" Description="积分操作阶段。regist注册,login登录,comments商品评论,order订单消费,system系统调整,pointorder礼品兑换,exchange积分兑换,signin签到,inviter推荐注册,rebate推荐返利" />
+        <Column Name="CreateUser" DataType="String" Description="创建者" />
+        <Column Name="CreateUserID" DataType="Int32" Description="创建者" />
+        <Column Name="CreateTime" DataType="DateTime" Description="积分添加时间" />
+        <Column Name="CreateIP" DataType="String" Description="创建地址" />
+      </Columns>
+      <Indexes>
+        <Index Columns="UId,Stage" />
+      </Indexes>
+    </Table>
+    <Table Name="PointsMoney" TableName="DG_PointsMoney" Description="积分金钱兑换表">
+      <Columns>
+        <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
+        <Column Name="Points" DataType="Int32" Description="积分" />
+        <Column Name="Moneys" DataType="Decimal" Description="金额" />
+        <Column Name="State" DataType="Boolean" Description="是否启用" />
+        <Column Name="CreateUser" DataType="String" Description="创建者" />
+        <Column Name="CreateUserID" DataType="Int32" Description="创建者" />
+        <Column Name="CreateTime" DataType="DateTime" Description="创建时间" />
+        <Column Name="CreateIP" DataType="String" Description="创建地址" />
+        <Column Name="UpdateUser" DataType="String" Description="更新者" />
+        <Column Name="UpdateUserID" DataType="Int32" Description="更新者" />
+        <Column Name="UpdateTime" DataType="DateTime" Description="更新时间" />
+        <Column Name="UpdateIP" DataType="String" Description="更新地址" />
+      </Columns>
+      <Indexes>
+        <Index Columns="State" />
+        <Index Columns="Points" Unique="True" />
+      </Indexes>
+    </Table>
+    <Table Name="ExpPointsLog" TableName="DG_ExpPointsLog" Description="会员经验日志表">
+      <Columns>
+        <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
+        <Column Name="UId" DataType="Int32" Description="会员ID" />
+        <Column Name="UName" DataType="String" Length="100" Description="会员名称" />
+        <Column Name="Points" DataType="Int32" Description="经验值负数为扣除" />
+        <Column Name="Desc" DataType="String" Length="100" Description="经验值操作描述" />
+        <Column Name="Stage" DataType="String" Length="100" Description="经验值操作阶段" />
+        <Column Name="CreateUser" DataType="String" Description="创建者" />
+        <Column Name="CreateUserID" DataType="Int32" Description="创建者" />
+        <Column Name="CreateTime" DataType="DateTime" Description="经验添加时间" />
+        <Column Name="CreateIP" DataType="String" Description="创建地址" />
+      </Columns>
+      <Indexes>
+        <Index Columns="UId" />
+      </Indexes>
+    </Table>
+    <Table Name="UserLog" TableName="DG_UserLog" Description="操作日志">
+      <Columns>
+        <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
+        <Column Name="Content" DataType="String" Length="255" Description="操作内容" />
+        <Column Name="Url" DataType="String" Length="200" Description="操作Url" />
+        <Column Name="CreateUser" DataType="String" Description="创建者" />
+        <Column Name="CreateUserID" DataType="Int32" Description="创建用户" />
+        <Column Name="CreateIP" DataType="String" Description="创建地址" />
+        <Column Name="CreateTime" DataType="DateTime" Description="创建时间" />
+      </Columns>
+    </Table>
+    <Table Name="AuthCheckLog" TableName="DG_AuthCheckLog" Description="认证日志">
+      <Columns>
+        <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
+        <Column Name="UId" DataType="Int32" Description="会员ID" />
+        <Column Name="IdCard" DataType="String" Description="身份证号" />
+        <Column Name="Mobile" DataType="String" Description="手机号" />
+        <Column Name="TrueName" DataType="String" Description="真实姓名" />
+        <Column Name="CheckType" DataType="Int16" Description="认证类型。1为身份证认证，2为手机号认证，3为银行卡认证" />
+        <Column Name="State" DataType="Boolean" Description="认证是否成功" />
+        <Column Name="Remark" DataType="String" Length="255" Description="返回的数据值" />
+        <Column Name="CreateUser" DataType="String" Description="创建者" />
+        <Column Name="CreateUserID" DataType="Int32" Description="创建用户" />
+        <Column Name="CreateIP" DataType="String" Description="创建地址" />
+        <Column Name="CreateTime" DataType="DateTime" Description="创建时间" />
+      </Columns>
+      <Indexes>
+        <Index Columns="UId,CheckType" />
+      </Indexes>
+    </Table>
+    <Table Name="PdRecharge" TableName="DG_PdRecharge" Description="预存款充值表">
+      <Columns>
+        <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
+        <Column Name="Sn" DataType="String" Length="20" Description="记录唯一标示" />
+        <Column Name="UId" DataType="Int32" Description="会员ID" />
+        <Column Name="UName" DataType="String" Description="会员名称" />
+        <Column Name="Amount" DataType="Decimal" Description="充值金额" />
+        <Column Name="PCode" DataType="String" Length="20" Description="支付方式" />
+        <Column Name="TradeSn" DataType="String" Description="第三方支付接口交易号" />
+        <Column Name="State" DataType="Boolean" Description="支付状态。是否支付" />
+        <Column Name="PayTime" DataType="DateTime" Description="支付时间" />
+        <Column Name="CreateUser" DataType="String" Description="创建者" />
+        <Column Name="CreateUserID" DataType="Int32" Description="创建用户" />
+        <Column Name="CreateIP" DataType="String" Description="创建地址" />
+        <Column Name="CreateTime" DataType="DateTime" Description="创建时间" />
+      </Columns>
+      <Indexes>
+        <Index Columns="UId" />
+        <Index Columns="Sn" Unique="True" />
+      </Indexes>
+    </Table>
+    <Table Name="PdLog" TableName="DG_PdLog" Description="预付款变更日志表">
+      <Columns>
+        <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
+        <Column Name="UId" DataType="Int32" Description="会员ID" />
+        <Column Name="UName" DataType="String" Length="100" Description="会员名称" />
+        <Column Name="AdminId" DataType="Int32" Description="管理员ID" />
+        <Column Name="AdminName" DataType="String" Length="100" Description="管理员名称" />
+        <Column Name="PdType" DataType="String" Length="100" Description="order_pay下单支付预存款,order_freeze下单冻结预存款,order_cancel取消订单解冻预存款,order_comb_pay下单支付被冻结的预存款,recharge充值,cash_apply申请提现冻结预存款,cash_pay提现成功,cash_del取消提现申请-解冻预存款,refund退款,sys_add_money管理员调节增加余额,sys_del_money管理员调节减少余额,order_points积分充值,sys_thaw_money管理员调整解冻余额,sys_freeze_money管理员调整冻结余额" />
+        <Column Name="Amount" DataType="Decimal" Description="可用金额变更0:未变更" />
+        <Column Name="FreezeAmount" DataType="Decimal" Description="冻结金额变更0:未变更" />
+        <Column Name="Balance" DataType="Decimal" Description="变更后的可用余额" />
+        <Column Name="FreezeBalance" DataType="Decimal" Description="变更后的冻结金额" />
+        <Column Name="Desc" DataType="String" Length="100" Description="变更描述" />
+        <Column Name="CreateUser" DataType="String" Description="变更者" />
+        <Column Name="CreateUserID" DataType="Int32" Description="变更者" />
+        <Column Name="CreateTime" DataType="DateTime" Description="变更添加时间" />
+        <Column Name="CreateIP" DataType="String" Description="创建地址" />
+      </Columns>
+      <Indexes>
+        <Index Columns="UId" />
+      </Indexes>
+    </Table>
+    <Table Name="SnsAlbumClass" TableName="DG_SnsAlbumClass" Description="买家相册表">
+      <Columns>
+        <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
+        <Column Name="UId" DataType="Int32" Description="会员ID" />
+        <Column Name="Name" DataType="String" Master="True" Length="100" Description="相册名称" />
+        <Column Name="Des" DataType="String" Length="255" Description="相册描述" />
+        <Column Name="Sort" DataType="Int32" Description="相册排序" />
+        <Column Name="Cover" DataType="String" Length="255" Description="相册封面" />
+        <Column Name="IsDefault" DataType="Boolean" Description="是否为买家秀相册" />
+        <Column Name="CreateUser" DataType="String" Description="创建者" />
+        <Column Name="CreateUserID" DataType="Int32" Description="创建者" />
+        <Column Name="CreateTime" DataType="DateTime" Description="创建时间" />
+        <Column Name="CreateIP" DataType="String" Description="创建地址" />
+      </Columns>
+      <Indexes>
+        <Index Columns="UId" />
+      </Indexes>
+    </Table>
+    <Table Name="Payment" TableName="DG_Payment" Description="支付方式" IgnoreNameCase="False">
+      <Columns>
+        <Column Name="Id" DataType="String" PrimaryKey="True" Length="20" Nullable="False" Description="支付代码" />
+        <Column Name="Name" DataType="String" Master="True" Length="20" Nullable="False" Description="支付名称" />
+        <Column Name="Config" DataType="String" RawType="text" Length="0" Description="支付接口配置信息" />
+        <Column Name="Platform" DataType="String" Length="10" Description="支付方式所适应平台 pc h5 app wm" />
+        <Column Name="LanguageIds" DataType="String" Length="1000" Description="支持的语言Id集合" />
+        <Column Name="State" DataType="Boolean" Description="接口状态,是否启用" />
+        <Column Name="CreateUser" DataType="String" Description="创建者" />
+        <Column Name="CreateUserID" DataType="Int32" Description="创建者" />
+        <Column Name="CreateTime" DataType="DateTime" Description="创建时间" />
+        <Column Name="CreateIP" DataType="String" Description="创建地址" />
+        <Column Name="UpdateUser" DataType="String" Description="更新者" />
+        <Column Name="UpdateUserID" DataType="Int32" Description="更新者" />
+        <Column Name="UpdateTime" DataType="DateTime" Description="更新时间" />
+        <Column Name="UpdateIP" DataType="String" Description="更新地址" />
+      </Columns>
+      <Indexes>
+        <Index Name="PRIMARY" Columns="Id" Unique="True" PrimaryKey="True" />
+      </Indexes>
+    </Table>
+    <Table Name="OtherMsgTpl" TableName="DG_OtherMsgTpl" Description="其他消息模板" IgnoreNameCase="False">
+      <Columns>
+        <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
+        <Column Name="MName" DataType="String" Description="模板名称" />
+        <Column Name="MTitle" DataType="String" Length="100" Description="模板标题" />
+        <Column Name="MCode" DataType="String" Master="True" Description="模板调用代码" />
+        <Column Name="MContent" DataType="String" Length="200" Description="模板内容" />
+        <Column Name="SmsTplId" DataType="String" Description="短信模板Id" />
+        <Column Name="CreateUser" DataType="String" Description="创建者" />
+        <Column Name="CreateUserID" DataType="Int32" Description="创建者" />
+        <Column Name="CreateTime" DataType="DateTime" Description="创建时间" />
+        <Column Name="CreateIP" DataType="String" Description="创建地址" />
+        <Column Name="UpdateUser" DataType="String" Description="更新者" />
+        <Column Name="UpdateUserID" DataType="Int32" Description="更新者" />
+        <Column Name="UpdateTime" DataType="DateTime" Description="更新时间" />
+        <Column Name="UpdateIP" DataType="String" Description="更新地址" />
+      </Columns>
+      <Indexes>
+        <Index Columns="MCode" Unique="True" />
+      </Indexes>
+    </Table>
+    <Table Name="OtherMsgTplLan" TableName="DG_OtherMsgTplLan" Description="其他消息模板翻译表">
+      <Columns>
+        <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
+        <Column Name="OId" DataType="Int32" Description="关联其他消息模板Id" />
+        <Column Name="LId" DataType="Int32" Description="关联所属语言Id" />
+        <Column Name="MName" DataType="String" Master="True" Description="模板名称" />
+        <Column Name="MTitle" DataType="String" Length="100" Description="模板标题" />
+        <Column Name="MContent" DataType="String" Length="200" Description="模板内容" />
+        <Column Name="SmsTplId" DataType="String" Description="短信模板Id" />
+      </Columns>
+      <Indexes>
+        <Index Columns="OId,LId" Unique="True" />
+      </Indexes>
+    </Table>
+    <Table Name="PrincipalAgent" Description="委托代理。委托某人代理自己的用户权限，代理人下一次登录时将得到委托人的身份">
+      <Columns>
+        <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
+        <Column Name="PrincipalId" DataType="Int32" Description="委托人。把自己的身份权限委托给别人" />
+        <Column Name="AgentId" DataType="Int32" Description="代理人。代理获得别人身份权限" />
+        <Column Name="Enable" DataType="Boolean" Description="启用" />
+        <Column Name="Times" DataType="Int32" Description="次数。可用代理次数，0表示已用完，-1表示无限制" />
+        <Column Name="Expire" DataType="DateTime" Description="有效期。截止时间之前有效，不设置表示无限制" />
+        <Column Name="CreateUserId" DataType="Int32" Description="创建者" Category="扩展" />
+        <Column Name="CreateTime" DataType="DateTime" Description="创建时间" Category="扩展" />
+        <Column Name="CreateIP" DataType="String" Description="创建地址" Category="扩展" />
+        <Column Name="UpdateUserId" DataType="Int32" Description="更新者" Category="扩展" />
+        <Column Name="UpdateTime" DataType="DateTime" Description="更新时间" Category="扩展" />
+        <Column Name="UpdateIP" DataType="String" Description="更新地址" Category="扩展" />
+        <Column Name="Remark" DataType="String" Length="500" Description="内容" Category="扩展" />
+      </Columns>
+      <Indexes>
+        <Index Columns="PrincipalId" />
+        <Index Columns="AgentId" />
+      </Indexes>
+    </Table>
+    <Table Name="Tenant" TableName="DG_Tenant" Description="多租户">
+      <Columns>
+        <Column Name="Id" DataType="Int64" Identity="True" PrimaryKey="True" Description="编号" />
+        <Column Name="TenancyName" DataType="String" Description="租户名称" />
+        <Column Name="CreateUser" DataType="String" Description="创建者" />
+        <Column Name="CreateUserID" DataType="Int32" Description="创建者" />
+        <Column Name="CreateTime" DataType="DateTime" Description="创建时间" />
+        <Column Name="CreateIP" DataType="String" Description="创建地址" />
+        <Column Name="UpdateUser" DataType="String" Description="更新者" />
+        <Column Name="UpdateUserID" DataType="Int32" Description="更新者" />
+        <Column Name="UpdateTime" DataType="DateTime" Description="更新时间" />
+        <Column Name="UpdateIP" DataType="String" Description="更新地址" />
+        <Column Name="IsLocked" DataType="Boolean" Description="是否禁用" />
+        <Column Name="IsDeleted" DataType="Boolean" Description="是否删除 软删除，数据不会被物理删除" />
+      </Columns>
+    </Table>
+    <Table Name="ModelTable" Description="模型表。实体表模型">
+      <Columns>
+        <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
+        <Column Name="Category" DataType="String" Description="分类" />
+        <Column Name="Name" DataType="String" Master="True" Nullable="False" Description="名称" />
+        <Column Name="DisplayName" DataType="String" Description="显示名" />
+        <Column Name="Enable" DataType="Boolean" Description="启用" />
+        <Column Name="Url" DataType="String" Description="路径。全路径" />
+        <Column Name="Controller" DataType="String" Length="100" Description="控制器。控制器类型全名" />
+        <Column Name="TableName" DataType="String" Description="表名" />
+        <Column Name="ConnName" DataType="String" Description="连接名" />
+        <Column Name="InsertOnly" DataType="Boolean" Description="仅插入。日志型数据" />
+        <Column Name="Description" DataType="String" Length="500" Description="说明" />
+        <Column Name="CreateUserId" DataType="Int32" Description="创建者" Category="扩展" />
+        <Column Name="CreateTime" DataType="DateTime" Description="创建时间" Category="扩展" />
+        <Column Name="CreateIP" DataType="String" Description="创建地址" Category="扩展" />
+        <Column Name="UpdateUserId" DataType="Int32" Description="更新者" Category="扩展" />
+        <Column Name="UpdateTime" DataType="DateTime" Description="更新时间" Category="扩展" />
+        <Column Name="UpdateIP" DataType="String" Description="更新地址" Category="扩展" />
+      </Columns>
+      <Indexes>
+        <Index Columns="Category,Name" Unique="True" />
+      </Indexes>
+    </Table>
+    <Table Name="ModelColumn" Description="模型列。实体表的数据列">
+      <Columns>
+        <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
+        <Column Name="TableId" DataType="Int32" Description="模型表" />
+        <Column Name="Name" DataType="String" Master="True" Nullable="False" Description="名称" />
+        <Column Name="DisplayName" DataType="String" Description="显示名" />
+        <Column Name="Enable" DataType="Boolean" Description="启用" />
+        <Column Name="DataType" DataType="String" Description="数据类型" />
+        <Column Name="ItemType" DataType="String" Description="元素类型。image,file,html,singleSelect,multipleSelect" />
+        <Column Name="PrimaryKey" DataType="Boolean" Description="主键" />
+        <Column Name="Master" DataType="Boolean" Description="主字段。主字段作为业务主要字段，代表当前数据行意义" />
+        <Column Name="Length" DataType="Int32" Description="长度" />
+        <Column Name="Nullable" DataType="Boolean" Description="允许空" />
+        <Column Name="IsDataObjectField" DataType="Boolean" Description="数据字段" />
+        <Column Name="Description" DataType="String" Length="500" Description="说明" />
+        <Column Name="ShowInList" DataType="Boolean" Description="列表页显示" />
+        <Column Name="ShowInAddForm" DataType="Boolean" Description="添加表单页显示" />
+        <Column Name="ShowInEditForm" DataType="Boolean" Description="编辑表单页显示" />
+        <Column Name="ShowInDetailForm" DataType="Boolean" Description="详情表单页显示" />
+        <Column Name="ShowInSearch" DataType="Boolean" Description="搜索显示" />
+        <Column Name="Sort" DataType="Int32" Description="排序" />
+        <Column Name="Width" DataType="String" Description="宽度" />
+        <Column Name="CellText" DataType="String" Description="单元格文字" />
+        <Column Name="CellTitle" DataType="String" Description="单元格标题。数据单元格上的提示文字" />
+        <Column Name="CellUrl" DataType="String" Description="单元格链接。数据单元格的链接" />
+        <Column Name="HeaderText" DataType="String" Description="头部文字" />
+        <Column Name="HeaderTitle" DataType="String" Description="头部标题。数据移上去后显示的文字" />
+        <Column Name="HeaderUrl" DataType="String" Description="头部链接。一般是排序" />
+        <Column Name="DataAction" DataType="String" Description="数据动作。设为action时走ajax请求" />
+        <Column Name="DataSource" DataType="String" Length="500" Description="多选数据源" />
+        <Column Name="CreateUserId" DataType="Int32" Description="创建者" Category="扩展" />
+        <Column Name="CreateTime" DataType="DateTime" Description="创建时间" Category="扩展" />
+        <Column Name="CreateIP" DataType="String" Description="创建地址" Category="扩展" />
+        <Column Name="UpdateUserId" DataType="Int32" Description="更新者" Category="扩展" />
+        <Column Name="UpdateTime" DataType="DateTime" Description="更新时间" Category="扩展" />
+        <Column Name="UpdateIP" DataType="String" Description="更新地址" Category="扩展" />
+      </Columns>
+      <Indexes>
+        <Index Columns="TableId,Name" Unique="True" />
+      </Indexes>
+    </Table>
   </Tables>
 </EntityModel>

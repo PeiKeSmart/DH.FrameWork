@@ -11,8 +11,7 @@ using XCode.Membership;
 namespace DH.Entity;
 
 /// <summary>委托代理。委托某人代理自己的用户权限，代理人下一次登录时将得到委托人的身份，一次有效</summary>
-public partial class PrincipalAgent : DHEntityBase<PrincipalAgent>
-{
+public partial class PrincipalAgent : DHEntityBase<PrincipalAgent> {
     #region 对象操作
     static PrincipalAgent()
     {

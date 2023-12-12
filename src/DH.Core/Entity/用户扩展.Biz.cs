@@ -96,6 +96,14 @@ public partial class UserDetail : DHEntityBase<UserDetail>
     /// </summary>
     [XmlIgnore, ScriptIgnore, IgnoreDataMember]
     public Tenant Tenant => Extends.Get(nameof(Tenant), k => Tenant.FindById(TenantId));
+
+    /// <summary>国家ID</summary>
+    [XmlIgnore, IgnoreDataMember, ScriptIgnore]
+    public Country Country => Extends.Get(nameof(Country), k => Country.FindById(CountryId));
+
+    /// <summary>国家ID</summary>
+    [Map(nameof(CountryId), typeof(Country), "Id")]
+    public String CountryName => Country?.Name;
     #endregion
 
     #region 扩展查询
