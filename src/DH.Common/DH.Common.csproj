@@ -1,98 +1,105 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="../../version.props" />
-	
-  <PropertyGroup>
-	<LangVersion>latest</LangVersion>
-    <OutputType>Library</OutputType>
-    <TargetFramework>netstandard2.1</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-	<RootNamespace>DH</RootNamespace>
-	<AssemblyName>DH.Common</AssemblyName>
-	<AssemblyTitle>基类核心库</AssemblyTitle>
-	<Description>DH框架基类核心库</Description>
-	<Company>湖北登灏科技有限公司</Company>
-	
-	<OutputPath>..\Bin</OutputPath>
-	<DocumentationFile>$(OutputPath)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-	<GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
-	  
-	<!--将此参数设置为true，以获取从NuGet缓存复制到项目输出的dll。
+	<Import Project="../../version.props" />
+
+	<PropertyGroup>
+		<LangVersion>latest</LangVersion>
+		<OutputType>Library</OutputType>
+		<TargetFramework>netstandard2.1</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<RootNamespace>DH</RootNamespace>
+		<AssemblyName>DH.Common</AssemblyName>
+		<AssemblyTitle>基类核心库</AssemblyTitle>
+		<Description>DH框架基类核心库</Description>
+		<Company>湖北登灏科技有限公司</Company>
+
+		<OutputPath>..\Bin</OutputPath>
+		<DocumentationFile>$(OutputPath)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+		<GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
+
+		<!--将此参数设置为true，以获取从NuGet缓存复制到项目输出的dll。
      如果您的插件具有nuget包，则需要将此参数设置为true
      确保从NuGet缓存复制的dll到项目的输出-->
-	<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-	<!-- 对控制器/操作/方法没有阻止注释禁用警告 -->
-	<NoWarn>1701;1702;1705;1591</NoWarn>
-	<GenerateDocumentationFile>true</GenerateDocumentationFile>
-	<!--禁止生成launchSettings.json-->
-	<NoDefaultLaunchSettingsFile>True</NoDefaultLaunchSettingsFile>
-  </PropertyGroup>
-	
-  <PropertyGroup>
-	<IsPackable>true</IsPackable>
-	<PackageId>$(AssemblyName)</PackageId>
-	<Authors>$(Company)</Authors>
-	<PackageProjectUrl>https://www.haocoding.com/</PackageProjectUrl>
-	<PackageIcon>DH.png</PackageIcon>
-	<RepositoryUrl>https://gitee.com/chuangchu/DH.FrameWork</RepositoryUrl>
-	<RepositoryType>Git</RepositoryType>
-	<PackageTags>湖北登灏科技有限公司;DH组件;DH;$(AssemblyName)</PackageTags>
-	<PackageReleaseNotes>DH框架基类核心库</PackageReleaseNotes>
-	<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-	<PublishRepositoryUrl>true</PublishRepositoryUrl>
-	<EmbedUntrackedSources>true</EmbedUntrackedSources>
-	<IncludeSymbols>true</IncludeSymbols>
-	<SymbolPackageFormat>snupkg</SymbolPackageFormat>
-	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-	<GenerateDocumentationFile>true</GenerateDocumentationFile>
-	<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-	<PackageLicenseExpression>MIT</PackageLicenseExpression>
-  </PropertyGroup>
-	
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-	<DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
-	<DebugType>full</DebugType>
-	<Optimize>false</Optimize>
-	<WarningLevel>3</WarningLevel>
-  </PropertyGroup>
-	
-  <ItemGroup>
-	<Content Include="..\..\Doc\DH.png" Link="DH.png" PackagePath="\" />
-  </ItemGroup>	
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+		<!-- 对控制器/操作/方法没有阻止注释禁用警告 -->
+		<NoWarn>1701;1702;1705;1591</NoWarn>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<!--禁止生成launchSettings.json-->
+		<NoDefaultLaunchSettingsFile>True</NoDefaultLaunchSettingsFile>
+	</PropertyGroup>
 
-  <ItemGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>	
+	<PropertyGroup>
+		<IsPackable>true</IsPackable>
+		<PackageId>$(AssemblyName)</PackageId>
+		<Authors>$(Company)</Authors>
+		<PackageProjectUrl>https://www.haocoding.com/</PackageProjectUrl>
+		<PackageIcon>DH.png</PackageIcon>
+		<RepositoryUrl>https://gitee.com/chuangchu/DH.FrameWork</RepositoryUrl>
+		<RepositoryType>Git</RepositoryType>
+		<PackageTags>湖北登灏科技有限公司;DH组件;DH;$(AssemblyName)</PackageTags>
+		<PackageReleaseNotes>DH框架基类核心库</PackageReleaseNotes>
+		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageReadmeFile>Readme.MD</PackageReadmeFile>
+	</PropertyGroup>
 
-  <ItemGroup>
-	<ProjectReference Include="..\DH.NCode\DH.NCode.csproj" />
-	<PackageReference Include="JetBrains.Annotations" Version="2023.3.0" />
-	<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-	<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-	<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
-	<PackageReference Include="System.Drawing.Common" Version="8.0.0" />
-    <PackageReference Include="Xfrogcn.BinaryFormatter" Version="1.0.0" />
-  </ItemGroup>	
+	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
+		<DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
+		<DebugType>full</DebugType>
+		<Optimize>false</Optimize>
+		<WarningLevel>3</WarningLevel>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Update="Properties\R.Designer.cs">
-      <DependentUpon>R.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-  </ItemGroup>	
+	<ItemGroup>
+		<Content Include="..\..\Doc\DH.png" Link="DH.png" PackagePath="\" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="..\..\Readme.MD">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Update="Properties\R.resx">
-      <LastGenOutput>R.Designer.cs</LastGenOutput>
-      <Generator>PublicResXFileCodeGenerator</Generator>
-    </EmbeddedResource>
-	<EmbeddedResource Update="Resource.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\DH.NCode\DH.NCode.csproj" />
+		<PackageReference Include="JetBrains.Annotations" Version="2023.3.0" />
+		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+		<PackageReference Include="System.Drawing.Common" Version="8.0.0" />
+		<PackageReference Include="Xfrogcn.BinaryFormatter" Version="1.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="Properties\R.Designer.cs">
+			<DependentUpon>R.resx</DependentUpon>
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+		</Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Update="Properties\R.resx">
+			<LastGenOutput>R.Designer.cs</LastGenOutput>
+			<Generator>PublicResXFileCodeGenerator</Generator>
+		</EmbeddedResource>
+		<EmbeddedResource Update="Resource.resx">
+			<Generator>PublicResXFileCodeGenerator</Generator>
+			<LastGenOutput>Resource.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+	</ItemGroup>
 
 </Project>

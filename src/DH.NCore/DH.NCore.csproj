@@ -22,7 +22,7 @@
      确保从NuGet缓存复制的dll到项目的输出-->
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <!-- 对控制器/操作/方法没有阻止注释禁用警告 -->
-	<NoWarn>1701;1702;NU5104;NU1505;NETSDK1138;CS7035</NoWarn>
+    <NoWarn>1701;1702;NU5104;NU1505;NETSDK1138;CS7035</NoWarn>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
@@ -44,6 +44,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>Readme.MD</PackageReadmeFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)'=='net45' or '$(TargetFramework)'=='net461' or '$(TargetFramework)'=='net5.0-windows' or '$(TargetFramework)'=='net6.0-windows' or '$(TargetFramework)'=='net7.0-windows' or '$(TargetFramework)'=='net8.0-windows'">
@@ -78,7 +79,7 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)'=='net45' or '$(TargetFramework)'=='net461'">
-	<Using Include="System.Net.Http" />
+    <Using Include="System.Net.Http" />
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System.Management" />
     <Reference Include="System.Net.Http" />
@@ -213,9 +214,15 @@
   <ItemGroup>
     <Content Include="..\..\Doc\DH.png" Link="DH.png" PackagePath="\" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Readme.MD">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
-  <ItemGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

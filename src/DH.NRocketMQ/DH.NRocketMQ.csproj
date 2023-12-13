@@ -4,9 +4,9 @@
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
     <OutputType>Library</OutputType>
-	<TargetFrameworks>net45;net461;netstandard2.0;netstandard2.1</TargetFrameworks>
+    <TargetFrameworks>net45;net461;netstandard2.0;netstandard2.1</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
-	<Nullable>enable</Nullable>
+    <Nullable>enable</Nullable>
     <RootNamespace>DH.NRocketMQ</RootNamespace>
     <AssemblyName>DH.NRocketMQ</AssemblyName>
     <AssemblyTitle>RocketMQ客户端</AssemblyTitle>
@@ -46,7 +46,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-	<PackageReadmeFile>Readme.MD</PackageReadmeFile>
+    <PackageReadmeFile>Readme.MD</PackageReadmeFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
@@ -60,7 +60,7 @@
     <Compile Remove="Models\ConsumeFromWheres.cs" />
     <Compile Remove="Protocol\SendStatus.cs" />
   </ItemGroup>
-	
+
   <ItemGroup Condition="'$(TargetFramework)'=='net45' or '$(TargetFramework)'=='net461'">
     <Reference Include="System.Net.Http" />
   </ItemGroup>
@@ -74,15 +74,15 @@
       <PackagePath>\</PackagePath>
     </None>
   </ItemGroup>
-	
+
   <ItemGroup>
     <ProjectReference Include="..\DH.NCore\DH.NCore.csproj" />
   </ItemGroup>
-	
+
   <ItemGroup>
     <Using Include="System.Net.Http" />
   </ItemGroup>
-	
+
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
       <PrivateAssets>all</PrivateAssets>

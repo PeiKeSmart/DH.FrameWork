@@ -4,9 +4,9 @@
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
     <OutputType>Library</OutputType>
-	<TargetFrameworks>netstandard2.1;netstandard2.0;net461;net45</TargetFrameworks>
+    <TargetFrameworks>netstandard2.1;netstandard2.0;net461;net45</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
-	<Nullable>enable</Nullable>
+    <Nullable>enable</Nullable>
     <RootNamespace>DH.NLoRa</RootNamespace>
     <AssemblyName>DH.NLoRa</AssemblyName>
     <AssemblyTitle>LoRa协议</AssemblyTitle>
@@ -46,7 +46,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-	<PackageReadmeFile>Readme.MD</PackageReadmeFile>
+    <PackageReadmeFile>Readme.MD</PackageReadmeFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
@@ -56,11 +56,11 @@
     <WarningLevel>3</WarningLevel>
   </PropertyGroup>
 
- <ItemGroup>
+  <ItemGroup>
     <Compile Remove="Messaging\DataMessage.cs" />
     <Compile Remove="Messaging\JoinMessage.cs" />
   </ItemGroup>
-	
+
   <ItemGroup Condition="'$(TargetFramework)'=='net45' or '$(TargetFramework)'=='net461'">
     <Reference Include="System.Net.Http" />
   </ItemGroup>
@@ -82,7 +82,7 @@
   <ItemGroup>
     <Using Include="System.Net.Http" />
   </ItemGroup>
-	
+
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
       <PrivateAssets>all</PrivateAssets>
