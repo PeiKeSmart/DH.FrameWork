@@ -51,9 +51,17 @@ public partial class SysOnlineUsers : ISysOnlineUsers, IEntity<ISysOnlineUsers>
     /// <summary>用户昵称</summary>
     [DisplayName("用户昵称")]
     [Description("用户昵称")]
-    [DataObjectField(false, false, false, 100)]
-    [BindColumn("NickName", "用户昵称", "varchar(100)")]
+    [DataObjectField(false, false, false, 50)]
+    [BindColumn("NickName", "用户昵称", "")]
     public String NickName { get => _NickName; set { if (OnPropertyChanging("NickName", value)) { _NickName = value; OnPropertyChanged("NickName"); } } }
+
+    private String _Name;
+    /// <summary>用户名</summary>
+    [DisplayName("用户名")]
+    [Description("用户名")]
+    [DataObjectField(false, false, false, 100)]
+    [BindColumn("Name", "用户名", "varchar(100)", Master = true)]
+    public String Name { get => _Name; set { if (OnPropertyChanging("Name", value)) { _Name = value; OnPropertyChanged("Name"); } } }
 
     private String _Ip;
     /// <summary>用户ip</summary>
@@ -105,6 +113,7 @@ public partial class SysOnlineUsers : ISysOnlineUsers, IEntity<ISysOnlineUsers>
         Uid = model.Uid;
         Sid = model.Sid;
         NickName = model.NickName;
+        Name = model.Name;
         Ip = model.Ip;
         Region = model.Region;
         Clicks = model.Clicks;
@@ -125,6 +134,7 @@ public partial class SysOnlineUsers : ISysOnlineUsers, IEntity<ISysOnlineUsers>
             "Uid" => _Uid,
             "Sid" => _Sid,
             "NickName" => _NickName,
+            "Name" => _Name,
             "Ip" => _Ip,
             "Region" => _Region,
             "Clicks" => _Clicks,
@@ -140,6 +150,7 @@ public partial class SysOnlineUsers : ISysOnlineUsers, IEntity<ISysOnlineUsers>
                 case "Uid": _Uid = value.ToInt(); break;
                 case "Sid": _Sid = value.ToLong(); break;
                 case "NickName": _NickName = Convert.ToString(value); break;
+                case "Name": _Name = Convert.ToString(value); break;
                 case "Ip": _Ip = Convert.ToString(value); break;
                 case "Region": _Region = Convert.ToString(value); break;
                 case "Clicks": _Clicks = value.ToInt(); break;
@@ -169,6 +180,9 @@ public partial class SysOnlineUsers : ISysOnlineUsers, IEntity<ISysOnlineUsers>
 
         /// <summary>用户昵称</summary>
         public static readonly Field NickName = FindByName("NickName");
+
+        /// <summary>用户名</summary>
+        public static readonly Field Name = FindByName("Name");
 
         /// <summary>用户ip</summary>
         public static readonly Field Ip = FindByName("Ip");
@@ -202,6 +216,9 @@ public partial class SysOnlineUsers : ISysOnlineUsers, IEntity<ISysOnlineUsers>
 
         /// <summary>用户昵称</summary>
         public const String NickName = "NickName";
+
+        /// <summary>用户名</summary>
+        public const String Name = "Name";
 
         /// <summary>用户ip</summary>
         public const String Ip = "Ip";

@@ -23,6 +23,9 @@ public partial class SysOnlineUsersModel
     /// <summary>用户昵称</summary>
     public String NickName { get; set; }
 
+    /// <summary>用户名</summary>
+    public String Name { get; set; }
+
     /// <summary>用户ip</summary>
     public String Ip { get; set; }
 
@@ -48,6 +51,7 @@ public partial class SysOnlineUsersModel
         Uid = model.Uid;
         Sid = model.Sid;
         NickName = model.NickName;
+        Name = model.Name;
         Ip = model.Ip;
         Region = model.Region;
         Clicks = model.Clicks;

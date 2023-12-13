@@ -420,37 +420,6 @@
         <Index Columns="UserId" />
       </Indexes>
     </Table>
-    <Table Name="UserOnline" Description="用户在线" ConnName="Log">
-      <Columns>
-        <Column Name="ID" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
-        <Column Name="UserID" DataType="Int32" Description="用户。当前登录人" />
-        <Column Name="Name" DataType="String" Master="True" Description="名称。当前登录人，或根据设备标识推算出来的使用人" />
-        <Column Name="SessionID" DataType="String" Description="会话。Web的SessionID或Server的会话编号" />
-        <Column Name="OAuthProvider" DataType="String" Description="登录方。OAuth提供商，从哪个渠道登录" />
-        <Column Name="Times" DataType="Int32" Description="次数" />
-        <Column Name="Page" DataType="String" Description="页面" />
-        <Column Name="Platform" DataType="String" Description="平台。操作系统平台，Windows/Linux/Android等" />
-        <Column Name="OS" DataType="String" Description="系统。操作系统，带版本" />
-        <Column Name="Device" DataType="String" Description="设备。手机品牌型号" />
-        <Column Name="Brower" DataType="String" Description="浏览器。浏览器名称，带版本" />
-        <Column Name="NetType" DataType="String" Description="网络。微信访问时，感知到WIFI或4G网络" />
-        <Column Name="DeviceId" DataType="String" Description="设备标识。唯一标识设备，位于浏览器Cookie，重装后改变" />
-        <Column Name="Status" DataType="String" Length="500" Description="状态" />
-        <Column Name="OnlineTime" DataType="Int32" ItemType="TimeSpan" Description="在线时间。本次在线总时间，秒" />
-        <Column Name="LastError" DataType="DateTime" Description="最后错误" />
-        <Column Name="Address" DataType="String" Length="200" Description="地址。根据IP计算" />
-        <Column Name="TraceId" DataType="String" Length="200" Description="追踪。链路追踪，用于APM性能追踪定位，还原该事件的调用链" Category="扩展" />
-        <Column Name="CreateIP" DataType="String" Description="创建地址" Category="扩展" />
-        <Column Name="CreateTime" DataType="DateTime" Nullable="False" Description="创建时间" Category="扩展" />
-        <Column Name="UpdateIP" DataType="String" Description="更新地址" Category="扩展" />
-        <Column Name="UpdateTime" DataType="DateTime" Nullable="False" Description="修改时间" Category="扩展" />
-      </Columns>
-      <Indexes>
-        <Index Columns="UserID" />
-        <Index Columns="SessionID" />
-        <Index Columns="CreateTime" />
-      </Indexes>
-    </Table>
     <Table Name="UserStat" Description="用户统计" ConnName="Membership">
       <Columns>
         <Column Name="ID" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
@@ -713,12 +682,44 @@
         <Index Columns="Code" Unique="True" />
       </Indexes>
     </Table>
+    <Table Name="UserOnline" Description="用户在线" ConnName="Log">
+      <Columns>
+        <Column Name="ID" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
+        <Column Name="UserID" DataType="Int32" Description="用户。当前登录人" />
+        <Column Name="Name" DataType="String" Master="True" Description="名称。当前登录人，或根据设备标识推算出来的使用人" />
+        <Column Name="SessionID" DataType="String" Description="会话。Web的SessionID或Server的会话编号" />
+        <Column Name="OAuthProvider" DataType="String" Description="登录方。OAuth提供商，从哪个渠道登录" />
+        <Column Name="Times" DataType="Int32" Description="次数" />
+        <Column Name="Page" DataType="String" Description="页面" />
+        <Column Name="Platform" DataType="String" Description="平台。操作系统平台，Windows/Linux/Android等" />
+        <Column Name="OS" DataType="String" Description="系统。操作系统，带版本" />
+        <Column Name="Device" DataType="String" Description="设备。手机品牌型号" />
+        <Column Name="Brower" DataType="String" Description="浏览器。浏览器名称，带版本" />
+        <Column Name="NetType" DataType="String" Description="网络。微信访问时，感知到WIFI或4G网络" />
+        <Column Name="DeviceId" DataType="String" Description="设备标识。唯一标识设备，位于浏览器Cookie，重装后改变" />
+        <Column Name="Status" DataType="String" Length="500" Description="状态" />
+        <Column Name="OnlineTime" DataType="Int32" ItemType="TimeSpan" Description="在线时间。本次在线总时间，秒" />
+        <Column Name="LastError" DataType="DateTime" Description="最后错误" />
+        <Column Name="Address" DataType="String" Length="200" Description="地址。根据IP计算" />
+        <Column Name="TraceId" DataType="String" Length="200" Description="追踪。链路追踪，用于APM性能追踪定位，还原该事件的调用链" Category="扩展" />
+        <Column Name="CreateIP" DataType="String" Description="创建地址" Category="扩展" />
+        <Column Name="CreateTime" DataType="DateTime" Nullable="False" Description="创建时间" Category="扩展" />
+        <Column Name="UpdateIP" DataType="String" Description="更新地址" Category="扩展" />
+        <Column Name="UpdateTime" DataType="DateTime" Nullable="False" Description="修改时间" Category="扩展" />
+      </Columns>
+      <Indexes>
+        <Index Columns="UserID" />
+        <Index Columns="SessionID" />
+        <Index Columns="CreateTime" />
+      </Indexes>
+    </Table>
     <Table Name="SysOnlineUsers" TableName="DH_SysOnlineUsers" Description="在线用户表">
       <Columns>
         <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
         <Column Name="Uid" DataType="Int32" RawType="int(11)" Description="用户id" />
         <Column Name="Sid" DataType="Int64" Description="用户sessionid" />
-        <Column Name="NickName" DataType="String" RawType="varchar(100)" Length="100" Nullable="False" Description="用户昵称" />
+        <Column Name="NickName" DataType="String" Nullable="False" Description="用户昵称" />
+        <Column Name="Name" DataType="String" RawType="varchar(100)" Master="True" Length="100" Nullable="False" Description="用户名" />
         <Column Name="Ip" DataType="String" RawType="varchar(20)" Length="20" Nullable="False" Description="用户ip" />
         <Column Name="Region" DataType="String" Length="150" Description="用户所在区域" />
         <Column Name="Clicks" DataType="Int32" Description="请求次数" />

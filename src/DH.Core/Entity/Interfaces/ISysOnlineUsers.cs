@@ -23,6 +23,9 @@ public partial interface ISysOnlineUsers
     /// <summary>用户昵称</summary>
     String NickName { get; set; }
 
+    /// <summary>用户名</summary>
+    String Name { get; set; }
+
     /// <summary>用户ip</summary>
     String Ip { get; set; }
 

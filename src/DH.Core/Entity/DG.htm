@@ -3363,265 +3363,6 @@
     </tbody>
 </table>
 <br></br>
-<h3>用户在线（UserOnline）</h3>
-<table>
-    <thead>
-        <tr>
-            <th>名称</th>
-            <th>显示名</th>
-            <th>类型</th>
-            <th>长度</th>
-            <th>精度</th>
-            <th>主键</th>
-            <th>允许空</th>
-            <th>备注</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>ID</td>
-            <td>编号</td>
-            <td>Int32</td>
-            <td></td>
-            <td></td>
-            <td title="自增">AI</td>
-            <td>N</td>
-            <td></td>
-        </tr>
-
-        <tr>
-            <td>UserID</td>
-            <td>用户</td>
-            <td>Int32</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>N</td>
-            <td>当前登录人</td>
-        </tr>
-
-        <tr>
-            <td>Name</td>
-            <td>名称</td>
-            <td>String</td>
-            <td>50</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>当前登录人，或根据设备标识推算出来的使用人</td>
-        </tr>
-
-        <tr>
-            <td>SessionID</td>
-            <td>会话</td>
-            <td>String</td>
-            <td>50</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>Web的SessionID或Server的会话编号</td>
-        </tr>
-
-        <tr>
-            <td>OAuthProvider</td>
-            <td>登录方</td>
-            <td>String</td>
-            <td>50</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>OAuth提供商，从哪个渠道登录</td>
-        </tr>
-
-        <tr>
-            <td>Times</td>
-            <td>次数</td>
-            <td>Int32</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>N</td>
-            <td></td>
-        </tr>
-
-        <tr>
-            <td>Page</td>
-            <td>页面</td>
-            <td>String</td>
-            <td>50</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-
-        <tr>
-            <td>Platform</td>
-            <td>平台</td>
-            <td>String</td>
-            <td>50</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>操作系统平台，Windows/Linux/Android等</td>
-        </tr>
-
-        <tr>
-            <td>OS</td>
-            <td>系统</td>
-            <td>String</td>
-            <td>50</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>操作系统，带版本</td>
-        </tr>
-
-        <tr>
-            <td>Device</td>
-            <td>设备</td>
-            <td>String</td>
-            <td>50</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>手机品牌型号</td>
-        </tr>
-
-        <tr>
-            <td>Brower</td>
-            <td>浏览器</td>
-            <td>String</td>
-            <td>50</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>浏览器名称，带版本</td>
-        </tr>
-
-        <tr>
-            <td>NetType</td>
-            <td>网络</td>
-            <td>String</td>
-            <td>50</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>微信访问时，感知到WIFI或4G网络</td>
-        </tr>
-
-        <tr>
-            <td>DeviceId</td>
-            <td>设备标识</td>
-            <td>String</td>
-            <td>50</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>唯一标识设备，位于浏览器Cookie，重装后改变</td>
-        </tr>
-
-        <tr>
-            <td>Status</td>
-            <td>状态</td>
-            <td>String</td>
-            <td>500</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-
-        <tr>
-            <td>OnlineTime</td>
-            <td>在线时间</td>
-            <td>Int32</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>N</td>
-            <td>本次在线总时间，秒</td>
-        </tr>
-
-        <tr>
-            <td>LastError</td>
-            <td>最后错误</td>
-            <td>DateTime</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-
-        <tr>
-            <td>Address</td>
-            <td>地址</td>
-            <td>String</td>
-            <td>200</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>根据IP计算</td>
-        </tr>
-
-        <tr>
-            <td>TraceId</td>
-            <td>追踪</td>
-            <td>String</td>
-            <td>200</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>链路追踪，用于APM性能追踪定位，还原该事件的调用链</td>
-        </tr>
-
-        <tr>
-            <td>CreateIP</td>
-            <td>创建地址</td>
-            <td>String</td>
-            <td>50</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-
-        <tr>
-            <td>CreateTime</td>
-            <td>创建时间</td>
-            <td>DateTime</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>N</td>
-            <td></td>
-        </tr>
-
-        <tr>
-            <td>UpdateIP</td>
-            <td>更新地址</td>
-            <td>String</td>
-            <td>50</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-
-        <tr>
-            <td>UpdateTime</td>
-            <td>修改时间</td>
-            <td>DateTime</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>N</td>
-            <td></td>
-        </tr>
-    </tbody>
-</table>
-<br></br>
 <h3>用户统计（UserStat）</h3>
 <table>
     <thead>
@@ -5718,6 +5459,265 @@
     </tbody>
 </table>
 <br></br>
+<h3>用户在线（UserOnline）</h3>
+<table>
+    <thead>
+        <tr>
+            <th>名称</th>
+            <th>显示名</th>
+            <th>类型</th>
+            <th>长度</th>
+            <th>精度</th>
+            <th>主键</th>
+            <th>允许空</th>
+            <th>备注</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>ID</td>
+            <td>编号</td>
+            <td>Int32</td>
+            <td></td>
+            <td></td>
+            <td title="自增">AI</td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>UserID</td>
+            <td>用户</td>
+            <td>Int32</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td>当前登录人</td>
+        </tr>
+
+        <tr>
+            <td>Name</td>
+            <td>名称</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>当前登录人，或根据设备标识推算出来的使用人</td>
+        </tr>
+
+        <tr>
+            <td>SessionID</td>
+            <td>会话</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>Web的SessionID或Server的会话编号</td>
+        </tr>
+
+        <tr>
+            <td>OAuthProvider</td>
+            <td>登录方</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>OAuth提供商，从哪个渠道登录</td>
+        </tr>
+
+        <tr>
+            <td>Times</td>
+            <td>次数</td>
+            <td>Int32</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>Page</td>
+            <td>页面</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>Platform</td>
+            <td>平台</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>操作系统平台，Windows/Linux/Android等</td>
+        </tr>
+
+        <tr>
+            <td>OS</td>
+            <td>系统</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>操作系统，带版本</td>
+        </tr>
+
+        <tr>
+            <td>Device</td>
+            <td>设备</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>手机品牌型号</td>
+        </tr>
+
+        <tr>
+            <td>Brower</td>
+            <td>浏览器</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>浏览器名称，带版本</td>
+        </tr>
+
+        <tr>
+            <td>NetType</td>
+            <td>网络</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>微信访问时，感知到WIFI或4G网络</td>
+        </tr>
+
+        <tr>
+            <td>DeviceId</td>
+            <td>设备标识</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>唯一标识设备，位于浏览器Cookie，重装后改变</td>
+        </tr>
+
+        <tr>
+            <td>Status</td>
+            <td>状态</td>
+            <td>String</td>
+            <td>500</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>OnlineTime</td>
+            <td>在线时间</td>
+            <td>Int32</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td>本次在线总时间，秒</td>
+        </tr>
+
+        <tr>
+            <td>LastError</td>
+            <td>最后错误</td>
+            <td>DateTime</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>Address</td>
+            <td>地址</td>
+            <td>String</td>
+            <td>200</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>根据IP计算</td>
+        </tr>
+
+        <tr>
+            <td>TraceId</td>
+            <td>追踪</td>
+            <td>String</td>
+            <td>200</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>链路追踪，用于APM性能追踪定位，还原该事件的调用链</td>
+        </tr>
+
+        <tr>
+            <td>CreateIP</td>
+            <td>创建地址</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>CreateTime</td>
+            <td>创建时间</td>
+            <td>DateTime</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>UpdateIP</td>
+            <td>更新地址</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>UpdateTime</td>
+            <td>修改时间</td>
+            <td>DateTime</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>
+<br></br>
 <h3>在线用户表（DH_SysOnlineUsers）</h3>
 <table>
     <thead>
@@ -5769,6 +5769,17 @@
         <tr>
             <td>NickName</td>
             <td>用户昵称</td>
+            <td>String</td>
+            <td>50</td>
+            <td></td>
+            <td></td>
+            <td>N</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>Name</td>
+            <td>用户名</td>
             <td>varchar(100)</td>
             <td>100</td>
             <td></td>

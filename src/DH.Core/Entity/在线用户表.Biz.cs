@@ -217,7 +217,7 @@ public partial class SysOnlineUsers : DHEntityBase<SysOnlineUsers> {
     /// </summary>
     public static void ResetOnlineUserTable()
     {
-        SysOnlineUsers.Delete(SysOnlineUsers._.Id > 0);
+        Delete(_.Id > 0);
     }
 
     /// <summary>
@@ -226,10 +226,11 @@ public partial class SysOnlineUsers : DHEntityBase<SysOnlineUsers> {
     /// <param name="uid">用户Id</param>
     /// <param name="sid">用户惟一Id</param>
     /// <param name="nickName">昵称</param>
+    /// <param name="Name">用户名</param>
     /// <param name="ip">Ip地址</param>
     /// <param name="region">区域</param>
     /// <param name="userAgent">特征字符串</param>
-    public static void UpdateOnlineUser(Int32 uid, Int64 sid, string nickName, string ip, String region, String userAgent)
+    public static void UpdateOnlineUser(Int32 uid, Int64 sid, string nickName, String Name, string ip, String region, String userAgent)
     {
         using var span = DefaultTracer.Instance?.NewSpan(nameof(UpdateOnlineUser));
 
@@ -246,6 +247,7 @@ public partial class SysOnlineUsers : DHEntityBase<SysOnlineUsers> {
                 onlineUserInfo.Ip = ip;
                 onlineUserInfo.Region = region;
                 onlineUserInfo.UserAgent = userAgent;
+                onlineUserInfo.Name = Name;
                 onlineUserInfo.Clicks++;
                 onlineUserInfo.SaveAsync();
             }
@@ -260,6 +262,7 @@ public partial class SysOnlineUsers : DHEntityBase<SysOnlineUsers> {
                 onlineUserInfo.Ip = ip;
                 onlineUserInfo.Region = region;
                 onlineUserInfo.UserAgent = userAgent;
+                onlineUserInfo.Name = Name;
                 onlineUserInfo.Clicks = 1;
                 onlineUserInfo.Insert();
             }
@@ -275,6 +278,7 @@ public partial class SysOnlineUsers : DHEntityBase<SysOnlineUsers> {
                 onlineUserInfo.Ip = ip;
                 onlineUserInfo.Region = region;
                 onlineUserInfo.UserAgent = userAgent;
+                onlineUserInfo.Name = Name;
                 onlineUserInfo.Clicks = 1;
                 onlineUserInfo.Insert();
             }
@@ -291,6 +295,7 @@ public partial class SysOnlineUsers : DHEntityBase<SysOnlineUsers> {
                     onlineUserInfo.Ip = ip;
                     onlineUserInfo.Region = region;
                     onlineUserInfo.UserAgent = userAgent;
+                    onlineUserInfo.Name = Name;
                     onlineUserInfo.Clicks++;
                     onlineUserInfo.SaveAsync();
                 }
@@ -299,7 +304,7 @@ public partial class SysOnlineUsers : DHEntityBase<SysOnlineUsers> {
 
         if (uid > 0)
         {
-            var model = UserE.FindByID(uid);
+            var model = User.FindByID(uid);
             if (model != null)
             {
                 model.Online = true;
