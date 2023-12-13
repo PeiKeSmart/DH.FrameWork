@@ -1,16 +1,16 @@
-﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="../../version.props" />
 
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
     <OutputType>Library</OutputType>
-	<TargetFrameworks>netstandard2.1;netstandard2.0;net461;net45</TargetFrameworks>
+	<TargetFrameworks>net45;net461;netstandard2.0;netstandard2.1</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
 	<Nullable>enable</Nullable>
-    <RootNamespace>DH.NLoRa</RootNamespace>
-    <AssemblyName>DH.NLoRa</AssemblyName>
-    <AssemblyTitle>LoRa协议</AssemblyTitle>
-    <Description>DH框架的LoRa协议。超低功耗的物联网远程通信协议LoRaWAN</Description>
+    <RootNamespace>DH.NRocketMQ</RootNamespace>
+    <AssemblyName>DH.NRocketMQ</AssemblyName>
+    <AssemblyTitle>RocketMQ客户端</AssemblyTitle>
+    <Description>DH框架的RocketMQ客户端。纯托管轻量级RocketMQ客户端，支持发布消息、消费消息、负载均衡等核心功能！</Description>
     <Company>湖北登灏科技有限公司</Company>
 
     <OutputPath>..\Bin</OutputPath>
@@ -37,7 +37,7 @@
     <RepositoryUrl>https://gitee.com/chuangchu/DH.FrameWork</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <PackageTags>湖北登灏科技有限公司;DH组件;DH;$(AssemblyName);Lora;LoraWAN;物联网;IoT;边缘计算;Edge;</PackageTags>
-    <PackageReleaseNotes>超低功耗的物联网远程通信协议LoRaWAN</PackageReleaseNotes>
+    <PackageReleaseNotes>支持RocketMQ二进制协议</PackageReleaseNotes>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
@@ -56,9 +56,9 @@
     <WarningLevel>3</WarningLevel>
   </PropertyGroup>
 
- <ItemGroup>
-    <Compile Remove="Messaging\DataMessage.cs" />
-    <Compile Remove="Messaging\JoinMessage.cs" />
+  <ItemGroup>
+    <Compile Remove="Models\ConsumeFromWheres.cs" />
+    <Compile Remove="Protocol\SendStatus.cs" />
   </ItemGroup>
 	
   <ItemGroup Condition="'$(TargetFramework)'=='net45' or '$(TargetFramework)'=='net461'">
@@ -74,11 +74,11 @@
       <PackagePath>\</PackagePath>
     </None>
   </ItemGroup>
-
+	
   <ItemGroup>
     <ProjectReference Include="..\DH.NCore\DH.NCore.csproj" />
   </ItemGroup>
-
+	
   <ItemGroup>
     <Using Include="System.Net.Http" />
   </ItemGroup>
