@@ -8,8 +8,7 @@ namespace NewLife.MQTT.Handlers;
 
 /// <summary>MQTT处理器</summary>
 /// <returns></returns>
-public interface IMqttHandler
-{
+public interface IMqttHandler {
     /// <summary>处理消息</summary>
     /// <param name="message">消息</param>
     /// <returns></returns>
@@ -21,6 +20,14 @@ public interface IMqttHandler
     /// <param name="qos">服务质量</param>
     /// <returns></returns>
     Task<MqttIdMessage> PublishAsync(String topic, Object data, QualityOfService qos = QualityOfService.AtMostOnce);
+
+    /// <summary>发布消息</summary>
+    /// <param name="topic">主题</param>
+    /// <param name="data">消息数据</param>
+    /// <param name="qos">服务质量</param>
+    /// <param name="AllowExchange">允许消息交换</param>
+    /// <returns></returns>
+    Task<MqttIdMessage> PublishAsync(String topic, Object data, Boolean AllowExchange, QualityOfService qos = QualityOfService.AtMostOnce);
 
     /// <summary>发布消息</summary>
     /// <param name="message">消息</param>
@@ -36,8 +43,7 @@ public interface IMqttHandler
 /// <remarks>
 /// 基类中各方法的默认实现主要是为了返回默认值。
 /// </remarks>
-public class MqttHandler : IMqttHandler, ITracerFeature, ILogFeature
-{
+public class MqttHandler : IMqttHandler, ITracerFeature, ILogFeature {
     /// <summary>网络会话</summary>
     public INetSession Session { get; set; }
 
@@ -172,6 +178,30 @@ public class MqttHandler : IMqttHandler, ITracerFeature, ILogFeature
             Payload = pk,
             QoS = qos,
         };
+
+        return await PublishAsync(message);
+    }
+
+    /// <summary>发布消息</summary>
+    /// <param name="topic">主题</param>
+    /// <param name="data">消息数据</param>
+    /// <param name="qos">服务质量</param>
+    /// <param name="AllowExchange">允许消息交换</param>
+    /// <returns></returns>
+    public async Task<MqttIdMessage> PublishAsync(String topic, Object data, Boolean AllowExchange, QualityOfService qos = QualityOfService.AtMostOnce)
+    {
+        var pk = data as Packet;
+        if (pk == null && data != null) pk = Serialize(data);
+
+        var message = new PublishMessage
+        {
+            Topic = topic,
+            Payload = pk,
+            QoS = qos,
+        };
+
+        if (AllowExchange)
+            Exchange?.Publish(message);
 
         return await PublishAsync(message);
     }
