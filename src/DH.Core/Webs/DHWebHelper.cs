@@ -1,12 +1,8 @@
 ﻿using DH.AspNetCore.Webs;
-using DH.Core.Infrastructure;
-using DH.Exceptions;
 using DH.Helpers;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Primitives;
 
 using NewLife;
 using NewLife.Collections;
@@ -17,59 +13,58 @@ using System.Web;
 namespace DH.Webs;
 
 /// <summary>网页工具类</summary>
-public static partial class DHWebHelper {
+public static class DHWebHelper {
     #region Http请求
     /// <summary>返回请求字符串和表单的名值字段，过滤空值和ViewState，同名时优先表单</summary>
     public static IDictionary<String, String> Params
     {
         get
         {
-            var ctx = DH.Webs.HttpContext.Current;
+            var ctx = HttpContext.Current;
             if (ctx.Items["Params"] is IDictionary<String, String> dic) return dic;
 
             var req = ctx.Request;
             // 这里必须用可空字典，否则直接通过索引查不到数据时会抛出异常
             dic = new NullableDictionary<String, String>(StringComparer.OrdinalIgnoreCase);
-            //foreach (var item in req.RouteValues)
+
+            // 依次从查询字符串、表单、body读取参数
+            //foreach (var kv in req.RouteValues)
             //{
-            //    if (item.Value != null) dic[item.Key] = item.Value as String;
+            //    if (kv.Key.IsNullOrWhiteSpace()) continue;
+
+            //    dic[kv.Key] = kv.Value?.ToString().Trim();
             //}
-
-            IEnumerable<KeyValuePair<String, StringValues>>[] nvss;
-            nvss = req.HasFormContentType ?
-                new IEnumerable<KeyValuePair<String, StringValues>>[] { req.Query, req.Form } :
-                new IEnumerable<KeyValuePair<String, StringValues>>[] { req.Query };
-
-            foreach (var nvs in nvss)
+            foreach (var kv in req.Query)
             {
-                foreach (var kv in nvs)
+                if (kv.Key.IsNullOrWhiteSpace()) continue;
+
+                var v = kv.Value.FirstOrDefault(e => !e.IsNullOrWhiteSpace());
+                if (!v.IsNullOrWhiteSpace() || !dic.ContainsKey(kv.Key))
+                    dic[kv.Key] = v;
+            }
+            if (req.HasFormContentType)
+            {
+                foreach (var kv in req.Form)
                 {
-                    var item = kv.Key;
-                    if (item.IsNullOrWhiteSpace()) continue;
-                    if (item.StartsWithIgnoreCase("__VIEWSTATE")) continue;
+                    if (kv.Key.IsNullOrWhiteSpace()) continue;
+                    if (kv.Key.StartsWithIgnoreCase("__VIEWSTATE")) continue;
 
-                    // 空值不需要
-                    var value = kv.Value;
-                    if (value.Count == 0)
-                    {
-                        // 如果请求字符串里面有值而后面表单为空，则抹去
-                        if (dic.ContainsKey(item)) dic.Remove(item);
-                        continue;
-                    }
-
-                    // 同名时优先表单
-                    dic[item] = value.ToString().Trim();
+                    var v = kv.Value.FirstOrDefault(e => !e.IsNullOrWhiteSpace());
+                    if (!v.IsNullOrWhiteSpace() || !dic.ContainsKey(kv.Key))
+                        dic[kv.Key] = v;
                 }
             }
 
             // 尝试从body读取json格式的参数
             if (req.GetRequestBody<Object>() is NullableDictionary<String, Object> entityBody)
             {
-                foreach (var (key, value) in entityBody)
+                foreach (var kv in entityBody)
                 {
-                    var v = value?.ToString()?.Trim();
+                    var v = kv.Value?.ToString()?.Trim();
                     if (v.IsNullOrWhiteSpace()) continue;
-                    dic[key] = v;
+
+                    if (!v.IsNullOrWhiteSpace() || !dic.ContainsKey(kv.Key))
+                        dic[kv.Key] = v;
                 }
             }
 
