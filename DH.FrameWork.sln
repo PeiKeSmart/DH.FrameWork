@@ -356,6 +356,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DH.NSchneider", "src\DH.NSc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DH.NSiemens", "src\DH.NSiemens\DH.NSiemens.csproj", "{332C49D8-452D-4812-93B6-021DEB64B65E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DH.ShippingRates", "src\DH.ShippingRates\DH.ShippingRates.csproj", "{CAA2CCD5-3CCF-4383-B32D-E06C4892F3A1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -886,6 +888,10 @@ Global
 		{332C49D8-452D-4812-93B6-021DEB64B65E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{332C49D8-452D-4812-93B6-021DEB64B65E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{332C49D8-452D-4812-93B6-021DEB64B65E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CAA2CCD5-3CCF-4383-B32D-E06C4892F3A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CAA2CCD5-3CCF-4383-B32D-E06C4892F3A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CAA2CCD5-3CCF-4383-B32D-E06C4892F3A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CAA2CCD5-3CCF-4383-B32D-E06C4892F3A1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1059,6 +1065,7 @@ Global
 		{ABF3A8BF-E3CE-4B3D-BAC6-2EF6C54AFB4F} = {4C297731-A1FE-49DE-9895-2CE755535553}
 		{5D929E9C-442B-44F8-98B9-E4C4A78019CE} = {4C297731-A1FE-49DE-9895-2CE755535553}
 		{332C49D8-452D-4812-93B6-021DEB64B65E} = {4C297731-A1FE-49DE-9895-2CE755535553}
+		{CAA2CCD5-3CCF-4383-B32D-E06C4892F3A1} = {8ED504DD-57C1-47D3-82E7-9F7E4CDE4137}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8C334959-AE8C-42FF-B144-7B36F5C1B16A}
