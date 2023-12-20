@@ -356,7 +356,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DH.NSchneider", "src\DH.NSc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DH.NSiemens", "src\DH.NSiemens\DH.NSiemens.csproj", "{332C49D8-452D-4812-93B6-021DEB64B65E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DH.ShippingRates", "src\DH.ShippingRates\DH.ShippingRates.csproj", "{CAA2CCD5-3CCF-4383-B32D-E06C4892F3A1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DH.ShippingRates", "src\DH.ShippingRates\DH.ShippingRates.csproj", "{CAA2CCD5-3CCF-4383-B32D-E06C4892F3A1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
