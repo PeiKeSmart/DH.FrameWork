@@ -38,7 +38,7 @@ public static class DHWebHelper {
             {
                 if (kv.Key.IsNullOrWhiteSpace()) continue;
 
-                var v = kv.Value.FirstOrDefault(e => !e.IsNullOrWhiteSpace());
+                var v = kv.Value.ToString().Trim();
                 if (!v.IsNullOrWhiteSpace() || !dic.ContainsKey(kv.Key))
                     dic[kv.Key] = v;
             }
@@ -49,7 +49,7 @@ public static class DHWebHelper {
                     if (kv.Key.IsNullOrWhiteSpace()) continue;
                     if (kv.Key.StartsWithIgnoreCase("__VIEWSTATE")) continue;
 
-                    var v = kv.Value.FirstOrDefault(e => !e.IsNullOrWhiteSpace());
+                    var v = kv.Value.ToString().Trim();
                     if (!v.IsNullOrWhiteSpace() || !dic.ContainsKey(kv.Key))
                         dic[kv.Key] = v;
                 }
