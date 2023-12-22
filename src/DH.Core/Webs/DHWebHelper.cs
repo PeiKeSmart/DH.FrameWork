@@ -13,7 +13,7 @@ using System.Web;
 namespace DH.Webs;
 
 /// <summary>网页工具类</summary>
-public static class WebHelper {
+public static class DHWebHelper {
     #region Http请求
     /// <summary>返回请求字符串和表单的名值字段，过滤空值和ViewState，同名时优先表单</summary>
     public static IDictionary<String, String> Params
