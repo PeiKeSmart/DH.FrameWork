@@ -131,7 +131,7 @@ public abstract class ManageProvider : IManageProvider
     public virtual IManageUser Current { get => GetCurrent(); set => SetCurrent(value); }
 
     /// <summary>当前租户。正在使用的租户</summary>
-    public ITenant Tenant { get; set; }
+    public ITenant? Tenant { get; set; }
 
     /// <summary>当前用户的所有租户</summary>
     /// <returns></returns>

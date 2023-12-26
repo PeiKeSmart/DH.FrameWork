@@ -8,6 +8,7 @@
     <TargetFrameworks>net45;net461;netstandard2.0;netstandard2.1</TargetFrameworks>
     <RootNamespace>DH.NCode</RootNamespace>
     <AssemblyName>DH.NCode</AssemblyName>
+	<Nullable>enable</Nullable>
     <AssemblyTitle>DH组件数据中间件</AssemblyTitle>
     <Description>DH框架的数据中间件，数据中间件，支持MySQL、SQLite、SqlServer、Oracle、Postgresql、TDengine、达梦，重点在缓存、性能、分表、自动建表。参考X组件的XCode</Description>
     <Company>湖北登灏科技有限公司</Company>
