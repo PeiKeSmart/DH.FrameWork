@@ -53,8 +53,6 @@ public class MqttTopicFilter
     /// <returns></returns>
     public static Boolean IsMatch(String topicName, String topicFilter)
     {
-        //XTrace.WriteLine($"匹配发布主题和订阅主题是否匹配:{topicName}_{topicFilter}");
-
         if (!IsValidTopicName(topicName)) throw new Exception($"{topicName}:发布主题不符合规范");
         if (!IsValidTopicFilter(topicFilter)) throw new Exception($"{topicName}:订阅主题不符合规范");
 
