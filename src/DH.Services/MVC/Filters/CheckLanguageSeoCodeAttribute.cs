@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 using NewLife;
 using NewLife.Log;
-using NewLife.Serialization;
 
 using System.Net;
 
@@ -136,19 +135,13 @@ public sealed class CheckLanguageSeoCodeAttribute : TypeFilterAttribute {
             // 检查当前页面URL是否已本地化URL
             var pageUrl = WebHelper2.GetRawUrlStr(context.HttpContext.Request);
 
-            XTrace.WriteLine($"获取当前语言跳转：{pageUrl}");
-
             var (isLocalized, language) = pageUrl.IsLocalizedUrlAsync(context.HttpContext.Request.PathBase, true);
-
-            XTrace.WriteLine($"获取当前语言跳转11111：{context.HttpContext.Request.PathBase}_{isLocalized}_{language.ToJson()}");
 
             if (isLocalized && language != null)
                 return;
 
             // 尚未本地化，因此使用工作语言SEO代码重定向到页面
             pageUrl = pageUrl.AddLanguageSeoCodeToUrl(context.HttpContext.Request.PathBase, true, _workContext.WorkingLanguage);
-
-            XTrace.WriteLine($"获取当前语言跳转2222：{pageUrl}");
 
             context.Result = new LocalRedirectResult(pageUrl, false);
 
