@@ -147,22 +147,14 @@ public partial class DHEngine : IEngine
         // 注册引擎
         services.AddSingleton<IEngine>(this);
 
-        // 查找其他程序集提供的启动配置
-        var typeFinder = Singleton<ITypeFinder>.Instance;
-        var startupConfigurations = typeFinder.FindClassesOfType<IDHStartup>();
-
         // 创建和排序启动配置的实例
-        var instances = startupConfigurations
-            .Select(startup => (IDHStartup)Activator.CreateInstance(startup))
-            .OrderBy(startup => startup.Order);
-
         XTrace.WriteLine($"添加和配置服务顺序：ConfigureServices");
 
         // 配置服务
-        foreach (var instance in instances)
+        foreach (var instance in DHConast.DHStartups)
         {
             XTrace.WriteLine($"{instance.GetType().Name}:{instance.Order}");
-            instance.ConfigureServices(services, configuration, instances, webHostEnvironment);
+            instance.ConfigureServices(services, configuration, webHostEnvironment);
         }
 
         services.AddSingleton(services);
@@ -186,21 +178,13 @@ public partial class DHEngine : IEngine
         ServiceProvider = application.ApplicationServices;
 
         // 查找其他程序集提供的启动配置
-        var typeFinder = Singleton<ITypeFinder>.Instance;
-        var startupConfigurations = typeFinder.FindClassesOfType<IDHStartup>();
-
-        // 创建和排序启动配置的实例
-        var instances = startupConfigurations
-            .Select(startup => (IDHStartup)Activator.CreateInstance(startup))
-            .OrderBy(startup => startup.Order);
-
         XTrace.WriteLine($"配置HTTP请求管道：Configure");
 
         // 配置请求管道
-        foreach (var instance in instances)
+        foreach (var instance in DHConast.DHStartups)
         {
             XTrace.WriteLine($"{instance.GetType().Name}:{instance.Order}");
-            instance.Configure(application, typeFinder);
+            instance.Configure(application);
         }
     }
 

@@ -18,15 +18,13 @@ public partial interface IDHStartup
     /// </summary>
     /// <param name="services">服务描述符集合</param>
     /// <param name="configuration">应用程序的配置</param>
-    /// <param name="startups">查找到的IDHStartup集合</param>
-    void ConfigureServices(IServiceCollection services, IConfiguration configuration, IEnumerable<IDHStartup> startups, IWebHostEnvironment webHostEnvironment);
+    void ConfigureServices(IServiceCollection services, IConfiguration configuration, IWebHostEnvironment webHostEnvironment);
 
     /// <summary>
     /// 配置添加的中间件的使用
     /// </summary>
     /// <param name="application">用于配置应用程序的请求管道的生成器</param>
-    /// <param name="typeFinder">类型处理器</param>
-    void Configure(IApplicationBuilder application, ITypeFinder typeFinder);
+    void Configure(IApplicationBuilder application);
 
     /// <summary>
     /// 配置虚拟文件系统
@@ -59,4 +57,10 @@ public partial interface IDHStartup
     /// 获取此启动配置实现的顺序
     /// </summary>
     int Order { get; }
+}
+
+public class DHConast
+{
+    /// <summary>IDHStartup集合</summary>
+    public static IEnumerable<IDHStartup> DHStartups { get; set; }
 }

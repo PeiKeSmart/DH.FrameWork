@@ -22,13 +22,12 @@ public class DHStartup : IDHStartup
     /// 配置添加的中间件的使用
     /// </summary>
     /// <param name="application">用于配置应用程序的请求管道的生成器</param>
-    /// <param name="typeFinder">类型处理器</param>
-    public void Configure(IApplicationBuilder application, ITypeFinder typeFinder)
+    public void Configure(IApplicationBuilder application)
     {
         
     }
 
-    public void ConfigureServices(IServiceCollection services, IConfiguration configuration, IEnumerable<IDHStartup> startups, IWebHostEnvironment webHostEnvironment)
+    public void ConfigureServices(IServiceCollection services, IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
     {
         // 限流
         services.AddRateLimter(options =>
