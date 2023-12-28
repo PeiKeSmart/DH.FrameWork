@@ -28,7 +28,8 @@ public partial class DHStartup : IDHStartup
         services.Configure<DHVirtualFileSystemOptions>(options =>
         {
             foreach (var instance in DHConast.DHStartups)
-                instance.ConfigureVirtualFileSystem(options);
+                if (!instance.GetType().IsAbstract)
+                    instance.ConfigureVirtualFileSystem(options);
         });
     }
 
