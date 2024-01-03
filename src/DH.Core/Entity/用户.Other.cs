@@ -607,9 +607,7 @@ public partial class UserE : User {
                 var r = RoleEx.FindById(roleId);
                 if (r == null)
                 {
-                    r = new RoleEx();
-                    r.Id = roleId;
-                    r.Insert();
+                    return false;
                 }
                 return r.IsAdmin == false;
             });
