@@ -4,7 +4,7 @@
 	<PropertyGroup>
 		<LangVersion>latest</LangVersion>
 		<OutputType>Library</OutputType>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFrameworks>net8.0;netstandard2.1</TargetFrameworks>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<RootNamespace>DH</RootNamespace>
 		<AssemblyName>DH.Utils</AssemblyName>
@@ -67,9 +67,11 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\DH.Common\DH.Common.csproj" />
+		<ProjectReference Include="..\DH.NCode\DH.NCode.csproj" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Options" Version="8.0.0" />
 		<PackageReference Include="murmurhash" Version="1.0.3" />
+		<PackageReference Include="System.Text.Json" Version="8.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>

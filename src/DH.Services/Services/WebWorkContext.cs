@@ -4,6 +4,7 @@ using DH.Core.Domain.Localization;
 using DH.Core.Http;
 using DH.Core.Infrastructure;
 using DH.Entity;
+using DH.Services.Configuration;
 using DH.Services.Helpers;
 using DH.Services.Localization;
 using DH.Services.ScheduleTasks;
@@ -12,6 +13,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 
 using NewLife;
+using NewLife.Log;
+using NewLife.Serialization;
 
 using XCode.Membership;
 
@@ -25,6 +28,7 @@ public partial class WebWorkContext : IWorkContext {
 
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly LocalizationSettings _localizationSettings;
+    protected readonly ISettingService _settingService;
     private readonly IStoreContext _storeContext;
     private readonly IUserAgentHelper _userAgentHelper;
     private readonly ICookie _cookie;
@@ -37,14 +41,16 @@ public partial class WebWorkContext : IWorkContext {
 
     public WebWorkContext(IHttpContextAccessor httpContextAccessor,
         IUserAgentHelper userAgentHelper,
-        LocalizationSettings localizationSettings,
+        ISettingService settingService,
         ICookie cookie)
     {
         _httpContextAccessor = httpContextAccessor;
-        _localizationSettings = localizationSettings;
         _storeContext = EngineContext.Current.Resolve<IStoreContext>();
         _userAgentHelper = userAgentHelper;
         _cookie = cookie;
+        _settingService = settingService;
+
+        _localizationSettings = _settingService.LoadSetting<LocalizationSettings>(1);
     }
 
     #endregion
@@ -161,6 +167,16 @@ public partial class WebWorkContext : IWorkContext {
             var store = _storeContext.CurrentStore;
 
             Language detectedLanguage = null;
+
+            // 尝试从请求的页面URL获取语言
+            if (_localizationSettings.SeoFriendlyUrlsForLanguagesEnabled)
+            {
+                var (isLocalized, language) = _httpContextAccessor.HttpContext.Request.Path.Value.IsLocalizedUrlAsync(_httpContextAccessor.HttpContext.Request.PathBase, false);
+                if (isLocalized && language != null)
+                {
+                    detectedLanguage = language;
+                }
+            }
 
             // 从Cookie、Query等中获取
             if (detectedLanguage == null)

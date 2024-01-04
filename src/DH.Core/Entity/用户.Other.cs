@@ -576,7 +576,7 @@ public partial class UserE : User {
     }
 
     /// <summary>
-    /// 根据用户名和手机号、部门查询。适用于非系统角色
+    /// 根据用户名和手机号、部门查询。适用于非管理员
     /// </summary>
     /// <param name="p">分页数据</param>
     /// <param name="mobile"></param>
@@ -601,7 +601,16 @@ public partial class UserE : User {
             {
                 list = list.Where(e => e.RoleID == RoleID);
             }
-            list = list.Where(x => x.Role?.IsSystem == false);
+            list = list.Where(x =>
+            {
+                var roleId = x.RoleID;
+                var r = RoleEx.FindById(roleId);
+                if (r == null)
+                {
+                    return false;
+                }
+                return r.IsAdmin == false;
+            });
             p.TotalCount = list.Count();
 
             list = list.OrderByDescending(e => e.ID).Skip((p.PageIndex - 1) * p.PageSize).Take(p.PageSize);

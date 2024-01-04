@@ -45,6 +45,9 @@ public enum OSKinds
     /// <summary>Win2019</summary>
     Win2019 = 69,
 
+    /// <summary>Win2022</summary>
+    Win2022 = 72,
+
     /// <summary>Win10, 10.0.10240</summary>
     Win10 = 10,
 
@@ -89,6 +92,9 @@ public enum OSKinds
 
     /// <summary>凝思</summary>
     Linx = 150,
+
+    /// <summary>欧拉</summary>
+    OpenEuler = 160,
 
     /// <summary>MacOS</summary>
     MacOSX = 200,

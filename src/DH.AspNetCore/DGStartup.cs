@@ -17,7 +17,7 @@ public class DGStartup : IDHStartup {
 
     }
 
-    public void Configure(IApplicationBuilder application, ITypeFinder typeFinder)
+    public void Configure(IApplicationBuilder application)
     {
 
     }
@@ -27,7 +27,7 @@ public class DGStartup : IDHStartup {
 
     }
 
-    public void ConfigureServices(IServiceCollection services, IConfiguration configuration, IEnumerable<IDHStartup> startups, IWebHostEnvironment webHostEnvironment)
+    public void ConfigureServices(IServiceCollection services, IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
     {
         services.AddSevenZipCompressor().AddResumeFileResult(); // 配置7z和断点续传
     }

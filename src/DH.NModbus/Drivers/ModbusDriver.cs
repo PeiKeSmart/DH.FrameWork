@@ -145,6 +145,8 @@ public abstract class ModbusDriver : DriverBase
                 try
                 {
                     seg.Data = Modbus.Read(seg.ReadCode, n.Host, (UInt16)seg.Address, (UInt16)seg.Count)?.ReadBytes();
+
+                    //var x = seg.Data.Join(" ", e => e.ToHex());
                 }
                 catch (Exception ex)
                 {
@@ -157,7 +159,24 @@ public abstract class ModbusDriver : DriverBase
         }
 
         // 分割数据
-        return Dispatch(points, list);
+        var rs = Dispatch(points, list);
+
+        // 借助物模型转换数据类型
+        var spec = node.Device?.Specification;
+        if (spec != null)
+        {
+            foreach (var item in rs)
+            {
+                var pt = points.FirstOrDefault(e => e.Name == item.Key);
+                if (pt != null && item.Value is Byte[] data)
+                {
+                    var v = spec.DecodeByThingModel(data, pt);
+                    if (v != null) rs[item.Key] = v;
+                }
+            }
+        }
+
+        return rs;
     }
 
     internal IList<Segment> BuildSegments(IList<IPoint> points, ModbusParameter p)
@@ -242,8 +261,8 @@ public abstract class ModbusDriver : DriverBase
             {
                 var count = GetCount(point);
 
-                // 找到片段
-                var seg = segments.FirstOrDefault(e => e.Address <= maddr.Address && maddr.Address + count <= e.Address + e.Count);
+                // 找到片段 需要补充类型过滤参数避免不同类型相同地址取值错误问题
+                var seg = segments.FirstOrDefault(e => e.Address <= maddr.Address && maddr.Address + count <= e.Address + e.Count && e.ReadCode == maddr.Range.ReadCode);
                 if (seg != null && seg.Data != null)
                 {
                     var code = seg.ReadCode;
@@ -308,6 +327,14 @@ public abstract class ModbusDriver : DriverBase
         var code = maddr.GetWriteCode();
         if (code == 0) code = n.WriteCode;
 
+        // 借助物模型转换数据类型
+        var spec = node.Device?.Specification;
+        if (spec != null && value is not Byte[])
+        {
+            // 普通数值转为字节数组
+            value = spec.EncodeByThingModel(value, point);
+        }
+
         UInt16[] vs;
         if (value is Byte[] buf)
         {
@@ -321,9 +348,9 @@ public abstract class ModbusDriver : DriverBase
         {
             // 根据写入操作码决定转换为线圈还是寄存器
             if (code == FunctionCodes.WriteCoil || code == FunctionCodes.WriteCoils)
-                vs = ConvertToCoil(value, point, n.Device?.Specification);
+                vs = ConvertToCoil(value, point, spec);
             else
-                vs = ConvertToRegister(value, point, n.Device?.Specification);
+                vs = ConvertToRegister(value, point, spec);
 
             if (vs == null) throw new NotSupportedException($"点位[{point.Name}][Type={point.Type}]不支持数据[{value}]");
         }
@@ -356,17 +383,17 @@ public abstract class ModbusDriver : DriverBase
             case TypeCode.Boolean:
             case TypeCode.Byte:
             case TypeCode.SByte:
-                return data.ToBoolean() ? new[] { (UInt16)0xFF00 } : new[] { (UInt16)0x00 };
+                return data.ToBoolean() ? [(UInt16)0xFF00] : [(UInt16)0x00];
             case TypeCode.Int16:
             case TypeCode.UInt16:
             case TypeCode.Int32:
             case TypeCode.UInt32:
-                return data.ToInt() > 0 ? new[] { (UInt16)0xFF00 } : new[] { (UInt16)0x00 };
+                return data.ToInt() > 0 ? [(UInt16)0xFF00] : [(UInt16)0x00];
             case TypeCode.Int64:
             case TypeCode.UInt64:
-                return data.ToLong() > 0 ? new[] { (UInt16)0xFF00 } : new[] { (UInt16)0x00 };
+                return data.ToLong() > 0 ? [(UInt16)0xFF00] : [(UInt16)0x00];
             default:
-                return data.ToBoolean() ? new[] { (UInt16)0xFF00 } : new[] { (UInt16)0x00 };
+                return data.ToBoolean() ? [(UInt16)0xFF00] : [(UInt16)0x00];
         }
     }
 
@@ -391,41 +418,41 @@ public abstract class ModbusDriver : DriverBase
             case TypeCode.Boolean:
             case TypeCode.Byte:
             case TypeCode.SByte:
-                return data.ToBoolean() ? new[] { (UInt16)0xFF00 } : new[] { (UInt16)0x00 };
+                return data.ToBoolean() ? [(UInt16)0xFF00] : [(UInt16)0x00];
             case TypeCode.Int16:
             case TypeCode.UInt16:
-                return new[] { (UInt16)data.ToInt() };
+                return [(UInt16)data.ToInt()];
             case TypeCode.Int32:
             case TypeCode.UInt32:
                 {
                     var n = data.ToInt();
-                    return new[] { (UInt16)(n >> 16), (UInt16)(n & 0xFFFF) };
+                    return [(UInt16)(n >> 16), (UInt16)(n & 0xFFFF)];
                 }
             case TypeCode.Int64:
             case TypeCode.UInt64:
                 {
                     var n = data.ToLong();
-                    return new[] { (UInt16)(n >> 48), (UInt16)(n >> 32), (UInt16)(n >> 16), (UInt16)(n & 0xFFFF) };
+                    return [(UInt16)(n >> 48), (UInt16)(n >> 32), (UInt16)(n >> 16), (UInt16)(n & 0xFFFF)];
                 }
             case TypeCode.Single:
                 {
                     var d = (Single)data.ToDouble();
                     //var n = BitConverter.SingleToInt32Bits(d);
                     var n = (UInt32)d;
-                    return new[] { (UInt16)(n >> 16), (UInt16)(n & 0xFFFF) };
+                    return [(UInt16)(n >> 16), (UInt16)(n & 0xFFFF)];
                 }
             case TypeCode.Double:
                 {
                     var d = (Double)data.ToDouble();
                     //var n = BitConverter.DoubleToInt64Bits(d);
                     var n = (UInt64)d;
-                    return new[] { (UInt16)(n >> 48), (UInt16)(n >> 32), (UInt16)(n >> 16), (UInt16)(n & 0xFFFF) };
+                    return [(UInt16)(n >> 48), (UInt16)(n >> 32), (UInt16)(n >> 16), (UInt16)(n & 0xFFFF)];
                 }
             case TypeCode.Decimal:
                 {
                     var d = data.ToDecimal();
                     var n = (UInt64)d;
-                    return new[] { (UInt16)(n >> 48), (UInt16)(n >> 32), (UInt16)(n >> 16), (UInt16)(n & 0xFFFF) };
+                    return [(UInt16)(n >> 48), (UInt16)(n >> 32), (UInt16)(n >> 16), (UInt16)(n & 0xFFFF)];
                 }
             //case TypeCode.String:
             //    break;

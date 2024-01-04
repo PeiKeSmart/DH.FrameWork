@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -14,6 +15,7 @@ using NewLife.Threading;
 using Stardust.Managers;
 using Stardust.Models;
 using Stardust.Services;
+
 #if NET45_OR_GREATER || NETCOREAPP || NETSTANDARD
 using System.Net.WebSockets;
 using WebSocket = System.Net.WebSockets.WebSocket;
@@ -26,25 +28,25 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
 {
     #region 属性
     /// <summary>证书</summary>
-    public String Code { get; set; }
+    public String? Code { get; set; }
 
     /// <summary>密钥</summary>
-    public String Secret { get; set; }
+    public String? Secret { get; set; }
 
     /// <summary>产品编码</summary>
-    public String ProductCode { get; set; }
+    public String? ProductCode { get; set; }
 
     /// <summary>是否已登录</summary>
     public Boolean Logined { get; set; }
 
     /// <summary>登录完成后触发</summary>
-    public event EventHandler OnLogined;
+    public event EventHandler? OnLogined;
 
     /// <summary>服务迁移</summary>
-    public event EventHandler<MigrationEventArgs> OnMigration;
+    public event EventHandler<MigrationEventArgs>? OnMigration;
 
     /// <summary>最后一次登录成功后的消息</summary>
-    public LoginResponse Info { get; private set; }
+    public LoginResponse? Info { get; private set; }
 
     /// <summary>请求到服务端并返回的延迟时间。单位ms</summary>
     public Int32 Delay { get; set; }
@@ -60,7 +62,7 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
     public IDictionary<String, Delegate> Commands => _commands;
 
     /// <summary>收到命令时触发</summary>
-    public event EventHandler<CommandEventArgs> Received;
+    public event EventHandler<CommandEventArgs>? Received;
 
     private FrameworkManager _frameworkManager = new();
     private readonly ConcurrentQueue<PingInfo> _fails = new();
@@ -94,9 +96,9 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
     /// <param name="disposing"></param>
     protected override void Dispose(Boolean disposing)
     {
-        Logout(disposing ? "Dispose" : "GC").Wait(1_000);
-
         StopTimer();
+
+        Logout(disposing ? "Dispose" : "GC").Wait(1_000);
 
         base.Dispose(disposing);
     }
@@ -111,8 +113,19 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
     /// <param name="onRequest"></param>
     /// <param name="cancellationToken">取消通知</param>
     /// <returns></returns>
-    public override async Task<TResult> InvokeAsync<TResult>(HttpMethod method, String action, Object args = null, Action<HttpRequestMessage> onRequest = null, CancellationToken cancellationToken = default)
+#if NET40
+    public override async Task<TResult> InvokeAsync<TResult>(HttpMethod method, String action, Object? args = null, Action<HttpRequestMessage>? onRequest = null, CancellationToken cancellationToken = default)
+#else
+    [return: MaybeNull]
+    public override async Task<TResult> InvokeAsync<TResult>(HttpMethod method, String action, Object? args = null, Action<HttpRequestMessage>? onRequest = null, CancellationToken cancellationToken = default)
+#endif
     {
+        var needLogin = !Logined && !action.EqualIgnoreCase("Node/Login", "Node/Logout");
+        if (needLogin)
+        {
+            await Login();
+        }
+
         try
         {
             return await base.InvokeAsync<TResult>(method, action, args, onRequest, cancellationToken);
@@ -138,7 +151,7 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
     #region 登录
     /// <summary>登录</summary>
     /// <returns></returns>
-    public async Task<Object> Login()
+    public async Task<Object?> Login()
     {
         XTrace.WriteLine("登录：{0}", Code);
 
@@ -158,7 +171,7 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
         }
 
         // 登录后设置用于用户认证的token
-        Token = rs.Token;
+        Token = rs?.Token;
         Logined = true;
 
         OnLogined?.Invoke(this, EventArgs.Empty);
@@ -253,7 +266,7 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
         }
 #else
         var ver = "";
-        var tar = asm.Asm.GetCustomAttribute<TargetFrameworkAttribute>();
+        var tar = asm?.Asm.GetCustomAttribute<TargetFrameworkAttribute>();
         if (tar != null) ver = !tar.FrameworkDisplayName.IsNullOrEmpty() ? tar.FrameworkDisplayName : tar.FrameworkName;
 
         di.Framework ??= ver?.TrimStart(".NET Framework", ".NET Core", ".NET Native", ".NET").Trim();
@@ -267,7 +280,8 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
             var g = System.Drawing.Graphics.FromHwnd(IntPtr.Zero);
             di.Dpi = $"{g.DpiX}*{g.DpiY}";
             var screen = System.Windows.Forms.Screen.PrimaryScreen;
-            di.Resolution = $"{screen.Bounds.Width}*{screen.Bounds.Height}";
+            if (screen != null)
+                di.Resolution = $"{screen.Bounds.Width}*{screen.Bounds.Height}";
         }
         catch { }
 #else
@@ -326,17 +340,19 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
         return list;
     }
 
-    private static String Execute(String cmd, String arguments = null)
+    private static String? Execute(String cmd, String? arguments = null)
     {
         try
         {
-            var psi = new ProcessStartInfo(cmd, arguments)
+            var psi = new ProcessStartInfo(cmd, arguments ?? "")
             {
                 // UseShellExecute 必须 false，以便于后续重定向输出流
                 UseShellExecute = false,
                 RedirectStandardOutput = true
             };
             var process = Process.Start(psi);
+            if (process == null) return null;
+
             if (!process.WaitForExit(3_000))
             {
                 process.Kill();
@@ -355,7 +371,7 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
     /// <summary>注销</summary>
     /// <param name="reason"></param>
     /// <returns></returns>
-    public async Task<Object> Logout(String reason)
+    public async Task<Object?> Logout(String reason)
     {
         if (!Logined) return null;
 
@@ -365,11 +381,9 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
         try
         {
             var rs = await LogoutAsync(reason);
-            if (rs != null)
-            {
-                // 更新令牌
-                Token = rs.Token;
-            }
+
+            // 更新令牌
+            Token = rs?.Token;
 
             StopTimer();
 
@@ -389,16 +403,15 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
     /// <summary>登录</summary>
     /// <param name="inf">登录信息</param>
     /// <returns></returns>
-    private async Task<LoginResponse> LoginAsync(LoginInfo inf) => await PostAsync<LoginResponse>("Node/Login", inf);
+    private async Task<LoginResponse?> LoginAsync(LoginInfo inf) => await PostAsync<LoginResponse>("Node/Login", inf);
 
     /// <summary>注销</summary>
     /// <returns></returns>
-    private async Task<LoginResponse> LogoutAsync(String reason) => await GetAsync<LoginResponse>("Node/Logout", new { reason });
+    private async Task<LoginResponse?> LogoutAsync(String reason) => await GetAsync<LoginResponse>("Node/Logout", new { reason });
     #endregion
 
     #region 心跳
-    private readonly String[] _excludes = new[] { "Idle", "System", "Registry", "smss", "csrss", "lsass", "wininit", "services", "winlogon", "LogonUI", "SearchUI", "fontdrvhost", "dwm", "svchost", "dllhost", "conhost", "taskhostw", "explorer", "ctfmon", "ChsIME", "WmiPrvSE", "WUDFHost", "TabTip*", "igfxCUIServiceN", "igfxEMN", "smartscreen", "sihost", "RuntimeBroker", "StartMenuExperienceHost", "SecurityHealthSystray", "SecurityHealthService", "ShellExperienceHost", "PerfWatson2", "audiodg", "spoolsv", "*ServiceHub*", "systemd*", "cron", "rsyslogd", "sudo", "dbus*", "bash", "login", "networkd*", "kworker*", "ksoftirqd*", "migration*", "auditd", "polkitd", "atd"
-    };
+    private readonly String[] _excludes = ["Idle", "System", "Registry", "smss", "csrss", "lsass", "wininit", "services", "winlogon", "LogonUI", "SearchUI", "fontdrvhost", "dwm", "svchost", "dllhost", "conhost", "taskhostw", "explorer", "ctfmon", "ChsIME", "WmiPrvSE", "WUDFHost", "TabTip*", "igfxCUIServiceN", "igfxEMN", "smartscreen", "sihost", "RuntimeBroker", "StartMenuExperienceHost", "SecurityHealthSystray", "SecurityHealthService", "ShellExperienceHost", "PerfWatson2", "audiodg", "spoolsv", "*ServiceHub*", "systemd*", "cron", "rsyslogd", "sudo", "dbus*", "bash", "login", "networkd*", "kworker*", "ksoftirqd*", "migration*", "auditd", "polkitd", "atd"];
 
     /// <summary>获取心跳信息</summary>
     public PingInfo GetHeartInfo()
@@ -436,7 +449,7 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
         var ext = new PingInfo
         {
             AvailableMemory = mi.AvailableMemory,
-            AvailableFreeSpace = (UInt64)driveInfo?.AvailableFreeSpace,
+            AvailableFreeSpace = (UInt64)(driveInfo?.AvailableFreeSpace ?? 0),
             DriveInfo = drives.Join(",", e => $"{e.Name}[{e.DriveFormat}]={e.AvailableFreeSpace.ToGMK()}/{e.TotalSize.ToGMK()}"),
             CpuRate = mi.CpuRate,
             Temperature = mi.Temperature,
@@ -480,20 +493,20 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
 
     /// <summary>心跳</summary>
     /// <returns></returns>
-    public async Task<Object> Ping()
+    public async Task<Object?> Ping()
     {
         try
         {
             var inf = GetHeartInfo();
 
-            PingResponse rs = null;
+            PingResponse? rs = null;
             try
             {
                 rs = await PingAsync(inf);
                 if (rs != null)
                 {
                     // 由服务器改变采样频率
-                    if (rs.Period > 0) _timer.Period = rs.Period * 1000;
+                    if (rs.Period > 0 && _timer != null) _timer.Period = rs.Period * 1000;
 
                     var dt = rs.Time.ToDateTime();
                     if (dt.Year > 2000)
@@ -523,7 +536,7 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
                     // 迁移到新服务器
                     if (!rs.NewServer.IsNullOrEmpty())
                     {
-                        var arg = new MigrationEventArgs { NewServer = rs.NewServer };
+                        var arg = new MigrationEventArgs { NewServer = rs.NewServer + "" };
 
                         OnMigration?.Invoke(this, arg);
                         if (!arg.Cancel)
@@ -584,7 +597,7 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
     /// <returns></returns>
     public DateTime GetNow() => DateTime.Now.Add(_span);
 
-    private TraceService _trace;
+    private TraceService? _trace;
     /// <summary>使用追踪服务</summary>
     public void UseTrace()
     {
@@ -596,8 +609,8 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
     #region 上报
     private readonly ConcurrentQueue<EventModel> _events = new();
     private readonly ConcurrentQueue<EventModel> _failEvents = new();
-    private TimerX _eventTimer;
-    private String _eventTraceId;
+    private TimerX? _eventTimer;
+    private String? _eventTraceId;
 
     /// <summary>批量上报事件</summary>
     /// <param name="events"></param>
@@ -626,7 +639,7 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
             while (_events.TryDequeue(out var model) && max-- > 0) list.Add(model);
 
             using var span = Tracer?.NewSpan("PostEvent", list.Count);
-            span?.Detach(tid);
+            if (tid != null) span?.Detach(tid);
             try
             {
                 if (list.Count > 0) await PostEvents(list.ToArray());
@@ -654,7 +667,7 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
     /// <param name="type"></param>
     /// <param name="name"></param>
     /// <param name="remark"></param>
-    public virtual Boolean WriteEvent(String type, String name, String remark)
+    public virtual Boolean WriteEvent(String type, String name, String? remark)
     {
         // 记录追踪标识，上报的时候带上，尽可能让源头和下游串联起来
         _eventTraceId = DefaultSpan.Current?.ToString();
@@ -667,16 +680,6 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
 
         return true;
     }
-
-    ///// <summary>写信息事件</summary>
-    ///// <param name="name"></param>
-    ///// <param name="remark"></param>
-    //public virtual void WriteInfoEvent(String name, String remark) => WriteEvent("info", name, remark);
-
-    ///// <summary>写错误事件</summary>
-    ///// <param name="name"></param>
-    ///// <param name="remark"></param>
-    //public virtual void WriteErrorEvent(String name, String remark) => WriteEvent("error", name, remark);
 
     /// <summary>上报命令结果，如截屏、抓日志</summary>
     /// <param name="id"></param>
@@ -691,7 +694,7 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
     #endregion
 
     #region 长连接
-    private TimerX _timer;
+    private TimerX? _timer;
     private void StartTimer()
     {
         if (_timer == null)
@@ -710,8 +713,13 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
         _timer = null;
 
 #if NET45_OR_GREATER || NETCOREAPP || NETSTANDARD
-        if (_websocket != null && _websocket.State == WebSocketState.Open) _websocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "finish", default).Wait(1_000);
         _source?.Cancel();
+        try
+        {
+            if (_websocket != null && _websocket.State == WebSocketState.Open)
+                _websocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "finish", default);
+        }
+        catch { }
 
         //_websocket.TryDispose();
         _websocket = null;
@@ -721,20 +729,48 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
     private async Task DoPing(Object state)
     {
         DefaultSpan.Current = null;
+        using var span = Tracer?.NewSpan("NodePing");
         try
         {
             await Ping();
 
 #if NET45_OR_GREATER || NETCOREAPP || NETSTANDARD
             var svc = _currentService;
-            if (svc == null || Token == null) return;
+            if (svc == null) return;
+
+            // 使用过滤器内部token，因为它有过期刷新机制
+            var token = Token;
+            if (Filter is NewLife.Http.TokenHttpFilter thf) token = thf.Token?.AccessToken;
+            span?.AppendTag($"svc={svc.Address} Token=[{token?.Length}]");
+
+            if (token.IsNullOrEmpty()) return;
+
+            if (_websocket != null && _websocket.State == WebSocketState.Open)
+            {
+                try
+                {
+                    // 在websocket链路上定时发送心跳，避免长连接被断开
+                    var str = "Ping";
+                    await _websocket.SendAsync(new ArraySegment<Byte>(str.GetBytes()), WebSocketMessageType.Text, true, default);
+                }
+                catch (Exception ex)
+                {
+                    span?.SetError(ex, null);
+                    WriteLog("{0}", ex);
+                }
+            }
 
             if (_websocket == null || _websocket.State != WebSocketState.Open)
             {
                 var url = svc.Address.ToString().Replace("http://", "ws://").Replace("https://", "wss://");
                 var uri = new Uri(new Uri(url), "/node/notify");
+
+                using var span2 = Tracer?.NewSpan("WebSocketConnect", uri + "");
+
                 var client = new ClientWebSocket();
-                client.Options.SetRequestHeader("Authorization", "Bearer " + Token);
+                client.Options.SetRequestHeader("Authorization", "Bearer " + token);
+
+                span?.AppendTag($"WebSocket.Connect {uri}");
                 await client.ConnectAsync(uri, default);
 
                 _websocket = client;
@@ -746,13 +782,14 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
         }
         catch (Exception ex)
         {
+            span?.SetError(ex, null);
             Log?.Debug("{0}", ex);
         }
     }
 
 #if NET45_OR_GREATER || NETCOREAPP || NETSTANDARD
-    private WebSocket _websocket;
-    private CancellationTokenSource _source;
+    private WebSocket? _websocket;
+    private CancellationTokenSource? _source;
     private async Task DoPull(WebSocket socket, CancellationToken cancellationToken)
     {
         DefaultSpan.Current = null;
@@ -762,8 +799,15 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
             while (!cancellationToken.IsCancellationRequested && socket.State == WebSocketState.Open)
             {
                 var data = await socket.ReceiveAsync(new ArraySegment<Byte>(buf), cancellationToken);
-                var model = buf.ToStr(null, 0, data.Count).ToJsonEntity<CommandModel>();
-                if (model != null) await ReceiveCommand(model);
+                var txt = buf.ToStr(null, 0, data.Count);
+                if (txt.StartsWithIgnoreCase("Pong"))
+                {
+                }
+                else
+                {
+                    var model = txt.ToJsonEntity<CommandModel>();
+                    if (model != null) await ReceiveCommand(model);
+                }
             }
         }
         catch (WebSocketException) { }
@@ -771,6 +815,8 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
         {
             Log?.Debug("{0}", ex);
         }
+
+        using var span = Tracer?.NewSpan("NodePull", socket.State + "");
 
         if (socket.State == WebSocketState.Open)
             await socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "finish", default);
@@ -786,7 +832,7 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
 
         // 埋点，建立调用链
         using var span = Tracer?.NewSpan("cmd:" + model.Command, model);
-        span?.Detach(model.TraceId);
+        if (!model.TraceId.IsNullOrEmpty()) span?.Detach(model.TraceId);
         try
         {
             //todo 有效期判断可能有隐患，现在只是假设服务器和客户端在同一个时区，如果不同，可能会出现问题
@@ -838,8 +884,14 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
         var rs = await this.ExecuteCommand(model);
         e.Reply ??= rs;
 
-        if (e.Reply != null) await CommandReply(e.Reply);
+        if (e.Reply != null && e.Reply.Id > 0) await CommandReply(e.Reply);
     }
+
+    /// <summary>向命令引擎发送命令，触发指定已注册动作</summary>
+    /// <param name="command"></param>
+    /// <param name="argument"></param>
+    /// <returns></returns>
+    public async Task SendCommand(String command, String argument) => await OnReceiveCommand(new CommandModel { Command = command, Argument = argument });
     #endregion
 
     #region 更新
@@ -847,7 +899,7 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
     /// <param name="channel"></param>
     /// <param name="lastVersion">最后一次升级的本地版本</param>
     /// <returns></returns>
-    public async Task<UpgradeInfo> Upgrade(String channel, String lastVersion)
+    public async Task<UpgradeInfo?> Upgrade(String channel, String lastVersion)
     {
         XTrace.WriteLine("检查更新：{0}", channel);
 
@@ -868,13 +920,13 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
     /// <param name="channel"></param>
     /// <param name="lastVersion">最后一次升级的本地版本</param>
     /// <returns></returns>
-    public async Task<UpgradeInfo> UpgradeAsync(String channel, String lastVersion) => await GetAsync<UpgradeInfo>("Node/Upgrade", new { channel, lastVersion });
+    public async Task<UpgradeInfo?> UpgradeAsync(String channel, String lastVersion) => await GetAsync<UpgradeInfo>("Node/Upgrade", new { channel, lastVersion });
     #endregion
 
     #region 部署
     /// <summary>获取分配到本节点的应用服务信息</summary>
     /// <returns></returns>
-    public async Task<DeployInfo[]> GetDeploy() => await GetAsync<DeployInfo[]>("Deploy/GetAll");
+    public async Task<DeployInfo[]?> GetDeploy() => await GetAsync<DeployInfo[]>("Deploy/GetAll");
 
     /// <summary>上传本节点的所有应用服务信息</summary>
     /// <param name="services"></param>

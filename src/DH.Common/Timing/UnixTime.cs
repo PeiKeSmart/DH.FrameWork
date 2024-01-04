@@ -51,7 +51,7 @@ public static class UnixTime
     /// <returns></returns>
     public static DateTimeOffset ToUtcDateTime(Int64 timestamp)
     {
-        DateTimeOffset utcTime = DateTimeOffset.FromUnixTimeSeconds(timestamp);
+        DateTimeOffset utcTime = DateTimeOffset.FromUnixTimeMilliseconds(timestamp);
         DateTimeOffset zeroOffsetTime = utcTime.ToOffset(TimeSpan.Zero);
 
         return zeroOffsetTime;

@@ -105,14 +105,14 @@ public class RcInit : DefaultHost
     public override Boolean Install(String serviceName, String displayName, String fileName, String arguments, String description) => Install(_path, serviceName, fileName, arguments, displayName, description);
 
     /// <summary>安装服务</summary>
-    /// <param name="systemdPath">systemd目录有</param>
+    /// <param name="systemPath">system目录</param>
     /// <param name="serviceName">服务名</param>
     /// <param name="displayName">显示名</param>
     /// <param name="fileName">文件路径</param>
     /// <param name="arguments">命令参数</param>
     /// <param name="description">描述信息</param>
     /// <returns></returns>
-    public static Boolean Install(String systemdPath, String serviceName, String fileName, String arguments, String displayName, String description)
+    public static Boolean Install(String systemPath, String serviceName, String fileName, String arguments, String displayName, String description)
     {
         XTrace.WriteLine("{0}.Install {1}, {2}, {3}, {4}", typeof(RcInit).Name, serviceName, displayName, fileName, arguments, description);
 
@@ -151,6 +151,7 @@ public class RcInit : DefaultHost
         //File.WriteAllBytes(file, sb.ToString().GetBytes());
 
         //!! init.d目录中的rcS会扫描当前目录所有S开头的文件并执行，刚好StarAgent命中，S50StarAgent也命中，造成重复执行
+        // 因此把启动引导脚本放在当前目录，如StarAgent.sh，然后在rc.d目录中创建链接文件
         File.WriteAllBytes(file, sb.ToString().GetBytes());
 
         // 给予可执行权限
@@ -187,12 +188,12 @@ public class RcInit : DefaultHost
         if (!flag)
         {
             // 创建同级链接文件 [解决某些linux启动必须以Sxx开头的启动文件]
-            var fis = systemdPath.AsDirectory().GetFiles();
+            var fis = systemPath.AsDirectory().GetFiles();
             if (fis.Any(e => e.Name[0] == 'S'))
             {
-                CreateLink(file, $"{systemdPath}/S50{serviceName}");
+                CreateLink(file, $"{systemPath}/S50{serviceName}");
                 //if (fis.Any(e => e.Name[0] == 'K'))
-                CreateLink(file, $"{systemdPath}/K50{serviceName}");
+                CreateLink(file, $"{systemPath}/K50{serviceName}");
             }
         }
 
@@ -211,10 +212,14 @@ public class RcInit : DefaultHost
     /// <returns></returns>
     public override Boolean Remove(String serviceName)
     {
-        XTrace.WriteLine("{0}.Remove {1}", GetType().Name, serviceName);
+        XTrace.WriteLine("{0}.Remove {1}", Name, serviceName);
 
         //var file = _path.CombinePath($"{serviceName}");
         var file = $"{serviceName}.sh".GetFullPath();
+        if (File.Exists(file)) File.Delete(file);
+
+        // 兼容旧版，删除同级文件，如/etd/init.d/StarAgent
+        file = _path.CombinePath($"{serviceName}");
         if (File.Exists(file)) File.Delete(file);
 
         // 删除同级链接文件
@@ -254,7 +259,7 @@ public class RcInit : DefaultHost
     /// <returns></returns>
     public override Boolean Start(String serviceName)
     {
-        XTrace.WriteLine("{0}.Start {1}", GetType().Name, serviceName);
+        XTrace.WriteLine("{0}.Start {1}", Name, serviceName);
 
         // 判断服务是否已启动
         var id = 0;
@@ -286,7 +291,7 @@ public class RcInit : DefaultHost
     /// <returns></returns>
     public override Boolean Stop(String serviceName)
     {
-        XTrace.WriteLine("{0}.Stop {1}", GetType().Name, serviceName);
+        XTrace.WriteLine("{0}.Stop {1}", Name, serviceName);
 
         var id = 0;
         var pid = $"{serviceName}.pid".GetFullPath();
@@ -320,7 +325,7 @@ public class RcInit : DefaultHost
     /// <param name="serviceName">服务名</param>
     public override Boolean Restart(String serviceName)
     {
-        XTrace.WriteLine("{0}.Restart {1}", GetType().Name, serviceName);
+        XTrace.WriteLine("{0}.Restart {1}", Name, serviceName);
 
         Stop(serviceName);
         Start(serviceName);

@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 using NewLife;
+using NewLife.Log;
 
 using System.Net;
 
@@ -76,6 +77,10 @@ public sealed class CheckLanguageSeoCodeAttribute : TypeFilterAttribute {
             if (context.HttpContext.Request == null)
                 return;
 
+            var tracer = EngineContext.Current.Resolve<ITracer>();
+
+            using var span = tracer?.NewSpan("CheckLanguageSeoCodeAsync");
+
             // 仅在GET请求中
             if (!context.HttpContext.Request.Method.Equals(WebRequestMethods.Http.Get, StringComparison.InvariantCultureIgnoreCase))
                 return;
@@ -85,7 +90,7 @@ public sealed class CheckLanguageSeoCodeAttribute : TypeFilterAttribute {
 
             // 如果与默认语言一致，则不跳转
             var lang = Language.FindByDefault();
-            if (_workContext.WorkingLanguage == lang)
+            if (_workContext.WorkingLanguage.Id == lang.Id)
                 return;
 
             // 检查是否这个过滤器已经覆盖了
@@ -132,11 +137,12 @@ public sealed class CheckLanguageSeoCodeAttribute : TypeFilterAttribute {
 
             var (isLocalized, language) = pageUrl.IsLocalizedUrlAsync(context.HttpContext.Request.PathBase, true);
 
-            if (!isLocalized || language is null)
+            if (isLocalized && language != null)
                 return;
 
             // 尚未本地化，因此使用工作语言SEO代码重定向到页面
             pageUrl = pageUrl.AddLanguageSeoCodeToUrl(context.HttpContext.Request.PathBase, true, _workContext.WorkingLanguage);
+
             context.Result = new LocalRedirectResult(pageUrl, false);
 
             await Task.FromResult(0);

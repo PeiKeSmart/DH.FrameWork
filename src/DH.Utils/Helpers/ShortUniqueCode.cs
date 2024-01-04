@@ -11,7 +11,7 @@ namespace DH.Helpers;
 /// </summary>
 public class ShortUniqueCode
 {
-    public static string CreateCode(int Id)
+    public static string CreateCode(int Id, Int32 Length = 6)
     {
         string code = "";
         string source_string = "2YU9IP1ASDFG8QWERTHJ7KLZX4CV5B3ONM6"; //自定义35进制  
@@ -21,7 +21,7 @@ public class ShortUniqueCode
             Id = (Id - mod) / 35;
             code = source_string.ToCharArray()[mod] + code;
         }
-        return code.PadRight(6, '0'); //不足6位补0
+        return code.PadRight(Length, '0'); //不足指定位补0
     }
 
     public static int Decode(string code)
@@ -45,7 +45,7 @@ public class ShortUniqueCode
     public static string[] ShortUrl(string url)
     {
         //可以自定义生成MD5加密字符传前的混合KEY
-        string key = "GiciskyNet";
+        string key = "DengHaoNet";
         //要使用生成URL的字符
         string[] chars = new string[]
         {

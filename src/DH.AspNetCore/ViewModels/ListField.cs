@@ -1,4 +1,6 @@
-﻿using NewLife;
+﻿using DH.AspNetCore.ViewModels;
+
+using NewLife;
 using NewLife.Collections;
 using NewLife.Data;
 using NewLife.Reflection;
@@ -45,6 +47,12 @@ public class ListField : DataField {
 
     /// <summary>头部标题。数据移上去后显示的文字</summary>
     public String HeaderTitle { get; set; }
+
+    /// <summary>文本对齐方式</summary>
+    public TextAligns TextAlign { get; set; }
+
+    /// <summary>单元格样式</summary>
+    public String Class { get; set; }
 
     ///// <summary>头部链接。一般是排序</summary>
     //public String HeaderUrl { get; set; }

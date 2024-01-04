@@ -3,13 +3,16 @@ using NewLife.Log;
 using NewLife.Serialization;
 using Stardust.Models;
 using Stardust.Services;
+#if NET45_OR_GREATER || NETCOREAPP || NETSTANDARD
+using TaskEx = System.Threading.Tasks.Task;
+#endif
 
 namespace Stardust.Managers;
 
 /// <summary>框架管理器</summary>
 public class FrameworkManager
 {
-    private IEventProvider _eventProvider;
+    private IEventProvider? _eventProvider;
 
     /// <summary>获取所有框架版本</summary>
     /// <returns></returns>
@@ -42,9 +45,9 @@ public class FrameworkManager
         client.RegisterCommand("framework/uninstall", DoUninstall);
     }
 
-    private String DoInstall(String argument)
+    private String? DoInstall(String? argument)
     {
-        var model = argument.ToJsonEntity<FrameworkModel>();
+        var model = argument?.ToJsonEntity<FrameworkModel>();
         if (model == null || model.Version.IsNullOrEmpty()) throw new Exception("未指定版本！");
 
         var nr = new NetRuntime
@@ -135,14 +138,35 @@ public class FrameworkManager
         else
             throw new Exception($"不支持的.NET版本[{ver}]");
 
+        CheckPing();
+
         return "安装成功";
     }
 
-    private String DoUninstall(String argument)
+    private String? DoUninstall(String? argument)
     {
-        var model = argument.ToJsonEntity<FrameworkModel>();
+        var model = argument?.ToJsonEntity<FrameworkModel>();
         if (model == null || model.Version.IsNullOrEmpty()) throw new Exception("未指定版本！");
 
+        CheckPing();
+
         return "卸载成功";
+    }
+
+    /// <summary>星尘安装卸载框架后，马上执行一次心跳，使得其尽快上报框架版本</summary>
+    void CheckPing()
+    {
+        if (_eventProvider is StarClient client)
+        {
+            TaskEx.Run(async () =>
+            {
+                await client.Ping();
+                await TaskEx.Delay(1000);
+
+                //!! 要执行整个升级动作，而不仅仅是拉取新版本
+                //await client.Upgrade("", "");
+                await client.SendCommand("node/upgrade", "");
+            });
+        }
     }
 }

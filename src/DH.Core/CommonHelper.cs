@@ -368,5 +368,4 @@ public partial class CommonHelper
     public static IDHFileProvider DefaultFileProvider { get; set; }
 
     #endregion
-
 }
