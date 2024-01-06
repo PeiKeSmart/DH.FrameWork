@@ -186,6 +186,14 @@ public static class MenuHelper {
         if (_tenants.TryGetValue(key, out var rs)) return rs;
 
         var type = Type.GetType(menu.FullName);
+        if (type == null)
+        {
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                type = assembly.GetType(menu.FullName);
+                if (type != null) break;
+            }
+        }
         var att = type?.GetCustomAttribute<DGMenu>();
         if (att != null && att.Mode.Has(MenuModes.Tenant))
         {

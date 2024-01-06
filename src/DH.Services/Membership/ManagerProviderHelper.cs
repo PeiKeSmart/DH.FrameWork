@@ -329,10 +329,10 @@ public static class ManagerProviderHelper {
         //ManageProvider2.EndpointRoute = (IEndpointRouteBuilder)app.Properties["__EndpointRouteBuilder"];
         ManageProvider2.Context = ModelExtension.GetService<IHttpContextAccessor>(provider);
 
-        // 初始化数据库
-        //_ = Role.Meta.Count;
-        EntityFactory.InitConnection("Membership");
-        EntityFactory.InitConnection("Log");
-        EntityFactory.InitConnection("DG");
+        //// 初始化数据库
+        ////_ = Role.Meta.Count;
+        //EntityFactory.InitConnection("Membership");
+        //EntityFactory.InitConnection("Log");
+        //EntityFactory.InitConnection("DG");
     }
 }
