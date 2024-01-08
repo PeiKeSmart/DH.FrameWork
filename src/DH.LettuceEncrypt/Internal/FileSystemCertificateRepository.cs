@@ -93,7 +93,7 @@ internal class FileSystemCertificateRepository : ICertificateRepository, ICertif
             fullchain.CopyTo(savePath.FullName, true);
 
             var subjects = _options.Value.DomainNames.Where(e => e.Contains("www."));
-            var data = new { issuer = "R3", notAfter = DateTime.Now.AddDays(-90).ToShortDateString(), notBefore = DateTime.Now.ToShortDateString(), dns = _options.Value.DomainNames, subject = subjects.Any() ? subjects.FirstOrDefault() : _options.Value.DomainNames.FirstOrDefault(), endtime = 89};
+            var data = new { issuer = "R3", notAfter = DateTime.Now.AddDays(90).ToShortDateString(), notBefore = DateTime.Now.ToShortDateString(), dns = _options.Value.DomainNames, subject = subjects.Any() ? subjects.FirstOrDefault() : _options.Value.DomainNames.FirstOrDefault(), endtime = 89};
 
             savePath = $"{_options.Value.PemSslDeployPath.CombinePath("info.json")}".AsFile();
             savePath.WriteBytes(data.ToJson().GetBytes());
