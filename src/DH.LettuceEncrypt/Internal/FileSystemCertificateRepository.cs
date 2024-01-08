@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 
 using NewLife;
 using NewLife.Log;
+using NewLife.Serialization;
 
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -68,16 +69,34 @@ internal class FileSystemCertificateRepository : ICertificateRepository, ICertif
         output = Path.Combine(_certDir.FullName, fileName);
         var fullchain = output.AsFile().WriteBytes(Encoding.UTF8.GetBytes(acmeCert.ToPem()));
 
-        if (!_options.Value.PemDeployPath.IsNullOrWhiteSpace())
+        if (!_options.Value.PemCertDeployPath.IsNullOrWhiteSpace())
         {
-            XTrace.WriteLine($"部署Pem证书");
+            XTrace.WriteLine($"部署cert目录下的Pem证书");
 
-            var savePath = $"{_options.Value.PemDeployPath.CombinePath("privkey.pem")}".AsFile();
+            var savePath = $"{_options.Value.PemCertDeployPath.CombinePath("privkey.pem")}".AsFile();
             savePath.FullName.EnsureDirectory();
             privkey.CopyTo(savePath.FullName, true);
 
-            savePath = $"{_options.Value.PemDeployPath.CombinePath("fullchain.pem")}".AsFile();
+            savePath = $"{_options.Value.PemCertDeployPath.CombinePath("fullchain.pem")}".AsFile();
             fullchain.CopyTo(savePath.FullName, true);
+        }
+
+        if (!_options.Value.PemSslDeployPath.IsNullOrWhiteSpace())
+        {
+            XTrace.WriteLine($"部署ssl目录下的Pem证书");
+
+            var savePath = $"{_options.Value.PemSslDeployPath.CombinePath("privkey.pem")}".AsFile();
+            savePath.FullName.EnsureDirectory();
+            privkey.CopyTo(savePath.FullName, true);
+
+            savePath = $"{_options.Value.PemSslDeployPath.CombinePath("fullchain.pem")}".AsFile();
+            fullchain.CopyTo(savePath.FullName, true);
+
+            var subjects = _options.Value.DomainNames.Where(e => e.Contains("www."));
+            var data = new { issuer = "R3", notAfter = DateTime.Now.AddDays(-90).ToShortDateString(), notBefore = DateTime.Now.ToShortDateString(), dns = _options.Value.DomainNames, subject = subjects.Any() ? subjects.FirstOrDefault() : _options.Value.DomainNames.FirstOrDefault(), endtime = 89};
+
+            savePath = $"{_options.Value.PemSslDeployPath.CombinePath("info.json")}".AsFile();
+            savePath.WriteBytes(data.ToJson().GetBytes());
         }
 
         return Task.CompletedTask;
