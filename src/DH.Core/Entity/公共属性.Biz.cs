@@ -3,7 +3,7 @@ using NewLife;
 using System.Runtime.Serialization;
 using System.Xml.Serialization;
 
-using XCode.Membership;
+using XCode;
 
 namespace DH.Entity;
 

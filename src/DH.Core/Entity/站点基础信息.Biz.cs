@@ -8,6 +8,7 @@ using NewLife.Log;
 using System.ComponentModel;
 using System.Reflection;
 
+using XCode;
 using XCode.Membership;
 
 namespace DH.Entity {
