@@ -16,3 +16,4 @@
 /Build/Log
 *.user
 /tools/PushNuget/Properties/PublishProfiles
+/src/DH.NCode/Membership/Config
