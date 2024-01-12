@@ -731,7 +731,7 @@
         <Index Columns="Updatetime" />
       </Indexes>
     </Table>
-    <Table Name="SysOnlineTime" TableName="DH_SysOnlineTime" Description="在线时间表" ConnName="Cube">
+    <Table Name="SysOnlineTime" TableName="DH_SysOnlineTime" Description="在线时间表">
       <Columns>
         <Column Name="ID" DataType="Int32" Identity="True" PrimaryKey="True" Description="用户编号" />
         <Column Name="UId" DataType="Int32" Description="用户编号" />
