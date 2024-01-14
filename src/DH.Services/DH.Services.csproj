@@ -65,6 +65,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\DH.Core\DH.Core.csproj" />
+		<ProjectReference Include="..\DH.MDB\DH.MDB.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
