@@ -103,11 +103,6 @@ public class SmsSettings : CacheObject {
     public Int32 SmsType { get; set; }
 
     /// <summary>
-    /// 是否默认，搭配 SmsType 使用
-    /// </summary>
-    public Boolean IsDefault { get; set; }
-
-    /// <summary>
     /// 是否启用
     /// </summary>
     public Boolean IsEnabled { get; set; }
@@ -141,9 +136,4 @@ public class SmsSettings : CacheObject {
     /// 找回密码短信
     /// </summary>
     public Boolean SmsPassword { get; set; }
-
-    /// <summary>
-    /// 测试Code
-    /// </summary>
-    public String TestCode { get; set; }
 }
