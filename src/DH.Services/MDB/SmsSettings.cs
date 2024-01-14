@@ -128,7 +128,17 @@ public class SmsSettings : CacheObject {
     public String PassKey { get; set; }
 
     /// <summary>
-    /// 允许的短信类型，以逗号分隔。SmsLogin为登录短信,SmsRegister为注册短信,SmsPassword为找回密码短信
+    /// 登录短信
     /// </summary>
-    public String Content { get; set; }
+    public Boolean SmsLogin { get; set; }
+
+    /// <summary>
+    /// 注册短信
+    /// </summary>
+    public Boolean SmsRegister { get; set; }
+
+    /// <summary>
+    /// 找回密码短信
+    /// </summary>
+    public Boolean SmsPassword { get; set; }
 }
