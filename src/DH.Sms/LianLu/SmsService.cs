@@ -4,7 +4,7 @@ using DH.Timing;
 
 using Microsoft.Extensions.Options;
 
-namespace DG.Sms.LianLu;
+namespace DH.Sms.LianLu;
 
 /// <summary>
 /// 短信服务

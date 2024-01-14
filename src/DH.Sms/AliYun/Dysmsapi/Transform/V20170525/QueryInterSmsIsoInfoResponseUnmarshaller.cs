@@ -1,8 +1,8 @@
 ﻿using Aliyun.Acs.Core.Transform;
-using DG.Sms.AliYun.Dysmsapi.Model.V20170525;
+using DH.Sms.AliYun.Dysmsapi.Model.V20170525;
 using System.Collections.Generic;
 
-namespace DG.Sms.AliYun.Dysmsapi.Transform.V20170525
+namespace DH.Sms.AliYun.Dysmsapi.Transform.V20170525
 {
     public class QueryInterSmsIsoInfoResponseUnmarshaller
     {

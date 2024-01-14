@@ -1,6 +1,6 @@
 ﻿using Aliyun.Acs.Core.Transform;
 
-namespace DG.Sms.AliYun.Dysmsapi.Model.V20170525
+namespace DH.Sms.AliYun.Dysmsapi.Model.V20170525
 {
     public class SendSmsResponseUnmarshaller
     {

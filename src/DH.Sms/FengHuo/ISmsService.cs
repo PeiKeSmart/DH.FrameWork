@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace DG.Sms.FengHuo
+namespace DH.Sms.FengHuo
 {
     /// <summary>
     /// 短信服务

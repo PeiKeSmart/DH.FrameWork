@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace DG.Sms.LianLu
+namespace DH.Sms.LianLu
 {
     /// <summary>
     /// 短信扩展

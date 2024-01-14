@@ -1,4 +1,4 @@
-﻿namespace DG.Sms.AliYun
+﻿namespace DH.Sms.AliYun
 {
     /// <summary>
     /// 短信服务

@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace DG.Sms.FengHuo
+namespace DH.Sms.FengHuo
 {
     /// <summary>
     /// 短信扩展

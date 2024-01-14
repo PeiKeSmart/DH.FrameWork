@@ -1,7 +1,7 @@
 ﻿using Aliyun.Acs.Core;
 using Aliyun.Acs.Core.Utils;
 
-namespace DG.Sms.AliYun.Dysmsapi.Model.V20170525
+namespace DH.Sms.AliYun.Dysmsapi.Model.V20170525
 {
     public class SendInterSmsRequest : RpcAcsRequest<SendInterSmsResponse>
     {

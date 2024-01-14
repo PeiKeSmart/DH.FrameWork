@@ -1,7 +1,7 @@
 ﻿using Aliyun.Acs.Core;
 using System.Collections.Generic;
 
-namespace DG.Sms.AliYun.Dysmsapi.Model.V20170525
+namespace DH.Sms.AliYun.Dysmsapi.Model.V20170525
 {
     public class QueryInterSmsIsoInfoResponse : AcsResponse
     {

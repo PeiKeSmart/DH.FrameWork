@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
 
-namespace DG.Sms.AliYun
+namespace DH.Sms.AliYun
 {
     /// <summary>
     /// 阿里短信扩展

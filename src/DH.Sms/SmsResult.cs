@@ -1,4 +1,4 @@
-﻿namespace DG.Sms
+﻿namespace DH.Sms
 {
     /// <summary>
     /// 短信接口返回结果

@@ -1,7 +1,7 @@
 ﻿using Aliyun.Acs.Core.Utils;
-using DG.Sms.AliYun.Dysmsapi.Transform.V20170525;
+using DH.Sms.AliYun.Dysmsapi.Transform.V20170525;
 
-namespace DG.Sms.AliYun.Dysmsapi.Model.V20170525
+namespace DH.Sms.AliYun.Dysmsapi.Model.V20170525
 {
     public class QuerySendDetailsRequest : Aliyun.Acs.Core.RpcAcsRequest<QuerySendDetailsResponse>
     {
