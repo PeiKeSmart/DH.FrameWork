@@ -2,6 +2,8 @@
 using DH.Helpers;
 using DH.Web;
 
+using NewLife.Serialization;
+
 using System.Security.Cryptography;
 using System.Text;
 
@@ -132,31 +134,31 @@ internal class TencentSms : ISmsProvider {
         return false;
     }
 
-    public bool Send(string templateParam, string[] phoneNums)
+    public (bool, String) Send(string templateParam, string[] phoneNums)
     {
         HttpClientExt client = GenHttpClient(mSignName, mTemplateCode, templateParam, phoneNums);
         HttpResponseExt res = client.Post(sUrl);
-        return ParseResult(res);
+        return (ParseResult(res), res.ToJson());
     }
 
-    public bool Send2(string signName, string templateCode, string templateParam, params string[] phoneNums)
+    public (bool, String) Send2(string signName, string templateCode, string templateParam, params string[] phoneNums)
     {
         HttpClientExt client = GenHttpClient(signName, templateCode, templateParam, phoneNums);
         HttpResponseExt res = client.Post(sUrl);
-        return ParseResult(res);
+        return (ParseResult(res), res.ToJson());
     }
 
-    public async Task<bool> SendAsync(string templateParam, params string[] phoneNums)
+    public async Task<(bool, String)> SendAsync(string templateParam, params string[] phoneNums)
     {
         HttpClientExt client = GenHttpClient(mSignName, mTemplateCode, templateParam, phoneNums);
         HttpResponseExt res = await client.PostAsync(sUrl);
-        return ParseResult(res);
+        return (ParseResult(res), res.ToJson());
     }
 
-    public async Task<bool> Send2Async(string signName, string templateCode, string templateParam, params string[] phoneNums)
+    public async Task<(bool, String)> Send2Async(string signName, string templateCode, string templateParam, params string[] phoneNums)
     {
         HttpClientExt client = GenHttpClient(signName, templateCode, templateParam, phoneNums);
         HttpResponseExt res = await client.PostAsync(sUrl);
-        return ParseResult(res);
+        return (ParseResult(res), res.ToJson());
     }
 }

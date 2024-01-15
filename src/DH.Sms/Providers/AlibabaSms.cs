@@ -1,5 +1,7 @@
 ﻿using DH.Web;
 
+using Newtonsoft.Json;
+
 using System.Security.Cryptography;
 using System.Text;
 using System.Web;
@@ -127,35 +129,35 @@ internal class AlibabaSms : ISmsProvider {
         return url;
     }
 
-    public bool Send(string templateParam, params string[] phoneNums)
+    public (bool, String) Send(string templateParam, params string[] phoneNums)
     {
         string _queryParams = GenQueryParams(mSignName, mTemplateCode, templateParam, phoneNums);
         string url = GenRquestUri(_queryParams);
         HttpResponseExt res = WebTool.New().Client().Get(url);
-        return res.Json.Code == "OK";
+        return (res.Json.Code == "OK", JsonConvert.SerializeObject(res.Json));
     }
 
-    public bool Send2(string signName, string templateCode, string templateParam, params string[] phoneNums)
+    public (bool, String) Send2(string signName, string templateCode, string templateParam, params string[] phoneNums)
     {
         string _queryParams = GenQueryParams(signName, templateCode, templateParam, phoneNums);
         string url = GenRquestUri(_queryParams);
         HttpResponseExt res = WebTool.New().Client().Get(url);
-        return res.Json.Code == "OK";
+        return (res.Json.Code == "OK", JsonConvert.SerializeObject(res.Json));
     }
 
-    public async Task<bool> SendAsync(string phoneNum, params string[] templateParams)
+    public async Task<(bool, String)> SendAsync(string phoneNum, params string[] templateParams)
     {
         string _queryParams = GenQueryParams(mSignName, mTemplateCode, phoneNum, templateParams);
         string url = GenRquestUri(_queryParams);
         HttpResponseExt res = await WebTool.New().Client().GetAsync(url);
-        return res.Json.Code == "OK";
+        return (res.Json.Code == "OK", JsonConvert.SerializeObject(res.Json));
     }
 
-    public async Task<bool> Send2Async(string signName, string templateCode, string phoneNum, params string[] templateParams)
+    public async Task<(bool, String)> Send2Async(string signName, string templateCode, string phoneNum, params string[] templateParams)
     {
         string _queryParams = GenQueryParams(signName, templateCode, phoneNum, templateParams);
         string url = GenRquestUri(_queryParams);
         HttpResponseExt res = await WebTool.New().Client().GetAsync(url);
-        return res.Json.Code == "OK";
+        return (res.Json.Code == "OK", JsonConvert.SerializeObject(res.Json));
     }
 }
