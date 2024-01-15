@@ -123,6 +123,11 @@ public class SmsSettings : CacheObject {
     public String PassKey { get; set; }
 
     /// <summary>
+    /// 腾讯短信AppId
+    /// </summary>
+    public String AppId { get; set; }
+
+    /// <summary>
     /// 登录短信
     /// </summary>
     public Boolean SmsLogin { get; set; }
