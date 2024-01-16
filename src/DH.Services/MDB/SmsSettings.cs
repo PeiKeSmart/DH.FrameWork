@@ -26,6 +26,18 @@ public class SmsSettings : CacheObject {
             cdb.Insert(model);
 
             model = new SmsSettings();
+            model.Name = "fenghuo";
+            model.DisplayName = "烽火";
+            model.SmsType = 2; // 国内
+            cdb.Insert(model);
+
+            model = new SmsSettings();
+            model.Name = "fenghuo";
+            model.DisplayName = "烽火";
+            model.SmsType = 3; // 国际
+            cdb.Insert(model);
+
+            model = new SmsSettings();
             model.Name = "lianlu";
             model.DisplayName = "联麓";
             model.SmsType = 0; // 国内
@@ -35,6 +47,18 @@ public class SmsSettings : CacheObject {
             model.Name = "lianlu";
             model.DisplayName = "联麓";
             model.SmsType = 1; // 国际
+            cdb.Insert(model);
+
+            model = new SmsSettings();
+            model.Name = "lianlu";
+            model.DisplayName = "联麓";
+            model.SmsType = 2; // 国内
+            cdb.Insert(model);
+
+            model = new SmsSettings();
+            model.Name = "lianlu";
+            model.DisplayName = "联麓";
+            model.SmsType = 3; // 国际
             cdb.Insert(model);
 
             model = new SmsSettings();
@@ -50,6 +74,18 @@ public class SmsSettings : CacheObject {
             cdb.Insert(model);
 
             model = new SmsSettings();
+            model.Name = "aliyun";
+            model.DisplayName = "阿里云";
+            model.SmsType = 2; // 国内
+            cdb.Insert(model);
+
+            model = new SmsSettings();
+            model.Name = "aliyun";
+            model.DisplayName = "阿里云";
+            model.SmsType = 3; // 国际
+            cdb.Insert(model);
+
+            model = new SmsSettings();
             model.Name = "tencent";
             model.DisplayName = "腾讯云";
             model.SmsType = 0; // 国内
@@ -59,6 +95,18 @@ public class SmsSettings : CacheObject {
             model.Name = "tencent";
             model.DisplayName = "腾讯云";
             model.SmsType = 1; // 国际
+            cdb.Insert(model);
+
+            model = new SmsSettings();
+            model.Name = "tencent";
+            model.DisplayName = "腾讯云";
+            model.SmsType = 2; // 国内
+            cdb.Insert(model);
+
+            model = new SmsSettings();
+            model.Name = "tencent";
+            model.DisplayName = "腾讯云";
+            model.SmsType = 3; // 国际
             cdb.Insert(model);
 
             model = new SmsSettings();
@@ -74,6 +122,18 @@ public class SmsSettings : CacheObject {
             cdb.Insert(model);
 
             model = new SmsSettings();
+            model.Name = "mysubmail";
+            model.DisplayName = "赛邮云";
+            model.SmsType = 2; // 国内
+            cdb.Insert(model);
+
+            model = new SmsSettings();
+            model.Name = "mysubmail";
+            model.DisplayName = "赛邮云";
+            model.SmsType = 3; // 国际
+            cdb.Insert(model);
+
+            model = new SmsSettings();
             model.Name = "netease";
             model.DisplayName = "网易云信";
             model.SmsType = 0; // 国内
@@ -83,6 +143,18 @@ public class SmsSettings : CacheObject {
             model.Name = "netease";
             model.DisplayName = "网易云信";
             model.SmsType = 1; // 国际
+            cdb.Insert(model);
+
+            model = new SmsSettings();
+            model.Name = "netease";
+            model.DisplayName = "网易云信";
+            model.SmsType = 2; // 国内
+            cdb.Insert(model);
+
+            model = new SmsSettings();
+            model.Name = "netease";
+            model.DisplayName = "网易云信";
+            model.SmsType = 3; // 国际
             cdb.Insert(model);
         }
     }
