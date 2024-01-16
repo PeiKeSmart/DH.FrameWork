@@ -2,6 +2,12 @@
 
 public interface ICaptcha {
     /// <summary>
+    /// 使用session及固定Key
+    /// </summary>
+    /// <returns></returns>
+    CaptchaData Generate();
+
+    /// <summary>
     /// 生成验证码
     /// </summary>
     /// <param name="captchaId">验证码id</param>

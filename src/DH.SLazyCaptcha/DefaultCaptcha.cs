@@ -2,6 +2,7 @@
 using DH.SLazyCaptcha.Generator.Code;
 using DH.SLazyCaptcha.Storage;
 
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
 namespace DH.SLazyCaptcha;
@@ -27,6 +28,22 @@ public class DefaultCaptcha : ICaptcha {
     protected virtual void ChangeOptions(CaptchaOptions options)
     {
 
+    }
+
+    /// <summary>
+    /// 使用session及固定Key
+    /// </summary>
+    /// <returns></returns>
+    public virtual CaptchaData Generate()
+    {
+        var captchaId = "ybbcode";
+
+        var (renderText, code) = _captchaCodeGenerator.Generate(_options.CodeLength);
+        var image = _captchaImageGenerator.Generate(renderText, _options.ImageOption);
+
+        Webs.HttpContext.Current.Session.SetString(captchaId, code);
+
+        return new CaptchaData(captchaId, code, image);
     }
 
     /// <summary>

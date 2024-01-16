@@ -83,6 +83,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DH.RateLimter\DH.RateLimter.csproj" />
     <ProjectReference Include="..\DH.VirtualFileSystem\DH.VirtualFileSystem.csproj" />
   </ItemGroup>
 

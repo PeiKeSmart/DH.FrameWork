@@ -4,14 +4,13 @@ using DH.RateLimter;
 
 using Microsoft.AspNetCore.Mvc;
 
-namespace DH.LazyCaptcha.Controllers;
+namespace DH.SLazyCaptcha.Controllers;
 
 /// <summary>
 /// 验证码控制器
 /// </summary>
 [HiddenApi]
-public partial class CaptChaController : Controller
-{
+public partial class CaptChaController : Controller {
     /// <summary>
     /// 验证码，适用于跨平台。
     /// </summary>
