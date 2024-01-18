@@ -1,10 +1,9 @@
-﻿using NewLife;
+using NewLife;
 using NewLife.Data;
 
 using System.Reflection;
 
 using XCode;
-using XCode.Membership;
 
 namespace DH.Entity;
 
