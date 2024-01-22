@@ -1,111 +1,93 @@
 ﻿using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using NewLife.Configuration;
-using XCode.DataAccessLayer;
+using NewLife.Log;
 
-[assembly: InternalsVisibleTo("XUnitTest.XCode, PublicKey=00240000048000001401000006020000002400005253413100080000010001000d41eb3bdab5c2150958b46c95632b7e4dcb0af77ed8637bd8543875bc2443d01273143bb46655a48a92efa76251adc63ccca6d0e9cef2e0ce93e32b5043bea179a6c710981be4a71703a03e10960643f7df091f499cf60183ef0e4e4e2eebf26e25cea0eebf87c8a6d7f8130c283fc3f747cb90623f0aaa619825e3fcd82f267a0f4bfd26c9f2a6b5a62a6b180b4f6d1d091fce6bd60a9aa9aa5b815b833b44e0f2e58b28a354cb20f52f31bb3b3a7c54f515426537e41f9c20c07e51f9cab8abc311daac19a41bd473a51c7386f014edf1863901a5c29addc89da2f2659c9c1e95affd6997396b9680e317c493e974a813186da277ff9c1d1b30e33cb5a2f6")]
+//[assembly: InternalsVisibleTo("XUnitTest.Core")]
 
-namespace XCode;
+namespace NewLife;
 
-/// <summary>XCode设置</summary>
-[Obsolete("=>XCodeSetting")]
-public class Setting : XCodeSetting { }
-
-/// <summary>XCode设置</summary>
-[DisplayName("XCode设置")]
-[Config("XCode")]
-public class XCodeSetting : Config<XCodeSetting>
+/// <summary>核心设置</summary>
+/// <remarks>
+/// 文档 https://newlifex.com/core/setting
+/// </remarks>
+[DisplayName("核心设置")]
+[Config("Core")]
+public class Setting : Config<Setting>
 {
     #region 属性
-    /// <summary>是否启用调试。默认启用</summary>
-    [Description("调试")]
+    /// <summary>是否启用全局调试。默认启用</summary>
+    [Description("全局调试。XTrace.Debug")]
     public Boolean Debug { get; set; } = true;
 
-    /// <summary>是否输出SQL语句，默认启用</summary>
-    [Description("输出SQL。是否输出SQL语句，默认启用")]
-    public Boolean ShowSQL { get; set; } = true;
+    /// <summary>日志等级，只输出大于等于该级别的日志，All/Debug/Info/Warn/Error/Fatal，默认Info</summary>
+    [Description("日志等级。只输出大于等于该级别的日志，All/Debug/Info/Warn/Error/Fatal，默认Info")]
+    public LogLevel LogLevel { get; set; } = LogLevel.Info;
 
-    /// <summary>设置SQL输出的单独目录，默认为空，SQL输出到当前日志中。生产环境建议输出到站点外单独的SqlLog目录</summary>
-    [Description("SQL目录。设置SQL输出的单独目录，默认为空，SQL输出到当前日志中。生产环境建议输出到站点外单独的SqlLog目录")]
-    public String SQLPath { get; set; } = "";
+    /// <summary>文件日志目录。默认Log子目录</summary>
+    [Description("文件日志目录。默认Log子目录")]
+    public String LogPath { get; set; } = "";
 
-    /// <summary>跟踪SQL执行时间，大于该阀值将输出日志，默认1000毫秒</summary>
-    [Description("SQL执行时间。跟踪SQL执行时间，大于该阀值将输出日志，默认1000毫秒")]
-    public Int32 TraceSQLTime { get; set; } = 1000;
+    /// <summary>日志文件上限。超过上限后拆分新日志文件，默认10MB，0表示不限制大小</summary>
+    [Description("日志文件上限。超过上限后拆分新日志文件，默认10MB，0表示不限制大小")]
+    public Int32 LogFileMaxBytes { get; set; } = 10;
 
-    /// <summary>SQL最大长度，输出日志时的SQL最大长度，超长截断，默认4096，不截断用0</summary>
-    [Description("SQL最大长度。输出日志时的SQL最大长度，超长截断，默认4096，不截断用0")]
-    public Int32 SQLMaxLength { get; set; } = 4096;
+    /// <summary>日志文件备份。超过备份数后，最旧的文件将被删除，网络安全法要求至少保存6个月日志，默认200，0表示不限制个数</summary>
+    [Description("日志文件备份。超过备份数后，最旧的文件将被删除，网络安全法要求至少保存6个月日志，默认200，0表示不限制个数")]
+    public Int32 LogFileBackups { get; set; } = 200;
 
-    ///// <summary>连接名映射#，表名映射@，表名映射@，把实体类中的Test2和Test3连接名映射到Test去</summary>
-    //[Description("连接映射。连接名映射#，表名映射@，把实体类中的Test2和Test3连接名映射到Test去")]
-    //public String ConnMaps { get; set; } = "";
+    /// <summary>日志文件格式。默认{0:yyyy_MM_dd}.log，支持日志等级如 {1}_{0:yyyy_MM_dd}.log</summary>
+    [Description("日志文件格式。默认{0:yyyy_MM_dd}.log，支持日志等级如 {1}_{0:yyyy_MM_dd}.log")]
+    public String LogFileFormat { get; set; } = "{0:yyyy_MM_dd}.log";
 
-    /// <summary>参数化添删改查。默认关闭</summary>
-    [Description("参数化添删改查。默认关闭")]
-    public Boolean UseParameter { get; set; }
+    /// <summary>网络日志。本地子网日志广播udp://255.255.255.255:514，或者http://xxx:80/log</summary>
+    [Description("网络日志。本地子网日志广播udp://255.255.255.255:514，或者http://xxx:80/log")]
+    public String NetworkLog { get; set; } = "";
 
-    ///// <summary>SQLite数据库默认目录。没有设置连接字符串的连接默认创建SQLite连接，数据库放在该目录</summary>
-    //[Description("SQLite默认目录。没有设置连接字符串的连接默认创建SQLite连接，数据库放在该目录")]
-    //public String SQLiteDbPath { get; set; } = "";
+    /// <summary>日志记录时间UTC校正，单位：小时。默认0表示使用的是本地时间，使用UTC时间的系统转换成本地时间则相差8小时</summary>
+    [Description("日志记录时间UTC校正，小时")]
+    public Int32 UtcIntervalHours { get; set; } = 0;
+    
+    /// <summary>数据目录。本地数据库目录，默认Data子目录</summary>
+    [Description("数据目录。本地数据库目录，默认Data子目录")]
+    public String DataPath { get; set; } = "";
 
-    ///// <summary>备份目录。备份数据库时存放的目录</summary>
-    //[Description("备份目录。备份数据库时存放的目录")]
-    //public String BackupPath { get; set; } = "";
+    /// <summary>备份目录。备份数据库时存放的目录，默认Backup子目录</summary>
+    [Description("备份目录。备份数据库时存放的目录，默认Backup子目录")]
+    public String BackupPath { get; set; } = "";
 
-    /// <summary>批大小。用于批量操作数据，抽取、删除、备份、恢复，默认5000</summary>
-    [Description("批大小。用于批量操作数据，抽取、删除、备份、恢复，默认5000")]
-    public Int32 BatchSize { get; set; } = 5_000;
+    /// <summary>插件目录</summary>
+    [Description("插件目录")]
+    public String PluginPath { get; set; } = "Plugins";
 
-    /// <summary>命令超时。查询执行超时时间，默认0秒不限制</summary>
-    [Description("命令超时。查询执行超时时间，默认0秒不限制")]
-    public Int32 CommandTimeout { get; set; }
+    /// <summary>插件服务器。将从该网页上根据关键字分析链接并下载插件</summary>
+    [Description("插件服务器。将从该网页上根据关键字分析链接并下载插件")]
+    public String PluginServer { get; set; } = "http://x.newlifex.com/";
 
-    /// <summary>失败重试。执行命令超时后的重试次数，默认0不重试</summary>
-    [Description("失败重试。执行命令超时后的重试次数，默认0不重试")]
-    public Int32 RetryOnFailure { get; set; }
+    /// <summary>辅助解析程序集。程序集加载过程中，被依赖程序集未能解析时，是否协助解析，默认false</summary>
+    [Description("辅助解析程序集。程序集加载过程中，被依赖程序集未能解析时，是否协助解析，默认false")]
+    public Boolean AssemblyResolve { get; set; }
 
-    /// <summary>数据层缓存。根据sql做缓存，默认0秒</summary>
-    [Description("数据层缓存。根据sql做缓存，默认0秒")]
-    public Int32 DataCacheExpire { get; set; }
-
-    /// <summary>实体缓存过期。整表缓存实体列表，默认10秒</summary>
-    [Description("实体缓存过期。整表缓存实体列表，默认10秒")]
-    public Int32 EntityCacheExpire { get; set; } = 10;
-
-    /// <summary>单对象缓存过期。按主键缓存实体，默认10秒</summary>
-    [Description("单对象缓存过期。按主键缓存实体，默认10秒")]
-    public Int32 SingleCacheExpire { get; set; } = 10;
-
-    /// <summary>扩展属性过期。扩展属性Extends缓存，默认10秒</summary>
-    [Description("扩展属性过期。扩展属性Extends缓存，默认10秒")]
-    public Int32 ExtendExpire { get; set; } = 10;
-
-    /// <summary>字段缓存过期。缓存表中分类型字段的分组数据，默认3600秒</summary>
-    [Description("字段缓存过期。缓存表中分类型字段的分组数据，默认3600秒")]
-    public Int32 FieldCacheExpire { get; set; } = 3600;
-
-    /// <summary>反向工程。Off 关闭；ReadOnly 只读不执行；On 打开，仅新建；Full 完全，修改删除</summary>
-    [Description("反向工程。Off 关闭；ReadOnly 只读不执行；On 打开，仅新建；Full 完全，修改删除")]
-    public Migration Migration { get; set; } = Migration.On;
-
-    /// <summary></summary>
-    [Description("表名称、字段名大小写格式。Default 根据模型生成;Upper 全大写;Lower 全小写;Underline下划线")]
-    public NameFormats NameFormat { get; set; } = NameFormats.Default;
-
-    /// <summary>快速统计最小数据量</summary>
-    [Description("快速统计最小数据量。默认1000万，在对数据表进行无条件 count 时，先进行快速统计。如果快速统计的结果大于该值，则使用快速统计的结果。反之则进行 count(*) 操作获取精确统计。")]
-    public int FastCountMin { get; set; } = 10_000_000;
+    /// <summary>服务地址。用户访问的外网地址，反向代理之外，用于内部构造其它Url（如SSO），或者向注册中心登记，多地址逗号隔开</summary>
+    [Description("服务地址。用户访问的外网地址，反向代理之外，用于内部构造其它Url（如SSO），或者向注册中心登记，多地址逗号隔开")]
+    public String ServiceAddress { get; set; } = "";
     #endregion
 
     #region 方法
-    ///// <summary>加载后检查默认值</summary>
-    //protected override void OnLoaded()
-    //{
-    //    if (SQLiteDbPath.IsNullOrEmpty()) SQLiteDbPath = Runtime.IsWeb ? "..\\Data" : "Data";
-    //    if (BackupPath.IsNullOrEmpty()) BackupPath = Runtime.IsWeb ? "..\\Backup" : "Backup";
+    /// <summary>加载完成后</summary>
+    protected override void OnLoaded()
+    {
+        if (LogPath.IsNullOrEmpty()) LogPath = "Log";
+        if (DataPath.IsNullOrEmpty()) DataPath = "Data";
+        if (BackupPath.IsNullOrEmpty()) BackupPath = "Backup";
+        if (LogFileFormat.IsNullOrEmpty()) LogFileFormat = "{0:yyyy_MM_dd}.log";
 
-    //    base.OnLoaded();
-    //}
+        if (PluginServer.IsNullOrWhiteSpace()) PluginServer = "http://x.newlifex.com/";
+
+        base.OnLoaded();
+    }
+
+    /// <summary>获取插件目录</summary>
+    /// <returns></returns>
+    public String GetPluginPath() => PluginPath.GetBasePath();
     #endregion
 }
