@@ -1,28 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
-using System.Web.Script.Serialization;
-using System.Xml.Serialization;
-using NewLife;
+﻿using NewLife;
 using NewLife.Data;
-using NewLife.Log;
-using NewLife.Model;
-using NewLife.Reflection;
-using NewLife.Threading;
-using NewLife.Web;
+
+using System.ComponentModel;
+
 using XCode;
-using XCode.Cache;
-using XCode.Configuration;
-using XCode.DataAccessLayer;
-using XCode.Membership;
-using XCode.Shards;
 
 namespace DH.Entity;
 
@@ -138,6 +119,19 @@ public partial class OtherMsgTpl : DHEntityBase<OtherMsgTpl> {
         if (!mCode.IsNullOrEmpty()) exp &= _.MCode == mCode;
         exp &= _.UpdateTime.Between(start, end);
         if (!key.IsNullOrEmpty()) exp &= _.MName.Contains(key) | _.MTitle.Contains(key) | _.MContent.Contains(key) | _.SmsTplId.Contains(key) | _.CreateUser.Contains(key) | _.CreateIP.Contains(key) | _.UpdateUser.Contains(key) | _.UpdateIP.Contains(key);
+
+        return FindAll(exp, page);
+    }
+
+    /// <summary>高级查询</summary>
+    /// <param name="key">关键字</param>
+    /// <param name="page">分页参数信息。可携带统计和数据权限扩展查询等信息</param>
+    /// <returns>实体列表</returns>
+    public static IList<OtherMsgTpl> Search(PageParameter page, String key)
+    {
+        var exp = new WhereExpression();
+
+        if (!key.IsNullOrEmpty()) exp &= _.MName.Contains(key) | _.MTitle.Contains(key) | _.MContent.Contains(key) | _.SmsTplId.Contains(key) | _.MCode == key;
 
         return FindAll(exp, page);
     }
