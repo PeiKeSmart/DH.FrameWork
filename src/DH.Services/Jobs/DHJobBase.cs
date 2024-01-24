@@ -27,5 +27,5 @@ public abstract class DHJobBase : IDHJob {
     /// 执行
     /// </summary>
     /// <param name="argument">参数格式</param>
-    public abstract void Execute(string argument);
+    public abstract void Execute(String argument);
 }
