@@ -1,4 +1,4 @@
-﻿namespace DH.Services;
+﻿namespace DH.Model;
 
 /// <summary>菜单模式</summary>
 [Flags]
@@ -13,7 +13,8 @@ public enum MenuModes {
 /// <summary>
 /// 菜单属性
 /// </summary>
-public class DGMenu : Attribute {
+public class DHMenu : Attribute
+{
     /// <summary>
     /// 父菜单中文名称
     /// </summary>
@@ -72,4 +73,7 @@ public class DGMenu : Attribute {
     /// <summary>菜单模式。控制在管理后台和租户模式下是否可见</summary>
     public MenuModes Mode { get; set; }
 
+    /// <summary>最后更新时间。小于该更新时间的菜单设置将被覆盖。</summary>
+    /// <remarks>一般应用于区域类，表明代码已修改菜单参数，希望强行覆盖已有菜单设置</remarks>
+    public String LastUpdate { get; set; }
 }

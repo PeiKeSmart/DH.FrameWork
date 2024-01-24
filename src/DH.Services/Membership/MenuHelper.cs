@@ -179,7 +179,7 @@ public static class MenuHelper {
         return list;
     }
 
-    static Dictionary<String, Boolean> _tenants = new();
+    static Dictionary<String, Boolean> _tenants = [];
     static Boolean CheckVisibleInTenant(MenuTree menu)
     {
         var key = menu.FullName;
@@ -203,7 +203,7 @@ public static class MenuHelper {
         return _tenants[key] = false;
     }
 
-    static Dictionary<String, Boolean> _admins = new();
+    static Dictionary<String, Boolean> _admins = [];
     static Boolean CheckVisibleInAdmin(MenuTree menu)
     {
         var key = menu.FullName;
