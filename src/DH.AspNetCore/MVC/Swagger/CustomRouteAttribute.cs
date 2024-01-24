@@ -42,4 +42,15 @@ public class CustomRouteAttribute : RouteAttribute, IApiDescriptionGroupNameProv
     {
         GroupName = version.ToString();
     }
+
+    /// <summary>
+    /// 自定义版本+路由构造函数，继承基类路由
+    /// </summary>
+    /// <param name="actionName"></param>
+    /// <param name="version"></param>
+    /// <param name="PrefixName"></param>
+    public CustomRouteAttribute(String version, string PrefixName, string actionName = "") : base($"/api/{PrefixName}/{version}/[controller]/{actionName}")
+    {
+        GroupName = version;
+    }
 }
