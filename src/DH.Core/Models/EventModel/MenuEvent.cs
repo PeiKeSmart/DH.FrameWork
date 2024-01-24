@@ -1,6 +1,6 @@
 ﻿using XCode.Membership;
 
-namespace DH.Model.EventModel;
+namespace DH.Models.EventModel;
 
 /// <summary>
 /// 菜单消费者事件

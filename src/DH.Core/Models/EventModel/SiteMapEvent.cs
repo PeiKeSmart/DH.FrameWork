@@ -1,4 +1,4 @@
-﻿namespace DH.Model.EventModel;
+﻿namespace DH.Models.EventModel;
 
 /// <summary>
 /// 网站SiteMap生成事件

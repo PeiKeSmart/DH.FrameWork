@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace DH.Model;
+namespace DH.Models;
 
 /// <summary>对象模型</summary>
 public class ObjectModel {

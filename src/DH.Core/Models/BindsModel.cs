@@ -1,6 +1,6 @@
 ﻿using DH.Entity;
 
-namespace DH.Model;
+namespace DH.Models;
 
 /// <summary>第三方绑定模型</summary>
 public class BindsModel : ICubeModel {

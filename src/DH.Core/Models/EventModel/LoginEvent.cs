@@ -2,7 +2,7 @@
 
 using XCode.Membership;
 
-namespace DH.Model.EventModel;
+namespace DH.Models.EventModel;
 
 /// <summary>
 /// 登录消费者事件

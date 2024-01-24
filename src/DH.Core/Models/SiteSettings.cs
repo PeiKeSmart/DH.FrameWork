@@ -1,4 +1,4 @@
-﻿namespace DH.Model;
+﻿namespace DH.Models;
 
 /// <summary>
 /// 站点配置参数

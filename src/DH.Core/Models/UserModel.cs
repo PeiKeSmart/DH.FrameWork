@@ -3,7 +3,7 @@ using NewLife.Collections;
 
 using XCode.Membership;
 
-namespace DH.Model;
+namespace DH.Models;
 
 /// <summary>
 /// 继承此接口，可通过json方式传值

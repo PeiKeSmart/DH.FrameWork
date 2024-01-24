@@ -1,4 +1,4 @@
-﻿namespace DH.Model;
+﻿namespace DH.Models;
 
 /// <summary>
 /// 树型列表基类

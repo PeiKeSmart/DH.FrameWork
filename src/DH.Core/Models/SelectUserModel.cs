@@ -1,4 +1,4 @@
-﻿namespace DH.Model;
+﻿namespace DH.Models;
 
 /// <summary>选择用户控件所使用的模型</summary>
 public class SelectUserModel {

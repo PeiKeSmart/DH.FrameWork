@@ -1,4 +1,4 @@
-﻿namespace DH.Model;
+﻿namespace DH.Models;
 
 /// <summary>菜单模式</summary>
 [Flags]

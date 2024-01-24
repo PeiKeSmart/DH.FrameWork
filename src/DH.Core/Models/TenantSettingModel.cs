@@ -1,4 +1,4 @@
-﻿namespace DH.Model;
+﻿namespace DH.Models;
 
 /// <summary>租户配置模型</summary>
 public class TenantSettingModel {

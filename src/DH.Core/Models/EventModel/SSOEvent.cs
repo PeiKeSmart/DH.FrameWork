@@ -2,7 +2,7 @@
 
 using NewLife.Model;
 
-namespace DH.Model.EventModel;
+namespace DH.Models.EventModel;
 
 /// <summary>
 /// 单点登录消费者事件

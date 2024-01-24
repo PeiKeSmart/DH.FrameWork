@@ -1,4 +1,4 @@
-﻿namespace DH.Model;
+﻿namespace DH.Models;
 
 /// <summary>修改密码模型</summary>
 public class ChangePasswordModel : ICubeModel {

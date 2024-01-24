@@ -1,4 +1,4 @@
-﻿namespace DH.Model;
+﻿namespace DH.Models;
 
 public partial class RenderWidgetModel : BaseDHModel {
     public string WidgetViewComponentName { get; set; }

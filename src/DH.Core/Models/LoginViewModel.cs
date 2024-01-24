@@ -1,6 +1,6 @@
 ﻿using DH.Entity;
 
-namespace DH.Model;
+namespace DH.Models;
 
 /// <summary>登录视图模型</summary>
 public class LoginViewModel {

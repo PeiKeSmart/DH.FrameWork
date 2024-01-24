@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace DH.Model;
+namespace DH.Models;
 
 /// <summary>
 /// 表示基本模型

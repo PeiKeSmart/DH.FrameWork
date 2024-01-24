@@ -1,6 +1,6 @@
 ﻿using XCode.DataAccessLayer;
 
-namespace DH.Model;
+namespace DH.Models;
 
 /// <summary>数据项</summary>
 public class DbItem : ICubeModel {
