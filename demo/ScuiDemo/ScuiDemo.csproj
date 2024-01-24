@@ -56,7 +56,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.6" />
-    <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="2.1.0" />
+    <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="2.1.1" />
   </ItemGroup>
 	
   <!-- 此目标在“Build”目标之后执行。
