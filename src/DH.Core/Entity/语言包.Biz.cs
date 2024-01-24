@@ -225,6 +225,11 @@ public partial class LocaleStringResource : DHEntityBase<LocaleStringResource> {
         }
         resourceKey = resourceKey.Trim();
 
+        if (resourceKey.Length > 300)
+        {
+            return resourceKey;
+        }
+
         var model = FindByLanKeyAndCultureId(resourceKey, languageId);
 
         if (model != null)
