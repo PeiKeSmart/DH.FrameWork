@@ -1,4 +1,5 @@
-﻿using DH.Models;
+﻿using DH.Model;
+using DH.Models;
 
 using NewLife;
 using NewLife.Log;
@@ -194,7 +195,7 @@ public static class MenuHelper {
                 if (type != null) break;
             }
         }
-        var att = type?.GetCustomAttribute<DGMenu>();
+        var att = type?.GetCustomAttribute<DHMenu>();
         if (att != null && att.Mode.Has(MenuModes.Tenant))
         {
             return _tenants[key] = true;
@@ -210,7 +211,7 @@ public static class MenuHelper {
         if (_admins.TryGetValue(key, out var rs)) return rs;
 
         var type = Type.GetType(menu.FullName);
-        var att = type?.GetCustomAttribute<DGMenu>();
+        var att = type?.GetCustomAttribute<DHMenu>();
         if (att != null && att.Mode.Has(MenuModes.Admin))
         {
             return _admins[key] = true;
