@@ -2,6 +2,8 @@
 
 using Microsoft.AspNetCore.Mvc;
 
+using NewLife;
+
 namespace DH.Helpers;
 
 /// <summary>
@@ -35,6 +37,11 @@ public class DGResult : JsonResult
     public DateTime OperationTime { get; set; }
 
     /// <summary>
+    /// 标识
+    /// </summary>
+    public String Id { get; set; }
+
+    /// <summary>
     /// 初始化返回结果
     /// </summary>
     public DGResult() : base(null)
@@ -55,7 +62,8 @@ public class DGResult : JsonResult
         Message = message;
         Data = data;
         OperationTime = DateTime.Now;
-        ExtData = ExtData;
+        ExtData = extdata;
+        Id = Guid.NewGuid().ToString();
     }
 
     /// <summary>
@@ -65,13 +73,20 @@ public class DGResult : JsonResult
     {
         if (context == null)
             throw new ArgumentNullException(nameof(context));
+
+        if (Id.IsNullOrWhiteSpace())
+        {
+            Id = Guid.NewGuid().ToString();
+        }
+
         this.Value = new
         {
             Code = Code.Value(),
             Message,
             OperationTime,
             Data,
-            ExtData
+            ExtData,
+            Id
         };
         return base.ExecuteResultAsync(context);
     }
