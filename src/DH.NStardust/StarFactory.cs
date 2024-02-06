@@ -149,6 +149,8 @@ public class StarFactory : DisposeBase
             json.LoadAll();
 
             Server = json["StarServer"];
+            AppId = json["StarAppId"];
+            Secret = json["StarSecret"];
         }
         if (Server.IsNullOrEmpty() && File.Exists("appsettings.json".GetFullPath()))
         {
@@ -156,6 +158,8 @@ public class StarFactory : DisposeBase
             json.LoadAll();
 
             Server = json["StarServer"];
+            AppId = json["StarAppId"];
+            Secret = json["StarSecret"];
         }
 
         if (!Server.IsNullOrEmpty() && Local.Server.IsNullOrEmpty()) Local.Server = Server;
@@ -250,9 +254,7 @@ public class StarFactory : DisposeBase
         ioc.TryAddSingleton(typeof(ICacheProvider), typeof(CacheProvider));
     }
 
-#if !NET40
     [MemberNotNullWhen(true, nameof(_client))]
-#endif
     private Boolean Valid()
     {
         //if (Server.IsNullOrEmpty()) throw new ArgumentNullException(nameof(Server));
