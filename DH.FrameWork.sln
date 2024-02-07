@@ -368,15 +368,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BarCoder", "BarCoder", "{41
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DH.Barcoder", "src\DH.Barcoder\DH.Barcoder.csproj", "{FA36B2BD-DC15-4631-B931-4ED9EA41E250}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DH.Barcoder.Renderer.Image", "src\DH.Barcoder.Renderer.Image\DH.Barcoder.Renderer.Image.csproj", "{48D641D0-D046-4026-A8F7-56F8821C5949}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DH.Barcoder.Renderer.Image", "src\DH.Barcoder.Renderer.Image\DH.Barcoder.Renderer.Image.csproj", "{48D641D0-D046-4026-A8F7-56F8821C5949}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DH.Barcoder.Renderer.Svg", "src\DH.Barcoder.Renderer.Svg\DH.Barcoder.Renderer.Svg.csproj", "{7C899D25-240E-4FC5-8E5A-DD0404CC3573}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DH.Barcoder.Renderer.Svg", "src\DH.Barcoder.Renderer.Svg\DH.Barcoder.Renderer.Svg.csproj", "{7C899D25-240E-4FC5-8E5A-DD0404CC3573}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DH.SLazyCaptcha", "src\DH.SLazyCaptcha\DH.SLazyCaptcha.csproj", "{924244D0-D9CE-4182-BDA0-26852AD0F870}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DH.SLazyCaptcha", "src\DH.SLazyCaptcha\DH.SLazyCaptcha.csproj", "{924244D0-D9CE-4182-BDA0-26852AD0F870}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DH.SmsPdu", "src\DH.SmsPdu\DH.SmsPdu.csproj", "{8E177877-7D46-47F1-9AFB-624EC3A14F93}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DH.SmsPdu", "src\DH.SmsPdu\DH.SmsPdu.csproj", "{8E177877-7D46-47F1-9AFB-624EC3A14F93}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Pdu", "Pdu", "{6D11F06A-5107-4ED6-97BC-3D2A5BF315BC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DH.HttpHelper", "src\DH.HttpHelper\DH.HttpHelper.csproj", "{61BE6C6C-0FDF-46C5-88A0-1C0658244A99}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -936,6 +938,10 @@ Global
 		{8E177877-7D46-47F1-9AFB-624EC3A14F93}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8E177877-7D46-47F1-9AFB-624EC3A14F93}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8E177877-7D46-47F1-9AFB-624EC3A14F93}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61BE6C6C-0FDF-46C5-88A0-1C0658244A99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61BE6C6C-0FDF-46C5-88A0-1C0658244A99}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61BE6C6C-0FDF-46C5-88A0-1C0658244A99}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61BE6C6C-0FDF-46C5-88A0-1C0658244A99}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1120,6 +1126,7 @@ Global
 		{924244D0-D9CE-4182-BDA0-26852AD0F870} = {6CE18439-80CA-4E99-BD37-EA57EF58F3DA}
 		{8E177877-7D46-47F1-9AFB-624EC3A14F93} = {6D11F06A-5107-4ED6-97BC-3D2A5BF315BC}
 		{6D11F06A-5107-4ED6-97BC-3D2A5BF315BC} = {8ED504DD-57C1-47D3-82E7-9F7E4CDE4137}
+		{61BE6C6C-0FDF-46C5-88A0-1C0658244A99} = {8ED504DD-57C1-47D3-82E7-9F7E4CDE4137}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8C334959-AE8C-42FF-B144-7B36F5C1B16A}
