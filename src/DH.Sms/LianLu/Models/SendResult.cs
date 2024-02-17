@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DG.Sms.LianLu
+namespace DH.Sms.LianLu
 {
     /// <summary>
     /// 自定义短信返回数据

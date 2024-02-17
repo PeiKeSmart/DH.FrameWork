@@ -73,7 +73,7 @@
 	<ItemGroup>
 		<PackageReference Include="Flurl.Http" Version="3.2.4" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="System.Text.Json" Version="8.0.0" />
+		<PackageReference Include="System.Text.Json" Version="8.0.2" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -8,6 +8,12 @@ namespace NewLife.Caching.Clusters;
 public class RedisCluster : RedisBase, IRedisCluster, IDisposable
 {
     #region 属性
+
+    /// <summary>
+    /// redis nodes
+    /// </summary>
+    public List<IRedisNode> RedisNodes => Nodes.Select(x => (IRedisNode)x).ToList();
+
     /// <summary>集群节点</summary>
     public ClusterNode[]? Nodes { get; private set; }
 
@@ -50,7 +56,7 @@ public class RedisCluster : RedisBase, IRedisCluster, IDisposable
     public void ParseNodes(String nodes)
     {
         var showLog = Nodes == null;
-        if (showLog) WriteLog("分析[{0}]集群节点：", Redis?.Name);
+        if (showLog) WriteLog("分析[{0}]集群节点：", Redis.Name);
 
         var list = new List<ClusterNode>();
         foreach (var item in nodes.Split("\r", "\n"))

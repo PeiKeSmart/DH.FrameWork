@@ -7,8 +7,7 @@ namespace DH;
 /// 通过Dynamic访问System.Text.Json对象
 /// 参考：https://blog.51cto.com/shanyou/3048736
 /// </summary>
-public class JTextAccessor : DynamicObject
-{
+public class JTextAccessor : System.Dynamic.DynamicObject {
     private readonly JsonElement _content;
 
     public JTextAccessor(JsonElement content)

@@ -681,7 +681,7 @@ public class AppClient : ApiHttpClient, ICommandClient, IRegistry, IEventProvide
     /// <param name="tag">特性标签</param>
     /// <param name="health">健康监测接口地址</param>
     /// <returns></returns>
-    public PublishServiceInfo Register(String serviceName, Func<String> addressCallback, String? tag = null, String? health = null)
+    public PublishServiceInfo Register(String serviceName, Func<String?> addressCallback, String? tag = null, String? health = null)
     {
         if (addressCallback == null) throw new ArgumentNullException(nameof(addressCallback));
 
@@ -770,7 +770,7 @@ public class AppClient : ApiHttpClient, ICommandClient, IRegistry, IEventProvide
     /// <summary>绑定消费服务名到指定事件，服务改变时通知外部</summary>
     /// <param name="serviceName">服务名</param>
     /// <param name="callback">回调方法</param>
-    public void Bind(String serviceName, Action<String, ServiceModel[]> callback)
+    public void Bind(String serviceName, ServiceChangedCallback callback)
     {
         var list = _consumeEvents.GetOrAdd(serviceName, k => new List<Delegate>());
         list.Add(callback);
@@ -810,7 +810,7 @@ public class AppClient : ApiHttpClient, ICommandClient, IRegistry, IEventProvide
                 {
                     foreach (var action in list)
                     {
-                        (action as Action<String, ServiceModel[]>)?.Invoke(svc.ServiceName, ms);
+                        (action as ServiceChangedCallback)?.Invoke(svc.ServiceName, ms);
                     }
                 }
 

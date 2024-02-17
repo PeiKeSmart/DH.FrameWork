@@ -153,7 +153,7 @@
     <Table Name="LocaleStringResource" TableName="DG_LocaleStringResource" Description="语言包">
       <Columns>
         <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
-        <Column Name="LanKey" DataType="String" Master="True" Length="200" Description="资源名称" />
+        <Column Name="LanKey" DataType="String" Master="True" Length="300" Description="资源名称" />
         <Column Name="LanValue" DataType="String" Length="2048" Description="资源值" />
         <Column Name="CultureId" DataType="Int32" Description="语言标识符" />
         <Column Name="CreateUser" DataType="String" Description="创建者" />
@@ -731,7 +731,7 @@
         <Index Columns="Updatetime" />
       </Indexes>
     </Table>
-    <Table Name="SysOnlineTime" TableName="DH_SysOnlineTime" Description="在线时间表" ConnName="Cube">
+    <Table Name="SysOnlineTime" TableName="DH_SysOnlineTime" Description="在线时间表">
       <Columns>
         <Column Name="ID" DataType="Int32" Identity="True" PrimaryKey="True" Description="用户编号" />
         <Column Name="UId" DataType="Int32" Description="用户编号" />
@@ -779,23 +779,6 @@
         <Index Columns="UpdateTime" />
         <Index Columns="RoleId" />
         <Index Columns="UName" />
-      </Indexes>
-    </Table>
-    <Table Name="SmsInfo" TableName="DH_SmsInfo" Description="短信配置">
-      <Columns>
-        <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
-        <Column Name="Code" DataType="String" Nullable="False" Description="编码" />
-        <Column Name="SType" DataType="Int32" Description="类型。0为国内通知类，1为国内营销类，2为国际通知类，3为国际营销类" />
-        <Column Name="IsEnabled" DataType="Boolean" Description="是否启用" />
-        <Column Name="IsDefault" DataType="Boolean" Description="是否默认" />
-        <Column Name="AccessKey" DataType="String" Description="AccessKey" />
-        <Column Name="AccessKeySecret" DataType="String" Description="AccessKeySecret" />
-        <Column Name="PassKey" DataType="String" Description="短信签名" />
-        <Column Name="Content" DataType="String" Description="允许的短信类型，以逗号分隔。SmsLogin为登录短信,SmsRegister为注册短信,SmsPassword为找回密码短信" />
-      </Columns>
-      <Indexes>
-        <Index Columns="Code" Unique="True" />
-        <Index Columns="SType" />
       </Indexes>
     </Table>
     <Table Name="MailInfo" TableName="DH_MailInfo" Description="邮箱配置">

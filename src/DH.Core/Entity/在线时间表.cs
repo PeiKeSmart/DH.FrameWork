@@ -21,7 +21,7 @@ namespace DH.Entity;
 [BindIndex("IX_DH_SysOnlineTime_UpdateTime", false, "UpdateTime")]
 [BindIndex("IX_DH_SysOnlineTime_RoleId", false, "RoleId")]
 [BindIndex("IX_DH_SysOnlineTime_UName", false, "UName")]
-[BindTable("DH_SysOnlineTime", Description = "在线时间表", ConnName = "Cube", DbType = DatabaseType.None)]
+[BindTable("DH_SysOnlineTime", Description = "在线时间表", ConnName = "DG", DbType = DatabaseType.None)]
 public partial class SysOnlineTime : ISysOnlineTime, IEntity<ISysOnlineTime>
 {
     #region 属性

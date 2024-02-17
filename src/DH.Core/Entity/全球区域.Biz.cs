@@ -2,7 +2,7 @@
 using DH.Core;
 using DH.Core.Domain.Localization;
 using DH.Core.Infrastructure;
-using DH.Model;
+using DH.Models;
 
 using NewLife;
 using NewLife.Caching;
@@ -13,7 +13,6 @@ using System.Web.Script.Serialization;
 using System.Xml.Serialization;
 
 using XCode;
-using XCode.Membership;
 
 namespace DH.Entity;
 

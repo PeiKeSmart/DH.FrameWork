@@ -3,7 +3,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Net.Sockets;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
-
 using NewLife.Collections;
 using NewLife.Configuration;
 using NewLife.Data;
@@ -833,7 +832,7 @@ public class Redis : Cache, IConfigMapping, ILogFeature
     /// <param name="key">键</param>
     /// <param name="value">值。即使有值也不一定能够返回，可能缓存项刚好是默认值，或者只是反序列化失败</param>
     /// <returns>返回是否包含值，即使反序列化失败</returns>
-    public override Boolean TryGetValue<T>(String key, [MaybeNull] out T value)
+    public override Boolean TryGetValue<T>(String key, [MaybeNullWhen(false)] out T value)
     {
         T? v1 = default;
         var rs1 = Execute(key, (rds, k) =>

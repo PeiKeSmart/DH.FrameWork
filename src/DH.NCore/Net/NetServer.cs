@@ -45,8 +45,7 @@ public class NetServer : DisposeBase, IServer, IExtend, ILogFeature
         set
         {
             _Local = value;
-            if (AddressFamily <= AddressFamily.Unspecified &&
-                (value.Type > NetType.Unknown || !value.Host.IsNullOrEmpty() && value.Host != "*"))
+            if (AddressFamily <= AddressFamily.Unspecified && value.Host != "*")
                 AddressFamily = value.Address.AddressFamily;
         }
     }
@@ -103,6 +102,13 @@ public class NetServer : DisposeBase, IServer, IExtend, ILogFeature
 
     /// <summary>使用会话集合，允许遍历会话。默认true</summary>
     public Boolean UseSession { get; set; } = true;
+
+    /// <summary>地址重用，主要应用于网络服务器重启交替。默认false</summary>
+    /// <remarks>
+    /// 一个端口释放后会等待两分钟之后才能再被使用，SO_REUSEADDR是让端口释放后立即就可以被再次使用。
+    /// SO_REUSEADDR用于对TCP套接字处于TIME_WAIT状态下的socket(TCP连接中, 先调用close() 的一方会进入TIME_WAIT状态)，才可以重复绑定使用。
+    /// </remarks>
+    public Boolean ReuseAddress { get; set; }
 
     /// <summary>SSL协议。默认None，服务端Default，客户端不启用</summary>
     public SslProtocols SslProtocol { get; set; } = SslProtocols.None;
@@ -182,32 +188,26 @@ public class NetServer : DisposeBase, IServer, IExtend, ILogFeature
 
         if (Active) Stop(GetType().Name + (disposing ? "Dispose" : "GC"));
 
-        // 释放托管资源
-        if (disposing)
+        var sessions = _Sessions;
+        if (sessions != null)
         {
-            var sessions = _Sessions;
-            if (sessions != null)
+            WriteLog("准备释放网络会话{0}个！", sessions.Count);
+            foreach (var item in sessions.Values.ToArray())
             {
-                //_Sessions = null;
-
-                WriteLog("准备释放网络会话{0}个！", sessions.Count);
-                foreach (var item in sessions.Values.ToArray())
-                {
-                    item.Dispose();
-                }
-                sessions.Clear();
+                item.TryDispose();
             }
+            sessions.Clear();
+        }
 
-            var severs = Servers;
-            if (severs != null)
+        var severs = Servers;
+        if (severs != null)
+        {
+            WriteLog("准备释放服务{0}个！", severs.Count);
+            foreach (var item in severs)
             {
-                WriteLog("准备释放服务{0}个！", severs.Count);
-                foreach (var item in severs)
-                {
-                    item.Dispose();
-                }
-                severs.Clear();
+                item.TryDispose();
             }
+            severs.Clear();
         }
     }
     #endregion
@@ -235,10 +235,15 @@ public class NetServer : DisposeBase, IServer, IExtend, ILogFeature
 
         server.Error += OnError;
 
-        if (server is TcpServer ts)
+        if (server is TcpServer tcpServer)
         {
-            ts.SslProtocol = SslProtocol;
-            if (Certificate != null) ts.Certificate = Certificate;
+            tcpServer.ReuseAddress = ReuseAddress;
+            tcpServer.SslProtocol = SslProtocol;
+            if (Certificate != null) tcpServer.Certificate = Certificate;
+        }
+        else if (server is UdpServer udpServer)
+        {
+            udpServer.ReuseAddress = ReuseAddress;
         }
 
         Servers.Add(server);
@@ -272,7 +277,8 @@ public class NetServer : DisposeBase, IServer, IExtend, ILogFeature
         {
             var uri = Local;
             var family = AddressFamily;
-            if (uri.Type > NetType.Unknown || !uri.Host.IsNullOrEmpty() && uri.Host != "*") family = uri.Address.AddressFamily;
+            if (AddressFamily <= AddressFamily.Unspecified && uri.Host != "*")
+                family = uri.Address.AddressFamily;
             var list = CreateServer(uri.Address, uri.Port, uri.Type, family);
             foreach (var item in list)
             {
@@ -350,6 +356,16 @@ public class NetServer : DisposeBase, IServer, IExtend, ILogFeature
         var ss = Servers.Where(e => e.Active).ToArray();
         if (ss == null || ss.Length == 0) return;
 
+        OnStop(reason);
+
+        WriteLog("已停止！");
+    }
+
+    /// <summary>停止时调用的方法</summary>
+    /// <param name="reason">关闭原因。便于日志分析</param>
+    protected virtual void OnStop(String? reason)
+    {
+        var ss = Servers.Where(e => e.Active).ToArray();
         WriteLog("准备停止监听{0}个服务器 {1}", ss.Length, reason);
 
         if (reason.IsNullOrEmpty()) reason = GetType().Name + "Stop";
@@ -358,14 +374,7 @@ public class NetServer : DisposeBase, IServer, IExtend, ILogFeature
             WriteLog("停止监听 {0}", item);
             item.Stop(reason);
         }
-
-        OnStop();
-
-        WriteLog("已停止！");
     }
-
-    /// <summary>停止时调用的方法</summary>
-    protected virtual void OnStop() { }
     #endregion
 
     #region 业务
@@ -622,7 +631,7 @@ public class NetServer : DisposeBase, IServer, IExtend, ILogFeature
                     //svr.Tracer = SocketTracer;
 
                     // 协议端口不能是已经被占用
-                    if (!svr.Local.CheckPort()) list.Add(svr);
+                    if (ReuseAddress || !svr.Local.CheckPort()) list.Add(svr);
                 }
                 break;
             default:

@@ -22,9 +22,9 @@ public class ApiHttpClient : DisposeBase, IApiClient, IConfigMapping, ILogFeatur
     /// <summary>是否使用系统代理设置。默认false不检查系统代理设置，在某些系统上可以大大改善初始化速度</summary>
     public Boolean UseProxy { get; set; }
 
-    /// <summary>是否使用压缩。默认true</summary>
-    /// <remarks>将来可能取消该设置项，默认启用压缩</remarks>
-    public Boolean Compressed { get; set; } = true;
+    ///// <summary>是否使用压缩。默认true</summary>
+    ///// <remarks>将来可能取消该设置项，默认启用压缩</remarks>
+    //public Boolean Compressed { get; set; } = true;
 
     /// <summary>加权轮询负载均衡。默认false只使用故障转移</summary>
     public Boolean RoundRobin { get; set; }
@@ -74,7 +74,7 @@ public class ApiHttpClient : DisposeBase, IApiClient, IConfigMapping, ILogFeatur
 
     #region 构造
     /// <summary>实例化</summary>
-    public ApiHttpClient() => Compressed = Net.SocketSetting.Current.EnableHttpCompression;
+    public ApiHttpClient() { }
 
     /// <summary>实例化</summary>
     /// <param name="urls">地址集合。多地址逗号分隔，支持权重，test1=3*http://127.0.0.1:1234,test2=7*http://127.0.0.1:3344</param>
@@ -162,7 +162,7 @@ public class ApiHttpClient : DisposeBase, IApiClient, IConfigMapping, ILogFeatur
     /// <param name="action">服务操作</param>
     /// <param name="args">参数</param>
     /// <returns></returns>
-    public TResult? Get<TResult>(String action, Object? args = null) => Task.Run(() => GetAsync<TResult>(action, args)).Result;
+    public TResult? Get<TResult>(String action, Object? args = null) => GetAsync<TResult>(action, args).ConfigureAwait(false).GetAwaiter().GetResult();
 
     /// <summary>异步提交，参数Json打包在Body</summary>
     /// <param name="action">服务操作</param>
@@ -174,7 +174,7 @@ public class ApiHttpClient : DisposeBase, IApiClient, IConfigMapping, ILogFeatur
     /// <param name="action">服务操作</param>
     /// <param name="args">参数</param>
     /// <returns></returns>
-    public TResult? Post<TResult>(String action, Object? args = null) => Task.Run(() => PostAsync<TResult>(action, args)).Result;
+    public TResult? Post<TResult>(String action, Object? args = null) => PostAsync<TResult>(action, args).ConfigureAwait(false).GetAwaiter().GetResult();
 
     /// <summary>异步上传，参数Json打包在Body</summary>
     /// <param name="action">服务操作</param>
@@ -281,7 +281,7 @@ public class ApiHttpClient : DisposeBase, IApiClient, IConfigMapping, ILogFeatur
     /// <param name="action">服务操作</param>
     /// <param name="args">参数</param>
     /// <returns></returns>
-    public TResult? Invoke<TResult>(String action, Object? args) => Task.Run(() => InvokeAsync<TResult>(args == null ? HttpMethod.Get : HttpMethod.Post, action, args)).Result;
+    public TResult? Invoke<TResult>(String action, Object? args) => InvokeAsync<TResult>(args == null ? HttpMethod.Get : HttpMethod.Post, action, args).ConfigureAwait(false).GetAwaiter().GetResult();
     #endregion
 
     #region 构造请求

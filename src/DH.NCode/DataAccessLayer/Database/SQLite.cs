@@ -429,9 +429,10 @@ internal class SQLiteMetaData : FileDbMetaData
             if (_FieldTypeMaps == null)
             {
                 var list = base.FieldTypeMaps;
+
                 // SQLite自增字段有时是Int64，需要到Int32的映射
                 if (!list.Any(e => e.Key == typeof(Int64) && e.Value == typeof(Int32)))
-                    list.Add(new KeyValuePair<Type, Type>(typeof(Int64), typeof(Int32)));
+                    list.Add(new(typeof(Int64), typeof(Int32)));
             }
             return base.FieldTypeMaps;
         }
@@ -567,7 +568,6 @@ internal class SQLiteMetaData : FileDbMetaData
 
             str = m.Groups[2].Value?.Trim();
             field.RawType = str ?? "nvarchar(50)";
-            field.DataType = GetDataType(field.RawType);
             //field.Length = field.RawType.Substring("(", ")").ToInt();
 
             // SQLite的字段长度、精度等，都是由类型决定，固定值
@@ -581,6 +581,7 @@ internal class SQLiteMetaData : FileDbMetaData
                     field.Scale = ns[1];
                 }
             }
+            field.DataType = GetDataType(field);
 
             // 如果数据库里面是integer或者autoincrement，识别类型是Int64，又是自增，则改为Int32，保持与大多数数据库的兼容
             if (field.Identity && field.DataType == typeof(Int64) && field.RawType.EqualIgnoreCase("integer", "autoincrement"))
@@ -640,7 +641,7 @@ internal class SQLiteMetaData : FileDbMetaData
             field.Nullable = row[3].ToInt() != 1;
             field.PrimaryKey = row[5].ToInt() == 1;
 
-            field.DataType = GetDataType(field.RawType);
+            field.DataType = GetDataType(field);
             if (field.DataType == null)
             {
                 if (field.RawType.StartsWithIgnoreCase("varchar2", "nvarchar2")) field.DataType = typeof(String);
@@ -665,7 +666,7 @@ internal class SQLiteMetaData : FileDbMetaData
         return typeName;
     }
 
-    protected override String GetFieldConstraints(IDataColumn field, Boolean onlyDefine)
+    protected override String? GetFieldConstraints(IDataColumn field, Boolean onlyDefine)
     {
         // SQLite要求自增必须是主键
         if (field.Identity && !field.PrimaryKey)

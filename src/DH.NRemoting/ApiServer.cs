@@ -5,6 +5,7 @@ using NewLife.Log;
 using NewLife.Messaging;
 using NewLife.Model;
 using NewLife.Net;
+using NewLife.Reflection;
 using NewLife.Threading;
 
 namespace NewLife.Remoting;
@@ -28,6 +29,15 @@ public class ApiServer : ApiHost, IServer
     /// <summary>连接复用。默认true，单个Tcp连接在处理某个请求未完成时，可以接收并处理新的请求</summary>
     public Boolean Multiplex { get; set; } = true;
 
+    /// <summary>地址重用，主要应用于网络服务器重启交替。默认false</summary>
+    /// <remarks>
+    /// 一个端口释放后会等待两分钟之后才能再被使用，SO_REUSEADDR是让端口释放后立即就可以被再次使用。
+    /// SO_REUSEADDR用于对TCP套接字处于TIME_WAIT状态下的socket(TCP连接中, 先调用close() 的一方会进入TIME_WAIT状态)，才可以重复绑定使用。
+    /// 
+    /// 如果启用，多进程可以共同监听一个端口，都能收到数据，星尘代理多进程监听5500端口测试通过。
+    /// </remarks>
+    public Boolean ReuseAddress { get; set; }
+
     /// <summary>是否使用Http状态。默认false，使用json包装响应码</summary>
     public Boolean UseHttpStatus { get; set; }
 
@@ -35,7 +45,7 @@ public class ApiServer : ApiHost, IServer
     public event EventHandler<ApiReceivedEventArgs>? Received;
 
     /// <summary>服务提供者。创建控制器实例时使用，可实现依赖注入。务必在注册控制器之前设置该属性</summary>
-    public IServiceProvider ServiceProvider { get; set; } = ObjectContainer.Provider;
+    public IServiceProvider? ServiceProvider { get; set; } //= ObjectContainer.Provider;
 
     /// <summary>处理统计</summary>
     public ICounter? StatProcess { get; set; }
@@ -71,6 +81,12 @@ public class ApiServer : ApiHost, IServer
         _Timer.TryDispose();
 
         Stop(GetType().Name + (disposing ? "Dispose" : "GC"));
+
+        Server.TryDispose();
+
+        // ApiController可能注册在容器里面，这里需要解耦，避免当前ApiServer对象无法回收
+        var controller = Manager?.Services.Values.FirstOrDefault(e => e.Type == typeof(ApiController))?.Controller as ApiController;
+        if (controller != null) controller.Host = null;
     }
     #endregion
 
@@ -126,14 +142,18 @@ public class ApiServer : ApiHost, IServer
 
         if (Port <= 0) throw new ArgumentNullException(nameof(Server), "未指定服务器Server，且未指定端口Port！");
 
-        svr = new ApiNetServer
+        var server = new ApiNetServer
         {
             Host = this,
             Tracer = Tracer,
         };
-        svr.Init(new NetUri(NetType.Unknown, "*", Port), this);
+        server.Init(new NetUri(NetType.Unknown, "*", Port), this);
 
-        return Server = svr;
+        // 升级核心库以后不需要反射
+        server.ReuseAddress = ReuseAddress;
+        //server.SetValue("ReuseAddress", ReuseAddress);
+
+        return Server = server;
     }
 
     /// <summary>开始服务</summary>

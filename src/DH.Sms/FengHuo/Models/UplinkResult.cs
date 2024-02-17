@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DG.Sms.FengHuo
+namespace DH.Sms.FengHuo
 {
     /// <summary>
     /// 短信上行推送数据

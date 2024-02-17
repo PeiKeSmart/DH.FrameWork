@@ -76,4 +76,8 @@
 		</PackageReference>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\DH.NCore\DH.NCore.csproj" />
+	</ItemGroup>
+
 </Project>

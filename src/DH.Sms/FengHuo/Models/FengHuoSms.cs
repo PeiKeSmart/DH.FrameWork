@@ -2,7 +2,7 @@
 
 using System.ComponentModel;
 
-namespace DG.Sms {
+namespace DH.Sms {
     /// <summary>
     /// 短信配置
     /// </summary>

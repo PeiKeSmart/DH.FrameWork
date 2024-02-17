@@ -179,14 +179,22 @@ public static class MenuHelper {
         return list;
     }
 
-    static Dictionary<String, Boolean> _tenants = new();
+    static Dictionary<String, Boolean> _tenants = [];
     static Boolean CheckVisibleInTenant(MenuTree menu)
     {
         var key = menu.FullName;
         if (_tenants.TryGetValue(key, out var rs)) return rs;
 
         var type = Type.GetType(menu.FullName);
-        var att = type?.GetCustomAttribute<DGMenu>();
+        if (type == null)
+        {
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                type = assembly.GetType(menu.FullName);
+                if (type != null) break;
+            }
+        }
+        var att = type?.GetCustomAttribute<DHMenu>();
         if (att != null && att.Mode.Has(MenuModes.Tenant))
         {
             return _tenants[key] = true;
@@ -195,14 +203,14 @@ public static class MenuHelper {
         return _tenants[key] = false;
     }
 
-    static Dictionary<String, Boolean> _admins = new();
+    static Dictionary<String, Boolean> _admins = [];
     static Boolean CheckVisibleInAdmin(MenuTree menu)
     {
         var key = menu.FullName;
         if (_admins.TryGetValue(key, out var rs)) return rs;
 
         var type = Type.GetType(menu.FullName);
-        var att = type?.GetCustomAttribute<DGMenu>();
+        var att = type?.GetCustomAttribute<DHMenu>();
         if (att != null && att.Mode.Has(MenuModes.Admin))
         {
             return _admins[key] = true;

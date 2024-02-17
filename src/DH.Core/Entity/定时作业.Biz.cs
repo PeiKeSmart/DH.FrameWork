@@ -1,10 +1,9 @@
-﻿using NewLife;
+using NewLife;
 using NewLife.Data;
 
 using System.Reflection;
 
 using XCode;
-using XCode.Membership;
 
 namespace DH.Entity;
 
@@ -111,7 +110,7 @@ public partial class CronJob : DHEntityBase<CronJob> {
     /// <returns></returns>
     public static CronJob Add(String name, MethodInfo method, String cron, Boolean enable = true)
     {
-        if (method == null || !method.IsStatic) throw new ArgumentOutOfRangeException(nameof(method), "定时作业执行方法必须是带有单个String参数的静态方法。");
+        if (method == null) throw new ArgumentOutOfRangeException(nameof(method), "定时作业执行方法必须是带有单个String参数的静态方法。");
 
         if (name.IsNullOrEmpty()) name = method.Name;
         var job = FindByName(name);

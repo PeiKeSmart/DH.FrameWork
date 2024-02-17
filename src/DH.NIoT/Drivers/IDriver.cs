@@ -91,10 +91,9 @@ public static class DriverExtensions
     /// <param name="device">逻辑设备</param>
     /// <param name="parameters">参数对象</param>
     /// <returns></returns>
-    public static INode Open(this IDriver driver, IDevice device, IDictionary<String, Object> parameters)
+    public static INode Open(this IDriver driver, IDevice device, IDictionary<String, Object?> parameters)
     {
-        var type = driver.CreateParameter()?.GetType();
-        if (type == null) throw new InvalidOperationException();
+        var type = (driver.CreateParameter()?.GetType()) ?? throw new InvalidOperationException();
 
         var ps = JsonHelper.Default.Convert(parameters, type) as IDriverParameter;
         var node = driver.Open(device, ps);

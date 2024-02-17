@@ -113,12 +113,8 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
     /// <param name="onRequest"></param>
     /// <param name="cancellationToken">取消通知</param>
     /// <returns></returns>
-#if NET40
-    public override async Task<TResult> InvokeAsync<TResult>(HttpMethod method, String action, Object? args = null, Action<HttpRequestMessage>? onRequest = null, CancellationToken cancellationToken = default)
-#else
     [return: MaybeNull]
     public override async Task<TResult> InvokeAsync<TResult>(HttpMethod method, String action, Object? args = null, Action<HttpRequestMessage>? onRequest = null, CancellationToken cancellationToken = default)
-#endif
     {
         var needLogin = !Logined && !action.EqualIgnoreCase("Node/Login", "Node/Logout");
         if (needLogin)
@@ -249,6 +245,13 @@ public class StarClient : ApiHttpClient, ICommandClient, IEventProvider
 
             Time = DateTime.UtcNow,
         };
+
+        // 获取最新机器名
+        if (Runtime.Linux)
+        {
+            var file = @"/etc/hostname";
+            if (File.Exists(file)) di.MachineName = File.ReadAllText(file).Trim();
+        }
 
         // 目标框架
         di.Framework = _frameworkManager.GetAllVersions().Join(",", e => e.TrimStart('v'));

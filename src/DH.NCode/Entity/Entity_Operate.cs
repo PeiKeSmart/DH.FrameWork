@@ -195,7 +195,7 @@ public partial class Entity<TEntity>
         /// <param name="find">查找函数</param>
         /// <param name="create">创建对象</param>
         /// <returns></returns>
-        public virtual IEntity GetOrAdd<TKey>(TKey key, Func<TKey, Boolean, IEntity> find, Func<TKey, IEntity> create) => Entity<TEntity>.GetOrAdd(key, (k, b) => find?.Invoke(k, b) as TEntity, k => create?.Invoke(k) as TEntity);
+        public virtual IEntity GetOrAdd<TKey>(TKey key, Func<TKey, Boolean, IEntity?> find, Func<TKey, IEntity> create) => Entity<TEntity>.GetOrAdd(key, (k, b) => find?.Invoke(k, b) as TEntity, k => create?.Invoke(k) as TEntity);
         #endregion
 
         #region 一些设置
@@ -348,8 +348,8 @@ public partial class Entity<TEntity>
             }
         }
 
-        /// <summary>按照主键排序。默认查询没有指定排序字段时，是否增加主键排序，整型降序其它升序，默认true</summary>
-        public Boolean OrderByKey { get; set; } = true;
+        /// <summary>按照主键排序。默认查询没有指定排序字段时，是否增加主键排序，整型降序其它升序，默认false</summary>
+        public Boolean OrderByKey { get; set; }
 
         ///// <summary>截断超长字符串。默认false</summary>
         //public Boolean TrimExtraLongString { get; set; }

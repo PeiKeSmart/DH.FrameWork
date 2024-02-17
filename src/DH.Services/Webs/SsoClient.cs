@@ -1,7 +1,6 @@
-﻿using DH.Model;
+﻿using DH.Models;
 
 using NewLife;
-using NewLife.Log;
 using NewLife.Model;
 using NewLife.Remoting;
 using NewLife.Security;

@@ -1,6 +1,4 @@
 ﻿using System.Diagnostics;
-
-using NewLife.Caching.Common;
 using NewLife.Log;
 using NewLife.Security;
 using NewLife.Serialization;
@@ -61,9 +59,9 @@ public class RedisReliableQueue<T> : QueueBase, IProducerConsumer<T>, IDisposabl
     private readonly String _StatusKey;
     private readonly RedisQueueStatus _Status;
 
-    private RedisDelayQueue<T> _delay;
-    private CancellationTokenSource _source;
-    private Task _delayTask;
+    private RedisDelayQueue<T>? _delay;
+    private CancellationTokenSource? _source;
+    private Task? _delayTask;
     #endregion
 
     #region 构造
@@ -124,7 +122,7 @@ public class RedisReliableQueue<T> : QueueBase, IProducerConsumer<T>, IDisposabl
                 rs = Execute((rc, k) => rc.Execute<Int32>("LPUSH", args.ToArray()), true);
                 if (rs > 0) return rs;
 
-                span?.SetError(new RedisException($"发布到队列[{Topic}]失败！"), null);
+                span?.SetError(new InvalidOperationException($"发布到队列[{Topic}]失败！"), null);
 
                 if (i < RetryTimesWhenSendFailed) Thread.Sleep(RetryIntervalWhenSendFailed);
             }
@@ -144,7 +142,7 @@ public class RedisReliableQueue<T> : QueueBase, IProducerConsumer<T>, IDisposabl
     /// <remarks>假定前面获取的消息已经确认，因该方法内部可能回滚确认队列，避免误杀</remarks>
     /// <param name="timeout">超时时间，默认0秒永远阻塞；负数表示直接返回，不阻塞。</param>
     /// <returns></returns>
-    public T TakeOne(Int32 timeout = 0)
+    public T? TakeOne(Int32 timeout = 0)
     {
         RetryAck();
 
@@ -163,7 +161,7 @@ public class RedisReliableQueue<T> : QueueBase, IProducerConsumer<T>, IDisposabl
     /// <param name="timeout">超时时间，默认0秒永远阻塞；负数表示直接返回，不阻塞。</param>
     /// <param name="cancellationToken">取消令牌</param>
     /// <returns></returns>
-    public async Task<T> TakeOneAsync(Int32 timeout = 0, CancellationToken cancellationToken = default)
+    public async Task<T?> TakeOneAsync(Int32 timeout = 0, CancellationToken cancellationToken = default)
     {
         RetryAck();
 
@@ -181,7 +179,7 @@ public class RedisReliableQueue<T> : QueueBase, IProducerConsumer<T>, IDisposabl
     /// <summary>异步消费获取</summary>
     /// <param name="timeout">超时时间，默认0秒永远阻塞；负数表示直接返回，不阻塞。</param>
     /// <returns></returns>
-    Task<T> IProducerConsumer<T>.TakeOneAsync(Int32 timeout) => TakeOneAsync(timeout, default);
+    Task<T?> IProducerConsumer<T>.TakeOneAsync(Int32 timeout) => TakeOneAsync(timeout, default);
 
     /// <summary>批量消费获取，从Key弹出并备份到AckKey</summary>
     /// <remarks>假定前面获取的消息已经确认，因该方法内部可能回滚确认队列，避免误杀</remarks>
@@ -299,7 +297,10 @@ public class RedisReliableQueue<T> : QueueBase, IProducerConsumer<T>, IDisposabl
         // 消息键写入队列
         var args = new List<Object> { Key };
         foreach (var item in messages)
+        {
             args.Add(item.Key);
+        }
+
         var rs = Execute((rc, k) => rc.Execute<Int32>("LPUSH", args.ToArray()), true);
 
         return rs;

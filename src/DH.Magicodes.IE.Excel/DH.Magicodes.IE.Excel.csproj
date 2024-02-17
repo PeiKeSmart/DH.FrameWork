@@ -73,7 +73,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Magicodes.IE.Excel" Version="2.7.4.5" />
+		<PackageReference Include="Magicodes.IE.Excel" Version="2.7.5.1" />
 	</ItemGroup>
 
 </Project>

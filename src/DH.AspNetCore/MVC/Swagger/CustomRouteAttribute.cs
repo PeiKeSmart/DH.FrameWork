@@ -18,7 +18,7 @@ public class CustomRouteAttribute : RouteAttribute, IApiDescriptionGroupNameProv
     /// 自定义路由构造函数，继承基类路由
     /// </summary>
     /// <param name="actionName"></param>
-    public CustomRouteAttribute(string actionName = "[action]") : base("/api/{version}/[controller]/" + actionName)
+    public CustomRouteAttribute(string actionName = "[action]") : base("/Api/{version}/[controller]/" + actionName)
     {
     }
 
@@ -27,7 +27,7 @@ public class CustomRouteAttribute : RouteAttribute, IApiDescriptionGroupNameProv
     /// </summary>
     /// <param name="actionName"></param>
     /// <param name="version"></param>
-    public CustomRouteAttribute(ApiVersions version, string actionName = "") : base($"/api/{version}/[controller]/{actionName}")
+    public CustomRouteAttribute(ApiVersions version, string actionName = "") : base($"/Api/{version}/[controller]/{actionName}")
     {
         GroupName = version.ToString();
     }
@@ -38,7 +38,7 @@ public class CustomRouteAttribute : RouteAttribute, IApiDescriptionGroupNameProv
     /// <param name="actionName"></param>
     /// <param name="version"></param>
     /// <param name="PrefixName"></param>
-    public CustomRouteAttribute(ApiVersions version, string PrefixName, string actionName = "") : base($"/api/{PrefixName}/{version}/[controller]/{actionName}")
+    public CustomRouteAttribute(ApiVersions version, string PrefixName, string actionName = "") : base($"/Api/{PrefixName}/{version}/[controller]/{actionName}")
     {
         GroupName = version.ToString();
     }

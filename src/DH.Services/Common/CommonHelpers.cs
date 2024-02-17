@@ -7,7 +7,6 @@ using DH.Extensions;
 using DH.Models;
 using DH.Timing;
 
-using IP2Region;
 using IP2Region.Net.Abstractions;
 using IP2Region.Net.XDB;
 
@@ -19,7 +18,6 @@ using MaxMind.GeoIP2.Responses;
 using Microsoft.AspNetCore.Http;
 
 using NewLife;
-using NewLife.Log;
 
 using Polly;
 
@@ -175,7 +173,7 @@ public static class CommonHelpers
 
     //private static readonly DbSearcher IPSearcher = new(Path.Combine(AppContext.BaseDirectory + "/Data", "ip2region.db"));
     private static readonly ISearcher IPSearcher = new Searcher(CachePolicy.Content, Path.Combine(AppContext.BaseDirectory + "/Data", "ip2region.xdb"));
-    public static readonly DatabaseReader MaxmindReader = new(Path.Combine(AppContext.BaseDirectory + "/Data", "GeoLite2-City.mmdb"));
+    public static readonly DatabaseReader MaxmindReader = new(Path.Combine(AppContext.BaseDirectory + "/Data", "GeoLite2-City.mmdb").Replace("//", "/"));
     private static readonly DatabaseReader MaxmindAsnReader = new(Path.Combine(AppContext.BaseDirectory + "/Data", "GeoLite2-ASN.mmdb"));
 
     public static AsnResponse GetIPAsn(this string ip)

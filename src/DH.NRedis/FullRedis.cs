@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.Net.Sockets;
 using System.Text;
 using NewLife.Caching.Clusters;
 using NewLife.Caching.Models;
@@ -204,8 +205,8 @@ public class FullRedis : Redis
 
     /// <summary>重载执行，支持集群</summary>
     /// <typeparam name="T"></typeparam>
-    /// <param name="key"></param>
-    /// <param name="func"></param>
+    /// <param name="key">用于选择集群节点的key</param>
+    /// <param name="func">命令函数</param>
     /// <param name="write">是否写入操作</param>
     /// <returns></returns>
     public override T Execute<T>(String key, Func<RedisClient, String, T> func, Boolean write = false)
@@ -219,6 +220,20 @@ public class FullRedis : Redis
         //?? throw new XException($"集群[{Name}]没有可用节点");
         if (node == null) return base.Execute(key, func, write);
 
+        return ExecuteOnNode(key, func, write, Cluster, node);
+    }
+
+    /// <summary>在指定集群节点上执行命令</summary>
+    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TKey"></typeparam>
+    /// <param name="key">用于选择集群节点的key</param>
+    /// <param name="func">命令函数</param>
+    /// <param name="write">是否写入操作</param>
+    /// <param name="cluster">集群</param>
+    /// <param name="node">选中的节点</param>
+    /// <returns></returns>
+    public virtual T ExecuteOnNode<T, TKey>(TKey key, Func<RedisClient, TKey, T> func, Boolean write, IRedisCluster cluster, IRedisNode node)
+    {
         // 统计性能
         var sw = Counter?.StartCount();
 
@@ -235,7 +250,7 @@ public class FullRedis : Redis
                 client.Reset();
                 var rs = func(client, key);
 
-                Cluster.ResetNode(node);
+                cluster.ResetNode(node);
 
                 return rs;
             }
@@ -247,7 +262,8 @@ public class FullRedis : Redis
                 client.TryDispose();
 
                 // 使用新的节点
-                var node2 = Cluster.ReselectNode(key, write, node, ex);
+                var k = key is IList<String> ks ? ks[0] : key + "";
+                var node2 = cluster.ReselectNode(k, write, node, ex);
                 if (node2 != null)
                     node = node2;
                 else
@@ -260,6 +276,84 @@ public class FullRedis : Redis
                 Counter?.StopCount(sw);
             }
         } while (true);
+    }
+
+    /// <summary>在指定集群节点上执行命令</summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="keys">用于选择集群节点的key</param>
+    /// <param name="func">命令函数</param>
+    /// <param name="write">是否写入操作</param>
+    /// <returns></returns>
+    public virtual T[] Execute<T>(String[] keys, Func<RedisClient, String[], T> func, Boolean write)
+    {
+        if (keys == null || keys.Length == 0) return new T[0];
+
+        InitCluster();
+
+        // 如果不支持集群，或者只有一个key，直接执行
+        if (Cluster == null || keys.Length == 1) return [Execute(keys.FirstOrDefault(), (rds, k) => func(rds, keys), write)];
+
+        // 计算每个key所在的节点
+        var dic = new Dictionary<String, List<String>>();
+        var nodes = new Dictionary<String, IRedisNode>();
+        foreach (var key in keys)
+        {
+            var node = Cluster.SelectNode(key, true);
+            if (node != null)
+            {
+                var k = node.EndPoint;
+                if (!dic.TryGetValue(k, out var list))
+                {
+                    dic[k] = list = [];
+                    nodes[k] = node;
+                }
+
+                if (!list.Contains(key)) list.Add(key);
+            }
+        }
+
+        // 分组批量执行
+        var rs = new List<T>();
+        foreach (var item in dic)
+        {
+            if (nodes.TryGetValue(item.Key, out var node))
+            {
+                rs.Add(ExecuteOnNode([.. item.Value], func, write, Cluster, node));
+            }
+        }
+
+        return [.. rs];
+    }
+
+    /// <summary>直接执行命令，不考虑集群读写</summary>
+    /// <typeparam name="TResult">返回类型</typeparam>
+    /// <param name="func">回调函数</param>
+    /// <param name="node">回调函数</param>
+    /// <returns></returns>
+    public virtual TResult Execute<TResult>(Func<RedisClient, TResult> func, IRedisNode? node)
+    {
+        // 每次重试都需要重新从池里借出连接
+        var pool = node != null ? GetPool(node) : Pool;
+        var client = pool.Get();
+        try
+        {
+            client.Reset();
+            return func(client);
+        }
+        catch (Exception ex)
+        {
+            if (ex is SocketException or IOException)
+            {
+                // 销毁连接
+                client.TryDispose();
+            }
+
+            throw;
+        }
+        finally
+        {
+            pool.Put(client);
+        }
     }
 
     /// <summary>重载执行，支持集群</summary>
@@ -321,7 +415,99 @@ public class FullRedis : Redis
     }
     #endregion
 
+    #region 基础操作
+    /// <summary>批量移除缓存项</summary>
+    /// <param name="keys">键集合</param>
+    public override Int32 Remove(params String[] keys)
+    {
+        if (keys == null || keys.Length == 0) return 0;
+        if (keys.Length == 1) return base.Remove(keys[0]);
+
+        InitCluster();
+        if (Cluster != null)
+        {
+            return Execute(keys, (rds, ks) => rds.Execute<Int32>("DEL", ks), true).Sum();
+        }
+        else
+        {
+            return Execute(keys.FirstOrDefault(), (rds, k) => rds.Execute<Int32>("DEL", keys), true);
+        }
+    }
+    #endregion
+
     #region 集合操作
+    /// <summary>批量获取缓存项</summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="keys"></param>
+    /// <returns></returns>
+    public override IDictionary<String, T> GetAll<T>(IEnumerable<String> keys)
+    {
+        if (keys == null || !keys.Any()) return new Dictionary<String, T>();
+
+        var keys2 = keys.ToArray();
+        if (keys2.Length == 1 || Cluster == null) return base.GetAll<T>(keys2);
+
+        //Execute(keys.FirstOrDefault(), (rds, k) => rds.GetAll<T>(keys));
+        var rs = Execute(keys2, (rds, ks) => rds.GetAll<T>(ks), false);
+
+        var dic = new Dictionary<String, T?>();
+        foreach (var item in rs)
+        {
+            if (item != null && item.Count > 0)
+            {
+                foreach (var kv in item)
+                {
+                    dic[kv.Key] = kv.Value;
+                }
+            }
+        }
+
+        return dic;
+    }
+
+    /// <summary>批量设置缓存项</summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="values"></param>
+    /// <param name="expire">过期时间，秒。小于0时采用默认缓存时间<seealso cref="Cache.Expire"/></param>
+    public override void SetAll<T>(IDictionary<String, T> values, Int32 expire = -1)
+    {
+        if (values == null || values.Count == 0) return;
+
+        if (expire < 0) expire = Expire;
+
+        // 优化少量读取
+        if (values.Count <= 2)
+        {
+            foreach (var item in values)
+            {
+                Set(item.Key, item.Value, expire);
+            }
+            return;
+        }
+
+        //Execute(values.FirstOrDefault().Key, (rds, k) => rds.SetAll(values), true);
+        var rs = Execute([.. values.Keys], (rds, ks) => rds.SetAll(ks.ToDictionary(e => e, e => values[e])), true);
+
+        // 使用管道批量设置过期时间
+        if (expire > 0)
+        {
+            var ts = TimeSpan.FromSeconds(expire);
+
+            StartPipeline();
+            try
+            {
+                foreach (var item in values)
+                {
+                    SetExpire(item.Key, ts);
+                }
+            }
+            finally
+            {
+                StopPipeline(true);
+            }
+        }
+    }
+
     /// <summary>获取列表</summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="key"></param>
@@ -430,24 +616,40 @@ public class FullRedis : Redis
     /// <returns></returns>
     public virtual IEnumerable<String> Search(SearchModel model)
     {
-        var count = model.Count;
-        while (count > 0)
+        InitCluster();
+
+        if (Cluster != null)
         {
-            var p = model.Position;
-            var rs = Execute(r => r.Execute<Object[]>("SCAN", p, "MATCH", model.Pattern + "", "COUNT", count));
-            if (rs == null || rs.Length != 2) break;
+            var nodes = Cluster.RedisNodes;
+            var result = nodes.SelectMany(x => Scan(x));
+            return result;
+        }
+        else
+        {
+            return Scan();
+        }
 
-            model.Position = (rs[0] as Packet)?.ToStr().ToInt() ?? 0;
-
-            if (rs[1] is Object[] ps)
+        IEnumerable<String> Scan(IRedisNode? node = null)
+        {
+            var count = model.Count;
+            while (count > 0)
             {
-                foreach (Packet item in ps)
-                {
-                    if (count-- > 0) yield return item.ToStr();
-                }
-            }
+                var p = model.Position;
+                var rs = Execute(r => r.Execute<Object[]>("SCAN", p, "MATCH", model.Pattern + "", "COUNT", count), node);
+                if (rs == null || rs.Length != 2) break;
 
-            if (model.Position == 0) break;
+                model.Position = (rs[0] as Packet)?.ToStr().ToInt() ?? 0;
+
+                if (rs[1] is Object[] ps)
+                {
+                    foreach (Packet item in ps)
+                    {
+                        if (count-- > 0) yield return item.ToStr();
+                    }
+                }
+
+                if (model.Position == 0) break;
+            }
         }
     }
 
@@ -477,7 +679,7 @@ public class FullRedis : Redis
         };
         foreach (var item in values)
         {
-            args.Add(item);
+            if (item != null) args.Add(item);
         }
         return Execute(key, (rc, k) => rc.Execute<Int32>("RPUSH", args.ToArray()), true);
     }
@@ -495,7 +697,7 @@ public class FullRedis : Redis
         };
         foreach (var item in values)
         {
-            args.Add(item);
+            if (item != null) args.Add(item);
         }
         return Execute(key, (rc, k) => rc.Execute<Int32>("LPUSH", args.ToArray()), true);
     }
@@ -616,7 +818,7 @@ public class FullRedis : Redis
         };
         foreach (var item in members)
         {
-            args.Add(item);
+            if (item != null) args.Add(item);
         }
         return Execute(key, (rc, k) => rc.Execute<Int32>("SADD", args.ToArray()), true);
     }
@@ -634,7 +836,7 @@ public class FullRedis : Redis
         };
         foreach (var item in members)
         {
-            args.Add(item);
+            if (item != null) args.Add(item);
         }
         return Execute(key, (rc, k) => rc.Execute<Int32>("SREM", args.ToArray()), true);
     }

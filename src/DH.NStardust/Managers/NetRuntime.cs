@@ -23,6 +23,9 @@ public class NetRuntime
     /// <summary>缓存目录</summary>
     public String? CachePath { get; set; }
 
+    /// <summary>是否强制。如果true，则已安装版本存在也强制安装。默认false</summary>
+    public Boolean Force { get; set; }
+
     /// <summary>文件哈希。用于校验下载文件的完整性</summary>
     public IDictionary<String, String>? Hashs { get; set; }
 
@@ -109,7 +112,7 @@ public class NetRuntime
         var fullFile = Download(fileName, baseUrl);
         if (String.IsNullOrEmpty(fullFile)) return false;
 
-        if (String.IsNullOrEmpty(arg)) arg = "/passive /promptrestart";
+        if (IsWindows && String.IsNullOrEmpty(arg)) arg = "/passive /promptrestart";
         if (!Silent) arg = null;
 
         WriteLog("正在安装：{0} {1}", fullFile, arg);
@@ -148,10 +151,18 @@ public class NetRuntime
         if (!Directory.Exists(target)) Directory.CreateDirectory(target);
 
         // 解压缩
+        WriteLog($"解压缩[{fullFile}]到[{target}]");
         Process.Start(new ProcessStartInfo("tar", $"-xzf {fullFile} -C {target}") { UseShellExecute = true });
 
         // 建立链接
-        Process.Start(new ProcessStartInfo("ln", $"{fullFile}/dotnet /usr/bin/dotnet -s") { UseShellExecute = true });
+        var link = "/usr/bin/dotnet";
+        if (Force && File.Exists(link)) File.Delete(link);
+
+        if (!File.Exists(link))
+        {
+            WriteLog($"创建[{target}/dotnet]的软连接到[{link}]");
+            Process.Start(new ProcessStartInfo("ln", $"{target}/dotnet {link} -s") { UseShellExecute = true });
+        }
 
         WriteLog("安装完成！");
 
@@ -198,7 +209,7 @@ public class NetRuntime
 
         // 目标版本
         var target = new Version("4.0");
-        if (ver >= target)
+        if (!Force && ver >= target)
         {
             WriteLog("已安装最新版 v{0}", ver);
             return;
@@ -239,7 +250,7 @@ public class NetRuntime
 
         // 目标版本
         var target = new Version("4.5");
-        if (ver >= target)
+        if (!Force && ver >= target)
         {
             WriteLog("已安装最新版 v{0}", ver);
             return;
@@ -264,7 +275,7 @@ public class NetRuntime
         // 目标版本。win10起支持4.8.1
         var osVer = Environment.OSVersion.Version;
         var target = osVer.Major >= 10 ? new Version("4.8.1") : new Version("4.8");
-        if (ver >= target)
+        if (!Force && ver >= target)
         {
             WriteLog("已安装最新版 v{0}", ver);
             return;
@@ -316,7 +327,7 @@ public class NetRuntime
 
         // 目标版本
         var targetVer = new Version(target);
-        if (ver >= targetVer)
+        if (!Force && ver >= targetVer)
         {
             WriteLog("已安装最新版 v{0}", ver);
             return;
@@ -398,7 +409,7 @@ public class NetRuntime
 
         // 目标版本
         var targetVer = new Version(target);
-        if (ver >= targetVer)
+        if (!Force && ver >= targetVer)
         {
             WriteLog("已安装最新版 v{0}", ver);
             return;
@@ -480,7 +491,7 @@ public class NetRuntime
 
         // 目标版本
         var targetVer = new Version(target);
-        if (ver >= targetVer)
+        if (!Force && ver >= targetVer)
         {
             WriteLog("已安装最新版 v{0}", ver);
             return;
@@ -562,7 +573,7 @@ public class NetRuntime
 
         // 目标版本
         var targetVer = new Version(target);
-        if (ver >= targetVer)
+        if (!Force && ver >= targetVer)
         {
             WriteLog("已安装最新版 v{0}", ver);
             return;

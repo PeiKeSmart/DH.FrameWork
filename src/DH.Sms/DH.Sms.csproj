@@ -73,10 +73,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="aliyun-net-sdk-core" Version="1.5.11" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<ProjectReference Include="..\DH.Core\DH.Core.csproj" />
 	</ItemGroup>
 

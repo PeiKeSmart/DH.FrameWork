@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace DG.Sms.LianLu
+namespace DH.Sms.LianLu
 {
     /// <summary>
     /// 短信服务

@@ -135,7 +135,10 @@ public static class EntityExtension
             if (list is not IList<T> es) es = list.ToList();
             foreach (IEntity item in es.ToArray())
             {
-                if (item is EntityBase entity2) entity2.Valid(item.IsNullKey);
+                if (item is EntityBase entity2)
+                {
+                    if (!entity2.Valid(DataMethod.Insert)) es.Remove((T)item);
+                }
                 //if (!fact.Modules.Valid(item, item.IsNullKey)) es.Remove((T)item);
             }
 
@@ -418,9 +421,12 @@ public static class EntityExtension
         // 验证对象
         foreach (IEntity item in list)
         {
-            if (item is EntityBase entity2) entity2.Valid(isNew);
-            //if (modules.Valid(item, isNew)) rs.Add((T)item);
-            rs.Add((T)item);
+            if (item is EntityBase entity2)
+            {
+                if (entity2.Valid(isNew ? DataMethod.Insert : DataMethod.Update)) rs.Add((T)item);
+            }
+            else
+                rs.Add((T)item);
         }
 
         return rs;
@@ -777,7 +783,7 @@ public static class EntityExtension
     /// 简单来说：对于一行记录，如果Insert 成功则返回1，如果需要执行的是update 则返回2
     /// Oracle返回值：无论是插入还是更新返回的都始终为-1
     /// </returns>
-    public static Int32 Upsert<T>(this IEnumerable<T> list, IDataColumn[] columns, ICollection<String>? updateColumns = null, ICollection<String>? addColumns = null, IEntitySession? session = null) where T : IEntity
+    public static Int32 Upsert<T>(this IEnumerable<T> list, IDataColumn[]? columns, ICollection<String>? updateColumns = null, ICollection<String>? addColumns = null, IEntitySession? session = null) where T : IEntity
     {
         var option = new BatchOption { Columns = columns, UpdateColumns = updateColumns, AddColumns = addColumns };
         return BatchUpsert(list, option, session);

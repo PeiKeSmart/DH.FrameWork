@@ -12,7 +12,6 @@ using System.Xml.Serialization;
 
 using XCode;
 using XCode.Cache;
-using XCode.Membership;
 
 namespace DH.Entity;
 
@@ -225,6 +224,11 @@ public partial class LocaleStringResource : DHEntityBase<LocaleStringResource> {
             return string.Empty;
         }
         resourceKey = resourceKey.Trim();
+
+        if (resourceKey.Length > 300)
+        {
+            return resourceKey;
+        }
 
         var model = FindByLanKeyAndCultureId(resourceKey, languageId);
 

@@ -34,7 +34,7 @@ public partial class LocaleStringResource : ILocaleStringResource, IEntity<ILoca
     /// <summary>资源名称</summary>
     [DisplayName("资源名称")]
     [Description("资源名称")]
-    [DataObjectField(false, false, true, 200)]
+    [DataObjectField(false, false, true, 300)]
     [BindColumn("LanKey", "资源名称", "", Master = true)]
     public String LanKey { get => _LanKey; set { if (OnPropertyChanging("LanKey", value)) { _LanKey = value; OnPropertyChanged("LanKey"); } } }
 

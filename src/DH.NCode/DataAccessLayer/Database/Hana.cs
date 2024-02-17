@@ -319,19 +319,19 @@ internal class HanaMetaData : RemoteDbMetaData
 
     #region 数据类型
 
-    protected override List<KeyValuePair<Type, Type>> FieldTypeMaps
-    {
-        get
-        {
-            if (_FieldTypeMaps == null)
-            {
-                var list = base.FieldTypeMaps;
-                if (!list.Any(e => e.Key == typeof(Byte) && e.Value == typeof(Boolean)))
-                    list.Add(new KeyValuePair<Type, Type>(typeof(Byte), typeof(Boolean)));
-            }
-            return base.FieldTypeMaps;
-        }
-    }
+    //protected override List<KeyValuePair<Type, Type>> FieldTypeMaps
+    //{
+    //    get
+    //    {
+    //        if (_FieldTypeMaps == null)
+    //        {
+    //            var list = base.FieldTypeMaps;
+    //            if (!list.Any(e => e.Key == typeof(Byte) && e.Value == typeof(Boolean)))
+    //                list.Add(new(typeof(Byte), typeof(Boolean)));
+    //        }
+    //        return base.FieldTypeMaps;
+    //    }
+    //}
 
     /// <summary>数据类型映射</summary>
     private static readonly Dictionary<Type, String[]> _DataTypes = new()
@@ -396,7 +396,6 @@ internal class HanaMetaData : RemoteDbMetaData
 
                     field.ColumnName = dc["Field"] + "";
                     field.RawType = dc["Type"] + "";
-                    field.DataType = GetDataType(field.RawType);
                     field.Description = dc["Comment"] + "";
 
                     if (dc["Extra"] + "" == "auto_increment") field.Identity = true;
@@ -404,6 +403,7 @@ internal class HanaMetaData : RemoteDbMetaData
                     if (dc["Null"] + "" == "YES") field.Nullable = true;
 
                     field.Length = field.RawType.Substring("(", ")").ToInt();
+                    field.DataType = GetDataType(field);
 
                     if (field.DataType == null)
                     {
