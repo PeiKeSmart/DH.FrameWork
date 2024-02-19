@@ -15,7 +15,7 @@ public class SmsService : ISmsService
     /// <summary>
     /// 短信配置选项
     /// </summary>
-    private readonly FengHuoSms _options;
+    private FengHuoSms _options;
 
     /// <summary>
     /// 初始化短信服务
@@ -93,12 +93,22 @@ public class SmsService : ISmsService
     /// <summary>
     /// 发送模板短信
     /// </summary>
+    /// <param name="AccessKeyId">AccessId</param>
+    /// <param name="AccessKeySecret">AccessSecret</param>
+    /// <param name="passKey">短信签名</param>
     /// <param name="mobiles">手机号,可批量，用逗号分隔开，上限为1000个</param>
     /// <param name="templateId">对应的模板ID</param>
     /// <param name="paramValues">对应的参数</param>
     /// <returns></returns>
-    public async Task<SmsResult> SendTemplateParamd(string mobiles, String templateId, String[] paramValues)
+    public async Task<SmsResult> SendTemplateParamd(String AccessKeyId, String AccessKeySecret, String passKey, string mobiles, String templateId, String[] paramValues) 
     {
+        _options = new FengHuoSms()
+        {
+            AccessKeyId = AccessKeyId,
+            AccessKeySecret = AccessKeySecret,
+            passKey = passKey
+        };
+
         var seed = GetSeed();
         var token = GetToken(seed);
         var sendaction = _options.Url + "sendTemplateParamd";
@@ -115,7 +125,7 @@ public class SmsService : ISmsService
             .Data("ref", Sid)
             .Data("ext", "");
 
-        for(var i = 0; i < paramValues.Length; i++)
+        for (var i = 0; i < paramValues.Length; i++)
         {
             irequest.Data($"param{i + 1}", paramValues[i]);
         }
