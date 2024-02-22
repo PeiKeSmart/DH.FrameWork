@@ -1,15 +1,9 @@
-using System;
-using System.Linq;
-using System.Net.Http;
+using Flurl.Http;
+
 using System.Net.Http.Headers;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Flurl.Http;
-using Flurl.Http.Configuration;
 
-namespace SKIT.FlurlHttpClient
-{
+namespace SKIT.FlurlHttpClient {
     using SKIT.FlurlHttpClient.Internal;
 
     /// <summary>
@@ -209,6 +203,57 @@ namespace SKIT.FlurlHttpClient
         }
 
         /// <summary>
+        /// 异步发起请求。
+        /// </summary>
+        /// <param name="flurlRequest"></param>
+        /// <param name="httpContent"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        protected virtual async Task<IFlurlResponse> SendFlurlRequestAsync(IFlurlRequest flurlRequest, IDictionary<String, Object>? header = null, HttpContent? httpContent = null, CancellationToken cancellationToken = default)
+        {
+            if (flurlRequest is null) throw new ArgumentNullException(nameof(flurlRequest));
+            if (_disposed) throw new ObjectDisposedException(nameof(FlurlClient));
+
+            try
+            {
+                flurlRequest.Client = FlurlClient;
+
+                if (header != null)
+                {
+                    foreach (var item in header)
+                    {
+                        flurlRequest.WithHeader(item.Key, item.Value);
+                    }
+                }
+
+                return await flurlRequest
+                    .AllowAnyHttpStatus()
+                    .SendAsync(flurlRequest.Verb, httpContent, cancellationToken: cancellationToken)
+                    .ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (FlurlHttpException ex)
+            {
+                if (ex is FlurlParsingException)
+                    throw new CommonSerializationException(ex.Message, ex);
+                if (ex is FlurlHttpTimeoutException)
+                    throw new CommonTimeoutException(ex.Message, ex);
+
+                throw new CommonHttpException(ex.Message, ex);
+            }
+            catch (Exception ex)
+            {
+                if (ex is CommonException)
+                    throw;
+
+                throw new CommonException(ex.Message, ex);
+            }
+        }
+
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="flurlRequest"></param>
@@ -219,6 +264,80 @@ namespace SKIT.FlurlHttpClient
         {
             if (flurlRequest is null) throw new ArgumentNullException(nameof(flurlRequest));
             if (_disposed) throw new ObjectDisposedException(nameof(FlurlClient));
+
+            HttpContent? httpContent = null;
+            if (data is not null)
+            {
+                try
+                {
+                    string content = JsonSerializer.Serialize(data, data.GetType());
+                    httpContent = new StringContent(content, encoding: null, mediaType: MimeTypes.Json);
+                }
+                catch (Exception ex)
+                {
+                    throw new CommonSerializationException(ex.Message, ex);
+                }
+            }
+
+            try
+            {
+                return await SendFlurlRequestAsync(flurlRequest, httpContent, cancellationToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (FlurlHttpException ex)
+            {
+                if (ex is FlurlParsingException)
+                    throw new CommonSerializationException(ex.Message, ex);
+                if (ex is FlurlHttpTimeoutException)
+                    throw new CommonTimeoutException(ex.Message, ex);
+
+                throw new CommonHttpException(ex.Message, ex);
+            }
+            catch (Exception ex)
+            {
+                if (ex is CommonException)
+                    throw;
+
+                throw new CommonException(ex.Message, ex);
+            }
+            finally
+            {
+                httpContent?.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// 异步发起请求。
+        /// <para>指定请求标头 `Content-Type` 为 `application/json`。</para>
+        /// </summary>
+        /// <param name="flurlRequest"></param>
+        /// <param name="data"></param>
+        /// <param name="cancellationToken"></param>
+        /// <param name="header"></param>
+        /// <returns></returns>
+        protected virtual async Task<IFlurlResponse> SendFlurlRequestAsJsonAsync(IFlurlRequest flurlRequest, IDictionary<String, Object>? header = null, object? data = null, CancellationToken cancellationToken = default)
+        {
+            if (flurlRequest is null) throw new ArgumentNullException(nameof(flurlRequest));
+            if (_disposed) throw new ObjectDisposedException(nameof(FlurlClient));
+
+            if (data != null)
+            {
+                if (header != null)
+                {
+                    foreach (var item in header)
+                    {
+                        flurlRequest.WithHeader(item.Key, item.Value);
+                    }
+                }
+
+                if (!flurlRequest.Headers.GetAll(HttpHeaders.ContentType).Any())
+                {
+                    flurlRequest.WithHeader(HttpHeaders.ContentType, "application/json");
+                }
+            }
 
             HttpContent? httpContent = null;
             if (data is not null)

@@ -21,7 +21,7 @@ public static class PospalApiClientExecuteQueryAllUserExtensions
         if (request is null) throw new ArgumentNullException(nameof(request));
 
         IFlurlRequest flurlReq = client
-            .CreateRequest(request, HttpMethod.Post, "pospal-api2", "openapi", "v1", "openNotificationOpenApi", "queryPushUrl")
+            .CreateFlurlRequest(request, HttpMethod.Post, "pospal-api2", "openapi", "v1", "openNotificationOpenApi", "queryPushUrl")
             ;
 
         DateTime ORIGINDATE = TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc));
