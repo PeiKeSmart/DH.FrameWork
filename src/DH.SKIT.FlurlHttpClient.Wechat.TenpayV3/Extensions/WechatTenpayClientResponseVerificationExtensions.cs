@@ -1,57 +1,51 @@
 using System;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SKIT.FlurlHttpClient.Wechat.TenpayV3
 {
+    using SKIT.FlurlHttpClient.Primitives;
+    using SKIT.FlurlHttpClient.Wechat.TenpayV3.Constants;
+
     public static class WechatTenpayClientResponseVerificationExtensions
     {
         /// <summary>
         /// <para>验证响应签名。</para>
-        /// <para>REF: https://pay.weixin.qq.com/wiki/doc/apiv3/wechatpay/wechatpay4_1.shtml </para>
-        /// <para>REF: https://pay.weixin.qq.com/wiki/doc/apiv3_partner/wechatpay/wechatpay4_1.shtml </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://pay.weixin.qq.com/docs/merchant/development/interface-rules/signature-verification.html ]]> <br/>
+        /// <![CDATA[ https://pay.weixin.qq.com/docs/partner/development/interface-rules/signature-verification.html ]]>
+        /// </para>
         /// </summary>
         /// <typeparam name="TResponse"></typeparam>
         /// <param name="client"></param>
         /// <param name="response"></param>
         /// <returns></returns>
-        public static bool VerifyResponseSignature<TResponse>(this WechatTenpayClient client, TResponse response)
+        public static ErroredResult VerifyResponseSignature<TResponse>(this WechatTenpayClient client, TResponse response)
             where TResponse : WechatTenpayResponse
         {
-            return VerifyResponseSignature(client, response, out _);
-        }
-
-        /// <summary>
-        /// <para>验证响应签名。</para>
-        /// <para>REF: https://pay.weixin.qq.com/wiki/doc/apiv3/wechatpay/wechatpay4_1.shtml </para>
-        /// <para>REF: https://pay.weixin.qq.com/wiki/doc/apiv3_partner/wechatpay/wechatpay4_1.shtml </para>
-        /// </summary>
-        /// <typeparam name="TResponse"></typeparam>
-        /// <param name="client"></param>
-        /// <param name="response"></param>
-        /// <param name="error"></param>
-        /// <returns></returns>
-        public static bool VerifyResponseSignature<TResponse>(this WechatTenpayClient client, TResponse response, out Exception? error)
-            where TResponse : WechatTenpayResponse
-        {
-            if (client == null) throw new ArgumentNullException(nameof(client));
-            if (response == null) throw new ArgumentNullException(nameof(response));
+            if (client is null) throw new ArgumentNullException(nameof(client));
+            if (response is null) throw new ArgumentNullException(nameof(response));
 
             return VerifyResponseSignature(
                 client,
                 responseTimestamp: response.WechatpayTimestamp,
                 responseNonce: response.WechatpayNonce,
-                responseBody: Encoding.UTF8.GetString(response.RawBytes),
+                responseBody: Encoding.UTF8.GetString(response.GetRawBytes()),
                 responseSignature: response.WechatpaySignature,
                 responseSignatureType: response.WechatpaySignatureType,
-                responseSerialNumber: response.WechatpayCertificateSerialNumber,
-                out error
+                responseSerialNumber: response.WechatpayCertificateSerialNumber
             );
         }
 
         /// <summary>
         /// <para>验证响应签名。</para>
-        /// <para>REF: https://pay.weixin.qq.com/wiki/doc/apiv3/wechatpay/wechatpay4_1.shtml </para>
-        /// <para>REF: https://pay.weixin.qq.com/wiki/doc/apiv3_partner/wechatpay/wechatpay4_1.shtml </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://pay.weixin.qq.com/docs/merchant/development/interface-rules/signature-verification.html ]]> <br/>
+        /// <![CDATA[ https://pay.weixin.qq.com/docs/partner/development/interface-rules/signature-verification.html ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="responseTimestamp"></param>
@@ -60,7 +54,7 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3
         /// <param name="responseSignature"></param>
         /// <param name="responseSerialNumber"></param>
         /// <returns></returns>
-        public static bool VerifyResponseSignature(this WechatTenpayClient client, string responseTimestamp, string responseNonce, string responseBody, string responseSignature, string responseSerialNumber)
+        public static ErroredResult VerifyResponseSignature(this WechatTenpayClient client, string responseTimestamp, string responseNonce, string responseBody, string responseSignature, string responseSerialNumber)
         {
             return VerifyResponseSignature(
                 client,
@@ -68,15 +62,18 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3
                 responseNonce: responseNonce,
                 responseBody: responseBody,
                 responseSignature: responseSignature,
-                responseSignatureType: Constants.SignSchemes.WECHATPAY2_RSA_2048_WITH_SHA256,
-                responseSerialNumber: responseSerialNumber
+                responseSignatureType: SignSchemes.WECHATPAY2_RSA_2048_WITH_SHA256,
+                responseSerialNumber
             );
         }
 
         /// <summary>
         /// <para>验证响应签名。</para>
-        /// <para>REF: https://pay.weixin.qq.com/wiki/doc/apiv3/wechatpay/wechatpay4_1.shtml </para>
-        /// <para>REF: https://pay.weixin.qq.com/wiki/doc/apiv3_partner/wechatpay/wechatpay4_1.shtml </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://pay.weixin.qq.com/docs/merchant/development/interface-rules/signature-verification.html ]]> <br/>
+        /// <![CDATA[ https://pay.weixin.qq.com/docs/partner/development/interface-rules/signature-verification.html ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="responseTimestamp"></param>
@@ -86,88 +83,113 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3
         /// <param name="responseSignatureType"></param>
         /// <param name="responseSerialNumber"></param>
         /// <returns></returns>
-        public static bool VerifyResponseSignature(this WechatTenpayClient client, string responseTimestamp, string responseNonce, string responseBody, string responseSignature, string responseSignatureType, string responseSerialNumber)
+        public static ErroredResult VerifyResponseSignature(this WechatTenpayClient client, string responseTimestamp, string responseNonce, string responseBody, string responseSignature, string responseSignatureType, string responseSerialNumber)
         {
-            return VerifyResponseSignature(
-                client,
-                responseTimestamp: responseTimestamp,
-                responseNonce: responseNonce,
-                responseBody: responseBody,
-                responseSignature: responseSignature,
-                responseSignatureType: responseSignatureType,
-                responseSerialNumber,
-                out _
-            );
-        }
+            if (client is null) throw new ArgumentNullException(nameof(client));
 
-        /// <summary>
-        /// <para>验证响应签名。</para>
-        /// <para>REF: https://pay.weixin.qq.com/wiki/doc/apiv3/wechatpay/wechatpay4_1.shtml </para>
-        /// <para>REF: https://pay.weixin.qq.com/wiki/doc/apiv3_partner/wechatpay/wechatpay4_1.shtml </para>
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="responseTimestamp"></param>
-        /// <param name="responseNonce">。</param>
-        /// <param name="responseBody"></param>
-        /// <param name="responseSignature"></param>
-        /// <param name="responseSerialNumber"></param>
-        /// <param name="error"></param>
-        /// <returns></returns>
-        public static bool VerifyResponseSignature(this WechatTenpayClient client, string responseTimestamp, string responseNonce, string responseBody, string responseSignature, string responseSerialNumber, out Exception? error)
-        {
-            return VerifyResponseSignature(
-                client,
-                responseTimestamp: responseTimestamp,
-                responseNonce: responseNonce,
-                responseBody: responseBody,
-                responseSignature: responseSignature,
-                responseSignatureType: Constants.SignSchemes.WECHATPAY2_RSA_2048_WITH_SHA256,
-                responseSerialNumber,
-                out error
-            );
-        }
-
-        /// <summary>
-        /// <para>验证响应签名。</para>
-        /// <para>REF: https://pay.weixin.qq.com/wiki/doc/apiv3/wechatpay/wechatpay4_1.shtml </para>
-        /// <para>REF: https://pay.weixin.qq.com/wiki/doc/apiv3_partner/wechatpay/wechatpay4_1.shtml </para>
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="responseTimestamp"></param>
-        /// <param name="responseNonce">。</param>
-        /// <param name="responseBody"></param>
-        /// <param name="responseSignature"></param>
-        /// <param name="responseSignatureType"></param>
-        /// <param name="responseSerialNumber"></param>
-        /// <param name="error"></param>
-        /// <returns></returns>
-        public static bool VerifyResponseSignature(this WechatTenpayClient client, string responseTimestamp, string responseNonce, string responseBody, string responseSignature, string responseSignatureType, string responseSerialNumber, out Exception? error)
-        {
-            if (client == null) throw new ArgumentNullException(nameof(client));
-            if (responseTimestamp == null) throw new ArgumentNullException(nameof(responseTimestamp));
-            if (responseNonce == null) throw new ArgumentNullException(nameof(responseNonce));
-            if (responseBody == null) throw new ArgumentNullException(nameof(responseBody));
-            if (responseSignature == null) throw new ArgumentNullException(nameof(responseSignature));
-            if (responseSignatureType == null) throw new ArgumentNullException(nameof(responseSignatureType));
-            if (responseSerialNumber == null) throw new ArgumentNullException(nameof(responseSerialNumber));
-
-            bool ret = WechatTenpayClientSignExtensions.VerifySignature(
+            return WechatTenpayClientSigningExtensions.VerifySignature(
                 client,
                 strTimestamp: responseTimestamp,
                 strNonce: responseNonce,
                 strContent: responseBody,
                 strSignature: responseSignature,
-                strSignatureScheme: responseSignatureType,
-                strSerialNumber: responseSerialNumber,
-                out error
+                strSignScheme: responseSignatureType,
+                strSerialNumber: responseSerialNumber
             );
+        }
 
-            if (error != null)
-            {
-                error = new Exceptions.WechatTenpayEventVerificationException("Verify signature of response failed. Please see the inner exception for more details.", error);
-            }
+        /// <summary>
+        /// <para>异步验证响应签名。</para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://pay.weixin.qq.com/docs/merchant/development/interface-rules/signature-verification.html ]]> <br/>
+        /// <![CDATA[ https://pay.weixin.qq.com/docs/partner/development/interface-rules/signature-verification.html ]]>
+        /// </para>
+        /// </summary>
+        /// <typeparam name="TResponse"></typeparam>
+        /// <param name="client"></param>
+        /// <param name="response"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public static Task<ErroredResult> VerifyResponseSignatureAsync<TResponse>(this WechatTenpayClient client, TResponse response, CancellationToken cancellationToken = default)
+            where TResponse : WechatTenpayResponse
+        {
+            if (client is null) throw new ArgumentNullException(nameof(client));
+            if (response is null) throw new ArgumentNullException(nameof(response));
 
-            return ret;
+            return VerifyResponseSignatureAsync(
+                client,
+                responseTimestamp: response.WechatpayTimestamp,
+                responseNonce: response.WechatpayNonce,
+                responseBody: Encoding.UTF8.GetString(response.GetRawBytes()),
+                responseSignature: response.WechatpaySignature,
+                responseSignatureType: response.WechatpaySignatureType,
+                responseSerialNumber: response.WechatpayCertificateSerialNumber,
+                cancellationToken: cancellationToken
+            );
+        }
+
+        /// <summary>
+        /// <para>异步验证响应签名。</para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://pay.weixin.qq.com/docs/merchant/development/interface-rules/signature-verification.html ]]> <br/>
+        /// <![CDATA[ https://pay.weixin.qq.com/docs/partner/development/interface-rules/signature-verification.html ]]>
+        /// </para>
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="responseTimestamp"></param>
+        /// <param name="responseNonce">。</param>
+        /// <param name="responseBody"></param>
+        /// <param name="responseSignature"></param>
+        /// <param name="responseSerialNumber"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public static Task<ErroredResult> VerifyResponseSignatureAsync(this WechatTenpayClient client, string responseTimestamp, string responseNonce, string responseBody, string responseSignature, string responseSerialNumber, CancellationToken cancellationToken = default)
+        {
+            return VerifyResponseSignatureAsync(
+                client,
+                responseTimestamp: responseTimestamp,
+                responseNonce: responseNonce,
+                responseBody: responseBody,
+                responseSignature: responseSignature,
+                responseSignatureType: SignSchemes.WECHATPAY2_RSA_2048_WITH_SHA256,
+                responseSerialNumber: responseSerialNumber,
+                cancellationToken
+            );
+        }
+
+        /// <summary>
+        /// <para>异步验证响应签名。</para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://pay.weixin.qq.com/docs/merchant/development/interface-rules/signature-verification.html ]]> <br/>
+        /// <![CDATA[ https://pay.weixin.qq.com/docs/partner/development/interface-rules/signature-verification.html ]]>
+        /// </para>
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="responseTimestamp"></param>
+        /// <param name="responseNonce">。</param>
+        /// <param name="responseBody"></param>
+        /// <param name="responseSignature"></param>
+        /// <param name="responseSignatureType"></param>
+        /// <param name="responseSerialNumber"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public static Task<ErroredResult> VerifyResponseSignatureAsync(this WechatTenpayClient client, string responseTimestamp, string responseNonce, string responseBody, string responseSignature, string responseSignatureType, string responseSerialNumber, CancellationToken cancellationToken = default)
+        {
+            if (client is null) throw new ArgumentNullException(nameof(client));
+
+            return WechatTenpayClientSigningExtensions.VerifySignatureAsync(
+                client,
+                strTimestamp: responseTimestamp,
+                strNonce: responseNonce,
+                strContent: responseBody,
+                strSignature: responseSignature,
+                strSignScheme: responseSignatureType,
+                strSerialNumber: responseSerialNumber,
+                cancellationToken
+            );
         }
     }
 }

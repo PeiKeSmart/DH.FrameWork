@@ -1,4 +1,4 @@
-﻿namespace SKIT.FlurlHttpClient.Wechat.Work.Models
+namespace SKIT.FlurlHttpClient.Wechat.Work.Models
 {
     /// <summary>
     /// <para>表示 [POST] /cgi-bin/oa/getapprovaldetail 接口的响应。</para>
@@ -77,7 +77,7 @@
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("sptime")]
                                 [System.Text.Json.Serialization.JsonPropertyName("sptime")]
-                                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.TextualNullableLongConverter))]
+                                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.TextualNumberConverter))]
                                 public long? ApproveTimestamp { get; set; }
 
                                 /// <summary>
@@ -172,14 +172,14 @@
                                         /// </summary>
                                         [Newtonsoft.Json.JsonProperty("members")]
                                         [System.Text.Json.Serialization.JsonPropertyName("members")]
-                                        public ContactControlValueForUser[]? ContactMembers { get; set; }
+                                        public ContactControlValueAsUser[]? ContactMembers { get; set; }
 
                                         /// <summary>
                                         /// 获取或设置 Contact 控件部门值。
                                         /// </summary>
                                         [Newtonsoft.Json.JsonProperty("departments")]
                                         [System.Text.Json.Serialization.JsonPropertyName("departments")]
-                                        public ContactControlValueForDepartment[]? ContactDepartments { get; set; }
+                                        public ContactControlValueAsDepartment[]? ContactDepartments { get; set; }
 
                                         /// <summary>
                                         /// 获取或设置 File 控件值。
@@ -259,7 +259,7 @@
                                         /// </summary>
                                         [Newtonsoft.Json.JsonProperty("s_timestamp")]
                                         [System.Text.Json.Serialization.JsonPropertyName("s_timestamp")]
-                                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.TextualNullableLongConverter))]
+                                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.TextualNumberConverter))]
                                         public long? Timestamp { get; set; }
                                     }
 
@@ -300,7 +300,7 @@
                                         public Types.Option[] OptionList { get; set; } = default!;
                                     }
 
-                                    public class ContactControlValueForUser
+                                    public class ContactControlValueAsUser
                                     {
                                         /// <summary>
                                         /// 获取或设置成员账号。
@@ -317,7 +317,7 @@
                                         public string? Name { get; set; }
                                     }
 
-                                    public class ContactControlValueForDepartment
+                                    public class ContactControlValueAsDepartment
                                     {
                                         /// <summary>
                                         /// 获取或设置部门 ID。
@@ -471,14 +471,14 @@
                                         /// </summary>
                                         [Newtonsoft.Json.JsonProperty("longitude")]
                                         [System.Text.Json.Serialization.JsonPropertyName("longitude")]
-                                        public double Longitude { get; set; }
+                                        public decimal Longitude { get; set; }
 
                                         /// <summary>
                                         /// 获取或设置纬度。
                                         /// </summary>
                                         [Newtonsoft.Json.JsonProperty("latitude")]
                                         [System.Text.Json.Serialization.JsonPropertyName("latitude")]
-                                        public double Latitude { get; set; }
+                                        public decimal Latitude { get; set; }
 
                                         /// <summary>
                                         /// 获取或设置地点标题。
@@ -499,7 +499,7 @@
                                         /// </summary>
                                         [Newtonsoft.Json.JsonProperty("time")]
                                         [System.Text.Json.Serialization.JsonPropertyName("time")]
-                                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.TextualNullableLongConverter))]
+                                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.TextualNumberConverter))]
                                         public long? Timestamp { get; set; }
                                     }
 
@@ -592,12 +592,27 @@
                                         public string State { get; set; } = default!;
 
                                         /// <summary>
+                                        /// 获取或设置版本标识。
+                                        /// </summary>
+                                        [Newtonsoft.Json.JsonProperty("version")]
+                                        [System.Text.Json.Serialization.JsonPropertyName("version")]
+                                        public int? Version { get; set; }
+
+                                        /// <summary>
                                         /// 获取或设置补卡时间戳。
                                         /// </summary>
                                         [Newtonsoft.Json.JsonProperty("time")]
                                         [System.Text.Json.Serialization.JsonPropertyName("time")]
-                                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.TextualNullableLongConverter))]
+                                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.TextualNumberConverter))]
                                         public long? Timestamp { get; set; }
+
+                                        /// <summary>
+                                        /// 获取或设置补卡日期时间戳。
+                                        /// </summary>
+                                        [Newtonsoft.Json.JsonProperty("daymonthyear")]
+                                        [System.Text.Json.Serialization.JsonPropertyName("daymonthyear")]
+                                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.TextualNumberConverter))]
+                                        public long? DateTimestamp { get; set; }
                                     }
                                 }
 
@@ -659,7 +674,7 @@
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("commentid")]
                         [System.Text.Json.Serialization.JsonPropertyName("commentid")]
-                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalStringConverter))]
+                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.NumericalStringConverter))]
                         public string CommentId { get; set; } = default!;
 
                         /// <summary>

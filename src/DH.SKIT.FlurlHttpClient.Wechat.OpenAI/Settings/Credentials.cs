@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 
 namespace SKIT.FlurlHttpClient.Wechat.OpenAI.Settings
 {
-    public class Credentials
+    public sealed class Credentials
     {
         /// <summary>
         /// 初始化客户端时 <see cref="WechatOpenAIClientOptions.AppId"/> 的副本。
@@ -21,7 +21,7 @@ namespace SKIT.FlurlHttpClient.Wechat.OpenAI.Settings
 
         internal Credentials(WechatOpenAIClientOptions options)
         {
-            if (options == null) throw new ArgumentNullException(nameof(options));
+            if (options is null) throw new ArgumentNullException(nameof(options));
 
             AppId = options.AppId;
             Token = options.Token;

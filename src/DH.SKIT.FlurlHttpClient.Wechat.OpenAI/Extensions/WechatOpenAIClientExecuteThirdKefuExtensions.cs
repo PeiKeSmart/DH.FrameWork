@@ -10,7 +10,10 @@ namespace SKIT.FlurlHttpClient.Wechat.OpenAI
     {
         /// <summary>
         /// <para>异步调用 [POST] /sendmsg/{TOKEN} 接口。</para>
-        /// <para>REF: https://developers.weixin.qq.com/doc/aispeech/confapi/thirdkefu/sendmsg.html </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developers.weixin.qq.com/doc/aispeech/confapi/thirdkefu/sendmsg.html ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -21,18 +24,21 @@ namespace SKIT.FlurlHttpClient.Wechat.OpenAI
             if (client is null) throw new ArgumentNullException(nameof(client));
             if (request is null) throw new ArgumentNullException(nameof(request));
 
-            if (request.AppId == null)
+            if (request.AppId is null)
                 request.AppId = client.Credentials.AppId;
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "sendmsg", client.Credentials.Token!);
+                .CreateFlurlRequest(request, HttpMethod.Post, "sendmsg", client.Credentials.Token!);
 
-            return await client.SendRequestWithJsonAsync<Models.SendMessageResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsJsonAsync<Models.SendMessageResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// <para>异步调用 [POST] /kefustate/get/{TOKEN} 接口。</para>
-        /// <para>REF: https://developers.weixin.qq.com/doc/aispeech/confapi/thirdkefu/getstate.html </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developers.weixin.qq.com/doc/aispeech/confapi/thirdkefu/getstate.html ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -43,18 +49,21 @@ namespace SKIT.FlurlHttpClient.Wechat.OpenAI
             if (client is null) throw new ArgumentNullException(nameof(client));
             if (request is null) throw new ArgumentNullException(nameof(request));
 
-            if (request.AppId == null)
+            if (request.AppId is null)
                 request.AppId = client.Credentials.AppId;
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "kefustate", "get", client.Credentials.Token!);
+                .CreateFlurlRequest(request, HttpMethod.Post, "kefustate", "get", client.Credentials.Token!);
 
-            return await client.SendRequestWithJsonAsync<Models.KefuStateGetResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsJsonAsync<Models.KefuStateGetResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// <para>异步调用 [POST] /kefustate/change/{TOKEN} 接口。</para>
-        /// <para>REF: https://developers.weixin.qq.com/doc/aispeech/confapi/thirdkefu/changestate.html </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developers.weixin.qq.com/doc/aispeech/confapi/thirdkefu/changestate.html ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -65,13 +74,13 @@ namespace SKIT.FlurlHttpClient.Wechat.OpenAI
             if (client is null) throw new ArgumentNullException(nameof(client));
             if (request is null) throw new ArgumentNullException(nameof(request));
 
-            if (request.AppId == null)
+            if (request.AppId is null)
                 request.AppId = client.Credentials.AppId;
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "kefustate", "change", client.Credentials.Token!);
+                .CreateFlurlRequest(request, HttpMethod.Post, "kefustate", "change", client.Credentials.Token!);
 
-            return await client.SendRequestWithJsonAsync<Models.KefuStateChangeResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsJsonAsync<Models.KefuStateChangeResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
     }
 }

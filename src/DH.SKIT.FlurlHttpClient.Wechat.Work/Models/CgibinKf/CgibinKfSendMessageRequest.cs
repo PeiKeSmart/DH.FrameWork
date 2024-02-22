@@ -112,9 +112,9 @@ namespace SKIT.FlurlHttpClient.Wechat.Work.Models
                                 /// 获取或设置内容后面是否不换行。
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("no_newline")]
-                                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.NumericalNullableBooleanConverter))]
+                                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.Common.NumericalBooleanConverter))]
                                 [System.Text.Json.Serialization.JsonPropertyName("no_newline")]
-                                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalNullableBooleanConverter))]
+                                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.NumericalBooleanConverter))]
                                 public bool? IsNoNewline { get; set; }
                             }
 
@@ -243,14 +243,14 @@ namespace SKIT.FlurlHttpClient.Wechat.Work.Models
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("latitude")]
                 [System.Text.Json.Serialization.JsonPropertyName("latitude")]
-                public double Latitude { get; set; }
+                public decimal Latitude { get; set; }
 
                 /// <summary>
                 /// 获取或设置经度坐标。
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("longitude")]
                 [System.Text.Json.Serialization.JsonPropertyName("longitude")]
-                public double Longitude { get; set; }
+                public decimal Longitude { get; set; }
 
                 /// <summary>
                 /// 获取或设置位置名称。
@@ -275,6 +275,16 @@ namespace SKIT.FlurlHttpClient.Wechat.Work.Models
                 [Newtonsoft.Json.JsonProperty("userid")]
                 [System.Text.Json.Serialization.JsonPropertyName("userid")]
                 public string UserId { get; set; } = string.Empty;
+            }
+
+            public class CustomerAcquisitionLinkMessage
+            {
+                /// <summary>
+                /// 获取或设置获客链接。
+                /// </summary>
+                [Newtonsoft.Json.JsonProperty("link_url")]
+                [System.Text.Json.Serialization.JsonPropertyName("link_url")]
+                public string LinkUrl { get; set; } = string.Empty;
             }
         }
 
@@ -311,69 +321,76 @@ namespace SKIT.FlurlHttpClient.Wechat.Work.Models
         /// </summary>
         [Newtonsoft.Json.JsonProperty("text")]
         [System.Text.Json.Serialization.JsonPropertyName("text")]
-        public Types.TextMessage? MessageContentForText { get; set; }
+        public Types.TextMessage? MessageContentAsText { get; set; }
 
         /// <summary>
         /// 获取或设置图片消息信息。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("image")]
         [System.Text.Json.Serialization.JsonPropertyName("image")]
-        public Types.ImageMessage? MessageContentForImage { get; set; }
+        public Types.ImageMessage? MessageContentAsImage { get; set; }
 
         /// <summary>
         /// 获取或设置语音消息信息。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("voice")]
         [System.Text.Json.Serialization.JsonPropertyName("voice")]
-        public Types.VoiceMessage? MessageContentForVoice { get; set; }
+        public Types.VoiceMessage? MessageContentAsVoice { get; set; }
 
         /// <summary>
         /// 获取或设置视频消息信息。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("video")]
         [System.Text.Json.Serialization.JsonPropertyName("video")]
-        public Types.VideoMessage? MessageContentForVideo { get; set; }
+        public Types.VideoMessage? MessageContentAsVideo { get; set; }
 
         /// <summary>
         /// 获取或设置文件消息信息。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("file")]
         [System.Text.Json.Serialization.JsonPropertyName("file")]
-        public Types.FileMessage? MessageContentForFile { get; set; }
+        public Types.FileMessage? MessageContentAsFile { get; set; }
 
         /// <summary>
         /// 获取或设置图文链接消息信息。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("link")]
         [System.Text.Json.Serialization.JsonPropertyName("link")]
-        public Types.LinkMessage? MessageContentForLink { get; set; }
+        public Types.LinkMessage? MessageContentAsLink { get; set; }
 
         /// <summary>
         /// 获取或设置小程序消息信息。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("miniprogram")]
         [System.Text.Json.Serialization.JsonPropertyName("miniprogram")]
-        public Types.MiniProgramMessage? MessageContentForMiniProgram { get; set; }
+        public Types.MiniProgramMessage? MessageContentAsMiniProgram { get; set; }
 
         /// <summary>
         /// 获取或设置菜单消息信息。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("msgmenu")]
         [System.Text.Json.Serialization.JsonPropertyName("msgmenu")]
-        public Types.MenuMessage? MessageContentForMenu { get; set; }
+        public Types.MenuMessage? MessageContentAsMenu { get; set; }
 
         /// <summary>
         /// 获取或设置地理位置消息信息。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("location")]
         [System.Text.Json.Serialization.JsonPropertyName("location")]
-        public Types.LocationMessage? MessageContentForLocation { get; set; }
+        public Types.LocationMessage? MessageContentAsLocation { get; set; }
 
         /// <summary>
         /// 获取或设置名片消息。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("business_card")]
         [System.Text.Json.Serialization.JsonPropertyName("business_card")]
-        public Types.BusinessCardMessage? MessageContentForBusinessCard { get; set; }
+        public Types.BusinessCardMessage? MessageContentAsBusinessCard { get; set; }
+
+        /// <summary>
+        /// 获取或设置获客链接消息信息。
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("ca_link")]
+        [System.Text.Json.Serialization.JsonPropertyName("ca_link")]
+        public Types.CustomerAcquisitionLinkMessage? MessageContentAsCustomerAcquisitionLink { get; set; }
     }
 }

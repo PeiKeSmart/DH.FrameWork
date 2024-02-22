@@ -2,9 +2,12 @@ namespace SKIT.FlurlHttpClient.Wechat.Api.Events
 {
     /// <summary>
     /// <para>表示 EVENT.head_supplier_item_update 事件的数据。</para>
-    /// <para>REF: https://developers.weixin.qq.com/doc/channels/API/leagueheadsupplier/callback/head_supplier_item_update.html </para>
+    /// <para>
+    /// REF: <br/>
+    /// <![CDATA[ https://developers.weixin.qq.com/doc/channels/API/leagueheadsupplier/callback/head_supplier_item_update.html ]]>
+    /// </para>
     /// </summary>
-    public class ChannelsECHeadSupplierItemUpdateEvent : WechatApiEvent, WechatApiEvent.Serialization.IJsonSerializable, WechatApiEvent.Serialization.IXmlSerializable
+    public class ChannelsECHeadSupplierItemUpdateEvent : WechatApiEvent
     {
         public static class Types
         {

@@ -13,7 +13,10 @@ namespace SKIT.FlurlHttpClient.Wechat.OpenAI
     {
         /// <summary>
         /// <para>异步调用 [POST] /getbindlink/{TOKEN} 接口。</para>
-        /// <para>REF: https://developers.weixin.qq.com/doc/aispeech/confapi/mp/getbindlink.html </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developers.weixin.qq.com/doc/aispeech/confapi/mp/getbindlink.html ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -25,14 +28,17 @@ namespace SKIT.FlurlHttpClient.Wechat.OpenAI
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "getbindlink", client.Credentials.Token!);
+                .CreateFlurlRequest(request, HttpMethod.Post, "getbindlink", client.Credentials.Token!);
 
-            return await client.SendRequestWithJsonAsync<Models.GetBindLinkResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsJsonAsync<Models.GetBindLinkResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// <para>异步调用 [POST] /getbindlist/{TOKEN} 接口。</para>
-        /// <para>REF: https://developers.weixin.qq.com/doc/aispeech/confapi/mp/getbindlist.html </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developers.weixin.qq.com/doc/aispeech/confapi/mp/getbindlist.html ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -44,14 +50,17 @@ namespace SKIT.FlurlHttpClient.Wechat.OpenAI
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "getbindlist", client.Credentials.Token!);
+                .CreateFlurlRequest(request, HttpMethod.Post, "getbindlist", client.Credentials.Token!);
 
-            return await client.SendRequestWithJsonAsync<Models.GetBindListResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsJsonAsync<Models.GetBindListResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// <para>异步调用 [POST] /unbindmp/{TOKEN} 接口。</para>
-        /// <para>REF: https://developers.weixin.qq.com/doc/aispeech/confapi/mp/unbindmp.html </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developers.weixin.qq.com/doc/aispeech/confapi/mp/unbindmp.html ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -63,14 +72,17 @@ namespace SKIT.FlurlHttpClient.Wechat.OpenAI
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "unbindmp", client.Credentials.Token!);
+                .CreateFlurlRequest(request, HttpMethod.Post, "unbindmp", client.Credentials.Token!);
 
-            return await client.SendRequestWithJsonAsync<Models.UnbindMpResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsJsonAsync<Models.UnbindMpResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// <para>异步调用 [POST] /geth5link/{TOKEN} 接口。</para>
-        /// <para>REF: https://developers.weixin.qq.com/doc/aispeech/confapi/mp/getbindlist.html </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developers.weixin.qq.com/doc/aispeech/confapi/mp/getbindlist.html ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -82,14 +94,17 @@ namespace SKIT.FlurlHttpClient.Wechat.OpenAI
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "geth5link", client.Credentials.Token!);
+                .CreateFlurlRequest(request, HttpMethod.Post, "geth5link", client.Credentials.Token!);
 
-            return await client.SendRequestWithJsonAsync<Models.GetH5LinkResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsJsonAsync<Models.GetH5LinkResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// <para>异步调用 [POST] /assetsupload/{TOKEN} 接口。</para>
-        /// <para>REF: https://developers.weixin.qq.com/doc/aispeech/confapi/mp/assetsupload.html </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developers.weixin.qq.com/doc/aispeech/confapi/mp/assetsupload.html ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -100,19 +115,19 @@ namespace SKIT.FlurlHttpClient.Wechat.OpenAI
             if (client is null) throw new ArgumentNullException(nameof(client));
             if (request is null) throw new ArgumentNullException(nameof(request));
 
-            if (request.FileName == null)
+            if (request.FileName is null)
                 request.FileName = Guid.NewGuid().ToString("N").ToLower() + ".jpg";
 
-            if (request.FileContentType == null)
+            if (request.FileContentType is null)
                 request.FileContentType = "image/jpeg";
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "assetsupload", client.Credentials.Token!);
+                .CreateFlurlRequest(request, HttpMethod.Post, "assetsupload", client.Credentials.Token!);
 
             using var fileContent = new ByteArrayContent(request.FileBytes ?? Array.Empty<byte>());
             using var paramContent = new StringContent(
                 Utilities.WxMsgCryptor.AESEncrypt(
-                    plainText: Utilities.XmlUtility.ConvertFromJson(client.JsonSerializer.Serialize(request)),
+                    plainText: Utilities.XmlHelper.ConvertFromJson(client.JsonSerializer.Serialize(request)),
                     encodingAESKey: client.Credentials.EncodingAESKey!,
                     appId: client.Credentials.AppId!
                 ),
@@ -124,7 +139,7 @@ namespace SKIT.FlurlHttpClient.Wechat.OpenAI
             fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse(request.FileContentType);
             fileContent.Headers.ContentLength = request.FileBytes?.Length;
 
-            return await client.SendRequestAsync<Models.AssetsUploadResponse>(flurlReq, httpContent: httpContent, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsync<Models.AssetsUploadResponse>(flurlReq, httpContent: httpContent, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
     }
 }

@@ -1,9 +1,11 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Xml;
 
 namespace SKIT.FlurlHttpClient.Wechat.TenpayV2
 {
+    using SKIT.FlurlHttpClient.Primitives;
+
     /// <summary>
     /// 为 <see cref="WechatTenpayClient"/> 提供回调通知事件签名验证的扩展方法。
     /// </summary>
@@ -13,32 +15,19 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV2
         /// <para>验证回调通知事件签名。</para>
         /// </summary>
         /// <param name="client"></param>
-        /// <param name="callbackBody">微信回调通知中请求正文。</param>
+        /// <param name="webhookBody">微信回调通知中请求正文。</param>
         /// <returns></returns>
-        /// <exception cref="ArgumentNullException"></exception>
-        public static bool VerifyEventSignature(this WechatTenpayClient client, string callbackBody)
+        public static ErroredResult VerifyEventSignature(this WechatTenpayClient client, string webhookBody)
         {
-            return VerifyEventSignature(client, callbackBody, out _);
-        }
+            if (client is null) throw new ArgumentNullException(nameof(client));
 
-        /// <summary>
-        /// <para>验证回调通知事件签名。</para>
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="callbackBody">微信回调通知中请求正文。</param>
-        /// <param name="error"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"></exception>
-        public static bool VerifyEventSignature(this WechatTenpayClient client, string callbackBody, out Exception? error)
-        {
-            if (client == null) throw new ArgumentNullException(nameof(client));
-            if (callbackBody == null) throw new ArgumentNullException(nameof(callbackBody));
+            ErroredResult result;
 
             try
             {
 
                 XmlDocument xmlDocument = new XmlDocument();
-                xmlDocument.LoadXml(callbackBody);
+                xmlDocument.LoadXml(webhookBody);
 
                 XmlNode xmlNode = xmlDocument.ChildNodes.OfType<XmlNode>().Single();
                 string? signType = xmlNode["sign_type"]?.InnerText;
@@ -46,18 +35,22 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV2
                 xmlNode["sign"]?.RemoveAll();
 
                 string xml = xmlDocument.InnerXml;
-                string json = Utilities.XmlUtility.ConvertToJson(xml);
-                string signData = Utilities.JsonUtility.ParseToSortedQueryString(json);
+                string json = Utilities.XmlHelper.ConvertToJson(xml);
+                string signData = Utilities.JsonHelper.ParseToSortedQueryString(json);
                 string actualSign = Utilities.RequestSigner.SignFromSortedQueryString(signData, client.Credentials.MerchantSecret, signType);
 
-                error = null;
-                return string.Equals(expectedSign, actualSign, StringComparison.OrdinalIgnoreCase);
+                bool valid = string.Equals(expectedSign, actualSign, StringComparison.OrdinalIgnoreCase);
+                if (valid)
+                    result = ErroredResult.Ok();
+                else
+                    result = ErroredResult.Fail(new Exception($"Signature does not match. Maybe \"{actualSign}\" is an illegal signature."));
             }
             catch (Exception ex)
             {
-                error = new Exceptions.WechatTenpayEventVerificationException("Verify signature of event failed. Please see the inner exception for more details.", ex);
-                return false;
+                result = ErroredResult.Fail(ex);
             }
+
+            return result;
         }
     }
 }

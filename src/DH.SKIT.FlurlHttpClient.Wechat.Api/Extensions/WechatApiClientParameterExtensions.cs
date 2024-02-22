@@ -13,7 +13,10 @@ namespace SKIT.FlurlHttpClient.Wechat.Api
 
         /// <summary>
         /// <para>生成公众号 JS-SDK `wx.config` 所需的参数字典。</para>
-        /// <para>REF: https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html#62 </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html#62 ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="jsapiTicket"></param>
@@ -27,7 +30,7 @@ namespace SKIT.FlurlHttpClient.Wechat.Api
 
             string timestamp = DateTimeOffset.Now.ToLocalTime().ToUnixTimeSeconds().ToString();
             string nonce = Guid.NewGuid().ToString("N");
-            string sign = Utilities.SHA1Utility.Hash($"jsapi_ticket={jsapiTicket}&noncestr={nonce}&timestamp={timestamp}&url={url.Split('#')[0]}").ToLower();
+            string sign = Utilities.SHA1Utility.Hash($"jsapi_ticket={jsapiTicket}&noncestr={nonce}&timestamp={timestamp}&url={url.Split('#')[0]}").Value!.ToLower();
 
             return new ReadOnlyDictionary<string, string>(new Dictionary<string, string>()
             {
@@ -40,7 +43,10 @@ namespace SKIT.FlurlHttpClient.Wechat.Api
 
         /// <summary>
         /// <para>生成公众号 JS-SDK `wx.chooseInvoice` 接口所需的参数字典。</para>
-        /// <para>REF: https://developers.weixin.qq.com/doc/offiaccount/WeChat_Invoice/Auto-print/API_Documentation.html#_6-4-%E5%8F%91%E7%A5%A8%E7%AD%BE%E5%90%8D%E6%96%B9%E6%B3%95 </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developers.weixin.qq.com/doc/offiaccount/WeChat_Invoice/Auto-print/API_Documentation.html#_6-4-%E5%8F%91%E7%A5%A8%E7%AD%BE%E5%90%8D%E6%96%B9%E6%B3%95 ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="wxcardTicket"></param>
@@ -56,7 +62,7 @@ namespace SKIT.FlurlHttpClient.Wechat.Api
 
             List<string> tmp = new List<string>(capacity: 5) { cardType, timestamp, client.Credentials.AppId, nonce, wxcardTicket };
             tmp.Sort(StringComparer.Ordinal);
-            string cardSign = Utilities.SHA1Utility.Hash(string.Concat(tmp)).ToLower();
+            string cardSign = Utilities.SHA1Utility.Hash(string.Concat(tmp)).Value!.ToLower();
 
             return new ReadOnlyDictionary<string, string>(new Dictionary<string, string>()
             {
@@ -70,7 +76,10 @@ namespace SKIT.FlurlHttpClient.Wechat.Api
 
         /// <summary>
         /// <para>生成公众号网页授权 URL。</para>
-        /// <para>REF: https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/Wechat_webpage_authorization.html </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/Wechat_webpage_authorization.html ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="redirectUrl"></param>
@@ -84,7 +93,10 @@ namespace SKIT.FlurlHttpClient.Wechat.Api
 
         /// <summary>
         /// <para>生成公众号网页授权 URL。</para>
-        /// <para>REF: https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/Wechat_webpage_authorization.html </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/Wechat_webpage_authorization.html ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="redirectUrl"></param>
@@ -108,7 +120,10 @@ namespace SKIT.FlurlHttpClient.Wechat.Api
 
         /// <summary>
         /// <para>生成代公众号网页授权 URL。</para>
-        /// <para>REF: https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/Before_Develop/Official_Accounts/official_account_website_authorization.html </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/Before_Develop/Official_Accounts/official_account_website_authorization.html ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="appId"></param>
@@ -123,7 +138,10 @@ namespace SKIT.FlurlHttpClient.Wechat.Api
 
         /// <summary>
         /// <para>生成代公众号网页授权 URL。</para>
-        /// <para>REF: https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/Before_Develop/Official_Accounts/official_account_website_authorization.html </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/Before_Develop/Official_Accounts/official_account_website_authorization.html ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="appId"></param>
@@ -149,7 +167,10 @@ namespace SKIT.FlurlHttpClient.Wechat.Api
 
         /// <summary>
         /// <para>生成公众号管理员向第三方平台授权 URL（H5 版）。</para>
-        /// <para>REF: https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/Before_Develop/Authorization_Process_Technical_Description.html </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/Before_Develop/Authorization_Process_Technical_Description.html ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="preAuthCode"></param>
@@ -176,7 +197,10 @@ namespace SKIT.FlurlHttpClient.Wechat.Api
 
         /// <summary>
         /// <para>生成公众号管理员向第三方平台授权 URL（PC 版）。</para>
-        /// <para>REF: https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/Before_Develop/Authorization_Process_Technical_Description.html </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developers.weixin.qq.com/doc/oplatform/Third-party_Platforms/2.0/api/Before_Develop/Authorization_Process_Technical_Description.html ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="preAuthCode"></param>

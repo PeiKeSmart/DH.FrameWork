@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace SKIT.FlurlHttpClient.Wechat.Work.Models
 {
@@ -93,14 +93,14 @@ namespace SKIT.FlurlHttpClient.Wechat.Work.Models
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("members")]
                                 [System.Text.Json.Serialization.JsonPropertyName("members")]
-                                public IList<ContactControlValueForUser>? ContactMembers { get; set; }
+                                public IList<ContactControlValueAsUser>? ContactMembers { get; set; }
 
                                 /// <summary>
                                 /// 获取或设置 Contact 控件部门值。
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("departments")]
                                 [System.Text.Json.Serialization.JsonPropertyName("departments")]
-                                public IList<ContactControlValueForDepartment>? ContactDepartments { get; set; }
+                                public IList<ContactControlValueAsDepartment>? ContactDepartments { get; set; }
 
                                 /// <summary>
                                 /// 获取或设置 File 控件值。
@@ -213,7 +213,7 @@ namespace SKIT.FlurlHttpClient.Wechat.Work.Models
                                 public IList<Types.Option> OptionList { get; set; } = new List<Types.Option>();
                             }
 
-                            public class ContactControlValueForUser
+                            public class ContactControlValueAsUser
                             {
                                 /// <summary>
                                 /// 获取或设置成员账号。
@@ -230,7 +230,7 @@ namespace SKIT.FlurlHttpClient.Wechat.Work.Models
                                 public string? Name { get; set; }
                             }
 
-                            public class ContactControlValueForDepartment
+                            public class ContactControlValueAsDepartment
                             {
                                 /// <summary>
                                 /// 获取或设置部门 ID。
@@ -339,14 +339,14 @@ namespace SKIT.FlurlHttpClient.Wechat.Work.Models
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("longitude")]
                                 [System.Text.Json.Serialization.JsonPropertyName("longitude")]
-                                public double Longitude { get; set; }
+                                public decimal Longitude { get; set; }
 
                                 /// <summary>
                                 /// 获取或设置纬度。
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("latitude")]
                                 [System.Text.Json.Serialization.JsonPropertyName("latitude")]
-                                public double Latitude { get; set; }
+                                public decimal Latitude { get; set; }
 
                                 /// <summary>
                                 /// 获取或设置地点标题。
@@ -489,9 +489,9 @@ namespace SKIT.FlurlHttpClient.Wechat.Work.Models
         /// 获取或设置是否启用审批人模式。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("use_template_approver")]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.NumericalBooleanConverter))]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.Common.NumericalBooleanConverter))]
         [System.Text.Json.Serialization.JsonPropertyName("use_template_approver")]
-        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalBooleanConverter))]
+        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.NumericalBooleanConverter))]
         public bool UseTemplateApprover { get; set; }
 
         /// <summary>

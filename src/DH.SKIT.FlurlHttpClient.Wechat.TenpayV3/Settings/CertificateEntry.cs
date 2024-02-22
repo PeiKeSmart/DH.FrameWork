@@ -5,9 +5,16 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Settings
     /// <summary>
     /// 表示一个微信商户平台证书实体。
     /// </summary>
-    public struct CertificateEntry : IEquatable<CertificateEntry>
+    public partial struct CertificateEntry : IEquatable<CertificateEntry>
     {
+        /// <summary>
+        /// 证书算法类型：RSA。
+        /// </summary>
         public const string ALGORITHM_TYPE_RSA = "RSA";
+
+        /// <summary>
+        /// 证书算法类型：SM2。
+        /// </summary>
         public const string ALGORITHM_TYPE_SM2 = "SM2";
 
         /// <summary>
@@ -36,6 +43,14 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Settings
         /// </summary>
         public DateTimeOffset ExpireTime { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="algorithmType"></param>
+        /// <param name="serialNumber"></param>
+        /// <param name="certificate"></param>
+        /// <param name="effectiveTime"></param>
+        /// <param name="expireTime"></param>
         [Newtonsoft.Json.JsonConstructor]
         [System.Text.Json.Serialization.JsonConstructor]
         public CertificateEntry(string algorithmType, string serialNumber, string certificate, DateTimeOffset effectiveTime, DateTimeOffset expireTime)
@@ -58,6 +73,11 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Settings
             ExpireTime = expireTime;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="algorithmType"></param>
+        /// <param name="certificate"></param>
         public CertificateEntry(string algorithmType, string certificate)
         {
             if (string.IsNullOrEmpty(algorithmType))
@@ -75,16 +95,16 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Settings
                 case ALGORITHM_TYPE_RSA:
                     {
                         SerialNumber = Utilities.RSAUtility.ExportSerialNumberFromCertificate(certificate).ToUpper();
-                        EffectiveTime = Utilities.RSAUtility.ExportEffectiveTimeFromCertificate(certificate);
-                        ExpireTime = Utilities.RSAUtility.ExportExpireTimeFromCertificate(certificate);
+                        EffectiveTime = Utilities.RSAUtility.ExportValidFromDateFromCertificate(certificate);
+                        ExpireTime = Utilities.RSAUtility.ExportValidToDateFromCertificate(certificate);
                     }
                     break;
 
                 case ALGORITHM_TYPE_SM2:
                     {
                         SerialNumber = Utilities.SM2Utility.ExportSerialNumberFromCertificate(certificate).ToUpper();
-                        EffectiveTime = Utilities.SM2Utility.ExportEffectiveTimeFromCertificate(certificate);
-                        ExpireTime = Utilities.SM2Utility.ExportExpireTimeFromCertificate(certificate);
+                        EffectiveTime = Utilities.SM2Utility.ExportValidFromDateFromCertificate(certificate);
+                        ExpireTime = Utilities.SM2Utility.ExportValidToDateFromCertificate(certificate);
                     }
                     break;
 
@@ -95,51 +115,21 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Settings
             }
         }
 
-        public CertificateEntry(string algorithmType, Models.QueryCertificatesResponse.Types.Certificate certificate)
-            : this(algorithmType, certificate.SerialNumber, certificate.EncryptCertificate.CipherText, certificate.EffectiveTime, certificate.ExpireTime)
-        {
-        }
-
-        public CertificateEntry(Models.QueryCertificatesResponse.Types.Certificate certificate)
-        {
-            AlgorithmType = default!;
-            Certificate = certificate.EncryptCertificate.CipherText;
-            SerialNumber = certificate.SerialNumber.ToUpper();
-            EffectiveTime = certificate.EffectiveTime;
-            ExpireTime = certificate.ExpireTime;
-
-            if (AlgorithmType == null)
-            {
-                try
-                {
-                    Utilities.RSAUtility.ExportPublicKeyFromCertificate(Certificate);
-                    AlgorithmType = ALGORITHM_TYPE_RSA;
-                }
-                catch { }
-            }
-
-            if (AlgorithmType == null)
-            {
-                try
-                {
-                    Utilities.SM2Utility.ExportPublicKeyFromCertificate(Certificate);
-                    AlgorithmType = ALGORITHM_TYPE_SM2;
-                }
-                catch { }
-            }
-
-            if (AlgorithmType == null)
-            {
-                throw new ArgumentException("Unrecognized certificate algorithm type. Please make sure you have decrypted the certificate content first.");
-            }
-        }
-
+        /// <summary>
+        /// 返回一个布尔值，该值指示当前证书是否可用。
+        /// </summary>
+        /// <returns></returns>
         public bool IsAvailable()
         {
             DateTimeOffset now = DateTimeOffset.Now;
             return EffectiveTime <= now && now < ExpireTime;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
         public bool Equals(CertificateEntry other)
         {
             return string.Equals(AlgorithmType, other.AlgorithmType) &&
@@ -147,6 +137,7 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Settings
                    string.Equals(SerialNumber, other.SerialNumber);
         }
 
+        /// <inheritdoc/>
         public override bool Equals(object? obj)
         {
             if (ReferenceEquals(null, obj))
@@ -157,23 +148,78 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Settings
             return Equals((CertificateEntry)obj);
         }
 
+        /// <inheritdoc/>
         public override int GetHashCode()
         {
-#if NETFRAMEWORK || NETSTANDARD2_0
-            return (AlgorithmType?.GetHashCode(), Certificate?.GetHashCode(), SerialNumber?.GetHashCode()).GetHashCode();
-#else
+#if NETCOREAPP || NET5_0_OR_GREATER
             return HashCode.Combine(AlgorithmType?.GetHashCode(), Certificate?.GetHashCode(), SerialNumber?.GetHashCode());
+#else
+            return (AlgorithmType?.GetHashCode(), Certificate?.GetHashCode(), SerialNumber?.GetHashCode()).GetHashCode();
 #endif
         }
 
+        /// <inheritdoc/>
         public static bool operator ==(CertificateEntry left, CertificateEntry right)
         {
             return left.Equals(right);
         }
 
+        /// <inheritdoc/>
         public static bool operator !=(CertificateEntry left, CertificateEntry right)
         {
             return !left.Equals(right);
+        }
+    }
+
+    partial struct CertificateEntry
+    {
+        /// <summary>
+        /// 将指定的 <see cref="Models.QueryCertificatesResponse.Types.Certificate"/> 对象解析为 <see cref="CertificateEntry"/> 对象。
+        /// </summary>
+        /// <param name="algorithmType"></param>
+        /// <param name="certificate"></param>
+        /// <returns></returns>
+        public static CertificateEntry Parse(string algorithmType, Models.QueryCertificatesResponse.Types.Certificate certificate)
+        {
+            return new CertificateEntry(algorithmType, certificate.SerialNumber, certificate.EncryptCertificate.CipherText, certificate.EffectiveTime, certificate.ExpireTime);
+        }
+
+        /// <summary>
+        /// 将指定的 <see cref="Models.QueryCertificatesResponse.Types.Certificate"/> 对象解析为 <see cref="CertificateEntry"/> 对象。
+        /// </summary>
+        /// <param name="certificate"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
+        public static CertificateEntry Parse(Models.QueryCertificatesResponse.Types.Certificate certificate)
+        {
+            string? algorithmType = default!;
+
+            if (algorithmType is null)
+            {
+                try
+                {
+                    Utilities.RSAUtility.ExportPublicKeyFromCertificate(certificate.EncryptCertificate.CipherText);
+                    algorithmType = ALGORITHM_TYPE_RSA;
+                }
+                catch { }
+            }
+
+            if (algorithmType is null)
+            {
+                try
+                {
+                    Utilities.SM2Utility.ExportPublicKeyFromCertificate(certificate.EncryptCertificate.CipherText);
+                    algorithmType = ALGORITHM_TYPE_SM2;
+                }
+                catch { }
+            }
+
+            if (algorithmType is null)
+            {
+                throw new ArgumentException("Unrecognized certificate algorithm type. Please make sure you have decrypted the certificate content first.");
+            }
+
+            return Parse(algorithmType, certificate);
         }
     }
 }
