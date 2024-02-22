@@ -75,18 +75,14 @@ namespace SKIT.FlurlHttpClient.ByteDance.OceanEngine.Models
                         /// 获取或设置创建时间。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("campaign_create_time")]
-                        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.RegularNullableDateTimeOffsetConverter))]
                         [System.Text.Json.Serialization.JsonPropertyName("campaign_create_time")]
-                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.RegularNullableDateTimeOffsetConverter))]
                         public DateTimeOffset? CreateTime { get; set; }
 
                         /// <summary>
                         /// 获取或设置修改时间。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("campaign_modify_time")]
-                        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.RegularNullableDateTimeOffsetConverter))]
                         [System.Text.Json.Serialization.JsonPropertyName("campaign_modify_time")]
-                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.RegularNullableDateTimeOffsetConverter))]
                         public DateTimeOffset? UpdateTime { get; set; }
 
                         /// <summary>

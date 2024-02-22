@@ -33,9 +33,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.OceanEngine.Models
                         /// 获取或设置创建时间。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("create_time")]
-                        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.RegularDateTimeOffsetConverter))]
                         [System.Text.Json.Serialization.JsonPropertyName("create_time")]
-                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.RegularDateTimeOffsetConverter))]
                         public DateTimeOffset CreateTime { get; set; }
 
                         /// <summary>
@@ -71,7 +69,6 @@ namespace SKIT.FlurlHttpClient.ByteDance.OceanEngine.Models
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("transaction_seq")]
                         [System.Text.Json.Serialization.JsonPropertyName("transaction_seq")]
-                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalStringConverter))]
                         public string TransactionSequenceNumber { get; set; } = default!;
 
                         /// <summary>

@@ -21,7 +21,6 @@
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("need_audit")]
                 [System.Text.Json.Serialization.JsonPropertyName("need_audit")]
-                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalBooleanConverter))]
                 public bool RequireAudit { get; set; }
             }
         }

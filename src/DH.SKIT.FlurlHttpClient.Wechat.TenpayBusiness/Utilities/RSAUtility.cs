@@ -30,7 +30,7 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayBusiness.Utilities
             if (!privateKeyPem.StartsWith("-----BEGIN PRIVATE KEY-----"))
             {
                 using (TextReader textReader = new StringReader(privateKeyPem))
-                using (PemReader pemReader = new PemReader(textReader))
+                using (PemReader pemReader = new(textReader))
                 {
                     object pemObject = pemReader.ReadObject();
 

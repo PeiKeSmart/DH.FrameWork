@@ -13,9 +13,7 @@
                 /// 获取或设置是否成功。
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("success")]
-                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.TextualBooleanConverter))]
                 [System.Text.Json.Serialization.JsonPropertyName("success")]
-                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.TextualBooleanConverter))]
                 public bool IsSuccessful { get; set; }
 
                 /// <summary>

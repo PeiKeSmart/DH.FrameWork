@@ -35,9 +35,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen.Models
                 /// 获取或设置刷新时间。
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("active_time")]
-                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.RegularDateTimeOffsetConverter))]
                 [System.Text.Json.Serialization.JsonPropertyName("active_time")]
-                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.RegularDateTimeOffsetConverter))]
                 public DateTimeOffset ActiveTime { get; set; }
 
                 /// <summary>

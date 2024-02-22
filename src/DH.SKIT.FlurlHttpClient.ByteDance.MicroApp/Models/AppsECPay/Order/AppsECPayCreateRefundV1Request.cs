@@ -79,9 +79,7 @@
         /// 获取或设置是否屏蔽担保支付的推送消息。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("disable_msg")]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.NumericalNullableBooleanConverter))]
         [System.Text.Json.Serialization.JsonPropertyName("disable_msg")]
-        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalNullableBooleanConverter))]
         public bool? IsMessageDisabled { get; set; }
 
         /// <summary>
@@ -95,9 +93,7 @@
         /// 获取或设置是否为分账后退款。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("all_settle")]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.NumericalNullableBooleanConverter))]
         [System.Text.Json.Serialization.JsonPropertyName("all_settle")]
-        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalNullableBooleanConverter))]
         public bool? IsAllSettled { get; set; }
     }
 }

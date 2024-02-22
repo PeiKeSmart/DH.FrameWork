@@ -18,9 +18,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
         /// 获取或设置是否拒绝用户换货申请。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("is_reject")]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.TextualBooleanConverter))]
         [System.Text.Json.Serialization.JsonPropertyName("is_reject")]
-        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.TextualBooleanConverter))]
         public bool IsReject { get; set; }
 
         /// <summary>
@@ -48,7 +46,6 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
         /// 获取或设置收货地址 ID。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("address_id")]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.TextualNullableIntegerConverter))]
         [System.Text.Json.Serialization.JsonPropertyName("address_id")]
         [System.Text.Json.Serialization.JsonNumberHandling(System.Text.Json.Serialization.JsonNumberHandling.AllowReadingFromString | System.Text.Json.Serialization.JsonNumberHandling.WriteAsString)]
         public int? AddressId { get; set; }

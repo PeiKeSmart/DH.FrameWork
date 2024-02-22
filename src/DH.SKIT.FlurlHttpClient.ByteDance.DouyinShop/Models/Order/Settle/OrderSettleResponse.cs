@@ -37,9 +37,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                                 /// 获取或设置订单创建时间。
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("create_time")]
-                                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.RegularDateTimeOffsetConverter))]
                                 [System.Text.Json.Serialization.JsonPropertyName("create_time")]
-                                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.RegularDateTimeOffsetConverter))]
                                 public DateTimeOffset CreateTime { get; set; }
 
                                 /// <summary>
@@ -78,9 +76,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                                 /// 获取或设置结算时间。
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("settle_time")]
-                                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.RegularDateTimeOffsetConverter))]
                                 [System.Text.Json.Serialization.JsonPropertyName("settle_time")]
-                                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.RegularDateTimeOffsetConverter))]
                                 public DateTimeOffset SettleTime { get; set; }
 
                                 /// <summary>

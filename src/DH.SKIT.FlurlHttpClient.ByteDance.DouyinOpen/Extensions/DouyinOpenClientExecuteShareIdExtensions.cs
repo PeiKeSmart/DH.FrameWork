@@ -38,7 +38,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
             if (request.LinkParameter != null)
                 flurlReq.SetQueryParam("link_param", request.LinkParameter);
 
-            return await client.SendRequestWithJsonAsync<Models.ShareIdResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.ShareIdResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
     }
 }

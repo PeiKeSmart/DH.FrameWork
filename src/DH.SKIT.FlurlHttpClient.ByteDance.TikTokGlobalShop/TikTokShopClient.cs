@@ -42,10 +42,10 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop
             FlurlClient.BaseUrl = Endpoint;
             FlurlClient.WithTimeout(TimeSpan.FromMilliseconds(options.Timeout));
 
-            Interceptors.Add(new Interceptors.TikTokShopRequestSignatureInterceptor(
-                baseUrl: Endpoint,
-                appSecret: options.AppSecret
-            ));
+            //Interceptors.Add(new Interceptors.TikTokShopRequestSignatureInterceptor(
+            //    baseUrl: Endpoint,
+            //    appSecret: options.AppSecret
+            //));
         }
 
         /// <summary>
@@ -70,11 +70,6 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop
         public IFlurlRequest CreateRequest(TikTokShopRequest request, HttpMethod method, params object[] urlSegments)
         {
             IFlurlRequest flurlRequest = FlurlClient.Request(urlSegments).WithVerb(method);
-
-            if (request.Timeout != null)
-            {
-                flurlRequest.WithTimeout(TimeSpan.FromMilliseconds(request.Timeout.Value));
-            }
 
             if (request.Timestamp == null)
             {
@@ -104,8 +99,8 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop
 
             try
             {
-                using IFlurlResponse flurlResponse = await base.SendRequestAsync(flurlRequest, httpContent, cancellationToken);
-                return await WrapResponseWithJsonAsync<T>(flurlResponse, cancellationToken);
+                using IFlurlResponse flurlResponse = await base.SendFlurlRequestAsync(flurlRequest, httpContent, cancellationToken);
+                return await WrapFlurlResponseAsJsonAsync<T>(flurlResponse, cancellationToken);
             }
             catch (FlurlHttpTimeoutException ex)
             {
@@ -137,9 +132,9 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop
                     flurlRequest.Verb == HttpMethod.Head ||
                     flurlRequest.Verb == HttpMethod.Options;
                 using IFlurlResponse flurlResponse = isSimpleRequest ?
-                    await base.SendRequestAsync(flurlRequest, null, cancellationToken) :
-                    await base.SendRequestWithJsonAsync(flurlRequest, data, cancellationToken);
-                return await WrapResponseWithJsonAsync<T>(flurlResponse, cancellationToken);
+                    await base.SendFlurlRequestAsync(flurlRequest, null, cancellationToken) :
+                    await base.SendFlurlRequestAsJsonAsync(flurlRequest, data, cancellationToken);
+                return await WrapFlurlResponseAsJsonAsync<T>(flurlResponse, cancellationToken);
             }
             catch (FlurlHttpTimeoutException ex)
             {

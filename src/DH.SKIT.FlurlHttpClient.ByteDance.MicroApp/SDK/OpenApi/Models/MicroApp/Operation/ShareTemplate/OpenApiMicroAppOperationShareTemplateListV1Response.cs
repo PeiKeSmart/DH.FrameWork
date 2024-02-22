@@ -45,9 +45,7 @@
                         /// 获取或设置是否是默认模板。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("isDefault")]
-                        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.NumericalBooleanConverter))]
                         [System.Text.Json.Serialization.JsonPropertyName("isDefault")]
-                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalBooleanConverter))]
                         public bool IsDefault { get; set; }
 
                         /// <summary>

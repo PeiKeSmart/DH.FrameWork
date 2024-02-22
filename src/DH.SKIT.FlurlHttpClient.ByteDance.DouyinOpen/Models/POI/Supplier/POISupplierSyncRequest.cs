@@ -187,9 +187,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen.Models
                                 /// 获取或设置是否是测试版。
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("is_test")]
-                                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.NumericalNullableBooleanConverter))]
                                 [System.Text.Json.Serialization.JsonPropertyName("is_test")]
-                                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalNullableBooleanConverter))]
                                 public bool? IsTest { get; set; }
                             }
                         }

@@ -47,18 +47,14 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
         /// 获取或设置创建开始时间。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("create_time_start")]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.RegularNullableDateTimeOffsetConverter))]
         [System.Text.Json.Serialization.JsonPropertyName("create_time_start")]
-        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.RegularNullableDateTimeOffsetConverter))]
         public DateTimeOffset? CreateTimeStart { get; set; }
 
         /// <summary>
         /// 获取或设置创建结束时间。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("create_time_end")]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.RegularNullableDateTimeOffsetConverter))]
         [System.Text.Json.Serialization.JsonPropertyName("create_time_end")]
-        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.RegularNullableDateTimeOffsetConverter))]
         public DateTimeOffset? CreateTimeEnd { get; set; }
 
         /// <summary>

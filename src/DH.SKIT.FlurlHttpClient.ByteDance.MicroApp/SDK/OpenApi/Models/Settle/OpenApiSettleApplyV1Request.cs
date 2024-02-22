@@ -102,9 +102,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp.SDK.OpenApi.Models
         /// 获取或设置经营行业类目编号。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("category_code")]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.TextualIntegerListWithCommaSplitConverter))]
         [System.Text.Json.Serialization.JsonPropertyName("category_code")]
-        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.TextualIntegerListWithCommaSplitConverter))]
         public IList<int> CategoryCodeList { get; set; } = new List<int>();
 
         /// <summary>

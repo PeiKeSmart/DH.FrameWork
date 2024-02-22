@@ -71,9 +71,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.OceanEngine.Models
                 /// 获取或设置注册时间。
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("create_time")]
-                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.RegularNullableDateTimeOffsetConverter))]
                 [System.Text.Json.Serialization.JsonPropertyName("create_time")]
-                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.RegularNullableDateTimeOffsetConverter))]
                 public DateTimeOffset? CreateTime { get; set; }
             }
         }

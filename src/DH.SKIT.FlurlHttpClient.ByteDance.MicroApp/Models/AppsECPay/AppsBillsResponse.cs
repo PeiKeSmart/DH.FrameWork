@@ -21,7 +21,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp.Models
 
         public override bool IsSuccessful()
         {
-            return base.IsSuccessful() && RawBytes?.Length > 0;
+            return base.IsSuccessful() && GetRawBytes()?.Length > 0;
         }
     }
 }

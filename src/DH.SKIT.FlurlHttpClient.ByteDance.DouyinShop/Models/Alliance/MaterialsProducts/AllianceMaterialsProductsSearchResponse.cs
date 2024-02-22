@@ -87,9 +87,7 @@
                         /// 获取或设置是否有库存。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("in_stock")]
-                        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.NumericalBooleanConverter))]
                         [System.Text.Json.Serialization.JsonPropertyName("in_stock")]
-                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalBooleanConverter))]
                         public bool HasStock { get; set; }
 
                         /// <summary>

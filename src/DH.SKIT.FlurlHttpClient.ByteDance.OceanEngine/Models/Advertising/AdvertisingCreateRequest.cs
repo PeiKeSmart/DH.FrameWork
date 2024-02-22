@@ -339,9 +339,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.OceanEngine.Models
         /// 获取或设置是否启用价值优选。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("value_optimized_open")]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.NumericalNullableBooleanConverter))]
         [System.Text.Json.Serialization.JsonPropertyName("value_optimized_open")]
-        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalNullableBooleanConverter))]
         public bool? IsValueOptimizedEnabled { get; set; }
 
         /// <summary>
@@ -726,9 +724,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.OceanEngine.Models
         /// 获取或设置是否启用智能放量。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("auto_extend_enabled")]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.NumericalNullableBooleanConverter))]
         [System.Text.Json.Serialization.JsonPropertyName("auto_extend_enabled")]
-        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalNullableBooleanConverter))]
         public bool? IsAutoExtendEnabled { get; set; }
 
         /// <summary>
@@ -742,36 +738,28 @@ namespace SKIT.FlurlHttpClient.ByteDance.OceanEngine.Models
         /// 获取或设置是否启用 LBS 地域匹配。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("dpa_lbs")]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.NumericalNullableBooleanConverter))]
         [System.Text.Json.Serialization.JsonPropertyName("dpa_lbs")]
-        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalNullableBooleanConverter))]
         public bool? IsDPALBSEnabled { get; set; }
 
         /// <summary>
         /// 获取或设置是否启用城市地域匹配。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("dpa_city")]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.NumericalNullableBooleanConverter))]
         [System.Text.Json.Serialization.JsonPropertyName("dpa_city")]
-        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalNullableBooleanConverter))]
         public bool? IsDPACityEnabled { get; set; }
 
         /// <summary>
         /// 获取或设置是否启用省份地域匹配。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("dpa_province")]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.NumericalNullableBooleanConverter))]
         [System.Text.Json.Serialization.JsonPropertyName("dpa_province")]
-        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalNullableBooleanConverter))]
         public bool? IsDPAProvinceEnabled { get; set; }
 
         /// <summary>
         /// 获取或设置是否启用 DPA 行为重定向。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("dpa_local_audience")]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.NumericalNullableBooleanConverter))]
         [System.Text.Json.Serialization.JsonPropertyName("dpa_local_audience")]
-        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalNullableBooleanConverter))]
         public bool? IsDPALocalAudienceEnabled { get; set; }
 
         /// <summary>
@@ -806,9 +794,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.OceanEngine.Models
         /// 获取或设置是否调整自动出价。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("adjust_cpa")]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.NumericalNullableBooleanConverter))]
         [System.Text.Json.Serialization.JsonPropertyName("adjust_cpa")]
-        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalNullableBooleanConverter))]
         public bool? IsAutoAdjustCPA { get; set; }
 
         /// <summary>

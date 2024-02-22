@@ -30,9 +30,7 @@
         /// 获取或设置是否有广告预算。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("hasAdBudget")]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.NumericalBooleanConverter))]
         [System.Text.Json.Serialization.JsonPropertyName("hasAdBudget")]
-        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalBooleanConverter))]
         public bool HasAdBudget { get; set; }
 
         /// <summary>

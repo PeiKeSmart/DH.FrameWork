@@ -7,7 +7,7 @@
     {
         public override bool IsSuccessful()
         {
-            return base.IsSuccessful() && RawBytes?.Length > 0;
+            return base.IsSuccessful() && base.GetRawBytes()?.Length > 0;
         }
     }
 }

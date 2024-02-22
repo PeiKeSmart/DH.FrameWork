@@ -52,11 +52,6 @@ namespace SKIT.FlurlHttpClient.ByteDance.OceanEngine
         {
             IFlurlRequest flurlRequest = FlurlClient.Request(urlSegments).WithVerb(method);
 
-            if (request.Timeout != null)
-            {
-                flurlRequest.WithTimeout(TimeSpan.FromMilliseconds(request.Timeout.Value));
-            }
-
             if (request.DebugMode)
             {
                 flurlRequest.WithHeader("X-Debug-Mode", 1);
@@ -80,8 +75,8 @@ namespace SKIT.FlurlHttpClient.ByteDance.OceanEngine
 
             try
             {
-                using IFlurlResponse flurlResponse = await base.SendRequestAsync(flurlRequest, httpContent, cancellationToken);
-                return await WrapResponseWithJsonAsync<T>(flurlResponse, cancellationToken);
+                using IFlurlResponse flurlResponse = await base.SendFlurlRequestAsync(flurlRequest, httpContent, cancellationToken);
+                return await WrapFlurlResponseAsJsonAsync<T>(flurlResponse, cancellationToken);
             }
             catch (FlurlHttpTimeoutException ex)
             {
@@ -108,8 +103,8 @@ namespace SKIT.FlurlHttpClient.ByteDance.OceanEngine
 
             try
             {
-                using IFlurlResponse flurlResponse = await base.SendRequestWithJsonAsync(flurlRequest, data, cancellationToken);
-                return await WrapResponseWithJsonAsync<T>(flurlResponse, cancellationToken);
+                using IFlurlResponse flurlResponse = await base.SendFlurlRequestAsJsonAsync(flurlRequest, data, cancellationToken);
+                return await WrapFlurlResponseAsJsonAsync<T>(flurlResponse, cancellationToken);
             }
             catch (FlurlHttpTimeoutException ex)
             {
