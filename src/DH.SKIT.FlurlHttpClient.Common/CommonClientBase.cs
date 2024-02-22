@@ -1,5 +1,4 @@
 using System;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -11,22 +10,35 @@ using Flurl.Http.Configuration;
 
 namespace SKIT.FlurlHttpClient
 {
+    using SKIT.FlurlHttpClient.Internal;
+
     /// <summary>
-    /// SKIT.FlurlHttpClient 客户端基类。
+    /// SKIT.FlurlHttpClient 通用客户端基类。
     /// </summary>
     public abstract class CommonClientBase : ICommonClient
     {
-        /// <summary>
-        /// <inheritdoc />
-        /// </summary>
-        public FlurlHttpCallInterceptorCollection Interceptors { get; }
+        private volatile bool _disposed;
+        private readonly bool _disposeClient;
 
         /// <summary>
         /// <inheritdoc />
         /// </summary>
-        public ISerializer JsonSerializer
+        public HttpInterceptorCollection Interceptors { get; }
+
+        /// <summary>
+        /// <inheritdoc />
+        /// </summary>
+        public IJsonSerializer JsonSerializer
         {
-            get { return FlurlClient.Settings?.JsonSerializer ?? FlurlHttp.GlobalSettings.JsonSerializer; }
+            get { return ((InternalWrappedJsonSerializer)FlurlClient.Settings.JsonSerializer)!.Serializer; }
+        }
+
+        /// <summary>
+        /// <inheritdoc />
+        /// </summary>
+        public IFormUrlEncodedSerializer FormUrlEncodedSerializer
+        {
+            get { return ((InternalWrappedFormUrlEncodedSerializer)FlurlClient.Settings.UrlEncodedSerializer)!.Serializer; }
         }
 
         /// <summary>
@@ -35,146 +47,277 @@ namespace SKIT.FlurlHttpClient
         protected IFlurlClient FlurlClient { get; }
 
         /// <summary>
-        ///
+        /// 
         /// </summary>
-        protected CommonClientBase()
+        /// <param name="httpClient"></param>
+        /// <param name="disposeClient"></param>
+        protected CommonClientBase(HttpClient? httpClient = null, bool disposeClient = true)
         {
-            Interceptors = new FlurlHttpCallInterceptorCollection();
-            FlurlClient = new FlurlClient();
-            FlurlClient.Configure(flurlSettings =>
+            _disposeClient = disposeClient;
+
+            Interceptors = new HttpInterceptorCollection();
+            FlurlClient = httpClient is null ? new FlurlClient() : new FlurlClient(httpClient);
+            FlurlClient.WithSettings(flurlSettings =>
             {
-                flurlSettings.JsonSerializer = new FlurlSystemTextJsonSerializer();
-                flurlSettings.BeforeCallAsync = async (flurlCall) =>
+                IJsonSerializer jsonSerializer = new SystemTextJsonSerializer();
+                IFormUrlEncodedSerializer formUrlEncodedSerializer = new JsonifiedFormUrlEncodedSerializer(jsonSerializer);
+                flurlSettings.JsonSerializer = new InternalWrappedJsonSerializer(jsonSerializer);
+                flurlSettings.UrlEncodedSerializer = new InternalWrappedFormUrlEncodedSerializer(formUrlEncodedSerializer);
+
+                FlurlClient.BeforeCall(async flurlCall =>
                 {
+                    using CancellationTokenSource cts = new CancellationTokenSource();
+                    if (flurlSettings.Timeout.HasValue)
+                        cts.CancelAfter(flurlSettings.Timeout.Value);
+                    if (flurlCall.Request.Settings.Timeout.HasValue)
+                        cts.CancelAfter(flurlCall.Request.Settings.Timeout.Value);
+
+                    HttpInterceptorContext context = flurlCall.GetHttpInterceptorContext();
                     for (int i = 0, len = Interceptors.Count; i < len; i++)
                     {
-                        await Interceptors[i].BeforeCallAsync(flurlCall);
+                        cts.Token.ThrowIfCancellationRequested();
+
+                        try
+                        {
+                            await Interceptors[i].BeforeCallAsync(context, cancellationToken: cts.Token).ConfigureAwait(false);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            throw;
+                        }
+                        catch (Exception ex)
+                        {
+                            if (ex is CommonException)
+                                throw;
+
+                            throw new CommonInterceptorCallException(flurlCall, ex.Message, ex);
+                        }
                     }
-                };
-                flurlSettings.AfterCallAsync = async (flurlCall) =>
+                });
+
+                FlurlClient.AfterCall(async flurlCall =>
                 {
+                    using CancellationTokenSource cts = new CancellationTokenSource();
+                    if (flurlSettings.Timeout.HasValue)
+                        cts.CancelAfter(flurlSettings.Timeout.Value);
+                    if (flurlCall.Request.Settings.Timeout.HasValue)
+                        cts.CancelAfter(flurlCall.Request.Settings.Timeout.Value);
+
+                    HttpInterceptorContext context = flurlCall.GetHttpInterceptorContext();
                     for (int i = Interceptors.Count - 1; i >= 0; i--)
                     {
-                        await Interceptors[i].AfterCallAsync(flurlCall);
+                        cts.Token.ThrowIfCancellationRequested();
+
+                        try
+                        {
+                            await Interceptors[i].AfterCallAsync(context, cancellationToken: cts.Token).ConfigureAwait(false);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            throw;
+                        }
+                        catch (Exception ex)
+                        {
+                            if (ex is CommonException)
+                                throw;
+
+                            throw new CommonInterceptorCallException(flurlCall, ex.Message, ex);
+                        }
                     }
-                };
+                });
             });
         }
 
         /// <inheritdoc/>
         public void Configure(Action<CommonClientSettings> configure)
         {
-            if (configure == null) throw new ArgumentNullException(nameof(configure));
+            if (configure is null) throw new ArgumentNullException(nameof(configure));
+            if (_disposed) throw new ObjectDisposedException(nameof(FlurlClient));
 
-            FlurlClient.Configure(flurlClientSettings =>
+            FlurlClient.WithSettings(flurlSettings =>
             {
-                CommonClientSettings settings = new CommonClientSettings(flurlClientSettings);
+                CommonClientSettings settings = new CommonClientSettings(flurlSettings);
                 configure.Invoke(settings);
 
-                flurlClientSettings.Timeout = settings.ConnectionRequestTimeout;
-                flurlClientSettings.ConnectionLeaseTimeout = settings.ConnectionLeaseTimeout;
-                flurlClientSettings.JsonSerializer = settings.JsonSerializer;
-                flurlClientSettings.UrlEncodedSerializer = settings.UrlEncodedSerializer;
-                flurlClientSettings.HttpClientFactory = settings.FlurlHttpClientFactory;
+                flurlSettings.Timeout = settings.Timeout;
+                flurlSettings.HttpVersion = settings.HttpVersion.ToString();
+                flurlSettings.JsonSerializer = new InternalWrappedJsonSerializer(settings.JsonSerializer);
+                flurlSettings.UrlEncodedSerializer = new InternalWrappedFormUrlEncodedSerializer(settings.FormUrlEncodedSerializer);
             });
         }
 
-        private IFlurlRequest WrapRequest(IFlurlRequest flurlRequest)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        protected virtual IFlurlRequest CreateFlurlRequest(CommonRequestBase request, HttpMethod httpMethod, params object[] urlSegments)
         {
-            return flurlRequest
-                .WithClient(FlurlClient)
-                .AllowAnyHttpStatus();
+            if (request is null) throw new ArgumentNullException(nameof(request));
+            if (_disposed) throw new ObjectDisposedException(nameof(FlurlClient));
+
+            IFlurlRequest flurlRequest = FlurlClient.Request(urlSegments).WithVerb(httpMethod);
+
+            if (request._InternalTimeout is not null)
+            {
+                flurlRequest.WithTimeout(request._InternalTimeout.Value);
+            }
+
+            return flurlRequest;
         }
 
         /// <summary>
-        /// 异步发起请求。
+        /// 
         /// </summary>
         /// <param name="flurlRequest"></param>
         /// <param name="httpContent"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        protected virtual async Task<IFlurlResponse> SendRequestAsync(IFlurlRequest flurlRequest, HttpContent? httpContent = null, CancellationToken cancellationToken = default)
+        protected virtual async Task<IFlurlResponse> SendFlurlRequestAsync(IFlurlRequest flurlRequest, HttpContent? httpContent = null, CancellationToken cancellationToken = default)
         {
-            if (flurlRequest == null) throw new ArgumentNullException(nameof(flurlRequest));
+            if (flurlRequest is null) throw new ArgumentNullException(nameof(flurlRequest));
+            if (_disposed) throw new ObjectDisposedException(nameof(FlurlClient));
 
-            return await WrapRequest(flurlRequest).SendAsync(flurlRequest.Verb, httpContent, cancellationToken);
+            try
+            {
+                flurlRequest.Client = FlurlClient;
+
+                return await flurlRequest
+                    .AllowAnyHttpStatus()
+                    .SendAsync(flurlRequest.Verb, httpContent, cancellationToken: cancellationToken)
+                    .ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (FlurlHttpException ex)
+            {
+                if (ex is FlurlParsingException)
+                    throw new CommonSerializationException(ex.Message, ex);
+                if (ex is FlurlHttpTimeoutException)
+                    throw new CommonTimeoutException(ex.Message, ex);
+
+                throw new CommonHttpException(ex.Message, ex);
+            }
+            catch (Exception ex)
+            {
+                if (ex is CommonException)
+                    throw;
+
+                throw new CommonException(ex.Message, ex);
+            }
         }
 
         /// <summary>
-        /// 异步发起请求。
+        /// 
         /// </summary>
         /// <param name="flurlRequest"></param>
-        /// <param name="httpContent"></param>
+        /// <param name="data"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        protected virtual async Task<IFlurlResponse> SendRequestAsync(IFlurlRequest flurlRequest, IDictionary<String, Object>? header = null, HttpContent? httpContent = null, CancellationToken cancellationToken = default)
+        protected virtual async Task<IFlurlResponse> SendFlurlRequestAsJsonAsync(IFlurlRequest flurlRequest, object? data = null, CancellationToken cancellationToken = default)
         {
-            if (flurlRequest == null) throw new ArgumentNullException(nameof(flurlRequest));
+            if (flurlRequest is null) throw new ArgumentNullException(nameof(flurlRequest));
+            if (_disposed) throw new ObjectDisposedException(nameof(FlurlClient));
 
-            if (header != null)
+            HttpContent? httpContent = null;
+            if (data is not null)
             {
-                foreach (var item in header)
+                try
                 {
-                    flurlRequest.WithHeader(item.Key, item.Value);
+                    string content = JsonSerializer.Serialize(data, data.GetType());
+                    httpContent = new StringContent(content, encoding: null, mediaType: MimeTypes.Json);
+                }
+                catch (Exception ex)
+                {
+                    throw new CommonSerializationException(ex.Message, ex);
                 }
             }
 
-            return await WrapRequest(flurlRequest).SendAsync(flurlRequest.Verb, httpContent, cancellationToken);
+            try
+            {
+                return await SendFlurlRequestAsync(flurlRequest, httpContent, cancellationToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (FlurlHttpException ex)
+            {
+                if (ex is FlurlParsingException)
+                    throw new CommonSerializationException(ex.Message, ex);
+                if (ex is FlurlHttpTimeoutException)
+                    throw new CommonTimeoutException(ex.Message, ex);
+
+                throw new CommonHttpException(ex.Message, ex);
+            }
+            catch (Exception ex)
+            {
+                if (ex is CommonException)
+                    throw;
+
+                throw new CommonException(ex.Message, ex);
+            }
+            finally
+            {
+                httpContent?.Dispose();
+            }
         }
 
         /// <summary>
-        /// 异步发起请求。
-        /// <para>注意：对于非简单请求，如果未指定请求标头 Content-Type，将默认使用 "application/json" 作为其值。</para>
+        /// 
         /// </summary>
         /// <param name="flurlRequest"></param>
         /// <param name="data"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        protected virtual async Task<IFlurlResponse> SendRequestWithJsonAsync(IFlurlRequest flurlRequest, object? data = null, CancellationToken cancellationToken = default)
+        protected virtual async Task<IFlurlResponse> SendFlurlRequestAsFormUrlEncodedAsync(IFlurlRequest flurlRequest, object? data = null, CancellationToken cancellationToken = default)
         {
-            if (flurlRequest == null) throw new ArgumentNullException(nameof(flurlRequest));
+            if (flurlRequest is null) throw new ArgumentNullException(nameof(flurlRequest));
+            if (_disposed) throw new ObjectDisposedException(nameof(FlurlClient));
 
-            if (data != null)
+            HttpContent? httpContent = null;
+            if (data is not null)
             {
-                if (!flurlRequest.Headers.Contains(Constants.HttpHeaders.ContentType))
+                try
                 {
-                    flurlRequest.WithHeader(Constants.HttpHeaders.ContentType, "application/json");
+                    string content = FormUrlEncodedSerializer.Serialize(data, data.GetType());
+                    httpContent = new StringContent(content, encoding: null, mediaType: MimeTypes.FormUrlEncoded);
+                }
+                catch (Exception ex)
+                {
+                    throw new CommonSerializationException(ex.Message, ex);
                 }
             }
 
-            return await WrapRequest(flurlRequest).SendJsonAsync(flurlRequest.Verb, data: data, cancellationToken: cancellationToken);
-        }
-
-        /// <summary>
-        /// 异步发起请求。
-        /// <para>指定请求标头 `Content-Type` 为 `application/json`。</para>
-        /// </summary>
-        /// <param name="flurlRequest"></param>
-        /// <param name="data"></param>
-        /// <param name="cancellationToken"></param>
-        /// <param name="header"></param>
-        /// <returns></returns>
-        protected virtual async Task<IFlurlResponse> SendRequestWithJsonAsync(IFlurlRequest flurlRequest, IDictionary<String, Object>? header = null, object? data = null, CancellationToken cancellationToken = default)
-        {
-            if (flurlRequest == null) throw new ArgumentNullException(nameof(flurlRequest));
-
-            if (data != null)
+            try
             {
-                if (header != null)
-                {
-                    foreach (var item in header)
-                    {
-                        flurlRequest.WithHeader(item.Key, item.Value);
-                    }
-                }
-
-                if (!flurlRequest.Headers.GetAll(Constants.HttpHeaders.ContentType).Any())
-                {
-                    flurlRequest.WithHeader(Constants.HttpHeaders.ContentType, "application/json");
-                }
+                return await SendFlurlRequestAsync(flurlRequest, httpContent, cancellationToken).ConfigureAwait(false);
             }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (FlurlHttpException ex)
+            {
+                if (ex is FlurlParsingException)
+                    throw new CommonSerializationException(ex.Message, ex);
+                if (ex is FlurlHttpTimeoutException)
+                    throw new CommonTimeoutException(ex.Message, ex);
 
-            return await WrapRequest(flurlRequest).SendJsonAsync(flurlRequest.Verb, data: data, cancellationToken: cancellationToken);
+                throw new CommonHttpException(ex.Message, ex);
+            }
+            catch (Exception ex)
+            {
+                if (ex is CommonException)
+                    throw;
+
+                throw new CommonException(ex.Message, ex);
+            }
+            finally
+            {
+                httpContent?.Dispose();
+            }
         }
 
         /// <summary>
@@ -184,32 +327,16 @@ namespace SKIT.FlurlHttpClient
         /// <param name="flurlResponse"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        protected async Task<TResponse> WrapResponseAsync<TResponse>(IFlurlResponse flurlResponse, CancellationToken cancellationToken = default)
-            where TResponse : ICommonResponse, new()
+        protected async Task<TResponse> WrapFlurlResponseAsync<TResponse>(IFlurlResponse flurlResponse, CancellationToken cancellationToken = default)
+            where TResponse : CommonResponseBase, new()
         {
-            Task<byte[]> task = flurlResponse.GetBytesAsync();
-            Task taskWithCt = await Task.WhenAny(task, Task.Delay(Timeout.Infinite, cancellationToken));
-            if (taskWithCt == task)
-            {
-                TResponse result = new TResponse();
-                result.RawBytes = await task;
-                result.RawStatus = flurlResponse.StatusCode;
-                result.RawHeaders = new ReadOnlyDictionary<string, string>(
-                    flurlResponse.Headers
-                        .GroupBy(e => e.Name)
-                        .ToDictionary(
-                            k => k.Key,
-                            v => string.Join(",", v.Select(e => e.Value)),
-                            StringComparer.OrdinalIgnoreCase
-                        )
-                );
-                return result;
-            }
-            else
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                throw new OperationCanceledException("Infinite delay task completed.");
-            }
+            if (flurlResponse is null) throw new ArgumentNullException(nameof(flurlResponse));
+
+            TResponse result = new TResponse();
+            result._InternalRawStatus = flurlResponse.StatusCode;
+            result._InternalRawHeaders = new HttpHeaderCollection(flurlResponse.Headers);
+            result._InternalRawBytes = await _AsyncEx.RunTaskWithCancellationTokenAsync(flurlResponse.GetBytesAsync(), cancellationToken).ConfigureAwait(false);
+            return result;
         }
 
         /// <summary>
@@ -219,25 +346,31 @@ namespace SKIT.FlurlHttpClient
         /// <param name="flurlResponse"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        protected async Task<TResponse> WrapResponseWithJsonAsync<TResponse>(IFlurlResponse flurlResponse, CancellationToken cancellationToken = default)
-            where TResponse : ICommonResponse, new()
+        protected async Task<TResponse> WrapFlurlResponseAsJsonAsync<TResponse>(IFlurlResponse flurlResponse, CancellationToken cancellationToken = default)
+            where TResponse : CommonResponseBase, new()
         {
-            TResponse tmp = await WrapResponseAsync<TResponse>(flurlResponse, cancellationToken);
-            byte tmpb1 = tmp.RawBytes.SkipWhile(b => b <= 32).FirstOrDefault(),
-                 tmpb2 = tmp.RawBytes.Reverse().SkipWhile(b => b <= 32).FirstOrDefault();
-            bool jsonable = (tmpb1 == 91 && tmpb2 == 93) || (tmpb1 == 123 && tmpb2 == 125); // "[...]" or "{...}"
+            if (flurlResponse is null) throw new ArgumentNullException(nameof(flurlResponse));
 
             TResponse result;
-            if (jsonable)
-            {
-                string? contentType = flurlResponse.Headers.GetAll(Constants.HttpHeaders.ContentType).FirstOrDefault();
-                string? charset = MediaTypeHeaderValue.TryParse(contentType, out var mediaType) ? mediaType.CharSet : null;
-                string json = (string.IsNullOrEmpty(charset) ? Encoding.UTF8 : Encoding.GetEncoding(charset)).GetString(tmp.RawBytes);
 
-                result = JsonSerializer.Deserialize<TResponse>(json);
-                result.RawStatus = tmp.RawStatus;
-                result.RawHeaders = tmp.RawHeaders;
-                result.RawBytes = tmp.RawBytes;
+            TResponse tmp = await WrapFlurlResponseAsync<TResponse>(flurlResponse, cancellationToken).ConfigureAwait(false);
+            if (_StringSyntaxAssert.MaybeJson(tmp._InternalRawBytes))
+            {
+                try
+                {
+                    string? contentType = flurlResponse.Headers.GetAll(HttpHeaders.ContentType).FirstOrDefault();
+                    string? charset = MediaTypeHeaderValue.TryParse(contentType, out MediaTypeHeaderValue? mediaType) ? mediaType.CharSet : null;
+                    string json = (string.IsNullOrEmpty(charset) ? Encoding.UTF8 : Encoding.GetEncoding(charset)).GetString(tmp._InternalRawBytes);
+
+                    result = JsonSerializer.Deserialize<TResponse>(json);
+                    result._InternalRawStatus = tmp._InternalRawStatus;
+                    result._InternalRawHeaders = tmp._InternalRawHeaders;
+                    result._InternalRawBytes = tmp._InternalRawBytes;
+                }
+                catch (Exception ex)
+                {
+                    throw new CommonSerializationException(ex.Message, ex);
+                }
             }
             else
             {
@@ -248,11 +381,29 @@ namespace SKIT.FlurlHttpClient
         }
 
         /// <summary>
-        /// <inheritdoc/>
+        /// 
         /// </summary>
-        public virtual void Dispose()
+        /// <param name="disposing"></param>
+        protected virtual void Dispose(bool disposing)
         {
-            FlurlClient?.Dispose();
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    if (_disposeClient)
+                    {
+                        FlurlClient.Dispose();
+                    }
+                }
+
+                _disposed = true;
+            }
+        }
+
+        /// <inheritdoc/>
+        public void Dispose()
+        {
+            Dispose(true);
             GC.SuppressFinalize(this);
         }
     }

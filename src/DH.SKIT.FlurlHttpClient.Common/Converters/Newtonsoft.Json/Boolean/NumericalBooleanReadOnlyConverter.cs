@@ -1,10 +1,20 @@
-﻿using System;
+using System;
 
-namespace Newtonsoft.Json.Converters
+namespace Newtonsoft.Json.Converters.Common
 {
-    public class NumericalBooleanReadOnlyConverter : JsonConverter<bool>
+    /// <summary>
+    /// 一个 JSON 转换器，可针对指定适配类型做如下形式的对象转换。与 <seealso cref="NumericalBooleanConverter"/> 类似，但转换过程是单向只读的。
+    /// <code>
+    ///   .NET → bool Foo { get; } = true;
+    ///   JSON → { "Foo": 1 }
+    /// </code>
+    /// 
+    /// 适配类型：
+    /// <code>  <see cref="bool"/> <see cref="bool"/>?</code>
+    /// </summary>
+    public sealed class NumericalBooleanReadOnlyConverter : JsonConverter
     {
-        private readonly JsonConverter<bool> _converter = new NumericalBooleanConverter();
+        private static readonly JsonConverter _converter = new NumericalBooleanConverter();
 
         public override bool CanRead
         {
@@ -16,13 +26,19 @@ namespace Newtonsoft.Json.Converters
             get { return false; }
         }
 
-        public override bool ReadJson(JsonReader reader, Type objectType, bool existingValue, bool hasExistingValue, JsonSerializer serializer)
+        public override bool CanConvert(Type objectType)
         {
-            return _converter.ReadJson(reader, objectType, existingValue, hasExistingValue, serializer);
+            return _converter.CanConvert(objectType);
         }
 
-        public override void WriteJson(JsonWriter writer, bool value, JsonSerializer serializer)
+        public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
         {
+            return _converter.ReadJson(reader, objectType, existingValue, serializer);
+        }
+
+        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
+        {
+            throw new NotSupportedException();
         }
     }
 }

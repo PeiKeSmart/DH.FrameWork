@@ -1,5 +1,8 @@
-namespace SKIT.FlurlHttpClient.Constants
+namespace SKIT.FlurlHttpClient
 {
+    /// <summary>
+    /// SKIT.FlurlHttpClient 常量集之 HTTP 标头。
+    /// </summary>
     public static class HttpHeaders
     {
         public const string Accept = "Accept";
@@ -27,6 +30,8 @@ namespace SKIT.FlurlHttpClient.Constants
         public const string AccessControlRequestMethod = "Access-Control-Request-Method";
 
         public const string AccessControlRequestHeaders = "Access-Control-Request-Headers";
+
+        public const string Age = "Age";
 
         public const string Authorization = "Authorization";
 

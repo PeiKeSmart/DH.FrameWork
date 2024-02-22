@@ -1,19 +1,20 @@
-﻿using System.Text.Json.Serialization;
-
-namespace System.Text.Json.Converters
+namespace System.Text.Json.Serialization.Common
 {
-    public class RFC3339DateTimeOffsetConverter : JsonConverter<DateTimeOffset>
+    /// <summary>
+    /// 一个 JSON 转换器，可针对指定适配类型做如下形式的对象转换。
+    /// <code>
+    ///   .NET → DateTimeOffset Foo { get; } = new DateTimeOffset(2000, 1, 1, 23, 59, 59);
+    ///   JSON → { "Foo": "2000-01-01T23:59:59+08:00" }
+    /// </code>
+    /// 
+    /// 适配类型：
+    /// <code>  <see cref="DateTimeOffset"/> <see cref="DateTimeOffset"/>?</code>
+    /// </summary>
+    public sealed class Rfc3339DateTimeOffsetConverter : FormattedDateTimeOffsetConverterBase
     {
-        private readonly JsonConverter<DateTimeOffset?> _converter = new RFC3339NullableDateTimeOffsetConverter();
-
-        public override DateTimeOffset Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        protected override string FormatString
         {
-            return _converter.Read(ref reader, typeToConvert, options) ?? default;
-        }
-
-        public override void Write(Utf8JsonWriter writer, DateTimeOffset value, JsonSerializerOptions options)
-        {
-            _converter.Write(writer, value, options);
+            get { return "yyyy-MM-dd'T'HH:mm:sszzz"; }
         }
     }
 }

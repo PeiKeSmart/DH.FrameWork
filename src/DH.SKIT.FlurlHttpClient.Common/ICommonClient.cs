@@ -1,22 +1,26 @@
-﻿using System;
-using Flurl.Http.Configuration;
+using System;
 
 namespace SKIT.FlurlHttpClient
 {
     /// <summary>
-    /// SKIT.FlurlHttpClient 客户端接口。
+    /// SKIT.FlurlHttpClient 通用客户端接口。
     /// </summary>
     public interface ICommonClient : IDisposable
     {
         /// <summary>
-        /// 获取当前客户端的拦截器集合。
+        /// 获取当前客户端使用的拦截器集合。
         /// </summary>
-        public FlurlHttpCallInterceptorCollection Interceptors { get; }
+        public HttpInterceptorCollection Interceptors { get; }
 
         /// <summary>
-        /// 获取当前客户端使用的 JSON 序列化器。
+        /// 获取当前客户端使用的针对 "application/json" 内容请求的序列化器。
         /// </summary>
-        public ISerializer JsonSerializer { get; }
+        public IJsonSerializer JsonSerializer { get; }
+
+        /// <summary>
+        /// 获取当前客户端使用的针对 "application/x-www-form-urlencoded" 内容请求的序列化器。
+        /// </summary>
+        public IFormUrlEncodedSerializer FormUrlEncodedSerializer { get; }
 
         /// <summary>
         /// 配置客户端。
