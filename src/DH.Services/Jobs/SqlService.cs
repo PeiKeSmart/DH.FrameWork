@@ -1,5 +1,7 @@
 ﻿using NewLife.Log;
 
+using System.ComponentModel;
+
 using XCode.DataAccessLayer;
 
 namespace DH.Services.Jobs;
@@ -7,13 +9,17 @@ namespace DH.Services.Jobs;
 /// <summary>Sql作业参数</summary>
 public class SqlJobArgument {
     /// <summary>连接名</summary>
+    [DisplayName("连接名")]
     public String ConnName { get; set; }
 
     /// <summary>Sql文本</summary>
+    [DisplayName("Sql文本")]
     public String Sql { get; set; }
 }
 
 /// <summary>SQL服务</summary>
+[DisplayName("执行Sql")]
+[Description("在指定数据库连接上，执行指定Sql语句")]
 [CronJob("RunSql", "15 * * * * ? *")]
 public class SqlService : CubeJobBase<SqlJobArgument> {
     private readonly ITracer _tracer;
