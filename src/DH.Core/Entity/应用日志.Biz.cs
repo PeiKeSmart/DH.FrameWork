@@ -38,6 +38,8 @@ public partial class AppLog : DHEntityBase<AppLog> {
         Meta.Modules.Add<UserModule>();
         Meta.Modules.Add<TimeModule>();
         Meta.Modules.Add<IPModule>();
+
+        //Meta.Table.DataTable.InsertOnly = true;
     }
     #endregion
 
@@ -60,12 +62,12 @@ public partial class AppLog : DHEntityBase<AppLog> {
         if (id <= 0) return null;
 
         //// 实体缓存
-        //if (Meta.Session.Count < 1000) return Meta.Cache.Find(e => e.ID == id);
+        //if (Meta.Session.Count < 1000) return Meta.Cache.Find(e => e.Id == id);
 
         // 单对象缓存
         return Meta.SingleCache[id];
 
-        //return Find(_.ID == id);
+        //return Find(_.Id == id);
     }
 
     /// <summary>根据应用查找</summary>
@@ -123,5 +125,10 @@ public partial class AppLog : DHEntityBase<AppLog> {
 
         return log;
     }
+
+    /// <summary>删除指定日期之前的数据</summary>
+    /// <param name="date"></param>
+    /// <returns></returns>
+    public static Int32 DeleteBefore(DateTime date) => Delete(_.Id < Meta.Factory.Snow.GetId(date) & _.Action == "Authorize" & _.CreateUser.IsNull());
     #endregion
 }
