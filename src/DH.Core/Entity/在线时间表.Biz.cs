@@ -1,3 +1,4 @@
+using DH.Extensions;
 using DH.Helpers;
 using DH.Timing;
 
@@ -381,6 +382,11 @@ public partial class SysOnlineTime : DHEntityBase<SysOnlineTime> {
                 model.DayTimes += onlineTime;
             }
 
+            if (model.DayTimes < 0)
+            {
+                model.DayTimes = Math.Abs(model.DayTimes);
+            }
+
             model.UpdateTime = updateTime;
 
             if (updateTime.Day == 1)
@@ -526,6 +532,11 @@ public partial class SysOnlineTime : DHEntityBase<SysOnlineTime> {
             model.MonthTimes = onlineTime;
             model.DayTimes = onlineTime;
             model.RoleId = roleId;
+
+            if (model.DayTimes < 0)
+            {
+                model.DayTimes = Math.Abs(model.DayTimes);
+            }
 
             for (var i = 1; i <= DateTimeUtil.GetMonthLen(updateTime.Year, updateTime.Month); i++)
             {
