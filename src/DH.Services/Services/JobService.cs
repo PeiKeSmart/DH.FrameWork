@@ -12,9 +12,9 @@ using NewLife.Threading;
 using System.Diagnostics;
 using System.Reflection;
 
-namespace DH.Services.Services;
+using IHostedService = Microsoft.Extensions.Hosting.IHostedService;
 
-using NewLife.Model;
+namespace DH.Services.Services;
 
 /// <summary>作业扩展</summary>
 public static class JobServiceExtersions {
@@ -42,7 +42,7 @@ public static class JobServiceExtersions {
 }
 
 /// <summary>定时作业服务</summary>
-public class JobService : Microsoft.Extensions.Hosting.IHostedService {
+public class JobService : IHostedService {
     #region 核心控制
 
     private static readonly IList<MyJob> _jobs = new List<MyJob>();
@@ -308,8 +308,10 @@ internal class MyJob : IDisposable {
             }
             else
             {
-                //todo 新功能IServiceProvider.CreateInstance可以在第二位创建对象，定时任务类就不需要注册到容器里面了
-                var instance = ServiceProvider?.GetService(_type) ?? ServiceProvider?.CreateInstance(_type) ?? _type?.CreateInstance();
+                // 新功能IServiceProvider.CreateInstance可以在第二位创建对象，定时任务类就不需要注册到容器里面了
+                var instance = ServiceProvider?.GetService(_type);
+                instance ??= NewLife.Model.ModelExtension.CreateInstance(ServiceProvider, _type);
+                instance ??= _type?.CreateInstance();
                 if (instance is ICubeJob cubeJob)
                 {
                     if (instance is CubeJobBase cubeJob2) cubeJob2.Job = job;
