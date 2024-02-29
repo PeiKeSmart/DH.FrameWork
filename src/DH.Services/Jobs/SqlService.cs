@@ -1,4 +1,5 @@
-﻿using NewLife.Log;
+﻿using NewLife;
+using NewLife.Log;
 
 using System.ComponentModel;
 
@@ -34,6 +35,11 @@ public class SqlService : CubeJobBase<SqlJobArgument> {
     protected override Task<String> OnExecute(SqlJobArgument argument)
     {
         using var span = _tracer?.NewSpan("RunSql", argument);
+
+        if (argument.ConnName.IsNullOrWhiteSpace() || argument.Sql.IsNullOrWhiteSpace())
+        {
+            return Task.FromResult("返回：参数为空");
+        }
 
         var connName = argument.ConnName;
         var sql = argument.Sql;
