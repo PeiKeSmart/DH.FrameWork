@@ -50,7 +50,7 @@ public class DHSetting : Config<DHSetting>
 
     /// <summary>系统初始化控制参数</summary>
     [Description("系统初始化控制参数,系统是否安装,true：已安装，false：未安装")]
-    public Boolean IsInstalled { get; set; }
+    public Boolean IsInstalled { get; set; } = false;
 
     /// <summary>上传目录。默认Uploads</summary>
     [Description("上传目录。默认Uploads")]

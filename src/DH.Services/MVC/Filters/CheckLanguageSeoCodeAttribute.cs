@@ -85,7 +85,7 @@ public sealed class CheckLanguageSeoCodeAttribute : TypeFilterAttribute {
             if (!context.HttpContext.Request.Method.Equals(WebRequestMethods.Http.Get, StringComparison.InvariantCultureIgnoreCase))
                 return;
 
-            if (!SiteSettingInfo.SiteSettings.IsInstalled)
+            if (!DHSetting.Current.IsInstalled)
                 return;
 
             // 如果与默认语言一致，则不跳转
