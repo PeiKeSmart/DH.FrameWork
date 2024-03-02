@@ -23,9 +23,9 @@ public static class JobServiceExtersions {
     /// <returns></returns>
     public static IServiceCollection AddCubeJob(this IServiceCollection services)
     {
-        // 注册作业服务，这些作业可以使用DI
-        services.AddSingleton<SqlService>();
-        services.AddSingleton<HttpService>();
+        //// 注册作业服务，这些作业可以使用DI
+        //services.AddSingleton<SqlService>();
+        //services.AddSingleton<HttpService>();
 
         // 传统建议定时作业，可以不用注册
         //services.AddSingleton<BackupDbService>();
