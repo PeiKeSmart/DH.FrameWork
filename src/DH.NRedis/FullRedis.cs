@@ -128,7 +128,8 @@ public class FullRedis : Redis
 
     #region 方法
     private Boolean _initCluster;
-    private void InitCluster()
+    /// <summary>初始化集群</summary>
+    public void InitCluster()
     {
         if (_initCluster) return;
         lock (this)
@@ -148,39 +149,44 @@ public class FullRedis : Redis
                 {
                     Cluster = null;
                 }
-                // 集群模式初始化节点
-                else if (mode == "cluster")
+                else
                 {
-                    var cluster = new RedisCluster(this);
-                    cluster.StartMonitor();
-                    Cluster = cluster;
-                }
-                else if (mode.EqualIgnoreCase("sentinel"))
-                {
-                    var cluster = new RedisSentinel(this) { SetHostServer = true };
-                    cluster.StartMonitor();
-                    Cluster = cluster;
-                }
-                else if (mode.EqualIgnoreCase("standalone") && (connected_slaves.ToInt() > 0 || role == "slave"))
-                {
-                    var cluster = new RedisReplication(this) { SetHostServer = true };
-                    cluster.StartMonitor();
-                    Cluster = cluster;
-                }
-                // 特别支持kvrocks（底层RockDB）
-                else if (mode.IsNullOrEmpty() && role.EqualIgnoreCase("master", "slave"))
-                {
-                    try
+                    WriteLog("Init[{0}]：mode={1}, role={2}", Name, mode, role);
+
+                    // 集群模式初始化节点
+                    if (mode == "cluster")
                     {
                         var cluster = new RedisCluster(this);
                         cluster.StartMonitor();
                         Cluster = cluster;
                     }
-                    catch
+                    else if (mode.EqualIgnoreCase("sentinel"))
+                    {
+                        var cluster = new RedisSentinel(this) { SetHostServer = true };
+                        cluster.StartMonitor();
+                        Cluster = cluster;
+                    }
+                    else if (mode.EqualIgnoreCase("standalone") && (connected_slaves.ToInt() > 0 || role == "slave"))
                     {
                         var cluster = new RedisReplication(this) { SetHostServer = true };
                         cluster.StartMonitor();
                         Cluster = cluster;
+                    }
+                    // 特别支持kvrocks（底层RockDB）
+                    else if (mode.IsNullOrEmpty() && role.EqualIgnoreCase("master", "slave"))
+                    {
+                        try
+                        {
+                            var cluster = new RedisCluster(this);
+                            cluster.StartMonitor();
+                            Cluster = cluster;
+                        }
+                        catch
+                        {
+                            var cluster = new RedisReplication(this) { SetHostServer = true };
+                            cluster.StartMonitor();
+                            Cluster = cluster;
+                        }
                     }
                 }
             }
@@ -757,6 +763,8 @@ public class FullRedis : Redis
         var rs = Execute(keys[0], (rc, k) => rc.Execute<String[]>("BRPOP", sb.ToString(), secTimeout), true);
         if (rs == null || rs.Length != 2) return null;
 
+        if (typeof(T) == typeof(String)) return new Tuple<String, T?>(rs[0], (T)(Object)rs[1]);
+
         return new Tuple<String, T?>(rs[0], rs[1].ToJsonEntity<T>());
     }
 
@@ -793,7 +801,9 @@ public class FullRedis : Redis
         var rs = Execute(keys[0], (rc, k) => rc.Execute<String[]>("BLPOP", sb.ToString(), secTimeout), true);
         if (rs == null || rs.Length != 2) return null;
 
-        return new Tuple<String, T?>(rs[0], rs[1].ToJsonEntity<T>()); //.ChangeType<T>());
+        if (typeof(T) == typeof(String)) return new Tuple<String, T?>(rs[0], (T)(Object)rs[1]);
+
+        return new Tuple<String, T?>(rs[0], rs[1].ToJsonEntity<T>());
     }
 
     /// <summary>从列表头部弹出一个元素，阻塞</summary>
