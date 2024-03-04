@@ -71,18 +71,14 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp.SDK.OpenApi.Models
                         /// 获取或设置是否已提审。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("has_audit")]
-                        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.NumericalBooleanConverter))]
                         [System.Text.Json.Serialization.JsonPropertyName("has_audit")]
-                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalBooleanConverter))]
                         public bool HasAudited { get; set; }
 
                         /// <summary>
                         /// 获取或设置截图 URL 列表。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("screenshot")]
-                        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.TextualStringArrayWithCommaSplitConverter))]
                         [System.Text.Json.Serialization.JsonPropertyName("screenshot")]
-                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.TextualStringArrayWithCommaSplitConverter))]
                         public string[]? ScreenshotUrlList { get; set; }
                     }
 
@@ -99,9 +95,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp.SDK.OpenApi.Models
                         /// 获取或设置是否已发布。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("has_publish")]
-                        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.NumericalBooleanConverter))]
                         [System.Text.Json.Serialization.JsonPropertyName("has_publish")]
-                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalBooleanConverter))]
                         public bool HasPublished { get; set; }
 
                         /// <summary>
@@ -180,9 +174,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp.SDK.OpenApi.Models
                         /// 获取或设置是否已下架。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("has_down")]
-                        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.NumericalBooleanConverter))]
                         [System.Text.Json.Serialization.JsonPropertyName("has_down")]
-                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalBooleanConverter))]
                         public bool HasDowned { get; set; }
 
                         /// <summary>

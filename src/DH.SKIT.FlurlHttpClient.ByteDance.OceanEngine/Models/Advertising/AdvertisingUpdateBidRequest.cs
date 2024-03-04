@@ -23,7 +23,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.OceanEngine.Models
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("bid")]
                 [System.Text.Json.Serialization.JsonPropertyName("bid")]
-                public decimal Bid { get; set; }
+                public double Bid { get; set; }
             }
         }
 

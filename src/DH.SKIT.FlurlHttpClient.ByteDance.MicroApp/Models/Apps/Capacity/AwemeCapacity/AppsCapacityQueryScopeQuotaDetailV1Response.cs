@@ -59,9 +59,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp.Models
                         /// 获取或设置是否可以申请提升额度。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("can_apply_quota")]
-                        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.NumericalBooleanConverter))]
                         [System.Text.Json.Serialization.JsonPropertyName("can_apply_quota")]
-                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalBooleanConverter))]
                         public bool CanApplyQuota { get; set; }
                     }
                 }

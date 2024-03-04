@@ -33,7 +33,6 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen.Events
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("account_id")]
                         [System.Text.Json.Serialization.JsonPropertyName("account_id")]
-                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalStringReadOnlyConverter))]
                         public string AccountId { get; set; } = default!;
                     }
                 }
@@ -62,24 +61,11 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen.Events
             }
         }
 
-        internal static class Converters
-        {
-            internal class EventPropertyContentNewtonsoftJsonConverter : Newtonsoft.Json.Converters.TextualObjectInJsonFormatConverterBase<Types.Content?>
-            {
-            }
-
-            internal class EventPropertyContentSystemTextJsonConverter : System.Text.Json.Converters.TextualObjectInJsonFormatConverterBase<Types.Content?>
-            {
-            }
-        }
-
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
         [Newtonsoft.Json.JsonProperty("content")]
-        [Newtonsoft.Json.JsonConverter(typeof(Converters.EventPropertyContentNewtonsoftJsonConverter))]
         [System.Text.Json.Serialization.JsonPropertyName("content")]
-        [System.Text.Json.Serialization.JsonConverter(typeof(Converters.EventPropertyContentSystemTextJsonConverter))]
         public override Types.Content EventContent { get; set; } = default!;
 
         /// <summary>

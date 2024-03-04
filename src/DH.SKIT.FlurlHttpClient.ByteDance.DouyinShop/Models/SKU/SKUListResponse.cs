@@ -43,7 +43,6 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                 /// 获取或设置商品 ID。
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("product_id")]
-                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.TextualLongConverter))]
                 [System.Text.Json.Serialization.JsonPropertyName("product_id")]
                 [System.Text.Json.Serialization.JsonNumberHandling(System.Text.Json.Serialization.JsonNumberHandling.AllowReadingFromString | System.Text.Json.Serialization.JsonNumberHandling.WriteAsString)]
                 public long ProductId { get; set; }
@@ -172,7 +171,6 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("supplier_id")]
                 [System.Text.Json.Serialization.JsonPropertyName("supplier_id")]
-                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalStringReadOnlyConverter))]
                 public string? SupplierId { get; set; }
 
                 /// <summary>

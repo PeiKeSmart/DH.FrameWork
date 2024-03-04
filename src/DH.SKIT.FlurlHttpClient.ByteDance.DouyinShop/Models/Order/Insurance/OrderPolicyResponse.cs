@@ -165,18 +165,14 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                         /// 获取或设置出保时间。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("ins_ensured_time_begin")]
-                        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.RegularDateTimeOffsetConverter))]
                         [System.Text.Json.Serialization.JsonPropertyName("ins_ensured_time_begin")]
-                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.RegularDateTimeOffsetConverter))]
                         public DateTimeOffset InsuranceEnsuredBeginTime { get; set; }
 
                         /// <summary>
                         /// 获取或设置过期时间。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("ins_ensured_time_end")]
-                        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.RegularDateTimeOffsetConverter))]
                         [System.Text.Json.Serialization.JsonPropertyName("ins_ensured_time_end")]
-                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.RegularDateTimeOffsetConverter))]
                         public DateTimeOffset InsuranceEnsuredEndTime { get; set; }
                     }
 
@@ -228,9 +224,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                         /// 获取或设置实际理赔金额（单位：分）。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("claim_time")]
-                        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.RegularNullableDateTimeOffsetConverter))]
                         [System.Text.Json.Serialization.JsonPropertyName("claim_time")]
-                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.RegularNullableDateTimeOffsetConverter))]
                         public DateTimeOffset? ClaimTime { get; set; }
 
                         /// <summary>

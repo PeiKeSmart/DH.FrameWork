@@ -1,11 +1,8 @@
-namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Events
+﻿namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Events
 {
     /// <summary>
     /// <para>表示 doudian_trade_TradeAddressChangeApplied 消息的数据。</para>
-    /// <para>
-    /// REF: <br/>
-    /// <![CDATA[ https://op.jinritemai.com/docs/message-docs/30/285 ]]>
-    /// </para>
+    /// <para>REF: https://op.jinritemai.com/docs/message-docs/30/285 </para>
     /// </summary>
     public class TradeAddressChangeAppliedEvent : DouyinShopEvent<TradeAddressChangeAppliedEvent.Types.Data>
     {
@@ -25,7 +22,6 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Events
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("p_id")]
                 [System.Text.Json.Serialization.JsonPropertyName("p_id")]
-                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalStringReadOnlyConverter))]
                 public string ShopOrderId { get; set; } = default!;
 
                 /// <summary>

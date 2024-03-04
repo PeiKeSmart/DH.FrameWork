@@ -31,7 +31,6 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("after_sale_id")]
                                 [System.Text.Json.Serialization.JsonPropertyName("after_sale_id")]
-                                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalStringReadOnlyConverter))]
                                 public string AftersaleId { get; set; } = default!;
 
                                 /// <summary>
@@ -45,9 +44,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                                 /// 获取或设置申请时间。
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("apply_time")]
-                                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.UnixTimestampDateTimeOffsetConverter))]
                                 [System.Text.Json.Serialization.JsonPropertyName("apply_time")]
-                                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.UnixTimestampDateTimeOffsetConverter))]
                                 public DateTimeOffset ApplyTime { get; set; }
 
                                 /// <summary>
@@ -68,9 +65,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                                 /// 获取或设置超时自动流转截止时间。
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("status_deadline")]
-                                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.UnixTimestampNullableDateTimeOffsetConverter))]
                                 [System.Text.Json.Serialization.JsonPropertyName("status_deadline")]
-                                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.UnixTimestampNullableDateTimeOffsetConverter))]
                                 public DateTimeOffset? StatusDeadlineTime { get; set; }
 
                                 /// <summary>
@@ -210,18 +205,14 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                                 /// 获取或设置创建时间。
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("create_time")]
-                                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.UnixTimestampDateTimeOffsetConverter))]
                                 [System.Text.Json.Serialization.JsonPropertyName("create_time")]
-                                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.UnixTimestampDateTimeOffsetConverter))]
                                 public DateTimeOffset CreateTime { get; set; }
 
                                 /// <summary>
                                 /// 获取或设置更新时间。
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("update_time")]
-                                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.UnixTimestampDateTimeOffsetConverter))]
                                 [System.Text.Json.Serialization.JsonPropertyName("update_time")]
-                                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.UnixTimestampDateTimeOffsetConverter))]
                                 public DateTimeOffset UpdateTime { get; set; }
 
                                 /// <summary>
@@ -290,7 +281,6 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("after_sale_id")]
                                 [System.Text.Json.Serialization.JsonPropertyName("after_sale_id")]
-                                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalStringReadOnlyConverter))]
                                 public string ArbitrateId { get; set; } = default!;
 
                                 /// <summary>
@@ -304,18 +294,14 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                                 /// 获取或设置是否需要上传凭证。
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("is_required_evidence")]
-                                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.NumericalBooleanConverter))]
                                 [System.Text.Json.Serialization.JsonPropertyName("is_required_evidence")]
-                                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalBooleanConverter))]
                                 public bool RequiredEvidence { get; set; }
 
                                 /// <summary>
                                 /// 获取或设置仲裁截止时间。
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("arbitrate_status_deadline")]
-                                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.UnixTimestampNullableDateTimeOffsetConverter))]
                                 [System.Text.Json.Serialization.JsonPropertyName("arbitrate_status_deadline")]
-                                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.UnixTimestampNullableDateTimeOffsetConverter))]
                                 public DateTimeOffset? StatusDeadlineTime { get; set; }
 
                                 /// <summary>
@@ -357,18 +343,14 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                                 /// 获取或设置创建时间。
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("arbitrate_create_time")]
-                                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.UnixTimestampDateTimeOffsetConverter))]
                                 [System.Text.Json.Serialization.JsonPropertyName("arbitrate_create_time")]
-                                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.UnixTimestampDateTimeOffsetConverter))]
                                 public DateTimeOffset CreateTime { get; set; }
 
                                 /// <summary>
                                 /// 获取或设置更新时间。
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("arbitrate_update_time")]
-                                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.UnixTimestampDateTimeOffsetConverter))]
                                 [System.Text.Json.Serialization.JsonPropertyName("arbitrate_update_time")]
-                                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.UnixTimestampDateTimeOffsetConverter))]
                                 public DateTimeOffset UpdateTime { get; set; }
                             }
 
@@ -451,7 +433,6 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("order_id")]
                                 [System.Text.Json.Serialization.JsonPropertyName("order_id")]
-                                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalStringReadOnlyConverter))]
                                 public string OrderId { get; set; } = default!;
 
                                 /// <summary>
@@ -459,7 +440,6 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("after_sale_id")]
                                 [System.Text.Json.Serialization.JsonPropertyName("after_sale_id")]
-                                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalStringReadOnlyConverter))]
                                 public string AftersaleId { get; set; } = default!;
 
                                 /// <summary>
@@ -679,9 +659,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                                 /// 获取或设置是否为海外订单。
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("is_oversea_order")]
-                                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.NumericalBooleanConverter))]
                                 [System.Text.Json.Serialization.JsonPropertyName("is_oversea_order")]
-                                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalBooleanConverter))]
                                 public bool IsOverseaOrder { get; set; }
 
                                 /// <summary>

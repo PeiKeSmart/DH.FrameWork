@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,10 +12,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
         #region Material
         /// <summary>
         /// <para>异步调用 [POST] /material/searchMaterial 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://op.jinritemai.com/docs/api-docs/69/943 ]]>
-        /// </para>
+        /// <para>REF: https://op.jinritemai.com/docs/api-docs/69/943 </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -35,10 +32,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
 
         /// <summary>
         /// <para>异步调用 [POST] /material/queryMaterialDetail 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://op.jinritemai.com/docs/api-docs/69/950 ]]>
-        /// </para>
+        /// <para>REF: https://op.jinritemai.com/docs/api-docs/69/950 </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -58,10 +52,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
 
         /// <summary>
         /// <para>异步调用 [POST] /material/editMaterial 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://op.jinritemai.com/docs/api-docs/69/956 ]]>
-        /// </para>
+        /// <para>REF: https://op.jinritemai.com/docs/api-docs/69/956 </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -81,10 +72,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
 
         /// <summary>
         /// <para>异步调用 [POST] /material/deleteMaterial 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://op.jinritemai.com/docs/api-docs/69/944 ]]>
-        /// </para>
+        /// <para>REF: https://op.jinritemai.com/docs/api-docs/69/944 </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -104,10 +92,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
 
         /// <summary>
         /// <para>异步调用 [POST] /material/moveMaterialToRecycleBin 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://op.jinritemai.com/docs/api-docs/69/951 ]]>
-        /// </para>
+        /// <para>REF: https://op.jinritemai.com/docs/api-docs/69/951 </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -127,10 +112,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
 
         /// <summary>
         /// <para>异步调用 [POST] /material/recoverMaterial 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://op.jinritemai.com/docs/api-docs/69/954 ]]>
-        /// </para>
+        /// <para>REF: https://op.jinritemai.com/docs/api-docs/69/954 </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -152,10 +134,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
         #region Folder
         /// <summary>
         /// <para>异步调用 [POST] /material/searchFolder 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://op.jinritemai.com/docs/api-docs/69/952 ]]>
-        /// </para>
+        /// <para>REF: https://op.jinritemai.com/docs/api-docs/69/952 </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -175,10 +154,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
 
         /// <summary>
         /// <para>异步调用 [POST] /material/getFolderInfo 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://op.jinritemai.com/docs/api-docs/69/953 ]]>
-        /// </para>
+        /// <para>REF: https://op.jinritemai.com/docs/api-docs/69/953 </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -198,10 +174,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
 
         /// <summary>
         /// <para>异步调用 [POST] /material/createFolder 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://op.jinritemai.com/docs/api-docs/69/946 ]]>
-        /// </para>
+        /// <para>REF: https://op.jinritemai.com/docs/api-docs/69/946 </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -221,10 +194,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
 
         /// <summary>
         /// <para>异步调用 [POST] /material/editFolder 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://op.jinritemai.com/docs/api-docs/69/948 ]]>
-        /// </para>
+        /// <para>REF: https://op.jinritemai.com/docs/api-docs/69/948 </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -244,10 +214,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
 
         /// <summary>
         /// <para>异步调用 [POST] /material/deleteFolder 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://op.jinritemai.com/docs/api-docs/69/945 ]]>
-        /// </para>
+        /// <para>REF: https://op.jinritemai.com/docs/api-docs/69/945 </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -267,10 +234,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
 
         /// <summary>
         /// <para>异步调用 [POST] /material/moveFolderToRecycleBin 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://op.jinritemai.com/docs/api-docs/69/947 ]]>
-        /// </para>
+        /// <para>REF: https://op.jinritemai.com/docs/api-docs/69/947 </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -290,10 +254,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
 
         /// <summary>
         /// <para>异步调用 [POST] /material/recoverFolder 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://op.jinritemai.com/docs/api-docs/69/1096 ]]>
-        /// </para>
+        /// <para>REF: https://op.jinritemai.com/docs/api-docs/69/1096 </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -314,10 +275,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
 
         /// <summary>
         /// <para>异步调用 [POST] /material/uploadVideoAsync 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://op.jinritemai.com/docs/api-docs/69/949 ]]>
-        /// </para>
+        /// <para>REF: https://op.jinritemai.com/docs/api-docs/69/949 </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -337,10 +295,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
 
         /// <summary>
         /// <para>异步调用 [POST] /material/uploadImageSync 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://op.jinritemai.com/docs/api-docs/69/955 ]]>
-        /// </para>
+        /// <para>REF: https://op.jinritemai.com/docs/api-docs/69/955 </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>

@@ -1,25 +1,25 @@
 using System;
 
-namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobal.Settings
+namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop.Settings
 {
     public class Credentials
     {
         /// <summary>
-        /// 初始化客户端时 <see cref="TikTokV2ClientOptions.ClientKey"/> 的副本。
+        /// 初始化客户端时 <see cref="TikTokShopClientOptions.AppKey"/> 的副本。
         /// </summary>
-        public string ClientKey { get; }
+        public string AppKey { get; }
 
         /// <summary>
-        /// 初始化客户端时 <see cref="TikTokV2ClientOptions.ClientSecret"/> 的副本。
+        /// 初始化客户端时 <see cref="TikTokShopClientOptions.AppSecret"/> 的副本。
         /// </summary>
-        public string ClientSecret { get; }
+        public string AppSecret { get; }
 
-        internal Credentials(TikTokV2ClientOptions options)
+        internal Credentials(TikTokShopClientOptions options)
         {
-            if (options is null) throw new ArgumentNullException(nameof(options));
+            if (options == null) throw new ArgumentNullException(nameof(options));
 
-            ClientKey = options.ClientKey;
-            ClientSecret = options.ClientSecret;
+            AppKey = options.AppKey;
+            AppSecret = options.AppSecret;
         }
     }
 }

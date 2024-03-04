@@ -22,7 +22,7 @@
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("balance")]
                                 [System.Text.Json.Serialization.JsonPropertyName("balance")]
-                                public decimal Balance { get; set; }
+                                public double Balance { get; set; }
 
                                 /// <summary>
                                 /// 获取或设置余额可用广告位。

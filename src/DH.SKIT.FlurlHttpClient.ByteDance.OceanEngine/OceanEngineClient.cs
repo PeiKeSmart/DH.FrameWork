@@ -21,37 +21,36 @@ namespace SKIT.FlurlHttpClient.ByteDance.OceanEngine
         /// </summary>
         /// <param name="options">配置项。</param>
         public OceanEngineClient(OceanEngineClientOptions options)
-            : this(options, null)
+            : base()
         {
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="options"></param>
-        /// <param name="httpClient"></param>
-        /// <param name="disposeClient"></param>
-        internal protected OceanEngineClient(OceanEngineClientOptions options, HttpClient? httpClient, bool disposeClient = true)
-            : base(httpClient, disposeClient)
-        {
-            if (options is null) throw new ArgumentNullException(nameof(options));
+            if (options == null) throw new ArgumentNullException(nameof(options));
 
             Credentials = new Settings.Credentials(options);
 
             FlurlClient.BaseUrl = options.Endpoint ?? OceanEngineEndpoints.DEFAULT;
-            FlurlClient.WithTimeout(options.Timeout <= 0 ? Timeout.InfiniteTimeSpan : TimeSpan.FromMilliseconds(options.Timeout));
+            FlurlClient.WithTimeout(TimeSpan.FromMilliseconds(options.Timeout));
+        }
+
+        /// <summary>
+        /// 用指定的巨量引擎开放平台应用 ID、巨量引擎开放平台应用密钥初始化 <see cref="OceanEngineClient"/> 类的新实例。
+        /// </summary>
+        /// <param name="appId">巨量引擎开放平台应用 ID。</param>
+        /// <param name="appSecret">巨量引擎开放平台应用密钥。</param>
+        public OceanEngineClient(long appId, string appSecret)
+            : this(new OceanEngineClientOptions() { AppId = appId, AppSecret = appSecret })
+        {
         }
 
         /// <summary>
         /// 使用当前客户端生成一个新的 <see cref="IFlurlRequest"/> 对象。
         /// </summary>
         /// <param name="request"></param>
-        /// <param name="httpMethod"></param>
+        /// <param name="method"></param>
         /// <param name="urlSegments"></param>
         /// <returns></returns>
-        public IFlurlRequest CreateFlurlRequest(OceanEngineRequest request, HttpMethod httpMethod, params object[] urlSegments)
+        public IFlurlRequest CreateRequest(OceanEngineRequest request, HttpMethod method, params object[] urlSegments)
         {
-            IFlurlRequest flurlRequest = base.CreateFlurlRequest(request, httpMethod, urlSegments);
+            IFlurlRequest flurlRequest = FlurlClient.Request(urlSegments).WithVerb(method);
 
             if (request.DebugMode)
             {
@@ -69,13 +68,24 @@ namespace SKIT.FlurlHttpClient.ByteDance.OceanEngine
         /// <param name="httpContent"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<T> SendFlurlRequestAsync<T>(IFlurlRequest flurlRequest, HttpContent? httpContent = null, CancellationToken cancellationToken = default)
+        public async Task<T> SendRequestAsync<T>(IFlurlRequest flurlRequest, HttpContent? httpContent = null, CancellationToken cancellationToken = default)
             where T : OceanEngineResponse, new()
         {
-            if (flurlRequest is null) throw new ArgumentNullException(nameof(flurlRequest));
+            if (flurlRequest == null) throw new ArgumentNullException(nameof(flurlRequest));
 
-            using IFlurlResponse flurlResponse = await base.SendFlurlRequestAsync(flurlRequest, httpContent, cancellationToken).ConfigureAwait(false);
-            return await base.WrapFlurlResponseAsJsonAsync<T>(flurlResponse, cancellationToken).ConfigureAwait(false);
+            try
+            {
+                using IFlurlResponse flurlResponse = await base.SendFlurlRequestAsync(flurlRequest, httpContent, cancellationToken);
+                return await WrapFlurlResponseAsJsonAsync<T>(flurlResponse, cancellationToken);
+            }
+            catch (FlurlHttpTimeoutException ex)
+            {
+                throw new Exceptions.OceanEngineRequestTimeoutException(ex.Message, ex);
+            }
+            catch (FlurlHttpException ex)
+            {
+                throw new OceanEngineException(ex.Message, ex);
+            }
         }
 
         /// <summary>
@@ -86,16 +96,24 @@ namespace SKIT.FlurlHttpClient.ByteDance.OceanEngine
         /// <param name="data"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<T> SendFlurlRequestAsJsonAsync<T>(IFlurlRequest flurlRequest, object? data = null, CancellationToken cancellationToken = default)
+        public async Task<T> SendRequestWithJsonAsync<T>(IFlurlRequest flurlRequest, object? data = null, CancellationToken cancellationToken = default)
             where T : OceanEngineResponse, new()
         {
-            if (flurlRequest is null) throw new ArgumentNullException(nameof(flurlRequest));
+            if (flurlRequest == null) throw new ArgumentNullException(nameof(flurlRequest));
 
-            bool isSimpleRequest = data is null;
-            using IFlurlResponse flurlResponse = isSimpleRequest ?
-                await base.SendFlurlRequestAsync(flurlRequest, null, cancellationToken).ConfigureAwait(false) :
-                await base.SendFlurlRequestAsJsonAsync(flurlRequest, data, cancellationToken).ConfigureAwait(false);
-            return await WrapFlurlResponseAsJsonAsync<T>(flurlResponse, cancellationToken).ConfigureAwait(false);
+            try
+            {
+                using IFlurlResponse flurlResponse = await base.SendFlurlRequestAsJsonAsync(flurlRequest, data, cancellationToken);
+                return await WrapFlurlResponseAsJsonAsync<T>(flurlResponse, cancellationToken);
+            }
+            catch (FlurlHttpTimeoutException ex)
+            {
+                throw new Exceptions.OceanEngineRequestTimeoutException(ex.Message, ex);
+            }
+            catch (FlurlHttpException ex)
+            {
+                throw new OceanEngineException(ex.Message, ex);
+            }
         }
     }
 }

@@ -32,63 +32,63 @@
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("balance")]
                         [System.Text.Json.Serialization.JsonPropertyName("balance")]
-                        public decimal Balance { get; set; }
+                        public double Balance { get; set; }
 
                         /// <summary>
                         /// 获取或设置总支出（单位：元）。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("cost")]
                         [System.Text.Json.Serialization.JsonPropertyName("cost")]
-                        public decimal TotalCost { get; set; }
+                        public double TotalCost { get; set; }
 
                         /// <summary>
                         /// 获取或设置现金支出（单位：元）。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("cash_cost")]
                         [System.Text.Json.Serialization.JsonPropertyName("cash_cost")]
-                        public decimal CashCost { get; set; }
+                        public double CashCost { get; set; }
 
                         /// <summary>
                         /// 获取或设置赠款支出（单位：元）。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("reward_cost")]
                         [System.Text.Json.Serialization.JsonPropertyName("reward_cost")]
-                        public decimal GrantCost { get; set; }
+                        public double GrantCost { get; set; }
 
                         /// <summary>
                         /// 获取或设置共享钱包支出（单位：元）。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("shared_wallet_cost")]
                         [System.Text.Json.Serialization.JsonPropertyName("shared_wallet_cost")]
-                        public decimal SharedWalletCost { get; set; }
+                        public double SharedWalletCost { get; set; }
 
                         /// <summary>
                         /// 获取或设置冻结金额（单位：元）。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("frozen")]
                         [System.Text.Json.Serialization.JsonPropertyName("frozen")]
-                        public decimal FrozenFee { get; set; }
+                        public double FrozenFee { get; set; }
 
                         /// <summary>
                         /// 获取或设置总存入（单位：元）。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("income")]
                         [System.Text.Json.Serialization.JsonPropertyName("income")]
-                        public decimal Income { get; set; }
+                        public double Income { get; set; }
 
                         /// <summary>
                         /// 获取或设置总转入（单位：元）。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("transfer_in")]
                         [System.Text.Json.Serialization.JsonPropertyName("transfer_in")]
-                        public decimal TransferInAmount { get; set; }
+                        public double TransferInAmount { get; set; }
 
                         /// <summary>
                         /// 获取或设置总转出（单位：元）。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("transfer_out")]
                         [System.Text.Json.Serialization.JsonPropertyName("transfer_out")]
-                        public decimal TransferOutAmount { get; set; }
+                        public double TransferOutAmount { get; set; }
                     }
 
                     public class Pagination : AgentAdvertiserSelectResponse.Types.Data.Types.Pagination

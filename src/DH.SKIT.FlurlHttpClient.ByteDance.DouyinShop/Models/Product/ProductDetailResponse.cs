@@ -223,7 +223,6 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("supplier_id")]
                         [System.Text.Json.Serialization.JsonPropertyName("supplier_id")]
-                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalStringReadOnlyConverter))]
                         public string? SupplierId { get; set; }
                     }
 
@@ -261,9 +260,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                         /// 获取或设置是否是子节点。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("is_leaf")]
-                        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.NumericalBooleanConverter))]
                         [System.Text.Json.Serialization.JsonPropertyName("is_leaf")]
-                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalBooleanConverter))]
                         public bool IsLeaf { get; set; }
 
                         /// <summary>
@@ -376,21 +373,9 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                         /// 获取或设置 7 天无理由退货类型。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("supply_7day_return")]
-                        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.TextualIntegerConverter))]
                         [System.Text.Json.Serialization.JsonPropertyName("supply_7day_return")]
                         [System.Text.Json.Serialization.JsonNumberHandling(System.Text.Json.Serialization.JsonNumberHandling.AllowReadingFromString | System.Text.Json.Serialization.JsonNumberHandling.WriteAsString)]
                         public int Supply7DayReturnType { get; set; }
-                    }
-                }
-
-                internal static class Converters
-                {
-                    internal class NewtonsoftJsonAftersaleServiceConverter : Newtonsoft.Json.Converters.TextualObjectInJsonFormatConverterBase<Types.AftersaleService?>
-                    {
-                    }
-
-                    internal class SystemTextJsonAftersaleServiceConverter : System.Text.Json.Converters.TextualObjectInJsonFormatConverterBase<Types.AftersaleService?>
-                    {
                     }
                 }
 
@@ -615,9 +600,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                 /// 获取或设置售后服务信息。
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("after_sale_service")]
-                [Newtonsoft.Json.JsonConverter(typeof(Converters.NewtonsoftJsonAftersaleServiceConverter))]
                 [System.Text.Json.Serialization.JsonPropertyName("after_sale_service")]
-                [System.Text.Json.Serialization.JsonConverter(typeof(Converters.SystemTextJsonAftersaleServiceConverter))]
                 public Types.AftersaleService? AftersaleService { get; set; }
 
                 /// <summary>
@@ -631,18 +614,14 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                 /// 获取或设置创建时间。
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("create_time")]
-                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.RegularDateTimeOffsetConverter))]
                 [System.Text.Json.Serialization.JsonPropertyName("create_time")]
-                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.RegularDateTimeOffsetConverter))]
                 public DateTimeOffset CreateTime { get; set; }
 
                 /// <summary>
                 /// 获取或设置更新时间。
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("update_time")]
-                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.RegularDateTimeOffsetConverter))]
                 [System.Text.Json.Serialization.JsonPropertyName("update_time")]
-                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.RegularDateTimeOffsetConverter))]
                 public DateTimeOffset UpdateTime { get; set; }
 
                 /// <summary>

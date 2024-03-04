@@ -26,7 +26,6 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen.Models
                                         /// </summary>
                                         [Newtonsoft.Json.JsonProperty("account_id")]
                                         [System.Text.Json.Serialization.JsonPropertyName("account_id")]
-                                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalStringReadOnlyConverter))]
                                         public string AccountId { get; set; } = default!;
 
                                         /// <summary>

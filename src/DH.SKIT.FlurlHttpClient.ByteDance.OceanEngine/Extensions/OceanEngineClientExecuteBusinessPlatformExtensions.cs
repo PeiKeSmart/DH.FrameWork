@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,10 +10,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.OceanEngine
     {
         /// <summary>
         /// <para>异步调用 [GET] /2/business_platform/partner_organization/list 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://open.oceanengine.com/doc/index.html?key=ad&type=api&id=1710414874245133 ]]>
-        /// </para>
+        /// <para>REF: https://open.oceanengine.com/doc/index.html?key=ad&type=api&id=1710414874245133 </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -25,10 +22,10 @@ namespace SKIT.FlurlHttpClient.ByteDance.OceanEngine
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Get, "2", "business_platform", "partner_organization", "list")
+                .CreateRequest(request, HttpMethod.Get, "2", "business_platform", "partner_organization", "list")
                 .WithHeader("Access-Token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsJsonAsync<Models.BusinessPlatformPartnerOrganizationListResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
+            return await client.SendRequestWithJsonAsync<Models.BusinessPlatformPartnerOrganizationListResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
     }
 }

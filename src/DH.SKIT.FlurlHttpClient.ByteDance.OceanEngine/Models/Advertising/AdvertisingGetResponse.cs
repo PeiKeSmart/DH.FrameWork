@@ -66,14 +66,14 @@ namespace SKIT.FlurlHttpClient.ByteDance.OceanEngine.Models
                                         /// </summary>
                                         [Newtonsoft.Json.JsonProperty("long")]
                                         [System.Text.Json.Serialization.JsonPropertyName("long")]
-                                        public decimal? Longitude { get; set; }
+                                        public double? Longitude { get; set; }
 
                                         /// <summary>
                                         /// 获取或设置纬度。
                                         /// </summary>
                                         [Newtonsoft.Json.JsonProperty("lat")]
                                         [System.Text.Json.Serialization.JsonPropertyName("lat")]
-                                        public decimal? Latitude { get; set; }
+                                        public double? Latitude { get; set; }
 
                                         /// <summary>
                                         /// 获取或设置半径。
@@ -441,9 +441,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.OceanEngine.Models
                                 /// 获取或设置是否启用智能放量。
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("auto_extend_enabled")]
-                                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.Common.NumericalBooleanConverter))]
                                 [System.Text.Json.Serialization.JsonPropertyName("auto_extend_enabled")]
-                                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.NumericalBooleanConverter))]
                                 public bool? IsAutoExtendEnabled { get; set; }
 
                                 /// <summary>
@@ -525,18 +523,14 @@ namespace SKIT.FlurlHttpClient.ByteDance.OceanEngine.Models
                         /// 获取或设置创建时间。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("ad_create_time")]
-                        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.Common.BasicDateTimeOffsetConverter))]
                         [System.Text.Json.Serialization.JsonPropertyName("ad_create_time")]
-                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.BasicDateTimeOffsetConverter))]
                         public DateTimeOffset? CreateTime { get; set; }
 
                         /// <summary>
                         /// 获取或设置修改时间。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("ad_modify_time")]
-                        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.Common.BasicDateTimeOffsetConverter))]
                         [System.Text.Json.Serialization.JsonPropertyName("ad_modify_time")]
-                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.BasicDateTimeOffsetConverter))]
                         public DateTimeOffset? UpdateTime { get; set; }
 
                         /// <summary>
@@ -977,36 +971,28 @@ namespace SKIT.FlurlHttpClient.ByteDance.OceanEngine.Models
                         /// 获取或设置是否启用 LBS 地域匹配。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("dpa_lbs")]
-                        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.Common.NumericalBooleanConverter))]
                         [System.Text.Json.Serialization.JsonPropertyName("dpa_lbs")]
-                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.NumericalBooleanConverter))]
                         public bool? IsDPALBSEnabled { get; set; }
 
                         /// <summary>
                         /// 获取或设置是否启用城市地域匹配。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("dpa_city")]
-                        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.Common.NumericalBooleanConverter))]
                         [System.Text.Json.Serialization.JsonPropertyName("dpa_city")]
-                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.NumericalBooleanConverter))]
                         public bool? IsDPACityEnabled { get; set; }
 
                         /// <summary>
                         /// 获取或设置是否启用省份地域匹配。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("dpa_province")]
-                        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.Common.NumericalBooleanConverter))]
                         [System.Text.Json.Serialization.JsonPropertyName("dpa_province")]
-                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.NumericalBooleanConverter))]
                         public bool? IsDPAProvinceEnabled { get; set; }
 
                         /// <summary>
                         /// 获取或设置是否启用 DPA 行为重定向。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("dpa_local_audience")]
-                        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.Common.NumericalBooleanConverter))]
                         [System.Text.Json.Serialization.JsonPropertyName("dpa_local_audience")]
-                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.NumericalBooleanConverter))]
                         public bool? IsDPALocalAudienceEnabled { get; set; }
 
                         /// <summary>
@@ -1020,9 +1006,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.OceanEngine.Models
                         /// 获取或设置是否启用价值优选。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("value_optimized_open")]
-                        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.Common.NumericalBooleanConverter))]
                         [System.Text.Json.Serialization.JsonPropertyName("value_optimized_open")]
-                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.NumericalBooleanConverter))]
                         public bool? IsValueOptimizedEnabled { get; set; }
 
                         /// <summary>
@@ -1064,9 +1048,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.OceanEngine.Models
                         /// 获取或设置是否调整自动出价。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("adjust_cpa")]
-                        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.Common.NumericalBooleanConverter))]
                         [System.Text.Json.Serialization.JsonPropertyName("adjust_cpa")]
-                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.NumericalBooleanConverter))]
                         public bool? IsAutoAdjustCPA { get; set; }
 
                         /// <summary>
@@ -1081,7 +1063,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.OceanEngine.Models
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("budget")]
                         [System.Text.Json.Serialization.JsonPropertyName("budget")]
-                        public decimal? Budget { get; set; }
+                        public double? Budget { get; set; }
 
                         /// <summary>
                         /// 获取或设置预算类型。
@@ -1130,14 +1112,14 @@ namespace SKIT.FlurlHttpClient.ByteDance.OceanEngine.Models
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("bid")]
                         [System.Text.Json.Serialization.JsonPropertyName("bid")]
-                        public decimal? Bid { get; set; }
+                        public double? Bid { get; set; }
 
                         /// <summary>
                         /// 获取或设置目标转化出价/预期成本（单位：元）。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("cpa_bid")]
                         [System.Text.Json.Serialization.JsonPropertyName("cpa_bid")]
-                        public decimal? CPABid { get; set; }
+                        public double? CPABid { get; set; }
 
                         /// <summary>
                         /// 获取或设置深度优化方式。
@@ -1151,21 +1133,21 @@ namespace SKIT.FlurlHttpClient.ByteDance.OceanEngine.Models
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("deep_cpabid")]
                         [System.Text.Json.Serialization.JsonPropertyName("deep_cpabid")]
-                        public decimal? DeepCPABid { get; set; }
+                        public double? DeepCPABid { get; set; }
 
                         /// <summary>
                         /// 获取或设置鲁班目标 ROI 出价策略系数。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("luban_roi_goal")]
                         [System.Text.Json.Serialization.JsonPropertyName("luban_roi_goal")]
-                        public decimal? LubanROIGoal { get; set; }
+                        public double? LubanROIGoal { get; set; }
 
                         /// <summary>
                         /// 获取或设置深度转化 ROI 系数。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("roi_goal")]
                         [System.Text.Json.Serialization.JsonPropertyName("roi_goal")]
-                        public decimal? DeepROIGoal { get; set; }
+                        public double? DeepROIGoal { get; set; }
                     }
 
                     public class Pagination : AgentAdvertiserSelectResponse.Types.Data.Types.Pagination

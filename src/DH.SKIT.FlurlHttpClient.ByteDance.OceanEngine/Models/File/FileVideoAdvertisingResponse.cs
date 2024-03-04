@@ -49,7 +49,7 @@
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("duration")]
                 [System.Text.Json.Serialization.JsonPropertyName("duration")]
-                public decimal Duration { get; set; }
+                public double Duration { get; set; }
 
                 /// <summary>
                 /// 获取或设置视频格式。
