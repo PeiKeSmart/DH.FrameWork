@@ -102,6 +102,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("related_id")]
                                 [System.Text.Json.Serialization.JsonPropertyName("related_id")]
+                                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalStringReadOnlyConverter))]
                                 public string OrderId { get; set; } = default!;
 
                                 /// <summary>
@@ -116,6 +117,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("aftersale_id")]
                                 [System.Text.Json.Serialization.JsonPropertyName("aftersale_id")]
+                                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalStringReadOnlyConverter))]
                                 public string AftersaleId { get; set; } = default!;
 
                                 /// <summary>
@@ -129,7 +131,9 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                                 /// 获取或设置申请时间。
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("apply_time")]
+                                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.UnixTimestampDateTimeOffsetConverter))]
                                 [System.Text.Json.Serialization.JsonPropertyName("apply_time")]
+                                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.UnixTimestampDateTimeOffsetConverter))]
                                 public DateTimeOffset ApplyTime { get; set; }
 
                                 /// <summary>
@@ -143,7 +147,9 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                                 /// 获取或设置超时自动流转截止时间。
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("status_deadline")]
+                                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.UnixTimestampNullableDateTimeOffsetConverter))]
                                 [System.Text.Json.Serialization.JsonPropertyName("status_deadline")]
+                                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.UnixTimestampNullableDateTimeOffsetConverter))]
                                 public DateTimeOffset? StatusDeadlineTime { get; set; }
 
                                 /// <summary>
@@ -241,14 +247,18 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                                 /// 获取或设置创建时间。
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("create_time")]
+                                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.UnixTimestampDateTimeOffsetConverter))]
                                 [System.Text.Json.Serialization.JsonPropertyName("create_time")]
+                                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.UnixTimestampDateTimeOffsetConverter))]
                                 public DateTimeOffset CreateTime { get; set; }
 
                                 /// <summary>
                                 /// 获取或设置更新时间。
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("update_time")]
+                                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.UnixTimestampDateTimeOffsetConverter))]
                                 [System.Text.Json.Serialization.JsonPropertyName("update_time")]
+                                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.UnixTimestampDateTimeOffsetConverter))]
                                 public DateTimeOffset UpdateTime { get; set; }
 
                                 /// <summary>
@@ -456,7 +466,9 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                                         /// 获取或设置是否为海外订单。
                                         /// </summary>
                                         [Newtonsoft.Json.JsonProperty("is_oversea_order")]
+                                        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.NumericalBooleanConverter))]
                                         [System.Text.Json.Serialization.JsonPropertyName("is_oversea_order")]
+                                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalBooleanConverter))]
                                         public bool IsOverseaOrder { get; set; }
 
                                         /// <summary>
@@ -604,7 +616,9 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                                 /// 获取或设置操作时间戳。
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("create_time")]
+                                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.RegularDateTimeOffsetConverter))]
                                 [System.Text.Json.Serialization.JsonPropertyName("create_time")]
+                                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.RegularDateTimeOffsetConverter))]
                                 public DateTimeOffset CreateTime { get; set; }
                             }
                         }
@@ -650,7 +664,9 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                 /// 获取或设置是否还有更多。
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("has_more")]
+                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.TextualBooleanConverter))]
                 [System.Text.Json.Serialization.JsonPropertyName("has_more")]
+                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.TextualBooleanConverter))]
                 public bool HasMore { get; set; }
 
                 /// <summary>

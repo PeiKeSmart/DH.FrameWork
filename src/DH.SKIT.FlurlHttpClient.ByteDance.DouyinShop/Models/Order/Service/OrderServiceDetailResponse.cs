@@ -19,14 +19,18 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                         /// 获取或设置首次回复时间。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("first_reply_time")]
+                        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.RegularNullableDateTimeOffsetConverter))]
                         [System.Text.Json.Serialization.JsonPropertyName("first_reply_time")]
+                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.RegularNullableDateTimeOffsetConverter))]
                         public DateTimeOffset? FirstReplyTime { get; set; }
 
                         /// <summary>
                         /// 获取或设置操作状态。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("is_reject")]
+                        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.NumericalBooleanConverter))]
                         [System.Text.Json.Serialization.JsonPropertyName("is_reject")]
+                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalBooleanConverter))]
                         public bool IsRejected { get; set; }
 
                         /// <summary>
@@ -40,14 +44,18 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                         /// 获取或设置驳回时间。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("reject_time")]
+                        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.RegularNullableDateTimeOffsetConverter))]
                         [System.Text.Json.Serialization.JsonPropertyName("reject_time")]
+                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.RegularNullableDateTimeOffsetConverter))]
                         public DateTimeOffset? RejectTime { get; set; }
 
                         /// <summary>
                         /// 获取或设置是否需要上传凭证。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("evidence_required")]
+                        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.NumericalBooleanConverter))]
                         [System.Text.Json.Serialization.JsonPropertyName("evidence_required")]
+                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalBooleanConverter))]
                         public bool RequireEvidence { get; set; }
 
                         /// <summary>
@@ -68,7 +76,9 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                         /// 获取或设置驳回时间。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("expiration_time")]
+                        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.RegularDateTimeOffsetConverter))]
                         [System.Text.Json.Serialization.JsonPropertyName("expiration_time")]
+                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.RegularDateTimeOffsetConverter))]
                         public DateTimeOffset ExpireTime { get; set; }
 
                         /// <summary>
@@ -82,7 +92,9 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                         /// 获取或设置关闭时间。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("close_time")]
+                        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.RegularNullableDateTimeOffsetConverter))]
                         [System.Text.Json.Serialization.JsonPropertyName("close_time")]
+                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.RegularNullableDateTimeOffsetConverter))]
                         public DateTimeOffset? CloseTime { get; set; }
                     }
 

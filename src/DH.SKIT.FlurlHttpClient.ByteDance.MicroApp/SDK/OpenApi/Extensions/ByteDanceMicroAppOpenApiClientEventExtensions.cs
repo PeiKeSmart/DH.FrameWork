@@ -17,6 +17,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp.SDK.OpenApi
 
             [Newtonsoft.Json.JsonProperty("TimeStamp")]
             [System.Text.Json.Serialization.JsonPropertyName("TimeStamp")]
+            [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalStringConverter))]
             [System.Xml.Serialization.XmlElement("TimeStamp")]
             public string TimestampString { get; set; } = default!;
 

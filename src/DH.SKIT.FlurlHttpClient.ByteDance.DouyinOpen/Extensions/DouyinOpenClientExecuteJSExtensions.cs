@@ -26,7 +26,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Get, "js", "getticket")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.JSGetTicketResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.JSGetTicketResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
     }
 }

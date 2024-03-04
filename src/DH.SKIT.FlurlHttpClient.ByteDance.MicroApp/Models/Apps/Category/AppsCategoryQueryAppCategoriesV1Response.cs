@@ -59,7 +59,9 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp.Models
                         /// 获取或设置服务类目资质 ID 列表。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("categoryCertIds")]
+                        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.TextualIntegerArrayWithCommaSplitConverter))]
                         [System.Text.Json.Serialization.JsonPropertyName("categoryCertIds")]
+                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.TextualIntegerArrayWithCommaSplitConverter))]
                         public int[] CertificationIdList { get; set; } = default!;
 
                         /// <summary>

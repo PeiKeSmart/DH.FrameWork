@@ -45,7 +45,9 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
         /// 获取或设置接单时间。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("occurrence_time")]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.RegularDateTimeOffsetConverter))]
         [System.Text.Json.Serialization.JsonPropertyName("occurrence_time")]
+        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.RegularDateTimeOffsetConverter))]
         public DateTimeOffset OccurrenceTime { get; set; }
 
         /// <summary>

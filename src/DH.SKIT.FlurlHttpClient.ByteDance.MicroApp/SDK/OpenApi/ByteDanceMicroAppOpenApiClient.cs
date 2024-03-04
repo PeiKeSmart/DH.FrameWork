@@ -52,6 +52,11 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp.SDK.OpenApi
         {
             IFlurlRequest flurlRequest = FlurlClient.Request(urlSegments).WithVerb(method);
 
+            if (request.Timeout != null)
+            {
+                flurlRequest.WithTimeout(TimeSpan.FromMilliseconds(request.Timeout.Value));
+            }
+
             if (request.ComponentAppId == null)
             {
                 request.ComponentAppId = Credentials.ComponentAppId;
@@ -75,8 +80,8 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp.SDK.OpenApi
 
             try
             {
-                using IFlurlResponse flurlResponse = await base.SendFlurlRequestAsync(flurlRequest, httpContent, cancellationToken);
-                return await WrapFlurlResponseAsJsonAsync<T>(flurlResponse, cancellationToken);
+                using IFlurlResponse flurlResponse = await base.SendRequestAsync(flurlRequest, httpContent, cancellationToken);
+                return await WrapResponseWithJsonAsync<T>(flurlResponse, cancellationToken);
             }
             catch (FlurlHttpTimeoutException ex)
             {
@@ -108,9 +113,9 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp.SDK.OpenApi
                     flurlRequest.Verb == HttpMethod.Head ||
                     flurlRequest.Verb == HttpMethod.Options;
                 using IFlurlResponse flurlResponse = isSimpleRequest ?
-                    await base.SendFlurlRequestAsync(flurlRequest, null, cancellationToken) :
-                    await base.SendFlurlRequestAsJsonAsync(flurlRequest, data, cancellationToken);
-                return await WrapFlurlResponseAsJsonAsync<T>(flurlResponse, cancellationToken);
+                    await base.SendRequestAsync(flurlRequest, null, cancellationToken) :
+                    await base.SendRequestWithJsonAsync(flurlRequest, data, cancellationToken);
+                return await WrapResponseWithJsonAsync<T>(flurlResponse, cancellationToken);
             }
             catch (FlurlHttpTimeoutException ex)
             {

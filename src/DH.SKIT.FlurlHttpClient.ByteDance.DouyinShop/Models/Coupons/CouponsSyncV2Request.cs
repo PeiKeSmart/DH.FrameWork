@@ -37,7 +37,9 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                 /// 获取或设置发券时间。
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("grant_time")]
+                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.RegularDateTimeOffsetConverter))]
                 [System.Text.Json.Serialization.JsonPropertyName("grant_time")]
+                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.RegularDateTimeOffsetConverter))]
                 public DateTimeOffset GrantTime { get; set; }
 
                 /// <summary>
@@ -58,14 +60,18 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                 /// 获取或设置有效开始时间。
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("valid_start")]
+                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.RegularNullableDateTimeOffsetConverter))]
                 [System.Text.Json.Serialization.JsonPropertyName("valid_start")]
+                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.RegularNullableDateTimeOffsetConverter))]
                 public DateTimeOffset? ValidStartTime { get; set; }
 
                 /// <summary>
                 /// 获取或设置有效结束时间。
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("valid_end")]
+                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.RegularNullableDateTimeOffsetConverter))]
                 [System.Text.Json.Serialization.JsonPropertyName("valid_end")]
+                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.RegularNullableDateTimeOffsetConverter))]
                 public DateTimeOffset? ValidEndTime { get; set; }
             }
         }

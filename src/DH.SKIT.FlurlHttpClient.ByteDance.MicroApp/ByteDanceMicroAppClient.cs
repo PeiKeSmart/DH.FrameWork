@@ -64,6 +64,11 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
         {
             IFlurlRequest flurlRequest = FlurlClient.Request(urlSegments).WithVerb(method);
 
+            if (request.Timeout != null)
+            {
+                flurlRequest.WithTimeout(TimeSpan.FromMilliseconds(request.Timeout.Value));
+            }
+
             return flurlRequest;
         }
 
@@ -82,8 +87,8 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
 
             try
             {
-                using IFlurlResponse flurlResponse = await base.SendFlurlRequestAsync(flurlRequest, httpContent, cancellationToken);
-                return await WrapFlurlResponseAsJsonAsync<T>(flurlResponse, cancellationToken);
+                using IFlurlResponse flurlResponse = await base.SendRequestAsync(flurlRequest, httpContent, cancellationToken);
+                return await WrapResponseWithJsonAsync<T>(flurlResponse, cancellationToken);
             }
             catch (FlurlHttpTimeoutException ex)
             {
@@ -115,9 +120,9 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
                     flurlRequest.Verb == HttpMethod.Head ||
                     flurlRequest.Verb == HttpMethod.Options;
                 using IFlurlResponse flurlResponse = isSimpleRequest ?
-                    await base.SendFlurlRequestAsync(flurlRequest, null, cancellationToken) :
-                    await base.SendFlurlRequestAsJsonAsync(flurlRequest, data, cancellationToken);
-                return await WrapFlurlResponseAsJsonAsync<T>(flurlResponse, cancellationToken);
+                    await base.SendRequestAsync(flurlRequest, null, cancellationToken) :
+                    await base.SendRequestWithJsonAsync(flurlRequest, data, cancellationToken);
+                return await WrapResponseWithJsonAsync<T>(flurlResponse, cancellationToken);
             }
             catch (FlurlHttpTimeoutException ex)
             {

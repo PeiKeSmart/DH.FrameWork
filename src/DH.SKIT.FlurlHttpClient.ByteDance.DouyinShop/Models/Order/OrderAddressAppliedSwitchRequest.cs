@@ -9,7 +9,9 @@
         /// 获取或设置订单 ID。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("is_allowed")]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.NumericalBooleanConverter))]
         [System.Text.Json.Serialization.JsonPropertyName("is_allowed")]
+        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalBooleanConverter))]
         public bool IsAllowed { get; set; }
     }
 }

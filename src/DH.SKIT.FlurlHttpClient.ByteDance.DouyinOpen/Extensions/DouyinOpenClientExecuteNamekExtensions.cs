@@ -32,7 +32,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
             if (request.Code != null)
                 flurlReq.SetQueryParam("code", request.Code);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.NamekFulfilmentPrepareResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.NamekFulfilmentPrepareResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
     }
 }

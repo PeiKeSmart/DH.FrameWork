@@ -32,7 +32,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
             if (request.City != null)
                 flurlReq.SetQueryParam("city", request.City);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.POISearchKeywordResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.POISearchKeywordResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("access_token", request.AccessToken)
                 .SetQueryParam("amap_id", request.AMapId);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.POIQueryResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.POIQueryResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("access_token", request.AccessToken)
                 .SetQueryParam("amap_id", request.AMapId);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.POIBaseQueryAMapResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.POIBaseQueryAMapResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         #region Coupon
@@ -95,7 +95,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "poi", "v2", "coupon", "sync")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.POICouponSyncV2Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.POICouponSyncV2Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -115,7 +115,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "poi", "v2", "coupon", "sync", "coupon_available")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.POICouponSyncCouponAvailableV2Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.POICouponSyncCouponAvailableV2Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
 
@@ -138,7 +138,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "poi", "ext", "hotel", "order", "commit")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.POIExternalHotelOrderCommitResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.POIExternalHotelOrderCommitResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -158,7 +158,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "poi", "ext", "hotel", "order", "status")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.POIExternalHotelOrderStatusResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.POIExternalHotelOrderStatusResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -178,7 +178,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "poi", "ext", "hotel", "order", "cancel")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.POIExternalHotelOrderCancelResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.POIExternalHotelOrderCancelResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -201,7 +201,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("start_date", request.StartDateString)
                 .SetQueryParam("end_date", request.EndDateString);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.POIExternalHotelSKUResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.POIExternalHotelSKUResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
 
@@ -223,7 +223,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "poi", "ext", "presale_groupon", "order", "create")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.POIExternalPresaleGrouponOrderCreateResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.POIExternalPresaleGrouponOrderCreateResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -243,7 +243,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "poi", "ext", "presale_groupon", "order", "commit")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.POIExternalPresaleGrouponOrderCommitResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.POIExternalPresaleGrouponOrderCommitResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -263,7 +263,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "poi", "ext", "presale_groupon", "order", "cancel")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.POIExternalPresaleGrouponOrderCancelResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.POIExternalPresaleGrouponOrderCancelResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
         #endregion
@@ -289,7 +289,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "poi", "order", "sync")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.POIOrderSyncResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.POIOrderSyncResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -309,7 +309,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "poi", "order", "status")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.POIOrderStatusResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.POIOrderStatusResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -329,7 +329,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "poi", "order", "confirm")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.POIOrderConfirmResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.POIOrderConfirmResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -349,7 +349,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "poi", "order", "confirm", "prepare")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.POIOrderConfirmPrepareResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.POIOrderConfirmPrepareResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -369,7 +369,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "poi", "order", "confirm", "cancel_prepare")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.POIOrderConfirmCancelPrepareResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.POIOrderConfirmCancelPrepareResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -390,7 +390,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("access_token", request.AccessToken)
                 .SetQueryParam("bill_date", request.BillDateString);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.POIOrderBillTokenResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.POIOrderBillTokenResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -411,7 +411,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("access_token", request.AccessToken)
                 .SetQueryParam("order_date", request.OrderDateString);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.POIOrderListTokenResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.POIOrderListTokenResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
 
@@ -433,7 +433,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "poi", "common", "plan", "detail")
                 .WithHeader("access-token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.POICommonPlanDetailResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.POICommonPlanDetailResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -453,7 +453,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "poi", "common", "plan", "talent", "detail")
                 .WithHeader("access-token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.POICommonPlanTalentDetailResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.POICommonPlanTalentDetailResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -473,7 +473,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "poi", "common", "plan", "talent", "list")
                 .WithHeader("access-token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.POICommonPlanTalentListResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.POICommonPlanTalentListResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -493,7 +493,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "poi", "common", "plan", "talent", "media", "list")
                 .WithHeader("access-token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.POICommonPlanTalentMediaListResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.POICommonPlanTalentMediaListResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -513,7 +513,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "poi", "plan", "list")
                 .WithHeader("access-token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.POIPlanListResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.POIPlanListResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -533,7 +533,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "poi", "common", "plan", "save")
                 .WithHeader("access-token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.POICommonPlanSaveResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.POICommonPlanSaveResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -553,7 +553,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "poi", "common", "plan", "update", "status")
                 .WithHeader("access-token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.POICommonPlanUpdateStatusResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.POICommonPlanUpdateStatusResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
 
@@ -575,7 +575,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "poi", "v2", "service_provider", "sync")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.POIServiceProviderSyncV2Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.POIServiceProviderSyncV2Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
 
@@ -597,7 +597,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "poi", "sku", "sync")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.POISKUSyncResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.POISKUSyncResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
 
@@ -619,7 +619,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "poi", "v2", "spu", "sync")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.POISPUSyncV2Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.POISPUSyncV2Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -639,7 +639,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "poi", "v2", "spu", "status_sync")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.POISPUStatusSyncV2Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.POISPUStatusSyncV2Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -659,7 +659,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "poi", "v2", "spu", "stock_update")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.POISPUStockUpdateV2Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.POISPUStockUpdateV2Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -687,7 +687,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
             if (request.SupplierIdForFilterReasonList != null)
                 flurlReq.SetQueryParam("supplier_ids_for_filter_reason", string.Join(",", request.SupplierIdForFilterReasonList));
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.POISPUGetV2Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.POISPUGetV2Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -707,7 +707,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "poi", "v2", "spu", "take_rate", "sync")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.POISPUTakeRateSyncV2Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.POISPUTakeRateSyncV2Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
 
@@ -729,7 +729,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "poi", "supplier", "sync")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.POISupplierSyncResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.POISupplierSyncResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -750,7 +750,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("access_token", request.AccessToken)
                 .SetQueryParam("supplier_ext_id", request.ExternalSupplierId);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.POISupplierQueryResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.POISupplierQueryResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -770,7 +770,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Get, "poi", "supplier", "query_all")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.POISupplierQueryAllResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.POISupplierQueryAllResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -791,7 +791,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("access_token", request.AccessToken)
                 .SetQueryParam("task_id", request.TaskId);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.POISupplierQueryCallbackResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.POISupplierQueryCallbackResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -812,7 +812,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("access_token", request.AccessToken)
                 .SetQueryParam("supplier_task_ids", string.Join(",", request.SupplierTaskIdList));
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.POISupplierQueryTaskV2Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.POISupplierQueryTaskV2Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -833,7 +833,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("access_token", request.AccessToken)
                 .SetQueryParam("supplier_ext_id", string.Join(",", request.SupplierExternalIdList));
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.POISupplierQuerySupplierV2Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.POISupplierQuerySupplierV2Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -853,7 +853,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "poi", "v2", "supplier", "match")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.POISupplierMatchV2Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.POISupplierMatchV2Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
     }

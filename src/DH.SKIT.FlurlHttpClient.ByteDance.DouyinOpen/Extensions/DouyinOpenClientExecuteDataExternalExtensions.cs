@@ -30,7 +30,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("mp_id", request.MiniAppId)
                 .SetQueryParam("date_type", request.DateType);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalAnchorMpItemClickDistributionResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalAnchorMpItemClickDistributionResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
 
@@ -53,7 +53,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Get, "data", "extern", "billboard", "hot_video")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalBillboardHotVideoResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalBillboardHotVideoResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
 
@@ -75,7 +75,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Get, "data", "extern", "billboard", "sport", "overall")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalBillboardSportOverallResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalBillboardSportOverallResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Get, "data", "extern", "billboard", "sport", "basketball")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalBillboardSportBasketballResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalBillboardSportBasketballResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -115,7 +115,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Get, "data", "extern", "billboard", "sport", "soccer")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalBillboardSportSoccerResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalBillboardSportSoccerResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -135,7 +135,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Get, "data", "extern", "billboard", "sport", "comprehensive")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalBillboardSportComprehensiveResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalBillboardSportComprehensiveResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -155,7 +155,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Get, "data", "extern", "billboard", "sport", "fitness")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalBillboardSportFitnessResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalBillboardSportFitnessResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -175,7 +175,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Get, "data", "extern", "billboard", "sport", "outdoors")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalBillboardSportOutdoorsResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalBillboardSportOutdoorsResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -195,7 +195,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Get, "data", "extern", "billboard", "sport", "table_tennis")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalBillboardSportTableTennisResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalBillboardSportTableTennisResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -215,7 +215,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Get, "data", "extern", "billboard", "sport", "culture")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalBillboardSportCultureResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalBillboardSportCultureResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
 
@@ -237,7 +237,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Get, "data", "extern", "billboard", "amusement", "overall")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalBillboardAmusementOverallResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalBillboardAmusementOverallResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -257,7 +257,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Get, "data", "extern", "billboard", "amusement", "new")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalBillboardAmusementNewResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalBillboardAmusementNewResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
 
@@ -279,7 +279,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Get, "data", "extern", "billboard", "game", "console")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalBillboardGameConsoleResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalBillboardGameConsoleResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -299,7 +299,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Get, "data", "extern", "billboard", "game", "inf")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalBillboardGameInformationResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalBillboardGameInformationResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
 
@@ -321,7 +321,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Get, "data", "extern", "billboard", "food", "overall")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalBillboardFoodOverallResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalBillboardFoodOverallResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -341,7 +341,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Get, "data", "extern", "billboard", "food", "new")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalBillboardFoodNewResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalBillboardFoodNewResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -361,7 +361,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Get, "data", "extern", "billboard", "food", "tutorial")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalBillboardFoodTutorialResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalBillboardFoodTutorialResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -381,7 +381,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Get, "data", "extern", "billboard", "food", "shop")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalBillboardFoodShopResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalBillboardFoodShopResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
 
@@ -403,7 +403,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Get, "data", "extern", "billboard", "drama", "overall")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalBillboardDramaOverallResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalBillboardDramaOverallResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
 
@@ -425,7 +425,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Get, "data", "extern", "billboard", "car", "overall")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalBillboardCarOverallResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalBillboardCarOverallResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -445,7 +445,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Get, "data", "extern", "billboard", "car", "comment")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalBillboardCarCommentResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalBillboardCarCommentResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -465,7 +465,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Get, "data", "extern", "billboard", "car", "play")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalBillboardCarPlayResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalBillboardCarPlayResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -485,7 +485,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Get, "data", "extern", "billboard", "car", "use")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalBillboardCarUseResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalBillboardCarUseResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -505,7 +505,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Get, "data", "extern", "billboard", "car", "driver")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalBillboardCarDriverResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalBillboardCarDriverResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
 
@@ -527,7 +527,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Get, "data", "extern", "billboard", "travel", "overall")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalBillboardTravelOverallResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalBillboardTravelOverallResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -547,7 +547,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Get, "data", "extern", "billboard", "travel", "new")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalBillboardTravelNewResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalBillboardTravelNewResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
 
@@ -569,7 +569,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Get, "data", "extern", "billboard", "cospa", "overall")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalBillboardCospaOverallResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalBillboardCospaOverallResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -589,7 +589,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Get, "data", "extern", "billboard", "cospa", "qing_man")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalBillboardCospaQingmanResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalBillboardCospaQingmanResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -609,7 +609,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Get, "data", "extern", "billboard", "cospa", "out_shot")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalBillboardCospaOutshotResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalBillboardCospaOutshotResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -629,7 +629,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Get, "data", "extern", "billboard", "cospa", "painting")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalBillboardCospaPaintingResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalBillboardCospaPaintingResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -649,7 +649,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Get, "data", "extern", "billboard", "cospa", "voice_control")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalBillboardCospaVoiceResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalBillboardCospaVoiceResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -669,7 +669,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Get, "data", "extern", "billboard", "cospa", "brain_cavity")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalBillboardCospaBrainCavityResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalBillboardCospaBrainCavityResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -689,7 +689,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Get, "data", "extern", "billboard", "cospa", "new")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalBillboardCospaNewResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalBillboardCospaNewResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
 
@@ -711,7 +711,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Get, "data", "extern", "billboard", "stars")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalBillboardStarsResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalBillboardStarsResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
 
@@ -733,7 +733,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Get, "data", "extern", "billboard", "live")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalBillboardLiveResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalBillboardLiveResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
 
@@ -755,7 +755,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Get, "data", "extern", "billboard", "music", "hot")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalBillboardMusicHotResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalBillboardMusicHotResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -775,7 +775,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Get, "data", "extern", "billboard", "music", "soar")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalBillboardMusicSoarResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalBillboardMusicSoarResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -795,7 +795,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Get, "data", "extern", "billboard", "music", "original")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalBillboardMusicOriginalResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalBillboardMusicOriginalResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
 
@@ -817,7 +817,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Get, "data", "extern", "billboard", "topic")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalBillboardTopicResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalBillboardTopicResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
 
@@ -839,7 +839,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Get, "data", "extern", "billboard", "prop")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalBillboardPropResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalBillboardPropResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
         #endregion
@@ -863,7 +863,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("open_id", request.OpenId)
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalFansSourceResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalFansSourceResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -884,7 +884,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("open_id", request.OpenId)
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalFansFavouriteResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalFansFavouriteResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -905,7 +905,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("open_id", request.OpenId)
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalFansCommentResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalFansCommentResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
 
@@ -929,7 +929,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("access_token", request.AccessToken)
                 .SetQueryParam("item_id", request.ItemId);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalItemBaseResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalItemBaseResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -951,7 +951,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("access_token", request.AccessToken)
                 .SetQueryParam("item_id", request.ItemId);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalItemLikeResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalItemLikeResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -973,7 +973,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("access_token", request.AccessToken)
                 .SetQueryParam("item_id", request.ItemId);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalItemCommentResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalItemCommentResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -995,7 +995,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("access_token", request.AccessToken)
                 .SetQueryParam("item_id", request.ItemId);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalItemPlayResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalItemPlayResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -1017,7 +1017,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("access_token", request.AccessToken)
                 .SetQueryParam("item_id", request.ItemId);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalItemShareResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalItemShareResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
 
@@ -1042,7 +1042,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("begin_date", request.BeginDateString)
                 .SetQueryParam("end_date", request.EndDateString);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalPOIBaseResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalPOIBaseResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -1064,7 +1064,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("poi_id", request.POIId)
                 .SetQueryParam("date_type", request.DateType);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalPOIUserResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalPOIUserResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -1090,7 +1090,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
             if (request.ServiceType != null)
                 flurlReq.SetQueryParam("service_type", request.ServiceType);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalPOIServiceBaseResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalPOIServiceBaseResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -1115,7 +1115,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
             if (request.ServiceType != null)
                 flurlReq.SetQueryParam("service_type", request.ServiceType);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalPOIServiceUserResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalPOIServiceUserResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -1136,7 +1136,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("access_token", request.AccessToken)
                 .SetQueryParam("billboard_type", request.BillboardType);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalPOIBillboardResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalPOIBillboardResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -1159,7 +1159,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("cursor", request.PageCursor)
                 .SetQueryParam("count", request.PageSize);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalPOIClaimListResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalPOIClaimListResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
 
@@ -1184,7 +1184,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("begin_date", request.BeginDateString)
                 .SetQueryParam("end_date", request.EndDateString);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalSDKShareResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalSDKShareResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
 
@@ -1208,7 +1208,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("access_token", request.AccessToken)
                 .SetQueryParam("date_type", request.DateType);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalUserItemResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalUserItemResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -1230,7 +1230,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("access_token", request.AccessToken)
                 .SetQueryParam("date_type", request.DateType);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalUserFansResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalUserFansResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -1252,7 +1252,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("access_token", request.AccessToken)
                 .SetQueryParam("date_type", request.DateType);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalUserLikeResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalUserLikeResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -1274,7 +1274,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("access_token", request.AccessToken)
                 .SetQueryParam("date_type", request.DateType);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalUserCommentResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalUserCommentResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -1296,7 +1296,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("access_token", request.AccessToken)
                 .SetQueryParam("date_type", request.DateType);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalUserShareResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalUserShareResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -1318,7 +1318,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("access_token", request.AccessToken)
                 .SetQueryParam("date_type", request.DateType);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DataExternalUserProfileResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.DataExternalUserProfileResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
     }

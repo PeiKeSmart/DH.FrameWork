@@ -27,6 +27,17 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp.Models
             }
         }
 
+        internal static class Converters
+        {
+            internal class ResponsePropertySettleParametersNewtonsoftJsonConverter : Newtonsoft.Json.Converters.TextualObjectInJsonFormatConverterBase<IList<Types.SettleParameter>?>
+            {
+            }
+
+            internal class ResponsePropertySettleParametersSystemTextJsonConverter : System.Text.Json.Converters.TextualObjectInJsonFormatConverterBase<IList<Types.SettleParameter>?>
+            {
+            }
+        }
+
         /// <summary>
         /// 获取或设置小程序第三方平台应用 ID。
         /// </summary>
@@ -66,7 +77,9 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp.Models
         /// 获取或设置分账方参数列表。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("settle_params")]
+        [Newtonsoft.Json.JsonConverter(typeof(Converters.ResponsePropertySettleParametersNewtonsoftJsonConverter))]
         [System.Text.Json.Serialization.JsonPropertyName("settle_params")]
+        [System.Text.Json.Serialization.JsonConverter(typeof(Converters.ResponsePropertySettleParametersSystemTextJsonConverter))]
         public IList<Types.SettleParameter> SettleParameterList { get; set; } = new List<Types.SettleParameter>();
 
         /// <summary>

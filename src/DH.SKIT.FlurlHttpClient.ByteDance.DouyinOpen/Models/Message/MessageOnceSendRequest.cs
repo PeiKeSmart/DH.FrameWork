@@ -7,6 +7,16 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen.Models
     /// </summary>
     public class MessageOnceSendRequest : DouyinOpenRequest
     {
+        internal static class Converters
+        {
+            internal class RequestPropertyTemplateArgumentMapNewtonsoftJsonConverter : Newtonsoft.Json.Converters.TextualObjectInJsonFormatConverterBase<IDictionary<string, string>?>
+            {
+            }
+
+            internal class RequestPropertyTemplateArgumentMapSystemTextJsonTemplateArgumentMap : System.Text.Json.Converters.TextualObjectInJsonFormatConverterBase<IDictionary<string, string>?>
+            {
+            }
+        }
 
         /// <summary>
         /// 获取或设置客户端消息标识。
@@ -40,7 +50,9 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen.Models
         /// 获取或设置消息内容自定义字段字典。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("template_arg_map")]
+        [Newtonsoft.Json.JsonConverter(typeof(Converters.RequestPropertyTemplateArgumentMapNewtonsoftJsonConverter))]
         [System.Text.Json.Serialization.JsonPropertyName("template_arg_map")]
+        [System.Text.Json.Serialization.JsonConverter(typeof(Converters.RequestPropertyTemplateArgumentMapSystemTextJsonTemplateArgumentMap))]
         public IDictionary<string, string>? TemplateArgumentMap { get; set; }
 
         /// <summary>

@@ -30,13 +30,13 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
             FlurlClient.BaseUrl = options.Endpoint ?? DouyinShopEndpoints.DEFAULT;
             FlurlClient.WithTimeout(TimeSpan.FromMilliseconds(options.Timeout));
 
-            //Interceptors.Add(new Interceptors.DouyinShopRequestFormatInterceptor());
-            //Interceptors.Add(new Interceptors.DouyinShopRequestSignInterceptor(
-            //    baseUrl: FlurlClient.BaseUrl,
-            //    appKey: options.AppKey,
-            //    appSecret: options.AppSecret,
-            //    signMethod: options.SignAlgorithm
-            //));
+            Interceptors.Add(new Interceptors.DouyinShopRequestFormatInterceptor());
+            Interceptors.Add(new Interceptors.DouyinShopRequestSignInterceptor(
+                baseUrl: FlurlClient.BaseUrl,
+                appKey: options.AppKey,
+                appSecret: options.AppSecret,
+                signMethod: options.SignAlgorithm
+            ));
         }
 
         /// <summary>
@@ -59,6 +59,11 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
         public IFlurlRequest CreateRequest(DouyinShopRequest request, HttpMethod method, params object[] urlSegments)
         {
             IFlurlRequest flurlRequest = FlurlClient.Request(urlSegments).WithVerb(method);
+
+            if (request.Timeout != null)
+            {
+                flurlRequest.WithTimeout(TimeSpan.FromMilliseconds(request.Timeout.Value));
+            }
 
             if (request.ApiMethod == null)
             {
@@ -88,8 +93,8 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
 
             try
             {
-                using IFlurlResponse flurlResponse = await base.SendFlurlRequestAsync(flurlRequest, httpContent, cancellationToken);
-                return await WrapFlurlResponseAsJsonAsync<T>(flurlResponse, cancellationToken);
+                using IFlurlResponse flurlResponse = await base.SendRequestAsync(flurlRequest, httpContent, cancellationToken);
+                return await WrapResponseWithJsonAsync<T>(flurlResponse, cancellationToken);
             }
             catch (FlurlHttpTimeoutException ex)
             {
@@ -121,9 +126,9 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
                     flurlRequest.Verb == HttpMethod.Head ||
                     flurlRequest.Verb == HttpMethod.Options;
                 using IFlurlResponse flurlResponse = isSimpleRequest ?
-                    await base.SendFlurlRequestAsync(flurlRequest, null, cancellationToken) :
-                    await base.SendFlurlRequestAsJsonAsync(flurlRequest, data, cancellationToken);
-                return await WrapFlurlResponseAsJsonAsync<T>(flurlResponse, cancellationToken);
+                    await base.SendRequestAsync(flurlRequest, null, cancellationToken) :
+                    await base.SendRequestWithJsonAsync(flurlRequest, data, cancellationToken);
+                return await WrapResponseWithJsonAsync<T>(flurlResponse, cancellationToken);
             }
             catch (FlurlHttpTimeoutException ex)
             {

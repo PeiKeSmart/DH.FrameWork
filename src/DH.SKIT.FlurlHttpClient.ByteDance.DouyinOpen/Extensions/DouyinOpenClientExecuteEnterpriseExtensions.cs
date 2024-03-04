@@ -29,7 +29,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("open_id", request.OpenId)
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.EnterpriseIMMessageSendResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.EnterpriseIMMessageSendResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         #region IM/Card
@@ -51,7 +51,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("open_id", request.OpenId)
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.EnterpriseIMCardSaveResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.EnterpriseIMCardSaveResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("cursor", request.PageCursor)
                 .SetQueryParam("count", request.PageSize);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.EnterpriseIMCardListResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.EnterpriseIMCardListResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("open_id", request.OpenId)
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.EnterpriseIMCardDeleteResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.EnterpriseIMCardDeleteResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
         #endregion
@@ -128,7 +128,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
             if (request.LeadsLevel != null)
                 flurlReq.SetQueryParam("leads_level", request.LeadsLevel);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.EnterpriseLeadsUserListResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.EnterpriseLeadsUserListResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -151,7 +151,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("access_token", request.AccessToken)
                 .SetQueryParam("user_id", request.UserOpenId);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.EnterpriseLeadsUserDetailResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.EnterpriseLeadsUserDetailResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -179,7 +179,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
             if (request.ActionType != null)
                 flurlReq.SetQueryParam("action_type", request.ActionType);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.EnterpriseLeadsUserActionListResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.EnterpriseLeadsUserActionListResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -203,7 +203,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("cursor", request.PageCursor)
                 .SetQueryParam("count", request.PageSize);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.EnterpriseLeadsTagListResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.EnterpriseLeadsTagListResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -225,7 +225,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("open_id", request.OpenId)
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.EnterpriseLeadsTagCreateResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.EnterpriseLeadsTagCreateResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -247,7 +247,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("open_id", request.OpenId)
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.EnterpriseLeadsTagUpdateResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.EnterpriseLeadsTagUpdateResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -269,7 +269,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("open_id", request.OpenId)
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.EnterpriseLeadsTagDeleteResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.EnterpriseLeadsTagDeleteResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -291,7 +291,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("open_id", request.OpenId)
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.EnterpriseLeadsTagUserListResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.EnterpriseLeadsTagUserListResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -313,7 +313,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("open_id", request.OpenId)
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.EnterpriseLeadsTagUserUpdateResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.EnterpriseLeadsTagUserUpdateResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
 
@@ -391,7 +391,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("cursor", request.PageCursor)
                 .SetQueryParam("count", request.PageSize);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.EnterpriseMediaListResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.EnterpriseMediaListResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -412,7 +412,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("open_id", request.OpenId)
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.EnterpriseMediaDeleteResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.EnterpriseMediaDeleteResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
     }

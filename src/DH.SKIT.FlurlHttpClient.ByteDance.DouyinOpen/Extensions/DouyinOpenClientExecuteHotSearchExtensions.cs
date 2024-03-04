@@ -26,7 +26,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Get, "hotsearch", "sentences")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.HotSearchSentencesResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.HotSearchSentencesResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("cursor", request.PageCursor)
                 .SetQueryParam("count", request.PageSize);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.HotSearchTrendingSentencesResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.HotSearchTrendingSentencesResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("access_token", request.AccessToken)
                 .SetQueryParam("hot_sentence", request.HotSentence);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.HotSearchVideosResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.HotSearchVideosResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
     }
 }

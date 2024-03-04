@@ -33,7 +33,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
             if (request.SortType != null)
                 flurlReq.SetQueryParam("sort_type", request.SortType);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.ItemCommentListResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.ItemCommentListResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -61,7 +61,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
             if (request.SortType != null)
                 flurlReq.SetQueryParam("sort_type", request.SortType);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.ItemCommentReplyListResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.ItemCommentReplyListResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -82,7 +82,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("open_id", request.OpenId)
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.ItemCommentReplyResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.ItemCommentReplyResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -106,7 +106,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("count", request.PageSize)
                 .SetQueryParam("item_id", request.ItemId);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.VideoCommentListResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.VideoCommentListResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -131,7 +131,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("item_id", request.ItemId)
                 .SetQueryParam("comment_id", request.CommentId);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.VideoCommentReplyListResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.VideoCommentReplyListResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -152,7 +152,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("open_id", request.OpenId)
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.VideoCommentReplyResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.VideoCommentReplyResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -173,7 +173,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("open_id", request.OpenId)
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.VideoCommentTopResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.VideoCommentTopResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
     }
 }

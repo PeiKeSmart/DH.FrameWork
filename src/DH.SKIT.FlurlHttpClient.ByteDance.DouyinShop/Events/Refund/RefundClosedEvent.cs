@@ -1,8 +1,11 @@
-﻿namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Events
+namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Events
 {
     /// <summary>
     /// <para>表示 doudian_refund_RefundClosed 消息的数据。</para>
-    /// <para>REF: https://op.jinritemai.com/docs/message-docs/31/122 </para>
+    /// <para>
+    /// REF: <br/>
+    /// <![CDATA[ https://op.jinritemai.com/docs/message-docs/31/122 ]]>
+    /// </para>
     /// </summary>
     public class RefundClosedEvent : DouyinShopEvent<RefundClosedEvent.Types.Data>
     {
@@ -15,6 +18,7 @@
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("p_id")]
                 [System.Text.Json.Serialization.JsonPropertyName("p_id")]
+                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalStringReadOnlyConverter))]
                 public string ShopOrderId { get; set; } = default!;
 
                 /// <summary>
@@ -22,6 +26,7 @@
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("s_id")]
                 [System.Text.Json.Serialization.JsonPropertyName("s_id")]
+                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalStringReadOnlyConverter))]
                 public string SKUOrderId { get; set; } = default!;
 
                 /// <summary>
@@ -36,6 +41,7 @@
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("aftersale_id")]
                 [System.Text.Json.Serialization.JsonPropertyName("aftersale_id")]
+                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalStringReadOnlyConverter))]
                 public string AftersaleId { get; set; } = default!;
 
                 /// <summary>
