@@ -3,7 +3,8 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop
     /// <summary>
     /// TikTok Shop API 请求的基类。
     /// </summary>
-    public abstract class TikTokShopRequest : CommonRequestBase, ICommonRequest {
+    public abstract class TikTokShopRequest : CommonRequestBase, ICommonRequest
+    {
         /// <summary>
         /// 获取或设置接口调用凭证。
         /// </summary>
@@ -26,10 +27,17 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop
         public virtual string? ShopId { get; set; }
 
         /// <summary>
-        /// 获取或设置 API 版本号。
+        /// 获取或设置店铺密码。
         /// </summary>
         [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
-        public virtual int? ApiVersion { get; set; }
+        public virtual string? ShopCipher { get; set; }
+
+        /// <summary>
+        /// 获取或设置 API 版本号。如果不指定将使用系统所支持的最高版本号。
+        /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
+        [System.Text.Json.Serialization.JsonIgnore]
+        public virtual string? ApiVersion { get; set; }
     }
 }

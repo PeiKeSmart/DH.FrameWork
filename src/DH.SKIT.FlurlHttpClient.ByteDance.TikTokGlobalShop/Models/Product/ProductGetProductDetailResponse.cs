@@ -22,6 +22,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop.Models
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("id")]
                         [System.Text.Json.Serialization.JsonPropertyName("id")]
+                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.NumericalStringReadOnlyConverter))]
                         public string BrandId { get; set; } = default!;
 
                         /// <summary>
@@ -212,6 +213,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop.Models
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("delivery_service_id")]
                         [System.Text.Json.Serialization.JsonPropertyName("delivery_service_id")]
+                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.NumericalStringReadOnlyConverter))]
                         public string DeliveryServiceId { get; set; } = default!;
 
                         /// <summary>
@@ -251,6 +253,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop.Models
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("id")]
                                 [System.Text.Json.Serialization.JsonPropertyName("id")]
+                                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.NumericalStringReadOnlyConverter))]
                                 public string AttributeId { get; set; } = default!;
 
                                 /// <summary>
@@ -265,6 +268,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop.Models
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("value_id")]
                                 [System.Text.Json.Serialization.JsonPropertyName("value_id")]
+                                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.NumericalStringReadOnlyConverter))]
                                 public string ValueId { get; set; } = default!;
 
                                 /// <summary>
@@ -309,6 +313,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop.Models
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("id")]
                         [System.Text.Json.Serialization.JsonPropertyName("id")]
+                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.NumericalStringReadOnlyConverter))]
                         public string SKUId { get; set; } = default!;
 
                         /// <summary>
@@ -392,6 +397,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop.Models
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("id")]
                         [System.Text.Json.Serialization.JsonPropertyName("id")]
+                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.NumericalStringReadOnlyConverter))]
                         public string CertificationId { get; set; } = default!;
 
                         /// <summary>
@@ -427,6 +433,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop.Models
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("id")]
                                 [System.Text.Json.Serialization.JsonPropertyName("id")]
+                                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.NumericalStringReadOnlyConverter))]
                                 public string ValueId { get; set; } = default!;
 
                                 /// <summary>
@@ -443,6 +450,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop.Models
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("id")]
                         [System.Text.Json.Serialization.JsonPropertyName("id")]
+                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.NumericalStringReadOnlyConverter))]
                         public string AttributeId { get; set; } = default!;
 
                         /// <summary>
@@ -458,16 +466,6 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop.Models
                         [Newtonsoft.Json.JsonProperty("values")]
                         [System.Text.Json.Serialization.JsonPropertyName("values")]
                         public Types.ProductAttributeValue[] ValueList { get; set; } = default!;
-                    }
-
-                    public class ExemptionOfIdentifierCode
-                    {
-                        /// <summary>
-                        /// 获取或设置 GTIN 豁免原因类型。
-                        /// </summary>
-                        [Newtonsoft.Json.JsonProperty("exemption_reason")]
-                        [System.Text.Json.Serialization.JsonPropertyName("exemption_reason")]
-                        public int? ExemptionReasonType { get; set; }
                     }
 
                     public class QCReason
@@ -493,6 +491,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop.Models
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("product_id")]
                 [System.Text.Json.Serialization.JsonPropertyName("product_id")]
+                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.NumericalStringReadOnlyConverter))]
                 public string ProductId { get; set; } = default!;
 
                 /// <summary>
@@ -634,13 +633,6 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop.Models
                 [Newtonsoft.Json.JsonProperty("product_attributes")]
                 [System.Text.Json.Serialization.JsonPropertyName("product_attributes")]
                 public Types.ProductAttribute[]? ProductAttributeList { get; set; }
-
-                /// <summary>
-                /// 获取或设置产品标识码豁免信息。
-                /// </summary>
-                [Newtonsoft.Json.JsonProperty("exemption_of_identifier_code")]
-                [System.Text.Json.Serialization.JsonPropertyName("exemption_of_identifier_code")]
-                public Types.ExemptionOfIdentifierCode? ExemptionOfIdentifierCode { get; set; }
 
                 /// <summary>
                 /// 获取或设置 QC 原因列表。

@@ -1,13 +1,13 @@
 namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop.Models
 {
     /// <summary>
-    /// <para>表示 [GET] /products/categories 接口的请求。</para>
+    /// <para>表示 [POST] /products/pre_check 接口的请求。</para>
     /// </summary>
-    public class ProductGetCategoryListRequest : TikTokShopRequest
+    public class ProductPrecheckRequest : TikTokShopRequest
     {
         /// <inheritdoc/>
         [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
-        public override string? ApiVersion { get; set; } = "202303";
+        public override string? ApiVersion { get; set; } = "202306";
     }
 }
