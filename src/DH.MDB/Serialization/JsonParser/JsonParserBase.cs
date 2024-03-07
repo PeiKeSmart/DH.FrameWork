@@ -1,59 +1,56 @@
-﻿using System;
+﻿namespace DH.Serialization;
 
-namespace DH.Serialization
+internal abstract class JsonParserBase
 {
-    internal abstract class JsonParserBase
+
+    protected CharSource charSrc;
+
+    protected abstract void parse();
+    public abstract Object getResult();
+
+    public JsonParserBase()
+    {
+    }
+
+    public JsonParserBase(CharSource charSrc)
+    {
+        this.charSrc = charSrc;
+        parse();
+    }
+
+    protected JsonParserBase moveAndGetParser()
     {
 
-        protected CharSource charSrc;
+        charSrc.moveToText();
 
-        protected abstract void parse();
-        public abstract Object getResult();
+        char c = charSrc.getCurrent();
 
-        public JsonParserBase()
+        if (c == '"' || c == '\'')
         {
+            return new StringJsonParser(this.charSrc, c);
         }
 
-        public JsonParserBase(CharSource charSrc)
+        if (c == '{')
         {
-            this.charSrc = charSrc;
-            parse();
+            charSrc.back();
+            return new ObjectJsonParser(this.charSrc);
         }
 
-        protected JsonParserBase moveAndGetParser()
+        if (c == '[')
         {
-
-            charSrc.moveToText();
-
-            char c = charSrc.getCurrent();
-
-            if (c == '"' || c == '\'')
-            {
-                return new StringJsonParser(this.charSrc, c);
-            }
-
-            if (c == '{')
-            {
-                charSrc.back();
-                return new ObjectJsonParser(this.charSrc);
-            }
-
-            if (c == '[')
-            {
-                charSrc.back();
-                return new ArrayJsonParser(this.charSrc);
-            }
-
-            return new ValueJsonParser(this.charSrc);
-
+            charSrc.back();
+            return new ArrayJsonParser(this.charSrc);
         }
 
-        protected JsonParserException ex(String msg)
-        {
-            return new JsonParserException(msg + "(index:" + this.charSrc.getIndex().ToString() + ")\n" + this.charSrc.strSrc);
-        }
-
-
+        return new ValueJsonParser(this.charSrc);
 
     }
+
+    protected JsonParserException ex(String msg)
+    {
+        return new JsonParserException(msg + "(index:" + this.charSrc.getIndex().ToString() + ")\n" + this.charSrc.strSrc);
+    }
+
+
+
 }
