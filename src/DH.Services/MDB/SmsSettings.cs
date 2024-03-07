@@ -1,6 +1,4 @@
-﻿using DH.Data;
-
-namespace DH.Services.MDB;
+﻿namespace DH.Services;
 
 public class SmsSettings : CacheObject {
     static SmsSettings()
