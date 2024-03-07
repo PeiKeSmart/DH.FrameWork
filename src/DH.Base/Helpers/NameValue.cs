@@ -7,12 +7,12 @@ public class NameValueL<T> {
     /// <summary>
     /// 名称
     /// </summary>
-    public String name { get; set; }
+    public String? name { get; set; }
 
     /// <summary>
     /// 值
     /// </summary>
-    public T value { get; set; }
+    public T? value { get; set; }
 }
 
 /// <summary>
@@ -22,12 +22,12 @@ public class NameValueU<T> {
     /// <summary>
     /// 名称
     /// </summary>
-    public String Name { get; set; }
+    public String? Name { get; set; }
 
     /// <summary>
     /// 值
     /// </summary>
-    public T Value { get; set; }
+    public T? Value { get; set; }
 
     /// <summary>
     /// 实例化
@@ -91,10 +91,10 @@ public class NameValue<T> {
     /// <summary>
     /// 名称
     /// </summary>
-    public String Name { get; set; }
+    public String? Name { get; set; }
 
     /// <summary>
     /// 值
     /// </summary>
-    public T Value { get; set; }
+    public T? Value { get; set; }
 }
