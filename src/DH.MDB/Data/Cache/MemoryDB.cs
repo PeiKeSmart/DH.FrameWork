@@ -9,7 +9,7 @@ using System.Collections.Specialized;
 using System.Reflection;
 using System.Text;
 
-namespace DH;
+namespace DH.Data;
 
 internal class MemoryDB
 {

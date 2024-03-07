@@ -662,7 +662,7 @@ public static partial class DHWeb
         byte[] buffer = new byte[size];
         stream.Read(buffer, 0, (int)size);
         stream.Dispose();
-        System.IO.File.Delete(stream.Name);
+        File.Delete(stream.Name);
 
         Response.ContentType = "application/octet-stream";
         Response.Headers.Add("Content-Disposition", "attachment;filename=" + WebUtility.UrlEncode(Path.GetFileName(stream.Name)));

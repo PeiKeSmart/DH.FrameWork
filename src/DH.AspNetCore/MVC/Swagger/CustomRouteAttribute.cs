@@ -1,6 +1,4 @@
-﻿using DH.Swagger;
-
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 
 namespace DH.AspNetCore.MVC;
@@ -31,7 +29,7 @@ public class CustomRouteAttribute : RouteAttribute, IApiDescriptionGroupNameProv
     /// <param name="version"></param>
     public CustomRouteAttribute(ApiVersions version, string actionName = "") : base($"/Api/{version}/[controller]/{actionName}")
     {
-        GroupName = version.Version;
+        GroupName = version.ToString();
     }
 
     /// <summary>
@@ -42,6 +40,6 @@ public class CustomRouteAttribute : RouteAttribute, IApiDescriptionGroupNameProv
     /// <param name="PrefixName"></param>
     public CustomRouteAttribute(ApiVersions version, string PrefixName, string actionName = "") : base($"/Api/{PrefixName}/{version}/[controller]/{actionName}")
     {
-        GroupName = version.Version;
+        GroupName = version.ToString();
     }
 }
