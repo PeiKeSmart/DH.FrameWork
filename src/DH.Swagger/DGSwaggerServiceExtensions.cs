@@ -54,18 +54,18 @@ namespace DH.Swagger {
                 });
 
                 // 遍历出全部的版本，做文档信息展示
-                typeof(ApiVersions).GetEnumNames().ToList().ForEach(version =>
+                ApiVersions.GetAll().ForEach(version =>
                 {
                     var infos = new OpenApiInfo
                     {
-                        Version = version,
+                        Version = version.Version,
                         Title = info.Title,
                         Description = info.Description,
                         //TermsOfService = "None",
                         Contact = info.Contact,// new OpenApiContact { Email = "Email", Name = "Name", Url = new Uri("http://www.github.com") },
                         License = info.License,//new OpenApiLicense { Url = new Uri("http://www.github.com"), Name = "LicenseName" },
                     };
-                    c.SwaggerDoc(version, infos);
+                    c.SwaggerDoc(version.Version, infos);
                     c.OrderActionsBy(o => o.RelativePath);
                     c.DocumentFilter<HiddenApiFilter>();
                 });
@@ -143,7 +143,7 @@ namespace DH.Swagger {
                     c.RoutePrefix = $"{configuration.GetValue("SwaggerOption:RoutePrefix", "swagger")}";//设置文档首页根路径
 
                     //自定义右上角版本切换
-                    typeof(ApiVersions).GetEnumNames().ToList().ForEach(version =>
+                    ApiVersions.GetAll().ToList().ForEach(version =>
                     {
                         c.SwaggerEndpoint($"/{configuration.GetValue<string>("SwaggerOption:DescEndpoint", "")}docs/{version}/docs.json", $"{version}");//此处配置要和UseSwagger的RouteTemplate匹配
                     });
