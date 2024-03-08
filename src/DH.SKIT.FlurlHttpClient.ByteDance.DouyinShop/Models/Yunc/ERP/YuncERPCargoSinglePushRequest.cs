@@ -227,49 +227,63 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
         /// 获取或设置是否航空禁运品。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("is_embargo")]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.NumericalNullableBooleanConverter))]
         [System.Text.Json.Serialization.JsonPropertyName("is_embargo")]
+        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalNullableBooleanConverter))]
         public bool? IsEmargo { get; set; }
 
         /// <summary>
         /// 获取或设置是否是否易碎品。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("is_fragile")]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.NumericalNullableBooleanConverter))]
         [System.Text.Json.Serialization.JsonPropertyName("is_fragile")]
+        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalNullableBooleanConverter))]
         public bool? IsFragile { get; set; }
 
         /// <summary>
         /// 获取或设置是否大件。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("is_large")]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.NumericalNullableBooleanConverter))]
         [System.Text.Json.Serialization.JsonPropertyName("is_large")]
+        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalNullableBooleanConverter))]
         public bool? IsLarge { get; set; }
 
         /// <summary>
         /// 获取或设置是否贵重品。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("is_precious")]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.NumericalNullableBooleanConverter))]
         [System.Text.Json.Serialization.JsonPropertyName("is_precious")]
+        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalNullableBooleanConverter))]
         public bool? IsPrecious { get; set; }
 
         /// <summary>
         /// 获取或设置是否效期管理。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("is_need_valid")]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.NumericalNullableBooleanConverter))]
         [System.Text.Json.Serialization.JsonPropertyName("is_need_valid")]
+        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalNullableBooleanConverter))]
         public bool? IsNeedValid { get; set; }
 
         /// <summary>
         /// 获取或设置是否液体。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("is_liquid")]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.NumericalNullableBooleanConverter))]
         [System.Text.Json.Serialization.JsonPropertyName("is_liquid")]
+        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalNullableBooleanConverter))]
         public bool? IsLiquid { get; set; }
 
         /// <summary>
         /// 获取或设置是否危险品。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("is_hazardous")]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.NumericalNullableBooleanConverter))]
         [System.Text.Json.Serialization.JsonPropertyName("is_hazardous")]
+        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalNullableBooleanConverter))]
         public bool? IsHazardous { get; set; }
 
         /// <summary>
@@ -304,7 +318,9 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
         /// 获取或设置是否批次管理。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("is_need_batch")]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.NumericalNullableBooleanConverter))]
         [System.Text.Json.Serialization.JsonPropertyName("is_need_batch")]
+        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalNullableBooleanConverter))]
         public bool? IsNeedBatch { get; set; }
 
         /// <summary>
@@ -318,7 +334,9 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
         /// 获取或设置是否强批次管理。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("is_must_batch")]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.NumericalNullableBooleanConverter))]
         [System.Text.Json.Serialization.JsonPropertyName("is_must_batch")]
+        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalNullableBooleanConverter))]
         public bool? IsMatchBatch { get; set; }
 
         /// <summary>

@@ -176,7 +176,9 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                                 /// 获取或设置支付时间。
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("pay_success_time")]
+                                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.RegularNullableDateTimeOffsetConverter))]
                                 [System.Text.Json.Serialization.JsonPropertyName("pay_success_time")]
+                                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.RegularNullableDateTimeOffsetConverter))]
                                 public DateTimeOffset? PayTime { get; set; }
 
                                 /// <summary>
@@ -239,14 +241,18 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                                 /// 获取或设置结算时间。
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("settle_time")]
+                                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.RegularNullableDateTimeOffsetConverter))]
                                 [System.Text.Json.Serialization.JsonPropertyName("settle_time")]
+                                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.RegularNullableDateTimeOffsetConverter))]
                                 public DateTimeOffset? SettleTime { get; set; }
 
                                 /// <summary>
                                 /// 获取或设置退款时间。
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("refund_time")]
+                                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.RegularNullableDateTimeOffsetConverter))]
                                 [System.Text.Json.Serialization.JsonPropertyName("refund_time")]
+                                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.RegularNullableDateTimeOffsetConverter))]
                                 public DateTimeOffset? RefundTime { get; set; }
 
                                 /// <summary>
@@ -260,7 +266,9 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                                 /// 获取或设置更新时间。
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("update_time")]
+                                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.RegularDateTimeOffsetConverter))]
                                 [System.Text.Json.Serialization.JsonPropertyName("update_time")]
+                                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.RegularDateTimeOffsetConverter))]
                                 public DateTimeOffset UpdateTime { get; set; }
                             }
                         }

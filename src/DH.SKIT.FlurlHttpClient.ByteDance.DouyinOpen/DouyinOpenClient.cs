@@ -52,6 +52,11 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
         {
             IFlurlRequest flurlRequest = FlurlClient.Request(urlSegments).WithVerb(method);
 
+            if (request.Timeout != null)
+            {
+                flurlRequest.WithTimeout(TimeSpan.FromMilliseconds(request.Timeout.Value));
+            }
+
             return flurlRequest;
         }
 
@@ -68,8 +73,19 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
         {
             if (flurlRequest == null) throw new ArgumentNullException(nameof(flurlRequest));
 
-            using IFlurlResponse flurlResponse = await base.SendFlurlRequestAsync(flurlRequest, httpContent, cancellationToken).ConfigureAwait(false);
-            return await WrapFlurlResponseAsJsonAsync<T>(flurlResponse, cancellationToken).ConfigureAwait(false);
+            try
+            {
+                using IFlurlResponse flurlResponse = await base.SendRequestAsync(flurlRequest, httpContent, cancellationToken);
+                return await WrapResponseWithJsonAsync<T>(flurlResponse, cancellationToken);
+            }
+            catch (FlurlHttpTimeoutException ex)
+            {
+                throw new Exceptions.DouyinOpenRequestTimeoutException(ex.Message, ex);
+            }
+            catch (FlurlHttpException ex)
+            {
+                throw new DouyinOpenException(ex.Message, ex);
+            }
         }
 
         /// <summary>
@@ -80,43 +96,30 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
         /// <param name="data"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<T> SendFlurlRequestAsJsonAsync<T>(IFlurlRequest flurlRequest, object? data = null, CancellationToken cancellationToken = default)
+        public async Task<T> SendRequestWithJsonAsync<T>(IFlurlRequest flurlRequest, object? data = null, CancellationToken cancellationToken = default)
             where T : DouyinOpenResponse, new()
         {
-            if (flurlRequest is null) throw new ArgumentNullException(nameof(flurlRequest));
+            if (flurlRequest == null) throw new ArgumentNullException(nameof(flurlRequest));
 
-            bool isSimpleRequest = data is null ||
-                flurlRequest.Verb == HttpMethod.Get ||
-                flurlRequest.Verb == HttpMethod.Head ||
-                flurlRequest.Verb == HttpMethod.Options;
-            using IFlurlResponse flurlResponse = isSimpleRequest ?
-                await base.SendFlurlRequestAsync(flurlRequest, null, cancellationToken).ConfigureAwait(false) :
-                await base.SendFlurlRequestAsJsonAsync(flurlRequest, data, cancellationToken).ConfigureAwait(false);
-            return await WrapFlurlResponseAsJsonAsync<T>(flurlResponse, cancellationToken).ConfigureAwait(false);
+            try
+            {
+                bool isSimpleRequest = data == null ||
+                    flurlRequest.Verb == HttpMethod.Get ||
+                    flurlRequest.Verb == HttpMethod.Head ||
+                    flurlRequest.Verb == HttpMethod.Options;
+                using IFlurlResponse flurlResponse = isSimpleRequest ?
+                    await base.SendRequestAsync(flurlRequest, null, cancellationToken) :
+                    await base.SendRequestWithJsonAsync(flurlRequest, data, cancellationToken);
+                return await WrapResponseWithJsonAsync<T>(flurlResponse, cancellationToken);
+            }
+            catch (FlurlHttpTimeoutException ex)
+            {
+                throw new Exceptions.DouyinOpenRequestTimeoutException(ex.Message, ex);
+            }
+            catch (FlurlHttpException ex)
+            {
+                throw new DouyinOpenException(ex.Message, ex);
+            }
         }
-
-        /// <summary>
-        /// 异步发起请求。
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="flurlRequest"></param>
-        /// <param name="data"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public async Task<T> SendFlurlRequestAsFormUrlEncodedAsync<T>(IFlurlRequest flurlRequest, object? data = null, CancellationToken cancellationToken = default)
-            where T : DouyinOpenResponse, new()
-        {
-            if (flurlRequest is null) throw new ArgumentNullException(nameof(flurlRequest));
-
-            bool isSimpleRequest = data is null ||
-                flurlRequest.Verb == HttpMethod.Get ||
-                flurlRequest.Verb == HttpMethod.Head ||
-                flurlRequest.Verb == HttpMethod.Options;
-            using IFlurlResponse flurlResponse = isSimpleRequest ?
-                await base.SendFlurlRequestAsync(flurlRequest, null, cancellationToken).ConfigureAwait(false) :
-                await base.SendFlurlRequestAsFormUrlEncodedAsync(flurlRequest, data, cancellationToken).ConfigureAwait(false);
-            return await WrapFlurlResponseAsJsonAsync<T>(flurlResponse, cancellationToken).ConfigureAwait(false);
-        }
-
     }
 }

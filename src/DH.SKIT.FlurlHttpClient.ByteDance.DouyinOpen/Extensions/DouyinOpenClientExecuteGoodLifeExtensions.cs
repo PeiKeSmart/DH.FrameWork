@@ -28,7 +28,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "goodlife", "v1", "after_sale", "audit", "notify")
                 .WithHeader("access-token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifeAftersaleAuditNotifyV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifeAftersaleAuditNotifyV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
 
@@ -50,7 +50,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "goodlife", "v1", "after_sale", "order", "merchant_reject")
                 .WithHeader("access-token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifeAftersaleOrderMerchantRejectV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifeAftersaleOrderMerchantRejectV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "goodlife", "v1", "after_sale", "order", "apply_refund")
                 .WithHeader("access-token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifeAftersaleOrderApplyRefundV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifeAftersaleOrderApplyRefundV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
         #endregion
@@ -96,7 +96,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("encrypted_data", request.EncryptedData)
                 .SetQueryParam("code", request.Code);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifeFulfilmentCertificatePrepareV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifeFulfilmentCertificatePrepareV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -119,7 +119,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("code", request.Code)
                 .SetQueryParam("order_id", request.OrderId);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifeFulfilmentCertificateGetV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifeFulfilmentCertificateGetV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -139,7 +139,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "goodlife", "v1", "fulfilment", "certificate", "cancel")
                 .WithHeader("access-token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifeFulfilmentCertificateCancelV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifeFulfilmentCertificateCancelV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -159,7 +159,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "goodlife", "v1", "fulfilment", "certificate", "verify")
                 .WithHeader("access-token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifeFulfilmentCertificateVerifyV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifeFulfilmentCertificateVerifyV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -181,7 +181,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("encrypted_code", request.EncryptedCode)
                 .SetQueryParam("order_id", request.OrderId);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifeFulfilmentCertificateQueryV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifeFulfilmentCertificateQueryV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -213,7 +213,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
             if (request.EndTimestamp != null)
                 flurlReq.SetQueryParam("end_time", request.EndTimestamp);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifeFulfilmentCertificateVerifyRecordQueryV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifeFulfilmentCertificateVerifyRecordQueryV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
 
@@ -235,7 +235,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "goodlife", "v1", "fulfilment", "distribution", "order", "sync_status")
                 .WithHeader("access-token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifeFulfilmentDistributionOrderSyncStatusV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifeFulfilmentDistributionOrderSyncStatusV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
 
@@ -257,7 +257,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "goodlife", "v1", "fulfilment", "reserve_code", "batch_import")
                 .WithHeader("access-token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifeFulfilmentReserveCodeBatchImportV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifeFulfilmentReserveCodeBatchImportV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -277,7 +277,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "goodlife", "v1", "fulfilment", "reserve_code", "bind_order_info")
                 .WithHeader("access-token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifeFulfilmentReserveCodeBindOrderInfoV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifeFulfilmentReserveCodeBindOrderInfoV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
         #endregion
@@ -301,7 +301,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "goodlife", "v1", "goods", "calendar_static_attr_group", "save")
                 .WithHeader("access-token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifeGoodsCalendarStaticAttributeGroupSaveV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifeGoodsCalendarStaticAttributeGroupSaveV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -321,7 +321,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "goodlife", "v1", "goods", "calendar_stock_group", "save")
                 .WithHeader("access-token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifeGoodsCalendarStockGroupSaveV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifeGoodsCalendarStockGroupSaveV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -341,7 +341,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "goodlife", "v1", "goods", "calendar_amount_group", "save")
                 .WithHeader("access-token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifeGoodsCalendarAmountGroupSaveV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifeGoodsCalendarAmountGroupSaveV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
 
@@ -372,7 +372,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
             if (request.QueryType != null)
                 flurlReq.SetQueryParam("query_category_type", request.QueryType.Value);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifeGoodsCategoryGetV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifeGoodsCategoryGetV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
 
@@ -394,7 +394,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "goodlife", "v1", "goods", "product", "save")
                 .WithHeader("access-token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifeGoodsProductSaveV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifeGoodsProductSaveV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -414,7 +414,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "goodlife", "v1", "goods", "product", "free_audit")
                 .WithHeader("access-token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifeGoodsProductFreeAuditV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifeGoodsProductFreeAuditV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -434,7 +434,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "goodlife", "v1", "goods", "product", "operate")
                 .WithHeader("access-token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifeGoodsProductOperateV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifeGoodsProductOperateV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -466,7 +466,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
             if (request.PageSize != null)
                 flurlReq.SetQueryParam("count", request.PageSize.Value);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifeGoodsProductDraftQueryV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifeGoodsProductDraftQueryV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -495,7 +495,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
             if (request.OutProductIdList != null)
                 flurlReq.SetQueryParam("out_ids", string.Join(",", request.OutProductIdList));
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifeGoodsProductDraftGetV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifeGoodsProductDraftGetV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -527,7 +527,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
             if (request.PageSize != null)
                 flurlReq.SetQueryParam("count", request.PageSize.Value);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifeGoodsProductOnlineQueryV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifeGoodsProductOnlineQueryV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -556,7 +556,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
             if (request.OutProductIdList != null)
                 flurlReq.SetQueryParam("out_ids", string.Join(",", request.OutProductIdList));
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifeGoodsProductOnlineGetV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifeGoodsProductOnlineGetV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
 
@@ -578,7 +578,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "goodlife", "v1", "goods", "sku", "batch_save")
                 .WithHeader("access-token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifeGoodsSKUBatchSaveV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifeGoodsSKUBatchSaveV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
 
@@ -600,7 +600,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "goodlife", "v1", "goods", "spu", "save")
                 .WithHeader("access-token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifeGoodsSPUSaveV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifeGoodsSPUSaveV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
 
@@ -622,7 +622,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "goodlife", "v1", "goods", "stock", "sync")
                 .WithHeader("access-token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifeGoodsStockSyncV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifeGoodsStockSyncV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
 
@@ -646,7 +646,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("product_type", request.ProductType)
                 .SetQueryParam("category_id", request.CategoryId);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifeGoodsTemplateGetV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifeGoodsTemplateGetV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
         #endregion
@@ -669,7 +669,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "goodlife", "v1", "member", "user", "update")
                 .WithHeader("access-token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifeMemberUserUpdateV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifeMemberUserUpdateV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -689,7 +689,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "goodlife", "v1", "member", "unionid", "get")
                 .WithHeader("access-token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifeMemberUnionIdGetV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifeMemberUnionIdGetV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
 
@@ -712,7 +712,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "goodlife", "v1", "partner", "product_commission", "save")
                 .WithHeader("access-token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifePartnerProductCommissionSaveV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifePartnerProductCommissionSaveV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -735,7 +735,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("page", request.PageNumber)
                 .SetQueryParam("size", request.PageSize);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifePartnerProductCommissionQueryV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifePartnerProductCommissionQueryV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -758,7 +758,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("page", request.PageNumber)
                 .SetQueryParam("size", request.PageSize);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifePartnerCommissionRecordQueryV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifePartnerCommissionRecordQueryV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -780,7 +780,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("order_id", request.OrderId)
                 .SetQueryParam("record_id", request.RecordId);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifePartnerCommissionRecordGetV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifePartnerCommissionRecordGetV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
 
@@ -802,7 +802,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "goodlife", "v1", "partner", "order", "create")
                 .WithHeader("access-token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifePartnerOrderCreateV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifePartnerOrderCreateV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -840,7 +840,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
             if (request.Status != null)
                 flurlReq.SetQueryParam("status", request.Status.Value);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifePartnerOrderQueryV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifePartnerOrderQueryV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -862,7 +862,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("order_id", request.OrderId)
                 .SetQueryParam("without_product_items", request.IsWithoutProductItems.GetValueOrDefault() ? "true" : "false");
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifePartnerOrderGetV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifePartnerOrderGetV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
         #endregion
@@ -885,7 +885,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "goodlife", "v1", "poi", "poi", "sync")
                 .WithHeader("access-token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifePOISyncV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifePOISyncV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -905,7 +905,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "goodlife", "v1", "poi", "poi", "update")
                 .WithHeader("access-token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifePOIUpdateV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifePOIUpdateV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -925,7 +925,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "goodlife", "v1", "poi", "poi", "claim")
                 .WithHeader("access-token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifePOIClaimV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifePOIClaimV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -945,7 +945,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "goodlife", "v1", "poi", "poi", "decorate")
                 .WithHeader("access-token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifePOIDecorateV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifePOIDecorateV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -966,7 +966,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .WithHeader("access-token", request.AccessToken)
                 .SetQueryParam("task_ids", string.Join(",", request.TaskIdList));
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifePOITaskQueryV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifePOITaskQueryV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -986,7 +986,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "goodlife", "v1", "poi", "match", "task", "submit")
                 .WithHeader("access-token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifePOIMatchTaskSubmitV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifePOIMatchTaskSubmitV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -1007,7 +1007,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .WithHeader("access-token", request.AccessToken)
                 .SetQueryParam("task_id", request.TaskId);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifePOIMatchTaskQueryV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifePOIMatchTaskQueryV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -1028,7 +1028,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .WithHeader("access-token", request.AccessToken)
                 .SetQueryParam("ext_ids", string.Join(",", request.POIExternalIdList));
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifePOIMatchRelationQueryV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifePOIMatchRelationQueryV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         #region Goods/Crowd
@@ -1049,7 +1049,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "goodlife", "v1", "poi", "crowd", "save")
                 .WithHeader("access-token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifePOICrowdSaveV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifePOICrowdSaveV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
         #endregion
@@ -1073,7 +1073,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .WithHeader("access-token", request.AccessToken)
                 .SetQueryParam("certificate_ids", string.Join(",", request.CertificateIdList));
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifeSettleLedgerQueryRecordByCertificateV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifeSettleLedgerQueryRecordByCertificateV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -1097,7 +1097,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("size", request.PageSize)
                 .SetQueryParam("bill_date", request.BillDateString);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifeSettleLedgerDetailedQueryV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifeSettleLedgerDetailedQueryV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -1119,7 +1119,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("account_id", request.AccountId)
                 .SetQueryParam("order_ids", string.Join(",", request.OrderIdList));
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifeSettleLedgerDetailedQueryByOrderV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifeSettleLedgerDetailedQueryByOrderV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -1143,7 +1143,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("size", request.PageSize)
                 .SetQueryParam("bill_date", request.BillDateString);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifeSettleLedgerQueryV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifeSettleLedgerQueryV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -1165,7 +1165,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("account_id", request.AccountId)
                 .SetQueryParam("order_ids", string.Join(",", request.OrderIdList));
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifeSettleLedgerQueryByOrderV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifeSettleLedgerQueryByOrderV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
 
@@ -1190,7 +1190,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("size", request.PageSize)
                 .SetQueryParam("account_id", request.AccountId);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifeShopPOIQueryV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifeShopPOIQueryV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
 
@@ -1243,7 +1243,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
             if (request.RequireGetSecretNumber != null)
                 flurlReq.SetQueryParam("get_secret_number", request.RequireGetSecretNumber.Value ? "true" : "false");
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifeTradeOrderQueryV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifeTradeOrderQueryV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -1270,7 +1270,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
             if (request.OrderId != null)
                 flurlReq.SetQueryParam("order_id", request.OrderId);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifeTradeBookGetV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifeTradeBookGetV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -1290,7 +1290,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "goodlife", "v1", "trade", "buy", "merchant_confirm_order")
                 .WithHeader("access-token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.GoodLifeTradeBuyMerchantConfirmOrderV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.GoodLifeTradeBuyMerchantConfirmOrderV1Response>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
     }

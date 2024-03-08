@@ -202,7 +202,9 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                 /// 获取或设置序列号列表。
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("sn_list")]
+                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.TextualStringListWithCommaSplitConverter))]
                 [System.Text.Json.Serialization.JsonPropertyName("sn_list")]
+                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.TextualStringListWithCommaSplitConverter))]
                 public IList<string>? SerialNumberList { get; set; }
 
                 /// <summary>

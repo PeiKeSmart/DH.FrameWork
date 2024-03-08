@@ -64,7 +64,9 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                 /// 获取或设置条形码。
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("is_batch_assigned")]
+                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.NumericalBooleanConverter))]
                 [System.Text.Json.Serialization.JsonPropertyName("is_batch_assigned")]
+                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalBooleanConverter))]
                 public bool IsBatchAssigned { get; set; }
 
                 /// <summary>

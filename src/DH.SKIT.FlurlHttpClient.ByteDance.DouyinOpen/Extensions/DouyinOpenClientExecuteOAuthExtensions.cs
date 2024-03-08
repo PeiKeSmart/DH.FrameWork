@@ -31,7 +31,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
             IFlurlRequest flurlReq = client
                 .CreateRequest(request, HttpMethod.Post, "oauth", "access_token");
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.OAuthAccessTokenResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.OAuthAccessTokenResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
             IFlurlRequest flurlReq = client
                 .CreateRequest(request, HttpMethod.Post, "oauth", "renew_refresh_token");
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.OAuthRenewRefreshTokenResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.OAuthRenewRefreshTokenResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
             IFlurlRequest flurlReq = client
                 .CreateRequest(request, HttpMethod.Post, "oauth", "client_token");
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.OAuthClientTokenResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.OAuthClientTokenResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -100,7 +100,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
             IFlurlRequest flurlReq = client
                 .CreateRequest(request, HttpMethod.Post, "oauth", "refresh_token");
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.OAuthRefreshTokenResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.OAuthRefreshTokenResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         #region User
@@ -122,7 +122,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("access_token", request.AccessToken)
                 .SetQueryParam("open_id", request.OpenId);
 
-            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.OAuthUserInfoResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.OAuthUserInfoResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
     }
