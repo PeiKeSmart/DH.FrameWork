@@ -80,9 +80,7 @@
                         /// 获取或设置子母件单号列表。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("sub_waybill_codes")]
-                        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.TextualStringArrayWithCommaSplitConverter))]
                         [System.Text.Json.Serialization.JsonPropertyName("sub_waybill_codes")]
-                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.TextualStringArrayWithCommaSplitConverter))]
                         public string[]? SubWaybillCodes { get; set; }
 
                         /// <summary>

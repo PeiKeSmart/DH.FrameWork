@@ -30,7 +30,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
             if (request.Version != null)
                 flurlReq.SetQueryParam("version", request.Version);
 
-            return await client.SendRequestWithJsonAsync<Models.DiscoveryEntertainmentRankItemResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DiscoveryEntertainmentRankItemResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("cursor", request.PageCursor)
                 .SetQueryParam("count", request.PageSize);
 
-            return await client.SendRequestWithJsonAsync<Models.DiscoveryEntertainmentRankVersionResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DiscoveryEntertainmentRankVersionResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
     }
 }

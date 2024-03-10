@@ -26,7 +26,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "api", "douyin", "v1", "schema", "get_share/")
                 .WithHeader("access-token", request.AccessToken);
 
-            return await client.SendRequestWithJsonAsync<Models.SchemaGetShareResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.SchemaGetShareResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "api", "douyin", "v1", "schema", "get_user_profile/")
                 .WithHeader("access-token", request.AccessToken);
 
-            return await client.SendRequestWithJsonAsync<Models.SchemaGetUserProfileResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.SchemaGetUserProfileResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "api", "douyin", "v1", "schema", "get_chat/")
                 .WithHeader("access-token", request.AccessToken);
 
-            return await client.SendRequestWithJsonAsync<Models.SchemaGetChatResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.SchemaGetChatResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "api", "douyin", "v1", "schema", "get_item_info/")
                 .WithHeader("access-token", request.AccessToken);
 
-            return await client.SendRequestWithJsonAsync<Models.SchemaGetItemInfoResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.SchemaGetItemInfoResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -106,7 +106,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .CreateRequest(request, HttpMethod.Post, "api", "douyin", "v1", "schema", "get_live/")
                 .WithHeader("access-token", request.AccessToken);
 
-            return await client.SendRequestWithJsonAsync<Models.SchemaGetLiveResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.SchemaGetLiveResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
     }
 }

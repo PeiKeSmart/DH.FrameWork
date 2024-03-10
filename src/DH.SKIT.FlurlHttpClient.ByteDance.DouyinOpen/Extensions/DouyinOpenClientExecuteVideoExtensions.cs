@@ -55,7 +55,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .WithHeader("access-token", request.AccessToken)
                 .SetQueryParam("open_id", request.OpenId);
 
-            return await client.SendRequestWithJsonAsync<Models.VideoPartInitializeResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.VideoPartInitializeResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -107,7 +107,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("open_id", request.OpenId)
                 .SetQueryParam("upload_id", request.UploadId);
 
-            return await client.SendRequestWithJsonAsync<Models.VideoPartCompleteResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.VideoPartCompleteResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -128,7 +128,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .WithHeader("access-token", request.AccessToken)
                 .SetQueryParam("open_id", request.OpenId);
 
-            return await client.SendRequestWithJsonAsync<Models.VideoCreateResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.VideoCreateResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -151,7 +151,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("cursor", request.PageCursor)
                 .SetQueryParam("count", request.PageSize);
 
-            return await client.SendRequestWithJsonAsync<Models.VideoListResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.VideoListResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -172,7 +172,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .WithHeader("access-token", request.AccessToken)
                 .SetQueryParam("open_id", request.OpenId); ;
 
-            return await client.SendRequestWithJsonAsync<Models.VideoDataResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.VideoDataResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -193,7 +193,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("open_id", request.OpenId)
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendRequestWithJsonAsync<Models.VideoSourceResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.VideoSourceResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         #region Image
@@ -243,7 +243,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .WithHeader("access-token", request.AccessToken)
                 .SetQueryParam("open_id", request.OpenId);
 
-            return await client.SendRequestWithJsonAsync<Models.VideoCreateImageTextResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.VideoCreateImageTextResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
 
@@ -269,7 +269,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("count", request.PageSize)
                 .SetQueryParam("keyword", request.Keyword);
 
-            return await client.SendRequestWithJsonAsync<Models.VideoSearchResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.VideoSearchResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -293,7 +293,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("count", request.PageSize)
                 .SetQueryParam("sec_item_id", request.SecurityItemId);
 
-            return await client.SendRequestWithJsonAsync<Models.VideoSearchCommentListResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.VideoSearchCommentListResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -318,7 +318,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("sec_item_id", request.SecurityItemId)
                 .SetQueryParam("comment_id", request.CommentId);
 
-            return await client.SendRequestWithJsonAsync<Models.VideoSearchCommentReplyListResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.VideoSearchCommentReplyListResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -339,7 +339,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("open_id", request.OpenId)
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendRequestWithJsonAsync<Models.VideoSearchCommentReplyResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.VideoSearchCommentReplyResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
         #endregion
     }

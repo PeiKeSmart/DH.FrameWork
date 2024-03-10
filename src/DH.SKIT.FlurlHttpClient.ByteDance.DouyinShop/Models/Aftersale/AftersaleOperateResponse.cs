@@ -18,7 +18,6 @@
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("aftersale_id")]
                         [System.Text.Json.Serialization.JsonPropertyName("aftersale_id")]
-                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalStringReadOnlyConverter))]
                         public string AftersaleId { get; set; } = default!;
 
                         /// <summary>

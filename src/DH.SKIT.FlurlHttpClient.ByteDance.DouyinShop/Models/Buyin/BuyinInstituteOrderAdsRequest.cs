@@ -12,27 +12,21 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
         /// 获取或设置商品名称。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("order_ids")]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.TextualStringListWithCommaSplitConverter))]
         [System.Text.Json.Serialization.JsonPropertyName("order_ids")]
-        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.TextualStringListWithCommaSplitConverter))]
         public IList<string>? OrderIdList { get; set; }
 
         /// <summary>
         /// 获取或设置支付时间范围开始。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("start_time")]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.RegularNullableDateTimeOffsetConverter))]
         [System.Text.Json.Serialization.JsonPropertyName("start_time")]
-        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.RegularNullableDateTimeOffsetConverter))]
         public DateTimeOffset? StartPayTime { get; set; }
 
         /// <summary>
         /// 获取或设置支付时间范围结束。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("end_time")]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.RegularNullableDateTimeOffsetConverter))]
         [System.Text.Json.Serialization.JsonPropertyName("end_time")]
-        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.RegularNullableDateTimeOffsetConverter))]
         public DateTimeOffset? EndPayTime { get; set; }
 
         /// <summary>

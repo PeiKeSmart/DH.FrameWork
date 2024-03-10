@@ -11,12 +11,20 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop
     /// </summary>
     public class TikTokShopClient : CommonClientBase, ICommonClient
     {
-        public readonly string _BASEURL_AUTHAPI;
-
         /// <summary>
         /// 获取当前客户端使用的 TikTok Shop API 凭证。
         /// </summary>
         public Settings.Credentials Credentials { get; }
+
+        /// <summary>
+        /// 获取当前客户端使用的 TikTok Shop API 接入点。
+        /// </summary>
+        protected internal string EndpointForDefault { get; }
+
+        /// <summary>
+        /// 获取当前客户端使用的 TikTok Shop Auth API 接入点。
+        /// </summary>
+        protected internal string EndpointForAuth { get; }
 
         /// <summary>
         /// 用指定的配置项初始化 <see cref="TikTokShopClient"/> 类的新实例。
@@ -39,13 +47,13 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop
             if (options is null) throw new ArgumentNullException(nameof(options));
 
             Credentials = new Settings.Credentials(options);
+            EndpointForDefault = options.Endpoint ?? TikTokShopEndpoints.DEFAULT;
+            EndpointForAuth = options.EndpointForAuthAPI ?? TikTokShopAuthApiEndpoints.DEFAULT;
 
-            FlurlClient.BaseUrl = options.Endpoint ?? TikTokShopEndpoints.DEFAULT;
+            FlurlClient.BaseUrl = EndpointForDefault;
             FlurlClient.WithTimeout(options.Timeout <= 0 ? Timeout.InfiniteTimeSpan : TimeSpan.FromMilliseconds(options.Timeout));
 
-            Interceptors.Add(new Interceptors.TikTokShopRequestSigningInterceptor(baseUrl: FlurlClient.BaseUrl, appSecret: options.AppSecret));
-
-            _BASEURL_AUTHAPI = options.EndpointForAuthAPI ?? TikTokShopAuthApiEndpoints.DEFAULT;
+            Interceptors.Add(new Interceptors.TikTokShopRequestSigningInterceptor(baseUrl: EndpointForDefault, appSecret: options.AppSecret));
         }
 
         /// <summary>

@@ -27,7 +27,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 .SetQueryParam("access_token", request.AccessToken)
                 .SetQueryParam("micapp_id", request.MicroAppId);
 
-            return await client.SendRequestWithJsonAsync<Models.DevToolMicroAppIsLegalResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.DevToolMicroAppIsLegalResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
         }
     }
 }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,10 +11,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
     {
         /// <summary>
         /// <para>异步调用 [POST] /shop/brandList 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://op.jinritemai.com/docs/api-docs/13/54 ]]>
-        /// </para>
+        /// <para>REF: https://op.jinritemai.com/docs/api-docs/13/54 </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -34,10 +31,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
 
         /// <summary>
         /// <para>异步调用 [POST] /shop/getShopCategory 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://op.jinritemai.com/docs/api-docs/13/821 ]]>
-        /// </para>
+        /// <para>REF: https://op.jinritemai.com/docs/api-docs/13/821 </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>

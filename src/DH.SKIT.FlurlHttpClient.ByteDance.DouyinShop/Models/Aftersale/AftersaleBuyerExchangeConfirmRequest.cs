@@ -12,7 +12,6 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
         /// </summary>
         [Newtonsoft.Json.JsonProperty("aftersale_id")]
         [System.Text.Json.Serialization.JsonPropertyName("aftersale_id")]
-        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalStringConverter))]
         public string AftersaleId { get; set; } = string.Empty;
 
         /// <summary>
