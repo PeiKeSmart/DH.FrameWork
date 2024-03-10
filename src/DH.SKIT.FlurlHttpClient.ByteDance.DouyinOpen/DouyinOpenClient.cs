@@ -21,36 +21,37 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
         /// </summary>
         /// <param name="options">配置项。</param>
         public DouyinOpenClient(DouyinOpenClientOptions options)
-            : base()
+            : this(options, null)
         {
-            if (options == null) throw new ArgumentNullException(nameof(options));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="options"></param>
+        /// <param name="httpClient"></param>
+        /// <param name="disposeClient"></param>
+        internal protected DouyinOpenClient(DouyinOpenClientOptions options, HttpClient? httpClient, bool disposeClient = true)
+            : base(httpClient, disposeClient)
+        {
+            if (options is null) throw new ArgumentNullException(nameof(options));
 
             Credentials = new Settings.Credentials(options);
 
             FlurlClient.BaseUrl = options.Endpoint ?? DouyinOpenEndpoints.DEFAULT;
-            FlurlClient.WithTimeout(TimeSpan.FromMilliseconds(options.Timeout));
-        }
-
-        /// <summary>
-        /// 用指定的抖音开放平台应用 Key、抖音开放平台应用密钥初始化 <see cref="DouyinOpenClient"/> 类的新实例。
-        /// </summary>
-        /// <param name="clientKey">抖音开放平台应用 Key。</param>
-        /// <param name="clientSecret">抖音开放平台应用密钥。</param>
-        public DouyinOpenClient(string clientKey, string clientSecret)
-            : this(new DouyinOpenClientOptions() { ClientKey = clientKey, ClientSecret = clientSecret })
-        {
+            FlurlClient.WithTimeout(options.Timeout <= 0 ? Timeout.InfiniteTimeSpan : TimeSpan.FromMilliseconds(options.Timeout));
         }
 
         /// <summary>
         /// 使用当前客户端生成一个新的 <see cref="IFlurlRequest"/> 对象。
         /// </summary>
         /// <param name="request"></param>
-        /// <param name="method"></param>
+        /// <param name="httpMethod"></param>
         /// <param name="urlSegments"></param>
         /// <returns></returns>
-        public IFlurlRequest CreateRequest(DouyinOpenRequest request, HttpMethod method, params object[] urlSegments)
+        public IFlurlRequest CreateFlurlRequest(DouyinOpenRequest request, HttpMethod httpMethod, params object[] urlSegments)
         {
-            IFlurlRequest flurlRequest = FlurlClient.Request(urlSegments).WithVerb(method);
+            IFlurlRequest flurlRequest = base.CreateFlurlRequest(request, httpMethod, urlSegments);
 
             return flurlRequest;
         }
@@ -63,10 +64,10 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
         /// <param name="httpContent"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<T> SendRequestAsync<T>(IFlurlRequest flurlRequest, HttpContent? httpContent = null, CancellationToken cancellationToken = default)
+        public async Task<T> SendFlurlRequestAsync<T>(IFlurlRequest flurlRequest, HttpContent? httpContent = null, CancellationToken cancellationToken = default)
             where T : DouyinOpenResponse, new()
         {
-            if (flurlRequest == null) throw new ArgumentNullException(nameof(flurlRequest));
+            if (flurlRequest is null) throw new ArgumentNullException(nameof(flurlRequest));
 
             using IFlurlResponse flurlResponse = await base.SendFlurlRequestAsync(flurlRequest, httpContent, cancellationToken).ConfigureAwait(false);
             return await WrapFlurlResponseAsJsonAsync<T>(flurlResponse, cancellationToken).ConfigureAwait(false);
@@ -90,33 +91,9 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
                 flurlRequest.Verb == HttpMethod.Head ||
                 flurlRequest.Verb == HttpMethod.Options;
             using IFlurlResponse flurlResponse = isSimpleRequest ?
-                await base.SendFlurlRequestAsync(flurlRequest, null, cancellationToken).ConfigureAwait(false) :
+                await base.SendFlurlRequestAsync(flurlRequest, null, cancellationToken) :
                 await base.SendFlurlRequestAsJsonAsync(flurlRequest, data, cancellationToken).ConfigureAwait(false);
             return await WrapFlurlResponseAsJsonAsync<T>(flurlResponse, cancellationToken).ConfigureAwait(false);
         }
-
-        /// <summary>
-        /// 异步发起请求。
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="flurlRequest"></param>
-        /// <param name="data"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public async Task<T> SendFlurlRequestAsFormUrlEncodedAsync<T>(IFlurlRequest flurlRequest, object? data = null, CancellationToken cancellationToken = default)
-            where T : DouyinOpenResponse, new()
-        {
-            if (flurlRequest is null) throw new ArgumentNullException(nameof(flurlRequest));
-
-            bool isSimpleRequest = data is null ||
-                flurlRequest.Verb == HttpMethod.Get ||
-                flurlRequest.Verb == HttpMethod.Head ||
-                flurlRequest.Verb == HttpMethod.Options;
-            using IFlurlResponse flurlResponse = isSimpleRequest ?
-                await base.SendFlurlRequestAsync(flurlRequest, null, cancellationToken).ConfigureAwait(false) :
-                await base.SendFlurlRequestAsFormUrlEncodedAsync(flurlRequest, data, cancellationToken).ConfigureAwait(false);
-            return await WrapFlurlResponseAsJsonAsync<T>(flurlResponse, cancellationToken).ConfigureAwait(false);
-        }
-
     }
 }

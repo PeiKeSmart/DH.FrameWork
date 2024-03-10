@@ -2,7 +2,10 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen.Events
 {
     /// <summary>
     /// <para>表示 life_trade_certificate_notify 事件的数据。</para>
-    /// <para>REF: https://partner.open-douyin.com/docs/resource/zh-CN/dop/develop/openapi/life-service-open-ability/life.capacity/order.query/trade.certificate.notify </para>
+    /// <para>
+    /// REF: <br/>
+    /// <![CDATA[ https://partner.open-douyin.com/docs/resource/zh-CN/dop/develop/openapi/life-service-open-ability/life.capacity/order.query/trade.certificate.notify ]]>
+    /// </para>
     /// </summary>
     public class LifeTradeCertificateNotifyEvent : DouyinOpenEvent<LifeTradeCertificateNotifyEvent.Types.Content>
     {
@@ -33,6 +36,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen.Events
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("account_id")]
                         [System.Text.Json.Serialization.JsonPropertyName("account_id")]
+                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.NumericalStringReadOnlyConverter))]
                         public string AccountId { get; set; } = default!;
                     }
                 }
@@ -65,7 +69,9 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen.Events
         /// <inheritdoc/>
         /// </summary>
         [Newtonsoft.Json.JsonProperty("content")]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.Common.StringifiedObjectInJsonFormatConverter))]
         [System.Text.Json.Serialization.JsonPropertyName("content")]
+        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.StringifiedObjectInJsonFormatConverter))]
         public override Types.Content EventContent { get; set; } = default!;
 
         /// <summary>

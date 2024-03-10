@@ -1,10 +1,11 @@
-using System.Collections.Generic;
-
 namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen.Events
 {
     /// <summary>
     /// <para>表示 life_member_join 事件的数据。</para>
-    /// <para>REF: https://developer.open-douyin.com/docs/resource/zh-CN/dop/develop/openapi/life-service-open-ability/life.capacity/member/member.join </para>
+    /// <para>
+    /// REF: <br/>
+    /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/dop/develop/openapi/life-service-open-ability/life.capacity/member/member.join ]]>
+    /// </para>
     /// </summary>
     public class LifeMemberJoinEvent : DouyinOpenEvent<LifeMemberJoinEvent.Types.Content>
     {
@@ -33,7 +34,9 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen.Events
         /// <inheritdoc/>
         /// </summary>
         [Newtonsoft.Json.JsonProperty("content")]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.Common.StringifiedObjectInJsonFormatConverter))]
         [System.Text.Json.Serialization.JsonPropertyName("content")]
+        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.StringifiedObjectInJsonFormatConverter))]
         public override Types.Content EventContent { get; set; } = default!;
     }
 }

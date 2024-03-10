@@ -74,7 +74,9 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen.Models
         /// 获取或设置消息体。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("content")]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.Common.StringifiedObjectInJsonFormatConverter))]
         [System.Text.Json.Serialization.JsonPropertyName("content")]
+        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.StringifiedObjectInJsonFormatConverter))]
         public Types.Content Content { get; set; } = new Types.Content();
 
         /// <summary>

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen.Models
 {
@@ -26,7 +26,9 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen.Models
                         /// 获取或设置小程序点击量视频分布字典。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("mp_item_click_json")]
+                        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.Common.StringifiedObjectInJsonFormatConverter))]
                         [System.Text.Json.Serialization.JsonPropertyName("mp_item_click_json")]
+                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.StringifiedObjectInJsonFormatConverter))]
                         public IDictionary<string, int> ItemClickDistributionMap { get; set; } = default!;
                     }
                 }
