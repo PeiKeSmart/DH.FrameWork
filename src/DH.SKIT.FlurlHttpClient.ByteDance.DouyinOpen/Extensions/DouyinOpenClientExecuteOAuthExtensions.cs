@@ -59,7 +59,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
             IFlurlRequest flurlReq = client
                 .CreateFlurlRequest(request, HttpMethod.Post, "oauth", "renew_refresh_token");
 
-            return await client.SendFlurlRequestAsJsonAsync<Models.OAuthRenewRefreshTokenResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
+            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.OAuthRenewRefreshTokenResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -112,12 +112,12 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
             IFlurlRequest flurlReq = client
                 .CreateFlurlRequest(request, HttpMethod.Post, "oauth", "refresh_token");
 
-            return await client.SendFlurlRequestAsJsonAsync<Models.OAuthRefreshTokenResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
+            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.OAuthRefreshTokenResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         #region User
         /// <summary>
-        /// <para>异步调用 [GET] /oauth/userinfo 接口。</para>
+        /// <para>异步调用 [POST] /oauth/userinfo 接口。</para>
         /// <para>
         /// REF: <br/>
         /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/dop/develop/openapi/account-management/get-account-open-info ]]>
@@ -133,11 +133,9 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Get, "oauth", "userinfo")
-                .SetQueryParam("access_token", request.AccessToken)
-                .SetQueryParam("open_id", request.OpenId);
+                .CreateFlurlRequest(request, HttpMethod.Post, "oauth", "userinfo");
 
-            return await client.SendFlurlRequestAsJsonAsync<Models.OAuthUserInfoResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
+            return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.OAuthUserInfoResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
         #endregion
     }
