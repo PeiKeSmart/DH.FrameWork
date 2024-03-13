@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen.Models
 {
     /// <summary>
-    /// <para>表示 [POST] /api/douyin/v1/video/create_video 接口的请求。</para>
+    /// <para>表示 [POST] /api/douyin/v1/video/create_video/ 接口的请求。</para>
     /// </summary>
     public class DouyinVideoCreateVideoV1Request : DouyinOpenRequest
     {
@@ -29,18 +29,25 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen.Models
         public string? Title { get; set; }
 
         /// <summary>
-        /// 获取或设置地理位置 ID。
+        /// 获取或设置门店 ID。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("poi_id")]
         [System.Text.Json.Serialization.JsonPropertyName("poi_id")]
         public string? POIId { get; set; }
 
         /// <summary>
-        /// 获取或设置地理位置名称。
+        /// 获取或设置门店名称。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("poi_name")]
         [System.Text.Json.Serialization.JsonPropertyName("poi_name")]
         public string? POIName { get; set; }
+
+        /// <summary>
+        /// 获取或设置开启门店推广。
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("poi_commerce")]
+        [System.Text.Json.Serialization.JsonPropertyName("poi_commerce")]
+        public bool? POICommerce { get; set; }
 
         /// <summary>
         /// 获取或设置小程序 AppId。
@@ -125,5 +132,12 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen.Models
         [Newtonsoft.Json.JsonProperty("at_users")]
         [System.Text.Json.Serialization.JsonPropertyName("at_users")]
         public IList<string>? AtUserOpenIdList { get; set; }
+
+        /// <summary>
+        /// 获取或设置影视 ID。
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("ent_id")]
+        [System.Text.Json.Serialization.JsonPropertyName("ent_id")]
+        public string? EntertainmentId { get; set; }
     }
 }

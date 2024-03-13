@@ -7,6 +7,7 @@ using Flurl.Http;
 
 namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
 {
+    // TODO: 独立化 ExtendedSDK
     public static class DouyinOpenClientExecuteNamekExtensions
     {
         /// <summary>
@@ -27,13 +28,9 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen
 
             IFlurlRequest flurlReq = client
                 .CreateFlurlRequest(request, HttpMethod.Get, "namek", "fulfilment", "prepare")
-                .SetQueryParam("access_token", request.AccessToken);
-
-            if (request.EncryptedData is not null)
-                flurlReq.SetQueryParam("encrypted_data", request.EncryptedData);
-
-            if (request.Code is not null)
-                flurlReq.SetQueryParam("code", request.Code);
+                .WithHeader("access-token", request.AccessToken)
+                .SetQueryParam("encrypted_data", request.EncryptedData)
+                .SetQueryParam("code", request.Code);
 
             return await client.SendFlurlRequestAsJsonAsync<Models.NamekFulfilmentPrepareResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }

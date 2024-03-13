@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen.Models
 {
     /// <summary>
-    /// <para>表示 [POST] /api/douyin/v1/video/create_image_text 接口的请求。</para>
+    /// <para>表示 [POST] /api/douyin/v1/video/create_image_text/ 接口的请求。</para>
     /// </summary>
     public class DouyinVideoCreateImageTextV1Request : DouyinOpenRequest
     {
@@ -29,14 +29,14 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen.Models
         public string? Title { get; set; }
 
         /// <summary>
-        /// 获取或设置地理位置 ID。
+        /// 获取或设置门店 ID。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("poi_id")]
         [System.Text.Json.Serialization.JsonPropertyName("poi_id")]
         public string? POIId { get; set; }
 
         /// <summary>
-        /// 获取或设置地理位置名称。
+        /// 获取或设置门店名称。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("poi_name")]
         [System.Text.Json.Serialization.JsonPropertyName("poi_name")]
