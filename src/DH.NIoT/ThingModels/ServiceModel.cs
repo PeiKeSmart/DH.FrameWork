@@ -25,5 +25,5 @@ public class ServiceModel
     public String? TraceId { get; set; }
 
     /// <summary>服务类型</summary>
-    public String? Type { get; set; }
+    public String Type { get; set; } = String.Empty;
 }
