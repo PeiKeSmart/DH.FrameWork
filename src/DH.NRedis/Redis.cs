@@ -202,10 +202,7 @@ public class Redis : Cache, IConfigMapping, ILogFeature
         if (pk != null && pk.Secret != null) connStr = pk.Unprotect(connStr);
 
         // 默认分号分割，旧版逗号分隔。可能只有一个server=后续多个含逗号的地址
-        var dic =
-            connStr.Contains(';') || connStr.Split('=').Length <= 2 ?
-            connStr.SplitAsDictionary("=", ";", true) :
-            connStr.SplitAsDictionary("=", ",", true);
+        var dic = ParseConfig(connStr);
         if (dic.Count > 0)
         {
             Server = dic["Server"]?.Trim();
@@ -247,6 +244,20 @@ public class Redis : Cache, IConfigMapping, ILogFeature
         }
 
         _configOld = config;
+    }
+
+    /// <summary>分析配置连接字符串</summary>
+    /// <param name="connStr"></param>
+    /// <returns></returns>
+    protected IDictionary<String, String> ParseConfig(String connStr)
+    {
+        // 默认分号分割，旧版逗号分隔。可能只有一个server=后续多个含逗号的地址
+        var dic =
+            connStr.Contains(';') || connStr.Split('=').Length <= 2 ?
+            connStr.SplitAsDictionary("=", ";", true) :
+            connStr.SplitAsDictionary("=", ",", true);
+
+        return dic;
     }
 
     void IConfigMapping.MapConfig(IConfigProvider provider, IConfigSection section)
@@ -390,7 +401,9 @@ public class Redis : Cache, IConfigMapping, ILogFeature
 
         return pool;
     }
+    #endregion
 
+    #region 方法
     /// <summary>执行命令，经过管道。FullRedis中还会考虑Cluster分流</summary>
     /// <typeparam name="TResult">返回类型</typeparam>
     /// <param name="key">命令key，用于选择集群节点</param>
@@ -630,6 +643,17 @@ public class Redis : Cache, IConfigMapping, ILogFeature
         rds.Encoder = Encoder;
         rds.Timeout = Timeout;
         rds.Retry = Retry;
+        rds.ShieldingTime = ShieldingTime;
+        rds.FullPipeline = FullPipeline;
+        rds.AutoPipeline = AutoPipeline;
+        rds.SslProtocol = SslProtocol;
+        rds.Certificate = Certificate;
+        rds.ThrowOnFailure = ThrowOnFailure;
+        rds.MaxMessageSize = MaxMessageSize;
+
+        rds._Info = _Info;
+        rds._Version = _Version;
+
         rds.Tracer = Tracer;
         rds.Log = Log;
 
@@ -648,7 +672,7 @@ public class Redis : Cache, IConfigMapping, ILogFeature
         {
             if (Count > 10000) throw new InvalidOperationException("数量过大时，禁止获取所有键，请使用FullRedis.Search");
 
-            return Execute(rds => rds.Execute<String[]>("KEYS", "*")) ?? new String[0];
+            return Execute(rds => rds.Execute<String[]>("KEYS", "*")) ?? [];
         }
     }
 
