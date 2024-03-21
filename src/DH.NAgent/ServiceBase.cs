@@ -33,12 +33,13 @@ public abstract class ServiceBase : DisposeBase
 
     #region 构造
     /// <summary>初始化</summary>
-    public ServiceBase() =>
-        //#if NETSTANDARD2_0
-        //MachineInfo.RegisterAsync();
-        //#endif
-
+    public ServiceBase()
+    {
         InitService();
+
+        var set = Setting.Current;
+        UseAutorun = set.UseAutorun;
+    }
 
     /// <summary>初始化服务。Agent组件内部使用</summary>
     public static void InitService()
@@ -72,6 +73,8 @@ public abstract class ServiceBase : DisposeBase
     public void Main(String[] args)
     {
         args ??= Environment.GetCommandLineArgs();
+
+        if ("-Autorun".EqualIgnoreCase(args)) UseAutorun = true;
 
         Init();
 
@@ -110,6 +113,8 @@ public abstract class ServiceBase : DisposeBase
     /// <exception cref="NotSupportedException"></exception>
     protected virtual void Init()
     {
+        Log = XTrace.Log;
+
         if (Host == null)
         {
             if (Runtime.Windows)
@@ -136,10 +141,9 @@ public abstract class ServiceBase : DisposeBase
             WriteLog("Host: {0}", Host.Name);
         }
 
-        Log = XTrace.Log;
-
         // 初始化配置
         var set = Setting.Current;
+        set.UseAutorun = UseAutorun;
         if (set.ServiceName.IsNullOrEmpty()) set.ServiceName = ServiceName;
         if (set.DisplayName.IsNullOrEmpty()) set.DisplayName = DisplayName;
         if (set.Description.IsNullOrEmpty()) set.Description = Description;
@@ -365,7 +369,7 @@ public abstract class ServiceBase : DisposeBase
         }
     }
 
-    private readonly List<Menu> _Menus = new();
+    private readonly List<Menu> _Menus = [];
     /// <summary>添加菜单</summary>
     /// <param name="key"></param>
     /// <param name="name"></param>
@@ -618,7 +622,8 @@ public abstract class ServiceBase : DisposeBase
                 exe = args[0].GetFullPath();
         }
 
-        var arg = UseAutorun ? "-run" : "-s";
+        //var arg = UseAutorun ? "-run" : "-s";
+        var arg = "-s";
 
         // 兼容更多参数做为服务启动，譬如：--urls
         if (args.Length > 2)
@@ -730,7 +735,8 @@ public abstract class ServiceBase : DisposeBase
     {
         var max = GC.MaxGeneration;
         var mode = GCCollectionMode.Forced;
-#if NET7_0_OR_GREATER
+        //#if NET7_0_OR_GREATER
+#if NET8_0_OR_GREATER
         mode = GCCollectionMode.Aggressive;
 #endif
 #if NET451_OR_GREATER || NETSTANDARD || NETCOREAPP
