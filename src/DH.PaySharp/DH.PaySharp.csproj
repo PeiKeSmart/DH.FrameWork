@@ -33,7 +33,7 @@
 		<Authors>$(Company)</Authors>
 		<PackageProjectUrl>https://www.haocoding.com/</PackageProjectUrl>
 		<PackageIcon>DH.png</PackageIcon>
-		<RepositoryUrl>https://gitee.com/chuangchu/DH.FrameWork</RepositoryUrl>
+		<RepositoryUrl>https://gitee.com/dengho/DH.FrameWork</RepositoryUrl>
 		<RepositoryType>Git</RepositoryType>
 		<PackageTags>湖北登灏科技有限公司;DH组件;DH;$(AssemblyName)</PackageTags>
 		<PackageReleaseNotes>是一个支持多商户多种支付方式的跨平台网关处理类库，可以简化订单的创建、查询、退款和接收网关返回的支付通知等操作。目前支持的支付网关有：支付宝(Alipay)、微信支付(Wechatpay)、中国银联(Unionpay)、QQ钱包支付(Qpay)、通联收银宝(Allinpay)。</PackageReleaseNotes>

@@ -35,7 +35,7 @@
 		<Authors>$(Company)</Authors>
 		<PackageProjectUrl>https://www.haocoding.com/</PackageProjectUrl>
 		<PackageIcon>DH.png</PackageIcon>
-		<RepositoryUrl>https://gitee.com/chuangchu/DH.FrameWork</RepositoryUrl>
+		<RepositoryUrl>https://gitee.com/dengho/DH.FrameWork</RepositoryUrl>
 		<RepositoryType>Git</RepositoryType>
 		<PackageTags>湖北登灏科技有限公司;DH组件;DH;$(AssemblyName)</PackageTags>
 		<PackageReleaseNotes>DH框架的DH.SafeOrbit是一个高级内存保护库，具有易于使用的类。可以保护内存中的字符串，同时允许使用SafeString安全地比较和修改它们；使用SafeBytes保护您的二进制数据；防注入模块保护您对使用内存注射和攻击时机应用SafeObject,SafeContainert等，在接口中利用高性能和安全算法进行加密、散列和随机。</PackageReleaseNotes>

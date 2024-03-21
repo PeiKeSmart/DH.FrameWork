@@ -34,7 +34,7 @@
 		<Authors>$(Company)</Authors>
 		<PackageProjectUrl>https://www.haocoding.com/</PackageProjectUrl>
 		<PackageIcon>DH.png</PackageIcon>
-		<RepositoryUrl>https://gitee.com/chuangchu/DH.FrameWork</RepositoryUrl>
+		<RepositoryUrl>https://gitee.com/dengho/DH.FrameWork</RepositoryUrl>
 		<RepositoryType>Git</RepositoryType>
 		<PackageTags>湖北登灏科技有限公司;DH组件;DH;$(AssemblyName)</PackageTags>
 		<PackageReleaseNotes>用于DH框架的一个微信支付 API v3 版客户端，支持直连商户、服务商模式，支持基础支付、代金券、商家券、委托营销、消费卡、支付有礼、银行定向促活、微信支付分、微信先享卡、支付即服务、点金计划、智慧商圈、电商收付通、二级商户进件、小微商户进件、消费者投诉、商户违规通知、批量转账到零钱、银行组件、海关报关、融合钱包等功能。</PackageReleaseNotes>

@@ -33,7 +33,7 @@
 		<Authors>$(Company)</Authors>
 		<PackageProjectUrl>https://www.haocoding.com/</PackageProjectUrl>
 		<PackageIcon>DH.png</PackageIcon>
-		<RepositoryUrl>https://gitee.com/chuangchu/DH.FrameWork</RepositoryUrl>
+		<RepositoryUrl>https://gitee.com/dengho/DH.FrameWork</RepositoryUrl>
 		<RepositoryType>Git</RepositoryType>
 		<PackageTags>湖北登灏科技有限公司;DH组件;DH;$(AssemblyName)</PackageTags>
 		<PackageReleaseNotes>DH框架的轻量级条码编码库，可用于将生成的条形码呈现为 SVG 或图像。</PackageReleaseNotes>

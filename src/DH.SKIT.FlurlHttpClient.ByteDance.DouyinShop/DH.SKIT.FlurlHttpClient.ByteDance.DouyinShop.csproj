@@ -34,7 +34,7 @@
 		<Authors>$(Company)</Authors>
 		<PackageProjectUrl>https://www.haocoding.com/</PackageProjectUrl>
 		<PackageIcon>DH.png</PackageIcon>
-		<RepositoryUrl>https://gitee.com/chuangchu/DH.FrameWork</RepositoryUrl>
+		<RepositoryUrl>https://gitee.com/dengho/DH.FrameWork</RepositoryUrl>
 		<RepositoryType>Git</RepositoryType>
 		<PackageTags>湖北登灏科技有限公司;DH组件;DH;$(AssemblyName)</PackageTags>
 		<PackageReleaseNotes>用于DH框架的字节跳动 SDK，基于 Flurl.Http 的抖店 API 客户端，支持商家自研、软件服务商模式，支持店铺管理、素材中心、商品管理、库存管理、订单管理、物流发货、售后退款、保险管理、账单管理、代发代打、跨境物流、卡券管理、仓库作业、精选联盟、回收寄卖、BIC 质检、BTAS 质检等功能。</PackageReleaseNotes>

@@ -34,7 +34,7 @@
 		<Authors>$(Company)</Authors>
 		<PackageProjectUrl>https://www.haocoding.com/</PackageProjectUrl>
 		<PackageIcon>DH.png</PackageIcon>
-		<RepositoryUrl>https://gitee.com/chuangchu/DH.FrameWork</RepositoryUrl>
+		<RepositoryUrl>https://gitee.com/dengho/DH.FrameWork</RepositoryUrl>
 		<RepositoryType>Git</RepositoryType>
 		<PackageTags>湖北登灏科技有限公司;DH组件;DH;$(AssemblyName)</PackageTags>
 		<PackageReleaseNotes>用于DH框架的一个开发工具包的公共组件。为开发者提供使用体验一致的、可跨平台的第三方 API .NET SDK。已支持微信、字节跳动、又拍云系列 API。参考https://github.com/fudiwei/DotNetCore.SKIT.FlurlHttpClient</PackageReleaseNotes>
