@@ -29,6 +29,9 @@ public partial interface ICronJob
     /// <summary>参数。方法参数，时间日期、网址、SQL等</summary>
     String Argument { get; set; }
 
+    /// <summary>数据。作业运行中的小量数据，可传递给下一次作业执行，例如记录数据统计的时间点</summary>
+    String Data { get; set; }
+
     /// <summary>启用</summary>
     Boolean Enable { get; set; }
 

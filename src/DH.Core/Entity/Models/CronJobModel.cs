@@ -29,6 +29,9 @@ public partial class CronJobModel
     /// <summary>参数。方法参数，时间日期、网址、SQL等</summary>
     public String Argument { get; set; }
 
+    /// <summary>数据。作业运行中的小量数据，可传递给下一次作业执行，例如记录数据统计的时间点</summary>
+    public String Data { get; set; }
+
     /// <summary>启用</summary>
     public Boolean Enable { get; set; }
 
@@ -74,6 +77,7 @@ public partial class CronJobModel
         Cron = model.Cron;
         Method = model.Method;
         Argument = model.Argument;
+        Data = model.Data;
         Enable = model.Enable;
         EnableLog = model.EnableLog;
         LastTime = model.LastTime;
