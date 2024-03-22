@@ -7,9 +7,12 @@ using NewLife.Threading;
 namespace NewLife.MQTT.Clusters;
 
 /// <summary>集群服务器</summary>
-public class ClusterServer : IServer, /*IServiceProvider,*/ ILogFeature, ITracerFeature
+public class ClusterServer : DisposeBase, IServer, /*IServiceProvider,*/ ILogFeature, ITracerFeature
 {
     #region 属性
+    /// <summary>集群名称</summary>
+    public String Name { get; set; }
+
     /// <summary>集群端口。默认2883</summary>
     public Int32 Port { get; set; } = 2883;
 
@@ -25,17 +28,29 @@ public class ClusterServer : IServer, /*IServiceProvider,*/ ILogFeature, ITracer
     #region 构造
     public ClusterServer()
     {
-        XTrace.WriteLine("new ClusterServer");
+        //XTrace.WriteLine("new ClusterServer");
+    }
+
+    public override String ToString() => Name ?? base.ToString();
+
+    protected override void Dispose(Boolean disposing)
+    {
+        base.Dispose(disposing);
+
+        Stop(disposing ? "Dispose" : "GC");
     }
     #endregion
 
     #region 启动停止
     public void Start()
     {
+        if (Name.IsNullOrEmpty()) Name = $"Cluster{Port}";
+
         ServiceProvider ??= ObjectContainer.Provider;
 
         var server = new ApiServer
         {
+            Name = Name,
             Port = Port,
             ServiceProvider = ServiceProvider,
 
@@ -53,17 +68,30 @@ public class ClusterServer : IServer, /*IServiceProvider,*/ ILogFeature, ITracer
 
         _server = server;
 
-        _timer = new TimerX(DoPing, null, 1_000, 60_000) { Async = true };
+        _timer = new TimerX(DoPing, null, 1_000, 15_000) { Async = true };
     }
 
     public void Stop(String reason)
     {
+        // 所有节点退出
+        //var myNode = GetNodeInfo();
+        foreach (var item in Nodes)
+        {
+            var node = item.Value;
+            //_ = node.Leave(myNode);
+            node.TryDispose();
+        }
+
+        Nodes.Clear();
+
         _timer.TryDispose();
         _timer = null;
 
         _server.TryDispose();
         _server = null;
     }
+
+    public NodeInfo GetNodeInfo() => new() { EndPoint = $"{NetHelper.MyIP()}:{Port}" };
 
     private void DoPing(Object state)
     {
@@ -85,34 +113,35 @@ public class ClusterServer : IServer, /*IServiceProvider,*/ ILogFeature, ITracer
 
             if (Nodes.TryRemove(item, out var node))
             {
-                node.Client.TryDispose();
-                node.Session.TryDispose();
+                node.TryDispose();
             }
         }
 
-        var ip = NetHelper.MyIP();
-        var myNode = new NodeInfo { EndPoint = $"{ip}:{Port}" };
+        var myNode = GetNodeInfo();
 
         // 向所有节点发送Ping
         foreach (var item in Nodes)
         {
             var node = item.Value;
-            _ = node.Join(myNode);
+            _ = node.Ping(myNode);
         }
     }
     #endregion
 
     #region 业务逻辑
+    /// <summary>添加集群节点，建立长连接</summary>
+    /// <param name="endpoint"></param>
+    public void AddNode(String endpoint)
+    {
+        var node = new ClusterNode { EndPoint = endpoint };
+        if (!Nodes.TryAdd(endpoint, node)) return;
+
+        // 马上开始连接并心跳
+        //_timer?.SetNext(200);
+
+        _ = node.Join(GetNodeInfo());
+    }
     #endregion
-
-    //#region 服务
-    //public Object GetService(Type serviceType)
-    //{
-    //    if (serviceType == typeof(ClusterServer)) return this;
-
-    //    return ServiceProvider.GetService(serviceType);
-    //}
-    //#endregion
 
     #region 日志
     public ITracer? Tracer { get; set; }

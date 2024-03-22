@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NewLife.Log;
-using NewLife.Net;
-using NewLife.Remoting;
+﻿using NewLife.Remoting;
 
 namespace NewLife.MQTT.Clusters;
 
@@ -26,7 +19,21 @@ public class ClusterController : IApi
     #region 集群管理
     public String Echo(String msg) => msg;
 
-    public String Join(NodeInfo info)
+    public NodeInfo Join(NodeInfo info)
+    {
+        var endpoint = info.EndPoint;
+
+        var node = _cluster.Nodes.GetOrAdd(endpoint, k => new ClusterNode { EndPoint = k });
+        node.Session = Session;
+        node.Times = 1;
+        node.LastActive = DateTime.Now;
+
+        _cluster.WriteLog("节点加入集群：{0}", node);
+
+        return _cluster.GetNodeInfo();
+    }
+
+    public NodeInfo Ping(NodeInfo info)
     {
         var endpoint = info.EndPoint;
 
@@ -35,12 +42,7 @@ public class ClusterController : IApi
         node.Times++;
         node.LastActive = DateTime.Now;
 
-        if (node.Times == 1)
-        {
-            _cluster.WriteLog("节点加入集群：{0}", node);
-        }
-
-        return "OK";
+        return _cluster.GetNodeInfo();
     }
 
     public String Leave(NodeInfo info)
