@@ -132,7 +132,8 @@ public class UdpServer : SessionBase, ISocketServer, ILogFeature
     {
         var count = pk.Total;
 
-        using var span = Tracer?.NewSpan($"net:{Name}:Send", pk.Total + "");
+        using var span = Tracer?.NewSpan($"net:{Name}:Send", pk.Total + "", pk.Total);
+
         try
         {
             var rs = 0;

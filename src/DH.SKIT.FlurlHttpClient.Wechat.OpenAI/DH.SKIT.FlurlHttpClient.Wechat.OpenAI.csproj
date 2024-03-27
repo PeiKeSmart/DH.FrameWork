@@ -34,7 +34,7 @@
 		<Authors>$(Company)</Authors>
 		<PackageProjectUrl>https://www.haocoding.com/</PackageProjectUrl>
 		<PackageIcon>DH.png</PackageIcon>
-		<RepositoryUrl>https://gitee.com/chuangchu/DH.FrameWork</RepositoryUrl>
+		<RepositoryUrl>https://gitee.com/dengho/DH.FrameWork</RepositoryUrl>
 		<RepositoryType>Git</RepositoryType>
 		<PackageTags>湖北登灏科技有限公司;DH组件;DH;$(AssemblyName)</PackageTags>
 		<PackageReleaseNotes>用于DH框架的一个微信对话类。基于 Flurl.Http 的微信对话开放平台（微信智能对话） API 客户端，支持平台接入、第三方接入模式，支持智能对话、NLP、通用接口、机器人、技能、意图、语义槽、词典、词条、对话开放接口、技能商店、数据统计等功能。</PackageReleaseNotes>
