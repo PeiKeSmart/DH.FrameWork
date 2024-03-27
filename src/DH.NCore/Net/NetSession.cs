@@ -132,7 +132,7 @@ public class NetSession : DisposeBase, INetSession, IServiceProvider, IExtend
     {
         var ns = (this as INetSession).Host;
         var tracer = ns?.Tracer;
-        using var span = tracer?.NewSpan($"net:{ns?.Name}:Receive", e.Message);
+        using var span = tracer?.NewSpan($"net:{ns?.Name}:Receive", e.Message, e.Packet?.Total ?? 0);
 
         try
         {
