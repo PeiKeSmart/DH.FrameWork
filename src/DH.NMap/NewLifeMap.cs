@@ -16,8 +16,6 @@ namespace NewLife.Map;
 public class NewLifeMap : Map, IMap
 {
     #region 属性
-    /// <summary>服务端地址</summary>
-    public String Server { get; set; }
     #endregion
 
     #region 构造
@@ -81,7 +79,7 @@ public class NewLifeMap : Map, IMap
     }
     #endregion
 
-    #region 地址编码
+    #region 地理编码
     /// <summary>
     /// 地址解析。
     /// </summary>
@@ -94,7 +92,7 @@ public class NewLifeMap : Map, IMap
     public Task<GeoAddress> GetGeoAsync(String address, String city = null, String coordtype = null, Boolean formatAddress = false) => throw new NotImplementedException();
     #endregion
 
-    #region 逆地址编码
+    #region 逆地理编码
     /// <summary>根据坐标获取地址</summary>
     /// <param name="point"></param>
     /// <param name="coordtype"></param>
@@ -107,7 +105,7 @@ public class NewLifeMap : Map, IMap
         return rs.ToGeoAddress();
     }
 
-    /// <summary>根据坐标获取地址编码信息</summary>
+    /// <summary>根据坐标获取地理编码信息</summary>
     /// <param name="point"></param>
     /// <param name="coordtype"></param>
     /// <returns></returns>

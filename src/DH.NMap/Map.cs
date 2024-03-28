@@ -4,7 +4,9 @@ using NewLife.Reflection;
 using NewLife.Serialization;
 using NewLife.Threading;
 
+#if NET45 || NET461 
 using System.Net.Http;
+#endif
 
 #nullable enable
 namespace NewLife.Map;
@@ -24,8 +26,8 @@ public interface IMap
     Task<String> GetStringAsync(String url);
     #endregion
 
-    #region 地址编码
-    /// <summary>查询地址获取坐标</summary>
+    #region 地理编码
+    /// <summary>查询地址获取坐标。将地址转换为地理位置坐标</summary>
     /// <param name="address">地址</param>
     /// <param name="city">城市</param>
     /// <param name="coordtype">所需要的坐标系</param>
@@ -34,8 +36,8 @@ public interface IMap
     Task<GeoAddress> GetGeoAsync(String address, String? city = null, String? coordtype = null, Boolean formatAddress = false);
     #endregion
 
-    #region 逆地址编码
-    /// <summary>根据坐标获取地址</summary>
+    #region 逆地理编码
+    /// <summary>根据坐标获取地址。将地理位置坐标转换为直观易懂的地址的过程</summary>
     /// <param name="point">坐标</param>
     /// <param name="coordtype">坐标系</param>
     /// <returns></returns>
@@ -71,6 +73,9 @@ public interface IMap
 public class Map : DisposeBase
 {
     #region 属性
+    /// <summary>服务地址</summary>
+    public String? Server { get; set; }
+
     /// <summary>应用密钥。多个key逗号分隔</summary>
     public String? AppKey { get; set; }
 
@@ -106,11 +111,12 @@ public class Map : DisposeBase
     {
         base.Dispose(disposing);
 
-        _Client.TryDispose();
+        _Client?.TryDispose();
     }
     #endregion
 
     #region 方法
+
     private HttpClient? _Client;
 
     /// <summary>异步获取字符串</summary>
@@ -121,7 +127,13 @@ public class Map : DisposeBase
         var key = AcquireKey();
         if (key.IsNullOrEmpty()) throw new ArgumentNullException(nameof(AppKey), "没有可用密钥");
 
-        _Client ??= DefaultTracer.Instance.CreateHttpClient();
+        if (_Client == null)
+        {
+            var client = DefaultTracer.Instance.CreateHttpClient();
+            if (!Server.IsNullOrEmpty()) client.BaseAddress = new Uri(Server);
+
+            _Client = client;
+        }
 
         if (url.Contains('?'))
             url += "&";
@@ -153,18 +165,19 @@ public class Map : DisposeBase
         var html = await GetStringAsync(url).ConfigureAwait(false);
         if (html.IsNullOrEmpty()) return default;
 
-        var rs = JsonParser.Decode(html);
+        var rs = html[0] == '<' && html[^1] == '>' ? XmlParser.Decode(html) : JsonParser.Decode(html);
+        if (rs == null) return default;
 
         LastResult = rs;
 
-        return rs == null ? null : JsonHelper.Convert<T>(rs);
+        return JsonHelper.Convert<T>(rs);
     }
     #endregion
 
     #region 密钥管理
     private String[]? _Keys;
     private Int32 _KeyIndex;
-    private SortedList<DateTime, List<String>> _pendingKeys = new();
+    private SortedList<DateTime, List<String>> _pendingKeys = [];
     private TimerX? _timer;
 
     /// <summary>申请密钥</summary>
@@ -207,7 +220,7 @@ public class Map : DisposeBase
 
             // 加入挂起列表
             if (!_pendingKeys.TryGetValue(reviveTime, out var keys))
-                _pendingKeys.Add(reviveTime, keys = new List<String>());
+                _pendingKeys.Add(reviveTime, keys = []);
 
             keys.Add(key);
 
@@ -240,13 +253,14 @@ public class Map : DisposeBase
         }
     }
 
-    private readonly String[] _KeyWords = new[] { "INVALID", "LIMIT" };
+    private readonly String[] _KeyWords = ["INVALID", "LIMIT"];
     /// <summary>是否无效Key。可能禁用或超出限制</summary>
     /// <param name="result"></param>
     /// <returns></returns>
     protected virtual Boolean IsValidKey(String result)
     {
         if (result.IsNullOrEmpty()) return false;
+        if (!KeyName.IsNullOrEmpty() && result.Contains(KeyName.ToUpper())) return false;
 
         return _KeyWords.Any(result.Contains);
     }

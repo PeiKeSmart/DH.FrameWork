@@ -1,26 +1,25 @@
 ﻿using System.ComponentModel;
 using System.Web;
+using NewLife.Collections;
 using NewLife.Data;
 using NewLife.Serialization;
 
 namespace NewLife.Map;
 
-/// <summary>百度地图</summary>
+/// <summary>天地图</summary>
 /// <remarks>
-/// 参考手册 https://lbsyun.baidu.com/index.php?title=webapi
+/// 参考手册 http://lbs.tianditu.gov.cn/server/guide.html
 /// </remarks>
-[DisplayName("百度地图")]
-public class BaiduMap : Map, IMap
+[DisplayName("天地图")]
+public class TianDiMap : Map, IMap
 {
     #region 构造
     /// <summary>高德地图</summary>
-    public BaiduMap()
+    public TianDiMap()
     {
-        Server = "https://api.map.baidu.com";
-        //AppKey = "C73357a276668f8b0563d3f936475007";
-        KeyName = "ak";
-        //CoordType = "wgs84ll";
-        //CoordType = "bd09ll";
+        Server = "http://api.tianditu.gov.cn";
+        //AppKey = "3334f7776916effb40f2a11dbae57781";
+        KeyName = "tk";
     }
     #endregion
 
@@ -68,9 +67,9 @@ public class BaiduMap : Map, IMap
         address = HttpUtility.UrlEncode(address);
         city = HttpUtility.UrlEncode(city);
 
-        var url = $"/geocoding/v3/?address={address}&city={city}&ret_coordtype={coordtype}&extension_analys_level=1&output=json";
+        var url = $"/geocoder?ds={{\"keyWord\":\"{address}\"}}";
 
-        return await InvokeAsync<IDictionary<String, Object>>(url, "result");
+        return await InvokeAsync<IDictionary<String, Object>>(url, "location");
     }
 
     /// <summary>查询地址获取坐标</summary>
@@ -84,12 +83,10 @@ public class BaiduMap : Map, IMap
         var rs = await GetGeocoderAsync(address, city, coordtype);
         if (rs == null || rs.Count == 0) return null;
 
-        if (rs["location"] is not IDictionary<String, Object> ds || ds.Count < 2) return null;
-
         var gp = new GeoPoint
         {
-            Longitude = ds["lng"].ToDouble(),
-            Latitude = ds["lat"].ToDouble()
+            Longitude = rs["lon"].ToDouble(),
+            Latitude = rs["lat"].ToDouble()
         };
 
         var geo = new GeoAddress
@@ -99,10 +96,8 @@ public class BaiduMap : Map, IMap
 
         if (formatAddress && gp != null) geo = await GetReverseGeoAsync(gp, coordtype);
 
-        geo.Precise = rs["precise"].ToBoolean();
-        geo.Confidence = rs["confidence"].ToInt();
-        geo.Comprehension = rs["comprehension"].ToInt();
         geo.Level = rs["level"] + "";
+        geo.Confidence = rs["score"].ToInt();
 
         return geo;
     }
@@ -111,7 +106,7 @@ public class BaiduMap : Map, IMap
     #region 逆地理编码
     /// <summary>根据坐标获取地址</summary>
     /// <remarks>
-    /// 参考手册 https://lbsyun.baidu.com/index.php?title=webapi/guide/webservice-geocoding-abroad
+    /// 参考手册 http://lbs.tianditu.gov.cn/server/geocoding.html
     /// </remarks>
     /// <param name="point"></param>
     /// <param name="coordtype">坐标系</param>
@@ -120,7 +115,7 @@ public class BaiduMap : Map, IMap
     {
         if (point == null || point.Longitude == 0 || point.Latitude == 0) throw new ArgumentNullException(nameof(point));
 
-        var url = $"/reverse_geocoding/v3/?location={point.Latitude},{point.Longitude}&extensions_poi=1&extensions_town=true&coordtype={coordtype}&output=json";
+        var url = $"/geocoder?postStr={{'lon':{point.Longitude},'lat':{point.Latitude},'ver':1}}&type=geocode";
 
         return await InvokeAsync<IDictionary<String, Object>>(url, "result");
     }
@@ -143,7 +138,7 @@ public class BaiduMap : Map, IMap
         {
             addr.Location = new GeoPoint
             {
-                Longitude = ds["lng"].ToDouble(),
+                Longitude = ds["lon"].ToDouble(),
                 Latitude = ds["lat"].ToDouble()
             };
         }
@@ -153,15 +148,19 @@ public class BaiduMap : Map, IMap
             var reader = new JsonReader();
             reader.ToObject(component, null, addr);
 
-            addr.Code = component["adcode"].ToInt();
-            addr.Township = component["town"] + "";
-            addr.Towncode = component["town_code"].ToInt();
+            addr.Country = component["nation"] + "";
+            addr.Province = component["province"] + "";
+            addr.City = component["city"] + "";
+            addr.District = component["county"] + "";
+
+            addr.Code = (component["county_code"] + "").TrimStart("156").ToInt();
+
+            addr.Name = component["poi"] + "";
+            addr.Title = component["address"] + "";
+
+            addr.Street = component["road"] + "";
             addr.StreetNumber = component["street_number"] + "";
         }
-
-        // 叠加POI语义描述，让结果地址看起来更精确
-        if (rs.TryGetValue("sematic_description", out var sd) && sd is String value && !value.IsNullOrEmpty())
-            addr.Title = value;
 
         return addr;
     }
@@ -170,35 +169,50 @@ public class BaiduMap : Map, IMap
     #region 路径规划
     /// <summary>计算距离和驾车时间</summary>
     /// <remarks>
-    /// https://lbsyun.baidu.com/index.php?title=webapi/route-matrix-api-v2
+    /// http://lbs.tianditu.gov.cn/server/drive.html
     /// </remarks>
     /// <param name="origin"></param>
     /// <param name="destination"></param>
     /// <param name="coordtype"></param>
-    /// <param name="type">路径计算的方式和方法</param>
+    /// <param name="type">导航路线类型。0：最快路线，1：最短路线，2：避开高速，3：步行</param>
     /// <returns></returns>
-    public async Task<Driving> GetDistanceAsync(GeoPoint origin, GeoPoint destination, String coordtype, Int32 type = 13)
+    public async Task<Driving> GetDistanceAsync(GeoPoint origin, GeoPoint destination, String coordtype = null, Int32 type = 0)
+    {
+        return await GetDistanceAsync(origin, destination, null, coordtype, type);
+    }
+
+    /// <summary>计算距离和驾车时间</summary>
+    /// <remarks>
+    /// http://lbs.tianditu.gov.cn/server/drive.html
+    /// </remarks>
+    /// <param name="origin"></param>
+    /// <param name="destination"></param>
+    /// <param name="mids">途经点</param>
+    /// <param name="coordtype"></param>
+    /// <param name="type">导航路线类型。0：最快路线，1：最短路线，2：避开高速，3：步行</param>
+    /// <returns></returns>
+    public async Task<Driving> GetDistanceAsync(GeoPoint origin, GeoPoint destination, IList<GeoPoint> mids, String coordtype = null, Int32 type = 0)
     {
         if (origin == null || origin.Longitude < 1 && origin.Latitude < 1) throw new ArgumentNullException(nameof(origin));
         if (destination == null || destination.Longitude < 1 && destination.Latitude < 1) throw new ArgumentNullException(nameof(destination));
 
-        if (type <= 0) type = 13;
-        var coord = coordtype;
-        if (!coord.IsNullOrEmpty() && coord.Length > 6) coord = coord.TrimEnd("ll");
-        var url = $"/routematrix/v2/driving?origins={origin.Latitude},{origin.Longitude}&destinations={destination.Latitude},{destination.Longitude}&tactics={type}&coord_type={coord}&output=json";
+        var sb = Pool.StringBuilder.Get();
+        sb.Append($"/drive?postStr={{\"orig\":\"{origin.Longitude},{origin.Latitude}\",\"dest\":\"{destination.Longitude},{destination.Latitude}\"");
+        if (mids != null && mids.Count > 0)
+            sb.Append($",\"mid\":\"{mids.Join(";", e => $"{e.Longitude},{e.Latitude}")}\"");
+        sb.Append($",\"style\":\"{type}\"}}&type=search");
 
-        var list = await InvokeAsync<IList<Object>>(url, "result");
-        if (list == null || list.Count == 0) return null;
+        var url = sb.Return(true);
 
-        if (list.FirstOrDefault() is not IDictionary<String, Object> geo) return null;
+        var dic = await InvokeAsync<IDictionary<String, Object>>(url, null);
+        if (dic == null || dic.Count == 0) return null;
 
-        var d1 = geo["distance"] as IDictionary<String, Object>;
-        var d2 = geo["duration"] as IDictionary<String, Object>;
+        var html = LastString;
 
         var rs = new Driving
         {
-            Distance = d1["value"].ToInt(),
-            Duration = d2["value"].ToInt()
+            Distance = (Int32)Math.Round(html.Substring("<distance>", "</distance>").ToDouble() * 1000, 0),
+            Duration = (Int32)Math.Round(html.Substring("<duration>", "</duration>").ToDouble(), 0),
         };
 
         return rs;
@@ -223,7 +237,7 @@ public class BaiduMap : Map, IMap
         tag = HttpUtility.UrlEncode(tag);
         region = HttpUtility.UrlEncode(region);
 
-        var url = $"/place/v2/search?output=json&query={query}&tag={tag}&region={region}&city_limit=true&ret_coordtype={coordtype}";
+        var url = $"https://api.map.baidu.com/place/v2/search?output=json&query={query}&tag={tag}&region={region}&city_limit=true&ret_coordtype={coordtype}";
 
         var list = await InvokeAsync<IList<Object>>(url, "results");
         if (list == null || list.Count == 0) return null;
@@ -257,90 +271,6 @@ public class BaiduMap : Map, IMap
         if (!addr.IsNullOrEmpty()) geo.Address = addr;
 
         return geo;
-    }
-    #endregion
-
-    #region IP定位
-    /// <summary>IP定位</summary>
-    /// <remarks>
-    /// https://lbsyun.baidu.com/index.php?title=webapi/ip-api
-    /// </remarks>
-    /// <param name="ip"></param>
-    /// <param name="coordtype"></param>
-    /// <returns></returns>
-    public async Task<IDictionary<String, Object>> IpLocationAsync(String ip, String coordtype)
-    {
-        var url = $"/location/ip?ip={ip}&coor={coordtype}";
-
-        var dic = await InvokeAsync<IDictionary<String, Object>>(url, null);
-        if (dic == null || dic.Count == 0) return null;
-
-        if (dic["content"] is not IDictionary<String, Object> rs) return null;
-
-        if (dic.TryGetValue("address", out var fulladdress)) rs["full_address"] = fulladdress;
-        if (rs.TryGetValue("address_detail", out var v1))
-        {
-            rs.Merge(v1);
-            rs.Remove("address_detail");
-        }
-        if (rs.TryGetValue("point", out var v2))
-        {
-            rs.Merge(v2);
-            rs.Remove("point");
-        }
-
-        return rs;
-    }
-    #endregion
-
-    #region 坐标转换
-    private static readonly String[] _coordTypes = ["", "wgs84ll", "sougou", "gcj02ll", "gcj02mc", "bd09ll", "bd09mc"];
-    /// <summary>坐标转换</summary>
-    /// <remarks>
-    /// https://lbsyun.baidu.com/index.php?title=webapi/guide/changeposition
-    /// </remarks>
-    /// <param name="points">需转换的源坐标</param>
-    /// <param name="from">源坐标类型。wgs84ll/gcj02/bd09ll</param>
-    /// <param name="to">目标坐标类型。gcj02/bd09ll</param>
-    /// <returns></returns>
-    public override async Task<IList<GeoPoint>> ConvertAsync(IList<GeoPoint> points, String from, String to)
-    {
-        if (points == null || points.Count == 0) throw new ArgumentNullException(nameof(points));
-        //if (from.IsNullOrEmpty()) from = coordtype;
-        if (from.IsNullOrEmpty()) throw new ArgumentNullException(nameof(from));
-        if (to.IsNullOrEmpty()) throw new ArgumentNullException(nameof(to));
-
-        if (!from.EndsWithIgnoreCase("ll", "mc")) from += "ll";
-        if (!to.EndsWithIgnoreCase("ll", "mc")) to += "ll";
-
-        if (from.EqualIgnoreCase(to)) return points;
-
-        var idxFrom = 0;
-        var idxTo = 0;
-        for (var i = 0; i < _coordTypes.Length; i++)
-        {
-            if (_coordTypes[i].EqualIgnoreCase(from)) idxFrom = i;
-            if (_coordTypes[i].EqualIgnoreCase(to)) idxTo = i;
-        }
-        if (idxFrom == 0) throw new ArgumentOutOfRangeException(nameof(from));
-        if (idxTo == 0) throw new ArgumentOutOfRangeException(nameof(to));
-
-        var url = $"/geoconv/v1/?coords={points.Join(";", e => $"{e.Longitude},{e.Latitude}")}&from={idxFrom}&to={idxTo}&output=json";
-
-        var rs = await InvokeAsync<IList<Object>>(url, "result");
-        if (rs == null || rs.Count == 0) return null;
-
-        var list = new List<GeoPoint>();
-        foreach (var item in rs.Cast<IDictionary<String, Object>>())
-        {
-            list.Add(new GeoPoint
-            {
-                Longitude = item["x"].ToDouble(),
-                Latitude = item["y"].ToDouble()
-            });
-        }
-
-        return list;
     }
     #endregion
 }

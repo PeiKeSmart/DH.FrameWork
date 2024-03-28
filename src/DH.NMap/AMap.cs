@@ -16,6 +16,7 @@ public class AMap : Map, IMap
     /// <summary>高德地图</summary>
     public AMap()
     {
+        Server = "http://restapi.amap.com";
         //AppKey = "" +
         //    // 六条
         //    "2aada76e462af71e1b67ba1df22d0fa4," +
@@ -63,7 +64,7 @@ public class AMap : Map, IMap
     }
     #endregion
 
-    #region 地址编码
+    #region 地理编码
     /// <summary>查询地址的经纬度坐标</summary>
     /// <param name="address"></param>
     /// <param name="city"></param>
@@ -126,8 +127,10 @@ public class AMap : Map, IMap
 
         {
             var addr = rs["formatted_address"] + "";
-            if (!addr.IsNullOrEmpty()) geo.Address = addr;
+            if (!addr.IsNullOrEmpty() && (geo.Address.IsNullOrEmpty() || geo.Address.Length < addr.Length))
+                geo.Address = addr;
         }
+
         // 替换竖线
         TrimAddress(geo);
 
@@ -141,7 +144,7 @@ public class AMap : Map, IMap
     }
     #endregion
 
-    #region 逆地址编码
+    #region 逆地理编码
     /// <summary>根据坐标获取地址</summary>
     /// <remarks>
     /// http://lbs.amap.com/api/webservice/guide/api/georegeo/#regeo
@@ -169,17 +172,18 @@ public class AMap : Map, IMap
 
         var geo = new GeoAddress
         {
-            Address = rs["formatted_address"] + ""
-        };
-        geo.Location = new GeoPoint
-        {
-            Longitude = point.Longitude,
-            Latitude = point.Latitude
+            Address = rs["formatted_address"] + "",
+            Location = point
         };
         if (rs["addressComponent"] is IDictionary<String, Object> component)
         {
             var reader = new JsonReader();
             reader.ToObject(component, null, geo);
+
+            if (component.TryGetValue("city", out var obj) && obj is not String)
+                geo.City = null;
+            if (component.TryGetValue("streetNumber", out obj) && obj is not String)
+                geo.StreetNumber = null;
 
             geo.Code = component["adcode"].ToInt();
 
@@ -198,6 +202,14 @@ public class AMap : Map, IMap
             {
                 geo.Street = sn["street"] + "";
                 geo.StreetNumber = sn["number"] + "";
+
+                if (geo.Title.IsNullOrEmpty())
+                {
+                    if (!sn.TryGetValue("direction", out var direction)) direction = "";
+                    if (sn.TryGetValue("distance", out var distance)) distance = Math.Round(distance.ToDouble(), 0) + "米";
+
+                    geo.Title = $"{geo.Province}{geo.City}{geo.District}{geo.Township}{geo.Street}{geo.StreetNumber}{direction}{distance}";
+                }
             }
         }
 
@@ -311,7 +323,7 @@ public class AMap : Map, IMap
     #endregion
 
     #region 密钥管理
-    private readonly String[] _KeyWords = new[] { "TOO_FREQUENT", "LIMIT", "NOMATCH", "RECYCLED" };
+    private readonly String[] _KeyWords = ["TOO_FREQUENT", "LIMIT", "NOMATCH", "RECYCLED"];
     /// <summary>是否无效Key。可能禁用或超出限制</summary>
     /// <param name="result"></param>
     /// <returns></returns>
