@@ -5,6 +5,9 @@ using NewLife.Reflection;
 using NewLife.Serialization;
 
 using System.Reflection;
+using System.Runtime.Serialization;
+using System.Web.Script.Serialization;
+using System.Xml.Serialization;
 
 using XCode;
 using XCode.Membership;
@@ -51,6 +54,10 @@ public partial class CronJob : DHEntityBase<CronJob> {
     #endregion
 
     #region 扩展属性
+    /// <summary>用户</summary>
+    [XmlIgnore, ScriptIgnore, IgnoreDataMember]
+    //[ScriptIgnore]
+    public User UpdateUser => Extends.Get(nameof(User), k => User.FindByID(UpdateUserID));
     #endregion
 
     #region 扩展查询
