@@ -144,7 +144,7 @@ public class DataRetentionService : IHostedService {
 
                             try
                             {
-                                //fi.Delete();
+                                fi.Delete();
                             }
                             catch (Exception ex)
                             {
