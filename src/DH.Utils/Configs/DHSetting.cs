@@ -227,11 +227,6 @@ public class DHSetting : Config<DHSetting>
     [Category("通用")]
     public Int32 RobotError { get; set; }
 
-    /// <summary>数据保留时间。审计日期与OAuth日志，默认30天</summary>
-    [Description("数据保留时间。审计日期与OAuth日志，默认30天")]
-    [Category("通用")]
-    public Int32 DataRetention { get; set; } = 30;
-
     /// <summary>下拉选择框。使用Bootstrap，美观，但有呈现方面的性能损耗</summary>
     [Description("下拉选择框。使用Bootstrap，美观，但有呈现方面的性能损耗")]
     [Category("界面配置")]
@@ -334,10 +329,20 @@ public class DHSetting : Config<DHSetting>
     [Description("项目启动时间")]
     public DateTime StartTime { get; set; }
 
+    /// <summary>数据保留时间。审计日期与OAuth日志，默认30天</summary>
+    [Description("数据保留时间。审计日期与OAuth日志，默认30天")]
+    [Category("系统功能")]
+    public Int32 DataRetention { get; set; } = 30;
+
     /// <summary>文件保留时间。备份文件保留时间，默认15天</summary>
     [Description("文件保留时间。备份文件保留时间，默认15天")]
-    [Category("通用")]
+    [Category("系统功能")]
     public Int32 FileRetention { get; set; } = 15;
+
+    /// <summary>保留文件大小。小于该大小的文件将不会被删除，即使超过保留时间，单位K字节，默认1024K</summary>
+    [Description("保留文件大小。小于该大小的文件将不会被删除，即使超过保留时间，单位K字节，默认1024K")]
+    [Category("系统功能")]
+    public Int32 FileRetentionSize { get; set; } = 1024;
 
     #region 系统功能
     /// <summary>多租户。是否支持多租户，租户模式禁止访问系统管理，平台管理模式禁止访问租户页面</summary>
