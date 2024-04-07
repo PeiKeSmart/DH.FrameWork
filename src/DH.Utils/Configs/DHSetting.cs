@@ -334,6 +334,11 @@ public class DHSetting : Config<DHSetting>
     [Description("项目启动时间")]
     public DateTime StartTime { get; set; }
 
+    /// <summary>文件保留时间。备份文件保留时间，默认15天</summary>
+    [Description("文件保留时间。备份文件保留时间，默认15天")]
+    [Category("通用")]
+    public Int32 FileRetention { get; set; } = 15;
+
     #region 系统功能
     /// <summary>多租户。是否支持多租户，租户模式禁止访问系统管理，平台管理模式禁止访问租户页面</summary>
     [Description("多租户。是否支持多租户，租户模式禁止访问系统管理，平台管理模式禁止访问租户页面")]
