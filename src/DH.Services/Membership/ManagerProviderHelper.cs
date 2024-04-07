@@ -14,7 +14,6 @@ using NewLife.Model;
 
 using System.Security.Principal;
 
-using XCode;
 using XCode.Membership;
 
 using HttpContext = Microsoft.AspNetCore.Http.HttpContext;
@@ -81,6 +80,9 @@ public static class ManagerProviderHelper {
     /// <param name="userId"></param>
     public static void ChooseTenant(this HttpContext context, Int32 userId)
     {
+        var set = DHSetting.Current;
+        if (!set.EnableTenant) return;
+
         /*
          * 用户登录后的租户选择逻辑：
          *  已选租户且有效
