@@ -1,12 +1,9 @@
-﻿using System;
-using System.ComponentModel;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using NewLife;
 using NewLife.Log;
 using NewLife.Threading;
 using Stardust.Deployment;
 using Stardust.Models;
-using Stardust.Registry;
 using Stardust.Services;
 #if !NET40
 using TaskEx = System.Threading.Tasks.Task;
@@ -214,7 +211,7 @@ internal class ServiceController : DisposeBase
             {
                 span?.SetError(ex, null);
                 Log?.Write(LogLevel.Error, "{0}", ex);
-                EventProvider?.WriteErrorEvent("ServiceController", ex.ToString());
+                WriteEvent("error", ex.ToString());
             }
 
             return false;
@@ -228,6 +225,7 @@ internal class ServiceController : DisposeBase
 
         var deploy = new ZipDeploy
         {
+            Name = Name,
             FileName = file,
             WorkingDirectory = workDir,
             Overwrite = DeployInfo?.Overwrite,
@@ -239,7 +237,19 @@ internal class ServiceController : DisposeBase
         //var args = service.Arguments?.Trim();
         if (!args.IsNullOrEmpty() && !deploy.Parse(args.Split(" "))) return null;
 
-        deploy.Extract(workDir);
+        //deploy.Extract(workDir);
+        // 要解压缩到影子目录，否则可能会把appsettings.json等配置文件覆盖。用完后删除
+        var shadow = deploy.CreateShadow($"{deploy.Name}-{DateTime.Now:yyyyMMddHHmmss}");
+        deploy.Extract(shadow, CopyModes.ClearBeforeCopy, CopyModes.SkipExists, CopyModes.Overwrite);
+        try
+        {
+            WriteLog("删除临时影子目录：{0}", shadow);
+            Directory.Delete(shadow, true);
+        }
+        catch (Exception ex)
+        {
+            WriteLog(ex.Message);
+        }
 
         if (!needRun) return deploy;
 
@@ -278,7 +288,7 @@ internal class ServiceController : DisposeBase
             WriteLog("Zip包启动失败！ExitCode={0}", deploy.Process?.ExitCode);
 
             // 上报最后错误
-            if (!deploy.LastError.IsNullOrEmpty()) EventProvider?.WriteErrorEvent("ServiceController", deploy.LastError);
+            if (!deploy.LastError.IsNullOrEmpty()) WriteEvent("error", deploy.LastError);
 
             return null;
         }
@@ -492,7 +502,7 @@ internal class ServiceController : DisposeBase
                 if (ex is not ArgumentException)
                 {
                     Log?.Error("{0}", ex);
-                    EventProvider?.WriteErrorEvent("ServiceController", ex.ToString());
+                    WriteEvent("error", ex.ToString());
                 }
             }
 
@@ -757,9 +767,20 @@ internal class ServiceController : DisposeBase
         DefaultSpan.Current?.AppendTag(msg);
 
         if (format.Contains("错误") || format.Contains("失败"))
-            EventProvider?.WriteErrorEvent(nameof(ServiceController), msg);
+            WriteEvent("error", msg);
         else
-            EventProvider?.WriteInfoEvent(nameof(ServiceController), msg);
+            WriteEvent("info", msg);
+    }
+
+    /// <summary>写事件到服务端</summary>
+    /// <param name="type"></param>
+    /// <param name="msg"></param>
+    public void WriteEvent(String type, String msg)
+    {
+        if (type.IsNullOrEmpty()) type = "info";
+        if (Info != null) type = $"{Info.Name}-{type}";
+
+        EventProvider?.WriteEvent(type, nameof(ServiceController), msg);
     }
     #endregion
 }
