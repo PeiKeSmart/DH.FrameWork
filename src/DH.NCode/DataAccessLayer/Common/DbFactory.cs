@@ -35,7 +35,7 @@ public static class DbFactory
     /// <summary>根据数据库类型创建提供者</summary>
     /// <param name="dbType"></param>
     /// <returns></returns>
-    public static IDatabase? Create(DatabaseType dbType) => _dbs[dbType]?.GetType().CreateInstance() as IDatabase;
+    public static IDatabase Create(DatabaseType dbType) => (_dbs[dbType].GetType().CreateInstance() as IDatabase)!;
 
     /// <summary>根据名称获取默认提供者</summary>
     /// <param name="dbType"></param>
@@ -83,9 +83,9 @@ public static class DbFactory
             if (type != null)
             {
                 if (type.CreateInstance() is IDatabase db) _dbs[db.Type] = db;
-            }
 
-            return type;
+                return type;
+            }
         }
 
         // 默认SQLite

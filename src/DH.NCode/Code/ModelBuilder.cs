@@ -48,6 +48,7 @@ public class ModelBuilder : ClassBuilder
 
             builder.Load(item);
 
+            // 模型类使用全局输出路径
             if (!option.Output.IsNullOrEmpty()) builder.Option.Output = option.Output;
 
             // 自定义模型
