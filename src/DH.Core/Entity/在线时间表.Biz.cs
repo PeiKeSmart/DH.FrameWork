@@ -363,8 +363,6 @@ public partial class SysOnlineTime : DHEntityBase<SysOnlineTime> {
         var model = FindByIdAndYearAndMonth(uid, updateTime.Year, updateTime.Month);
         if (model != null)
         {
-            XTrace.WriteLine($"测试写入在线时间表的数据3：{onlineTime}_{model.ToJson()}");
-
             model.UId = uid;
             model.RoleId = roleId;
             model.UName = uName;
@@ -516,8 +514,6 @@ public partial class SysOnlineTime : DHEntityBase<SysOnlineTime> {
 
             //model[$"Day{updateTime.Day}"] = model.DayTimes;
             //model.SetItem($"Day{updateTime.Day}", model.DayTimes);
-
-            XTrace.WriteLine($"测试写入在线时间表的数据2：{onlineTime}_{model.ToJson()}");
 
             model.Update();
         }
