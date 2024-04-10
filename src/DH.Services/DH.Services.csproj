@@ -87,7 +87,7 @@
 
 	<ItemGroup>
 		<!--<PackageReference Include="HtmlSanitizer" Version="8.0.645" />-->
-		<PackageReference Include="IdentityModel" Version="6.2.0" />
+		<PackageReference Include="IdentityModel" Version="7.0.0" />
 		<PackageReference Include="IP2Region.Net" Version="2.0.2" />
 		<PackageReference Include="MaxMind.GeoIP2" Version="5.2.0" />
 		<PackageReference Include="Polly" Version="8.3.1" />
