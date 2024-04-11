@@ -102,21 +102,35 @@ abstract class DbBase : DisposeBase, IDatabase
     }
 
     private static Dictionary<Type, DbProviderFactory> _factories = new();
+    private Boolean _inited;
     protected DbProviderFactory? GetFactory(Boolean create)
     {
-        var type = GetType();
-        if (_factories.TryGetValue(type, out var factory)) return factory;
-
-        if (!create) return null;
-
-        lock (_factories)
+        try
         {
-            if (_factories.TryGetValue(type, out factory)) return factory;
+            var type = GetType();
+            if (_factories.TryGetValue(type, out var factory)) return factory;
 
+            if (!create) return null;
+
+            // 如果已经初始化过，还没拿到工厂，那么没有必要创建第二次
+            if (_inited) return null;
+
+            // 先创建，再加锁加入集合。允许重复创建，避免死锁
             factory = CreateFactory();
-            if (factory != null) _factories.Add(type, factory);
+            if (factory == null) return null;
 
-            return factory;
+            lock (_factories)
+            {
+                if (_factories.TryGetValue(type, out var factory2)) return factory2;
+
+                if (factory != null) _factories.Add(type, factory);
+
+                return factory;
+            }
+        }
+        finally
+        {
+            _inited = true;
         }
     }
 
@@ -443,7 +457,7 @@ abstract class DbBase : DisposeBase, IDatabase
         {
             if (name.IsNullOrEmpty()) name = Path.GetFileNameWithoutExtension(assemblyFile);
             var links = GetLinkNames(name, strict);
-            var type = PluginHelper.LoadPlugin(className, "", assemblyFile, links.Join(","));
+            var type = PluginHelper.LoadPlugin(className, null!, assemblyFile, links.Join(","));
 
             var factory = GetProviderFactory(type);
             if (factory != null) return factory;
@@ -474,7 +488,7 @@ abstract class DbBase : DisposeBase, IDatabase
                     XTrace.WriteException(ex);
                 }
 
-                type = PluginHelper.LoadPlugin(className, "", assemblyFile, links.Join(","));
+                type = PluginHelper.LoadPlugin(className, null!, assemblyFile, links.Join(","));
 
                 // 如果还没有，就写异常
                 if (!File.Exists(file)) throw new FileNotFoundException("缺少文件" + file + "！", file);
