@@ -12,7 +12,7 @@ public class NameClient : ClusterClient
     #region 属性
 
     /// <summary>Broker集合</summary>
-    public IList<BrokerInfo> Brokers { get; private set; } = new List<BrokerInfo>();
+    public IList<BrokerInfo> Brokers { get; private set; } = [];
 
     /// <summary>代理改变时触发</summary>
     public event EventHandler OnBrokerChange;
@@ -46,6 +46,9 @@ public class NameClient : ClusterClient
     protected override void OnStart()
     {
         var cfg = Config;
+        if (cfg.NameServerAddress.IsNullOrEmpty())
+            throw new ArgumentNullException(nameof(cfg.NameServerAddress), "未指定NameServer地址");
+
         var ss = cfg.NameServerAddress.Split(";");
 
         var list = new List<NetUri>();
@@ -93,8 +96,8 @@ public class NameClient : ClusterClient
         {
             // 发送命令
             var rs = Invoke(RequestCode.GET_ROUTEINTO_BY_TOPIC, null, new { topic });
+            span?.AppendTag(rs.Payload?.ToStr());
             var js = rs.ReadBodyAsJson();
-            span?.AppendTag(js);
 
             var list = new List<BrokerInfo>();
             // 解析broker集群地址
@@ -129,6 +132,13 @@ public class NameClient : ClusterClient
             if (Brokers.SequenceEqual(list)) return list.OrderBy(t => t.Name).ToList();
 
             Brokers = list;
+
+            // 结果检查
+            if (list.Count == 0)
+            {
+                WriteLog("未能找到主题[{0}]的任何Broker信息，可能是Topic或NameServer错误，也可能是不支持的服务端版本。服务端返回如下：", topic);
+                WriteLog(rs.Payload.ToStr());
+            }
 
             // 有改变，重新平衡队列
             OnBrokerChange?.Invoke(this, EventArgs.Empty);
