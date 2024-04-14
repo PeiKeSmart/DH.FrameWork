@@ -73,7 +73,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="FluentFTP" Version="49.0.2" />
+		<PackageReference Include="FluentFTP" Version="50.0.0" />
 	</ItemGroup>
 
 </Project>
