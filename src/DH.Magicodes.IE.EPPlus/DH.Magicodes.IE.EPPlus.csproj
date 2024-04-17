@@ -76,4 +76,8 @@
 		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="8.0.0" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\DH.NCore\DH.NCore.csproj" />
+	</ItemGroup>
+
 </Project>
