@@ -451,8 +451,8 @@ public class MachineInfo : IExtend
 
             //if (device.TryGetValue("Fingerprint", out str) && !str.IsNullOrEmpty())
             //    CpuID = str;
-            //if (dic.TryGetValue("Serial", out str))
-            //    CpuID = str;
+            if (dic.TryGetValue("Serial", out str) && !str.IsNullOrEmpty() && !str.Trim('0').IsNullOrEmpty())
+                UUID = str;
         }
 
         var mid = "/etc/machine-id";
@@ -519,39 +519,16 @@ public class MachineInfo : IExtend
         if (disks.Count == 0) disks = GetFiles("/dev/disk/by-uuid", false);
         if (disks.Count > 0) DiskID = disks.Where(e => !e.IsNullOrEmpty()).Join(",");
 
+        // 从*-release文件读取产品信息，具有更高优先级
         file = "/etc/os-release";
         if (TryRead(file, out value))
         {
             var dic2 = value.SplitAsDictionary("=", Environment.NewLine, true);
 
-            if (Vendor.IsNullOrEmpty() && dic2.TryGetValue("Vendor", out str)) Vendor = str;
-            if (Product.IsNullOrEmpty() && dic2.TryGetValue("Product", out str)) Product = str;
-            if (Serial.IsNullOrEmpty() && dic2.TryGetValue("Serial", out str)) Serial = str;
-            if (Board.IsNullOrEmpty() && dic2.TryGetValue("Board", out str)) Board = str;
-        }
-
-        if (Processor.IsNullOrEmpty())
-        {
-            // 识别全志sunxi平台
-            if (TryRead("/sys/class/sunxi_info/sys_info", out value))
-            {
-                var dic2 = value.SplitAsDictionary(":", Environment.NewLine, true);
-                if (dic2.TryGetValue("sunxi_platform", out var txt) && !txt.IsNullOrEmpty())
-                {
-                    Processor = txt switch
-                    {
-                        "sun50iw9" => "H616",
-                        "sun50iw10" => "A133",
-                        _ => txt,
-                    };
-                    if (Product.IsNullOrEmpty() && txt.StartsWith("sun50i")) Product = "Cortex-A53";
-                    if (Vendor.IsNullOrEmpty()) Vendor = "Allwinner";
-                }
-                if (uuid.IsNullOrEmpty() && dic2.TryGetValue("sunxi_chipid", out txt) && !txt.IsNullOrEmpty())
-                    UUID = txt;
-                if (Serial.IsNullOrEmpty() && dic2.TryGetValue("sunxi_serial", out txt) && !txt.IsNullOrEmpty())
-                    Serial = txt;
-            }
+            if (dic2.TryGetValue("Vendor", out str)) Vendor = str;
+            if (dic2.TryGetValue("Product", out str)) Product = str;
+            if (dic2.TryGetValue("Serial", out str)) Serial = str;
+            if (dic2.TryGetValue("Board", out str)) Board = str;
         }
     }
 
