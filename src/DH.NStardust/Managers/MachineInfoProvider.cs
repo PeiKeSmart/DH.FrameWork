@@ -1,6 +1,8 @@
 ﻿#if !NET40
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Net.NetworkInformation;
+using System.Reflection;
 using NewLife;
 using NewLife.Log;
 using Stardust.Windows;
@@ -10,10 +12,123 @@ namespace Stardust.Managers;
 /// <summary>机器信息提供者，增强机器信息获取能力</summary>
 public class MachineInfoProvider : IMachineInfo
 {
+    static readonly Dictionary<String, String> _allwinner_archs = new()
+    {
+        ["sun8i"] = "Cortex-A7",
+        ["sun9i"] = "Cortex-A15",
+        ["sun50i"] = "Cortex-A53",
+        ["sun55i"] = "Cortex-A55",
+        ["sun60i"] = "Cortex-A76",
+    };
+    static readonly Dictionary<String, String> _allwinner_socs = new()
+    {
+        ["sun8i"] = "H3",
+        ["sun50i-h616"] = "H616",
+        ["sun50iw9"] = "H616",
+        ["sun50iw10"] = "A133"
+    };
+
+    /// <summary>初始化时执行一次</summary>
+    /// <param name="info"></param>
     public void Init(MachineInfo info)
     {
+        // 识别单板机信息
+        {
+            var dic = ReadRelease();
+            if (dic != null && dic.Count > 0)
+            {
+                if (dic.TryGetValue("BOARD_NAME", out var str) && !str.IsNullOrEmpty())
+                    info.Product = str;
+                if (dic.TryGetValue("BOARD", out str) && !str.IsNullOrEmpty())
+                    info.Board = str;
+            }
+        }
+
+        // 识别全志sunxi平台
+        // https://linux-sunxi.org/Allwinner_SoC_Family
+        if (TryRead("/sys/class/sunxi_info/sys_info", out var value))
+        {
+            var dic = value.SplitAsDictionary(":", Environment.NewLine, true);
+            if (dic.TryGetValue("sunxi_platform", out var txt) && !txt.IsNullOrEmpty())
+            {
+                MatchAllwinner(info, txt);
+            }
+            if (dic.TryGetValue("sunxi_chipid", out txt) && !txt.IsNullOrEmpty())
+                info.UUID = txt;
+            if (dic.TryGetValue("sunxi_serial", out txt) && !txt.IsNullOrEmpty())
+                info.Serial = txt;
+        }
+
+        // Armbian跑在全志平台上。如：Allwinner sun8i Family
+        if (!info.Processor.IsNullOrEmpty() && info.Processor.Contains("sun"))
+        {
+            var txt = info.Processor.Split(' ', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault(e => e.StartsWithIgnoreCase("sun"));
+            MatchAllwinner(info, txt);
+        }
     }
 
+    private static void MatchAllwinner(MachineInfo info, String txt)
+    {
+        if (txt.IsNullOrEmpty()) return;
+
+        var p = txt.IndexOf('p');
+        if (p > 0) txt = txt[..p];
+
+        // SoC处理器
+        if (_allwinner_socs.TryGetValue(txt, out var soc))
+            info.Processor = soc;
+        else
+            info.Processor = txt;
+
+        // 内核架构
+        if (info.Product.IsNullOrEmpty())
+        {
+            p = txt.IndexOf('i');
+            if (p > 0) txt = txt[..(p + 1)];
+
+            if (_allwinner_archs.TryGetValue(txt, out var arch))
+                info.Product = arch;
+        }
+
+        // 制造商
+        if (info.Vendor.IsNullOrEmpty()) info.Vendor = "Allwinner";
+    }
+
+    private static IDictionary<String, String>? ReadRelease()
+    {
+        var di = "/etc/".AsDirectory();
+        if (!di.Exists) return null;
+
+        var fis = di.GetFiles("*-release");
+        foreach (var fi in fis)
+        {
+            //if (!fi.Name.EqualIgnoreCase("orangepi-release", "armbian-release", "redhat-release", "debian-release", "os-release", "system-release"))
+            //{
+            //    var dic = File.ReadAllText(fi.FullName).SplitAsDictionary("=", "\n", true);
+            //    //if (dic.TryGetValue("BOARD_NAME", out var str)) return str;
+            //    //if (dic.TryGetValue("BOARD", out str)) return str;
+            //    return dic;
+            //}
+
+            var txt = File.ReadAllText(fi.FullName);
+            if (!txt.IsNullOrEmpty() && (txt.Contains("BOARD_NAME=") || txt.Contains("BOARD=")))
+            {
+                return txt.SplitAsDictionary("=", "\n", true);
+            }
+        }
+
+        //// 支持未知的release文件
+        //if (fis.Length > 0)
+        //{
+        //    var dic = File.ReadAllText(fis[0].FullName).SplitAsDictionary("=", "\n", true);
+        //    return dic;
+        //}
+
+        return null;
+    }
+
+    /// <summary>刷新时执行</summary>
+    /// <param name="info"></param>
     public void Refresh(MachineInfo info)
     {
         if (Runtime.Windows)
@@ -85,6 +200,22 @@ public class MachineInfoProvider : IMachineInfo
                 }
             }
         }
+    }
+
+    private static Boolean TryRead(String fileName, [NotNullWhen(true)] out String? value)
+    {
+        value = null;
+
+        if (!File.Exists(fileName)) return false;
+
+        try
+        {
+            value = File.ReadAllText(fileName)?.Trim();
+            if (value.IsNullOrEmpty()) return false;
+        }
+        catch { return false; }
+
+        return true;
     }
 
     private static String? Execute(String cmd, String? arguments = null, Int32 msWait = 5_000)
