@@ -9,8 +9,8 @@ using NewLife.IO;
 
 namespace DH.AspNetCore.Results;
 
-/// <summary>Csv动作结果</summary>
-public class CsvActionResult : IActionResult {
+/// <summary>Excel动作结果</summary>
+public class ExcelResult : IActionResult {
     /// <summary>字段列表</summary>
     public IList<DataField> Fields { get; set; }
 
@@ -34,8 +34,17 @@ public class CsvActionResult : IActionResult {
         await using var csv = new CsvFile(rs.Body, true);
 
         // 列头
-        var headers = Fields.Select(e => e.Name).ToArray();
-        if (headers[0] == "ID") headers[0] = "Id";
+        var headers = new List<String>();
+        foreach (var fi in Fields)
+        {
+            var name = fi.DisplayName;
+            if (name.IsNullOrEmpty()) name = fi.Description;
+            if (name.IsNullOrEmpty()) name = fi.Name;
+
+            // 第一行以ID开头的csv文件，容易被识别为SYLK文件
+            if (name == "ID" && fi == Fields[0]) name = "Id";
+            headers.Add(name);
+        }
         await csv.WriteLineAsync(headers);
 
         // 内容
