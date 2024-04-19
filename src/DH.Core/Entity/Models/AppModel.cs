@@ -23,8 +23,11 @@ public partial class AppModel
     /// <summary>密钥。AppSecret</summary>
     public String Secret { get; set; }
 
-    /// <summary>是否内部项目</summary>
-    public Boolean IsInternal { get; set; }
+    /// <summary>类别</summary>
+    public String Category { get; set; }
+
+    /// <summary>启用</summary>
+    public Boolean Enable { get; set; }
 
     /// <summary>首页</summary>
     public String HomePage { get; set; }
@@ -32,14 +35,11 @@ public partial class AppModel
     /// <summary>图标。附件路径</summary>
     public String Logo { get; set; }
 
-    /// <summary>白名单</summary>
+    /// <summary>IP白名单。符合条件的来源IP才允许访问，支持*通配符，多个逗号隔开</summary>
     public String White { get; set; }
 
-    /// <summary>黑名单。黑名单优先于白名单</summary>
+    /// <summary>IP黑名单。符合条件的来源IP禁止访问，支持*通配符，多个逗号隔开</summary>
     public String Black { get; set; }
-
-    /// <summary>启用</summary>
-    public Boolean Enable { get; set; }
 
     /// <summary>有效期。访问令牌AccessToken的有效期，单位秒，默认使用全局设置</summary>
     public Int32 TokenExpire { get; set; }
@@ -96,12 +96,12 @@ public partial class AppModel
         Name = model.Name;
         DisplayName = model.DisplayName;
         Secret = model.Secret;
-        IsInternal = model.IsInternal;
+        Category = model.Category;
+        Enable = model.Enable;
         HomePage = model.HomePage;
         Logo = model.Logo;
         White = model.White;
         Black = model.Black;
-        Enable = model.Enable;
         TokenExpire = model.TokenExpire;
         Urls = model.Urls;
         RoleIds = model.RoleIds;
