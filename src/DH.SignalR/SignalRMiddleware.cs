@@ -18,7 +18,7 @@ public class SignalRMiddleware
         if (request.Path.StartsWithSegments("/notify-hub", StringComparison.OrdinalIgnoreCase) &&
             request.Query.TryGetValue("access_token", out var accessToken))
         {
-            request.Headers.Add("Authorization", $"Bearer {accessToken}");
+            request.Headers["Authorization"] = $"Bearer {accessToken}";
         }
 
         await _next(httpContext);

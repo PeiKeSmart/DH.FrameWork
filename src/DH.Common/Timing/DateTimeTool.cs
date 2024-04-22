@@ -1,4 +1,4 @@
-﻿namespace DH.Helpers;
+﻿namespace DH.Timing;
 
 public class DateTimeTool {
     private static DateTimeTool sDTTool = new DateTimeTool();

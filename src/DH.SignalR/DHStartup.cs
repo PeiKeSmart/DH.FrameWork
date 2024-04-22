@@ -25,6 +25,7 @@ public class DHStartup : IDHStartup
     /// </summary>
     /// <param name="services">服务描述符集合</param>
     /// <param name="configuration">应用程序的配置</param>
+    /// <param name="webHostEnvironment"></param>
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
     {
         if (SignalRSetting.Current.IsAllowSignalR)

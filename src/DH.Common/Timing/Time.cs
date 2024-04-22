@@ -1,6 +1,6 @@
-﻿using DH.Timing;
+﻿using DH.Helpers;
 
-namespace DH.Helpers;
+namespace DH.Timing;
 
 /// <summary>
 /// 时间操作
@@ -21,7 +21,7 @@ public static class Time {
     /// 设置时间
     /// </summary>
     /// <param name="dateTime">时间</param>
-    public static void SetTime(string dateTime) => _dateTime = Conv.ToDGDateOrNull(dateTime);
+    public static void SetTime(string dateTime) => _dateTime = dateTime.ToDGDateOrNull();
 
     /// <summary>
     /// 重置时间
@@ -51,7 +51,7 @@ public static class Time {
     {
         var start = TimeZoneInfo.ConvertTime(DateTimeExtensions.Date1970, TimeZoneInfo.Local);
         var ticks = (time - start.Add(new TimeSpan(8, 0, 0))).Ticks;
-        return Conv.ToDGLong(ticks / TimeSpan.TicksPerSecond);
+        return (ticks / TimeSpan.TicksPerSecond).ToDGLong();
     }
 
     /// <summary>
