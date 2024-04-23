@@ -11,7 +11,7 @@ public class OffLineData
     /// <summary>
     /// 用户Id
     /// </summary>
-    public Int32 UserId { set; get; }
+    public Int64 UserId { set; get; }
 
     /// <summary>
     /// 连接Id
