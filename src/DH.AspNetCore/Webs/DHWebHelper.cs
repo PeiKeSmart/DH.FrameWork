@@ -141,14 +141,31 @@ public static class DHWebHelper {
     }
 
     /// <summary>保存上传文件</summary>
-    /// <param name="file"></param>
-    /// <param name="filename"></param>
+    /// <param name="file">上传的文件</param>
+    /// <param name="filename">保存的文件名</param>
     public static void SaveAs(this IFormFile file, String filename)
     {
         using var fs = new FileStream(filename, FileMode.OpenOrCreate);
         //file.OpenReadStream().CopyTo(fs);
         file.CopyTo(fs);
         fs.SetLength(fs.Position);
+        fs.Close();
+    }
+
+    /// <summary>保存上传文件</summary>
+    /// <param name="file">上传的文件</param>
+    /// <param name="filename">保存的文件名</param>
+    /// <param name="Length">要移除的字节长度</param>
+    public static void SaveAs(this IFormFile file, String filename, Int32 Length)
+    {
+        using var fs = new FileStream(filename, FileMode.OpenOrCreate);
+        // 将文件复制到文件流
+        file.CopyTo(fs);
+        // 获取文件现在的大小并减去4字节
+        long updatedFileSize = fs.Length - Length;
+        // 设置文件大小，这样的话会自动剪裁后面的指定字节
+        fs.SetLength(updatedFileSize);
+        fs.Close();
     }
 
     private static Uri GetRawUrl(Uri uri, Func<String, String> headers)
