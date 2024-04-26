@@ -1,9 +1,9 @@
-﻿using DH.Models;
+﻿using System.Text.Json;
+
+using DH.Models;
 
 using NewLife;
 using NewLife.Data;
-
-using System.Text.Json;
 
 using XCode;
 using XCode.Membership;
@@ -876,7 +876,7 @@ public partial class UserE : User {
     /// <param name="StarTime"></param>
     /// <param name="UId"></param>
     /// <returns></returns>
-    public static Int64 FindCountByCreateTime(DateTime StarTime, Int32 UId)
+    public static Int64 FindCountByCreateTime(DateTime StarTime, Int32? UId)
     {
         if (StarTime < DateTime.MinValue)
         {
