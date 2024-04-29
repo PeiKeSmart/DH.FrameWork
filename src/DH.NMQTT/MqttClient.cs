@@ -156,7 +156,6 @@ public class MqttClient : DisposeBase
             if (client is TcpSession tcp)
             {
                 tcp.NoDelay = true;
-                tcp.DisconnectWhenEmptyData = false;
             }
 
             if (Certificate != null)
