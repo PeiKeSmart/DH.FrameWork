@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using System.Security.Cryptography;
 using NewLife.Data;
 using NewLife.Net;
@@ -88,7 +87,11 @@ public class WebSocket
                     break;
                 case WebSocketMessageType.Ping:
                     {
-                        var msg = new WebSocketMessage { Type = WebSocketMessageType.Pong, MaskKey = Rand.NextBytes(4) };
+                        var msg = new WebSocketMessage
+                        {
+                            Type = WebSocketMessageType.Pong,
+                            Payload = $"Pong {DateTime.UtcNow.ToFullString()}",
+                        };
                         session.Send(msg.ToPacket());
                     }
                     break;
