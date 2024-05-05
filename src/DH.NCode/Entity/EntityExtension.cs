@@ -148,18 +148,16 @@ public static class EntityExtension
                 DefaultSpan.Current?.AppendTag("ShardPolicy");
 
                 // 提前计算分表，按库表名分组
-                var table = fact.Table;
                 var dic = list.GroupBy(e =>
                 {
-                    var sd = fact.ShardPolicy.Shard(e);
-                    return fact.GetSession(sd.ConnName ?? table.ConnName, sd.TableName ?? table.TableName);
+                    var shard = fact.ShardPolicy.Shard(e);
+                    return fact.GetSession(shard?.ConnName ?? session2.ConnName, shard?.TableName ?? session2.TableName);
                 });
                 // 按库表分组执行批量插入
                 var rs = 0;
                 foreach (var item in dic)
                 {
-                    var ss = item.Key;
-                    rs += BatchInsert(item.ToList(), option: null, ss);
+                    rs += BatchInsert(item.ToList(), option: null, item.Key);
                 }
                 return rs;
             }
@@ -270,7 +268,7 @@ public static class EntityExtension
     {
         // 没有其它唯一索引，且主键为空时，走批量插入
         var rs = 0;
-        if (!session.Table.Indexes.Any(di => di.Unique))
+        if (!session.DataTable.Indexes.Any(di => di.Unique))
         {
             var inserts = new List<T>();
             var updates = new List<T>();
@@ -486,7 +484,7 @@ public static class EntityExtension
             if (!option.FullInsert && !fact.FullInsert)
             {
                 var dirtys = GetDirtyColumns(fact, list.Cast<IEntity>());
-                columns = columns.Where(e => dirtys.Contains(e.Name)).ToArray();
+                columns = columns.Where(e => !e.Identity && dirtys.Contains(e.Name)).ToArray();
             }
 
             option.Columns = columns;
@@ -503,7 +501,7 @@ public static class EntityExtension
         using var span = tracer?.NewSpan($"db:{dal.ConnName}:BatchInsert:{fact.Table.TableName}", $"{session.TableName}[{list.Count()}]", list.Count());
         try
         {
-            var rs = dal.Session.Insert(session.Table, option.Columns, list.Cast<IModel>());
+            var rs = dal.Session.Insert(session.DataTable, option.Columns, list.Cast<IModel>());
 
             // 清除脏数据，避免重复提交保存
             foreach (var item in list)
@@ -567,8 +565,9 @@ public static class EntityExtension
             if (!option.FullInsert && !fact.FullInsert)
             {
                 var dirtys = GetDirtyColumns(fact, list.Cast<IEntity>());
-                columns = columns.Where(e => dirtys.Contains(e.Name)).ToArray();
+                columns = columns.Where(e => !e.Identity && dirtys.Contains(e.Name)).ToArray();
             }
+
             option.Columns = columns;
         }
 
@@ -584,7 +583,7 @@ public static class EntityExtension
         {
             //if (span != null && list is ICollection collection) span.Tag = $"{session.TableName}[{collection.Count}]";
 
-            var rs = dal.Session.InsertIgnore(session.Table, option.Columns, list.Cast<IModel>());
+            var rs = dal.Session.InsertIgnore(session.DataTable, option.Columns, list.Cast<IModel>());
 
             // 清除脏数据，避免重复提交保存
             foreach (var item in list)
@@ -648,7 +647,7 @@ public static class EntityExtension
             if (!option.FullInsert && !fact.FullInsert)
             {
                 var dirtys = GetDirtyColumns(fact, list.Cast<IEntity>());
-                columns = columns.Where(e => dirtys.Contains(e.Name)).ToArray();
+                columns = columns.Where(e => !e.Identity && dirtys.Contains(e.Name)).ToArray();
             }
 
             option.Columns = columns;
@@ -666,7 +665,7 @@ public static class EntityExtension
         {
             //if (span != null && list is ICollection collection) span.Tag = $"{session.TableName}[{collection.Count}]";
 
-            var rs = dal.Session.Replace(session.Table, option.Columns, list.Cast<IModel>());
+            var rs = dal.Session.Replace(session.DataTable, option.Columns, list.Cast<IModel>());
 
             // 清除脏数据，避免重复提交保存
             foreach (var item in list)
@@ -750,7 +749,7 @@ public static class EntityExtension
         {
             //if (span != null && list is ICollection collection) span.Tag = $"{session.TableName}[{collection.Count}]";
 
-            var rs = dal.Session.Update(session.Table, option.Columns, updateColumns, addColumns, list.Cast<IModel>());
+            var rs = dal.Session.Update(session.DataTable, option.Columns, updateColumns, addColumns, list.Cast<IModel>());
 
             // 清除脏数据，避免重复提交保存
             foreach (var item in list)
@@ -817,7 +816,7 @@ public static class EntityExtension
             if (!option.FullInsert && !fact.FullInsert)
             {
                 var dirtys = GetDirtyColumns(fact, list.Cast<IEntity>());
-                columns = columns.Where(e => e.PrimaryKey || dirtys.Contains(e.Name)).ToArray();
+                columns = columns.Where(e => !e.Identity && (e.PrimaryKey || dirtys.Contains(e.Name))).ToArray();
             }
 
             // 遇到自增字段，需要谨慎处理，部分insert部分update则无法执行upsert
@@ -889,7 +888,7 @@ public static class EntityExtension
         {
             //if (span != null && list is ICollection collection) span.Tag = $"{session.TableName}[{collection.Count}]";
 
-            var rs = dal.Session.Upsert(session.Table, option.Columns, updateColumns, addColumns, list.Cast<IModel>());
+            var rs = dal.Session.Upsert(session.DataTable, option.Columns, updateColumns, addColumns, list.Cast<IModel>());
 
             // 清除脏数据，避免重复提交保存
             foreach (var item in list)
@@ -953,7 +952,7 @@ public static class EntityExtension
             if (!option.FullInsert && !fact.FullInsert)
             {
                 var dirtys = GetDirtyColumns(fact, [entity]);
-                columns = columns.Where(e => e.PrimaryKey || dirtys.Contains(e.Name)).ToArray();
+                columns = columns.Where(e => !e.Identity && (e.PrimaryKey || dirtys.Contains(e.Name))).ToArray();
             }
             option.Columns = columns;
         }
@@ -973,7 +972,7 @@ public static class EntityExtension
         {
             if (span != null) span.Tag = $"{session.TableName}[{entity}]";
 
-            return dal.Session.Upsert(session.Table, option.Columns, option.UpdateColumns, option.AddColumns, [entity as IModel]);
+            return dal.Session.Upsert(session.DataTable, option.Columns, option.UpdateColumns, option.AddColumns, [entity as IModel]);
         }
         catch (Exception ex)
         {

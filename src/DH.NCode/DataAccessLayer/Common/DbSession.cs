@@ -63,7 +63,7 @@ internal abstract partial class DbSession : DisposeBase, IDbSession, IAsyncDbSes
     {
         if (sql.IsNullOrEmpty()) sql = GetSql(cmd)!;
         if (ex != null)
-            return new XSqlException(sql, this, ex);
+            return new XSqlException(sql, this, ex.Message);
         else
             return new XSqlException(sql, this);
     }
@@ -72,6 +72,9 @@ internal abstract partial class DbSession : DisposeBase, IDbSession, IAsyncDbSes
     /// <typeparam name="TResult"></typeparam>
     /// <param name="callback"></param>
     /// <returns></returns>
+#if NETCOREAPP
+    [StackTraceHidden]
+#endif
     public virtual TResult Process<TResult>(Func<DbConnection, TResult> callback)
     {
         var delay = 1000;
@@ -97,13 +100,18 @@ internal abstract partial class DbSession : DisposeBase, IDbSession, IAsyncDbSes
             }
         }
 
-        return default;
+        // 不可能执行到这里
+        throw new InvalidOperationException();
+        //return default;
     }
 
     /// <summary>打开连接并执行操作</summary>
     /// <typeparam name="TResult"></typeparam>
     /// <param name="callback"></param>
     /// <returns></returns>
+#if NETCOREAPP
+    [StackTraceHidden]
+#endif
     public virtual TResult Process<TResult>(Func<TResult> callback)
     {
         var delay = 1000;
@@ -128,13 +136,18 @@ internal abstract partial class DbSession : DisposeBase, IDbSession, IAsyncDbSes
             }
         }
 
-        return default;
+        // 不可能执行到这里
+        throw new InvalidOperationException();
+        //return default;
     }
 
     /// <summary>打开连接并执行操作</summary>
     /// <typeparam name="TResult"></typeparam>
     /// <param name="callback"></param>
     /// <returns></returns>
+#if NETCOREAPP
+    [StackTraceHidden]
+#endif
     public virtual async Task<TResult> ProcessAsync<TResult>(Func<DbConnection, Task<TResult>> callback)
     {
         var delay = 1000;
@@ -160,13 +173,18 @@ internal abstract partial class DbSession : DisposeBase, IDbSession, IAsyncDbSes
             }
         }
 
-        return default;
+        // 不可能执行到这里
+        throw new InvalidOperationException();
+        //return default;
     }
 
     /// <summary>打开连接并执行操作</summary>
     /// <typeparam name="TResult"></typeparam>
     /// <param name="callback"></param>
     /// <returns></returns>
+#if NETCOREAPP
+    [StackTraceHidden]
+#endif
     public virtual async Task<TResult> ProcessAsync<TResult>(Func<Task<TResult>> callback)
     {
         var delay = 1000;
@@ -191,7 +209,9 @@ internal abstract partial class DbSession : DisposeBase, IDbSession, IAsyncDbSes
             }
         }
 
-        return default;
+        // 不可能执行到这里
+        throw new InvalidOperationException();
+        //return default;
     }
 
     /// <summary>是否应该在该异常上重试</summary>
@@ -326,7 +346,7 @@ internal abstract partial class DbSession : DisposeBase, IDbSession, IAsyncDbSes
     /// <param name="type">命令类型，默认SQL文本</param>
     /// <param name="ps">命令参数</param>
     /// <returns></returns>
-    public virtual DataSet Query(String sql, CommandType type = CommandType.Text, params IDataParameter[] ps)
+    public virtual DataSet Query(String sql, CommandType type = CommandType.Text, params IDataParameter[]? ps)
     {
         using var cmd = OnCreateCommand(sql, type, ps);
         return Query(cmd);
@@ -424,6 +444,9 @@ internal abstract partial class DbSession : DisposeBase, IDbSession, IAsyncDbSes
     /// <returns></returns>
     public virtual Int32 Execute(DbCommand cmd) => Execute(cmd, false, static cmd2 => cmd2.ExecuteNonQuery());
 
+#if NETCOREAPP
+    [StackTraceHidden]
+#endif
     public virtual T Execute<T>(DbCommand cmd, Boolean query, Func<DbCommand, T> callback)
     {
         Transaction?.Check(cmd, !query);
@@ -651,6 +674,9 @@ internal abstract partial class DbSession : DisposeBase, IDbSession, IAsyncDbSes
         });
     }
 
+#if NETCOREAPP
+    [StackTraceHidden]
+#endif
     public virtual Task<T> ExecuteAsync<T>(DbCommand cmd, Boolean query, Func<DbCommand, Task<T>> callback)
     {
         Transaction?.Check(cmd, !query);
@@ -730,7 +756,7 @@ internal abstract partial class DbSession : DisposeBase, IDbSession, IAsyncDbSes
     /// <param name="addColumns">要累加更新的字段，默认累加</param>
     /// <param name="list">实体列表</param>
     /// <returns></returns>
-    public virtual Int32 Update(IDataTable table, IDataColumn[] columns, ICollection<String> updateColumns, ICollection<String> addColumns, IEnumerable<IModel> list) => throw new NotSupportedException();
+    public virtual Int32 Update(IDataTable table, IDataColumn[] columns, ICollection<String>? updateColumns, ICollection<String>? addColumns, IEnumerable<IModel> list) => throw new NotSupportedException();
 
     /// <summary>批量插入或更新</summary>
     /// <param name="table">数据表</param>
@@ -739,7 +765,7 @@ internal abstract partial class DbSession : DisposeBase, IDbSession, IAsyncDbSes
     /// <param name="addColumns">主键已存在时，要累加更新的字段</param>
     /// <param name="list">实体列表</param>
     /// <returns></returns>
-    public virtual Int32 Upsert(IDataTable table, IDataColumn[] columns, ICollection<String> updateColumns, ICollection<String> addColumns, IEnumerable<IModel> list) => throw new NotSupportedException();
+    public virtual Int32 Upsert(IDataTable table, IDataColumn[] columns, ICollection<String>? updateColumns, ICollection<String>? addColumns, IEnumerable<IModel> list) => throw new NotSupportedException();
 
     protected virtual void BuildInsert(StringBuilder sb, DbBase db, String action, IDataTable table, IDataColumn[] columns)
     {
@@ -760,8 +786,8 @@ internal abstract partial class DbSession : DisposeBase, IDbSession, IAsyncDbSes
         if (list.FirstOrDefault() is DbRow)
         {
             // 提前把列名转为索引，然后根据索引找数据。外部确保数据列在数据源中都存在
-            DbTable dt = null;
-            Int32[] ids = null;
+            DbTable? dt = null;
+            Int32[]? ids = null;
             foreach (DbRow dr in list)
             {
                 if (dr.Table != dt)
@@ -783,7 +809,7 @@ internal abstract partial class DbSession : DisposeBase, IDbSession, IAsyncDbSes
                 var row = dt.Rows[dr.Index];
                 for (var i = 0; i < columns.Length; i++)
                 {
-                    sb.Append(db.FormatValue(columns[i], row[ids[i]]));
+                    sb.Append(db.FormatValue(columns[i], row[ids![i]]));
                     sb.Append(',');
                 }
                 sb.Length--;
@@ -853,7 +879,7 @@ internal abstract partial class DbSession : DisposeBase, IDbSession, IAsyncDbSes
     /// <param name="collectionName">指定要返回的架构的名称。</param>
     /// <param name="restrictionValues">为请求的架构指定一组限制值。</param>
     /// <returns></returns>
-    public virtual DataTable GetSchema(DbConnection? conn, String collectionName, String[]? restrictionValues)
+    public virtual DataTable GetSchema(DbConnection? conn, String collectionName, String?[]? restrictionValues)
     {
         // 小心collectionName为空，此时列出所有架构名称
         var key = "" + collectionName;
@@ -880,7 +906,7 @@ internal abstract partial class DbSession : DisposeBase, IDbSession, IAsyncDbSes
         return dt;
     }
 
-    private DataTable GetSchemaInternal(DbConnection conn, String key, String collectionName, String[]? restrictionValues)
+    private DataTable GetSchemaInternal(DbConnection conn, String key, String collectionName, String?[]? restrictionValues)
     {
         DataTable? dt = null;
 

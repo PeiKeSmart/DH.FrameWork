@@ -75,13 +75,18 @@ public class EntitySession<TEntity> : DisposeBase, IEntitySession where TEntity 
         TableName = tableName;
         Key = connName + "###" + tableName;
 
-        TableItem = TableItem.Create(ThisType);
-        Table = TableItem.DataTable.Clone() as IDataTable;
-        Table.TableName = tableName;
+        var ti = Table = TableItem.Create(ThisType, connName);
+        DataTable = (Table.DataTable.Clone() as IDataTable)!;
+
+        // 使用文件模型映射的表名
+        if (tableName == ti.RawTableName)
+            TableName = DataTable.TableName;
+        else
+            DataTable.TableName = tableName;
 
         Queue = new EntityQueue(this)
         {
-            InsertOnly = Table.InsertOnly
+            InsertOnly = DataTable.InsertOnly
         };
     }
 
@@ -113,32 +118,32 @@ public class EntitySession<TEntity> : DisposeBase, IEntitySession where TEntity 
     #region 主要属性
     private Type ThisType => typeof(TEntity);
 
-    /// <summary>表信息</summary>
-    TableItem TableItem { get; }
+    /// <summary>数据表元数据信息。合并连接上的文件模型，可能跟Meta.Table不一致</summary>
+    public TableItem Table { get; }
 
     /// <summary>数据表</summary>
-    public IDataTable Table { get; }
+    public IDataTable DataTable { get; }
 
     IEntityFactory Factory { get; } = typeof(TEntity).AsFactory();
 
     //private DAL _readDal;
-    private DAL _Dal;
+    private DAL? _Dal;
     /// <summary>数据操作层</summary>
     public DAL Dal => _Dal ??= DAL.Create(ConnName);
 
-    private String _FormatedTableName;
+    private String? _FormatedTableName;
     /// <summary>已格式化的表名，带有中括号等</summary>
     public virtual String FormatedTableName
     {
         get
         {
-            if (_FormatedTableName.IsNullOrEmpty()) _FormatedTableName = Dal.Db.FormatName(Table);
+            if (_FormatedTableName.IsNullOrEmpty()) _FormatedTableName = Dal.Db.FormatName(DataTable);
 
             return _FormatedTableName;
         }
     }
 
-    private EntitySession<TEntity> _Default;
+    private EntitySession<TEntity>? _Default;
     /// <summary>该实体类的默认会话。</summary>
     private EntitySession<TEntity> Default
     {
@@ -146,8 +151,8 @@ public class EntitySession<TEntity> : DisposeBase, IEntitySession where TEntity 
         {
             if (_Default != null) return _Default;
 
-            var cname = TableItem.ConnName;
-            var tname = TableItem.TableName;
+            var cname = Table.ConnName;
+            var tname = Table.TableName;
 
             if (ConnName == cname && TableName == tname)
                 _Default = this;
@@ -174,7 +179,7 @@ public class EntitySession<TEntity> : DisposeBase, IEntitySession where TEntity 
     public Boolean WaitForInitData(Int32 ms = 3000)
     {
         // 已初始化
-        if (hasCheckInitData || Table.IsView) return true;
+        if (hasCheckInitData || DataTable.IsView) return true;
 
         var tid = Thread.CurrentThread.ManagedThreadId;
 
@@ -232,11 +237,11 @@ public class EntitySession<TEntity> : DisposeBase, IEntitySession where TEntity 
         var dal = Dal;
 
         // 检查新表名对应的数据表
-        var table = TableItem.DataTable;
+        var table = Table.DataTable;
         // 克隆一份，防止修改
-        table = table.Clone() as IDataTable;
+        table = (table.Clone() as IDataTable)!;
 
-        if (table != null && table.TableName != TableName)
+        if (/*table != null &&*/ table.TableName != TableName)
         {
             // 表名去掉前缀
             var name = TableName;
@@ -254,7 +259,7 @@ public class EntitySession<TEntity> : DisposeBase, IEntitySession where TEntity 
     /// <summary>检查模型。依据反向工程设置、是否首次使用检查、是否已常规检查等</summary>
     private void CheckModel()
     {
-        if (_hasCheckModel || Table.IsView) return;
+        if (_hasCheckModel || DataTable.IsView) return;
         lock (_checkLock)
         {
             if (_hasCheckModel) return;
@@ -269,7 +274,7 @@ public class EntitySession<TEntity> : DisposeBase, IEntitySession where TEntity 
             }
 
             // CheckTableWhenFirstUse的实体类，在这里检查，有点意思，记下来
-            var mode = TableItem.ModelCheckMode;
+            var mode = Table.ModelCheckMode;
             if (DAL.Debug && mode == ModelCheckModes.CheckTableWhenFirstUse)
                 DAL.WriteLog("检查实体{0}的数据表架构，模式：{1}", ThisType.FullName, mode);
 
@@ -303,7 +308,7 @@ public class EntitySession<TEntity> : DisposeBase, IEntitySession where TEntity 
     #endregion
 
     #region 缓存
-    private EntityCache<TEntity> _cache;
+    private EntityCache<TEntity>? _cache;
     /// <summary>实体缓存</summary>
     /// <returns></returns>
     public EntityCache<TEntity> Cache
@@ -323,7 +328,7 @@ public class EntitySession<TEntity> : DisposeBase, IEntitySession where TEntity 
         }
     }
 
-    private ISingleEntityCache<Object, TEntity> _singleCache;
+    private ISingleEntityCache<Object, TEntity>? _singleCache;
     /// <summary>单对象实体缓存。</summary>
     public ISingleEntityCache<Object, TEntity> SingleCache
     {
@@ -446,12 +451,12 @@ public class EntitySession<TEntity> : DisposeBase, IEntitySession where TEntity 
         var dal = Dal;
 
         // 第一次访问，SQLite的Select Count非常慢，数据大于阀值时，使用最大ID作为表记录数
-        if (count < 0 && dal.DbType == DatabaseType.SQLite && TableItem.Identity != null)
+        if (count < 0 && dal.DbType == DatabaseType.SQLite && Table.Identity != null)
         {
             var builder = new SelectBuilder
             {
                 Table = FormatedTableName,
-                OrderBy = TableItem.Identity.Desc()
+                OrderBy = Table.Identity.Desc()
             };
             FixBuilder(builder);
             var ds = dal.Query(builder, 0, 1);
@@ -460,7 +465,7 @@ public class EntitySession<TEntity> : DisposeBase, IEntitySession where TEntity 
         }
 
         // 100w数据时，没有预热Select Count需要3000ms，预热后需要500ms
-        if (dal.DbType != DatabaseType.SQLite && (count <= 0 || count >= 1_000_000) && !Table.IsView)
+        if (dal.DbType != DatabaseType.SQLite && (count <= 0 || count >= 1_000_000) && !DataTable.IsView)
         {
             using var span = dal.Tracer?.NewSpan($"db:{ConnName}:QueryCountFast:{TableName}");
             try
@@ -607,7 +612,7 @@ public class EntitySession<TEntity> : DisposeBase, IEntitySession where TEntity 
 
     private void FixBuilder(SelectBuilder builder)
     {
-        if (Table.IsView && builder.Table == FormatedTableName)
+        if (DataTable.IsView && builder.Table == FormatedTableName)
         {
             builder.Table = $"({Factory.Template.GetSql(Dal.DbType)}) SourceTable";
         }
@@ -698,7 +703,7 @@ public class EntitySession<TEntity> : DisposeBase, IEntitySession where TEntity 
         _OnDataChange?.Invoke(ThisType);
     }
 
-    private Action<Type> _OnDataChange;
+    private Action<Type>? _OnDataChange;
     /// <summary>数据改变后触发。参数指定触发该事件的实体类</summary>
     public event Action<Type> OnDataChange
     {
@@ -812,21 +817,21 @@ public class EntitySession<TEntity> : DisposeBase, IEntitySession where TEntity 
     /// <returns></returns>
     public virtual Int32 Insert(IEntity entity)
     {
-        if (Table.IsView) throw new NotSupportedException("视图无法添删改！");
+        if (DataTable.IsView) throw new NotSupportedException("视图无法添删改！");
 
         var rs = Factory.Persistence.Insert(this, entity);
 
         var e = entity as TEntity;
 
         // 加入实体缓存
-        _cache?.Add(e);
+        _cache?.Add(e!);
 
         // 增加计数
         if (_Count >= 0) Interlocked.Increment(ref _Count);
 
         // 清空扩展属性
         //(entity as EntityBase)._Extends?.Clear();
-        (entity as EntityBase)._Extends = null;
+        (entity as EntityBase)!._Extends = null;
 
         return rs;
     }
@@ -836,20 +841,20 @@ public class EntitySession<TEntity> : DisposeBase, IEntitySession where TEntity 
     /// <returns></returns>
     public virtual Int32 Update(IEntity entity)
     {
-        if (Table.IsView) throw new NotSupportedException("视图无法添删改！");
+        if (DataTable.IsView) throw new NotSupportedException("视图无法添删改！");
 
         var rs = Factory.Persistence.Update(this, entity);
 
         var e = entity as TEntity;
 
         // 更新缓存
-        _cache?.Update(e);
+        _cache?.Update(e!);
 
         // 干掉缓存项，让它重新获取
-        _singleCache?.Remove(e);
+        _singleCache?.Remove(e!);
 
         // 清空扩展属性
-        (entity as EntityBase)._Extends = null;
+        (entity as EntityBase)!._Extends = null;
 
         return rs;
     }
@@ -859,23 +864,23 @@ public class EntitySession<TEntity> : DisposeBase, IEntitySession where TEntity 
     /// <returns></returns>
     public virtual Int32 Delete(IEntity entity)
     {
-        if (Table.IsView) throw new NotSupportedException("视图无法添删改！");
+        if (DataTable.IsView) throw new NotSupportedException("视图无法添删改！");
 
         var rs = Factory.Persistence.Delete(this, entity);
 
         var e = entity as TEntity;
 
         // 从实体缓存删除
-        _cache?.Remove(e);
+        _cache?.Remove(e!);
 
         // 从单对象缓存删除
-        _singleCache?.Remove(e);
+        _singleCache?.Remove(e!);
 
         // 减少计数
         if (_Count > 0) Interlocked.Decrement(ref _Count);
 
         // 清空扩展属性
-        (entity as EntityBase)._Extends = null;
+        (entity as EntityBase)!._Extends = null;
 
         return rs;
     }
@@ -885,14 +890,14 @@ public class EntitySession<TEntity> : DisposeBase, IEntitySession where TEntity 
     /// <returns></returns>
     public virtual async Task<Int32> InsertAsync(IEntity entity)
     {
-        if (Table.IsView) throw new NotSupportedException("视图无法添删改！");
+        if (DataTable.IsView) throw new NotSupportedException("视图无法添删改！");
 
         var rs = await Factory.Persistence.InsertAsync(this, entity);
 
         var e = entity as TEntity;
 
         // 加入实体缓存
-        _cache?.Add(e);
+        _cache?.Add(e!);
 
         // 增加计数
         if (_Count >= 0) Interlocked.Increment(ref _Count);
@@ -905,17 +910,17 @@ public class EntitySession<TEntity> : DisposeBase, IEntitySession where TEntity 
     /// <returns></returns>
     public virtual Task<Int32> UpdateAsync(IEntity entity)
     {
-        if (Table.IsView) throw new NotSupportedException("视图无法添删改！");
+        if (DataTable.IsView) throw new NotSupportedException("视图无法添删改！");
 
         var rs = Factory.Persistence.UpdateAsync(this, entity);
 
         var e = entity as TEntity;
 
         // 更新缓存
-        _cache?.Update(e);
+        _cache?.Update(e!);
 
         // 干掉缓存项，让它重新获取
-        _singleCache?.Remove(e);
+        _singleCache?.Remove(e!);
 
         return rs;
     }
@@ -925,17 +930,17 @@ public class EntitySession<TEntity> : DisposeBase, IEntitySession where TEntity 
     /// <returns></returns>
     public virtual Task<Int32> DeleteAsync(IEntity entity)
     {
-        if (Table.IsView) throw new NotSupportedException("视图无法添删改！");
+        if (DataTable.IsView) throw new NotSupportedException("视图无法添删改！");
 
         var rs = Factory.Persistence.DeleteAsync(this, entity);
 
         var e = entity as TEntity;
 
         // 从实体缓存删除
-        _cache?.Remove(e);
+        _cache?.Remove(e!);
 
         // 从单对象缓存删除
-        _singleCache?.Remove(e);
+        _singleCache?.Remove(e!);
 
         // 减少计数
         if (_Count > 0) Interlocked.Decrement(ref _Count);

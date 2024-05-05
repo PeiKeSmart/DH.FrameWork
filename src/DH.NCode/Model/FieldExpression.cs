@@ -13,7 +13,7 @@ public class FieldExpression : Expression
     public FieldItem Field { get; set; }
 
     /// <summary>动作</summary>
-    public String Action { get; set; }
+    public String? Action { get; set; }
 
     /// <summary>值</summary>
     public Object? Value { get; set; }
@@ -50,7 +50,7 @@ public class FieldExpression : Expression
         if (Field == null) return;
 
         // 部分场景外部未能传入数据库，此时内部尽力获取
-        db ??= Field?.Factory.Session.Dal.Db;
+        db ??= Field?.Factory?.Session.Dal.Db ?? throw new ArgumentNullException(nameof(db));
 
         var columnName = db.FormatName(Field.Field);
         if (Action.IsNullOrEmpty())
