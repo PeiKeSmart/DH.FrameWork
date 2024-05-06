@@ -8,11 +8,10 @@ using Microsoft.Extensions.DependencyInjection;
 
 using NewLife;
 using NewLife.Caching;
+using NewLife.Common;
 using NewLife.Log;
 using NewLife.Reflection;
 using NewLife.Threading;
-
-using NewLife.Common;
 
 using IHostedService = Microsoft.Extensions.Hosting.IHostedService;
 
@@ -277,9 +276,12 @@ internal class MyJob : IDisposable
     {
         // 检查分布式锁，避免多节点重复执行
         var key = $"Job:{SysConfig.Current.Name}:{job.Id}";
-        if (CacheProvider != null && !CacheProvider.Cache.Add(key, job.Name, 5)) return false;
+        if (CacheProvider != null)
+        {
+            if (CacheProvider.Cache.ContainsKey(key)) return false;
 
-        XTrace.WriteLine($"检测CheckRunning到这里了么？");
+            CacheProvider.Cache.Set(key, job.Name, 5);
+        }
 
         // 有时候可能并没有配置Redis，借助数据库事务实现去重，需要20230804版本的XCode
         using var tran = CronJob.Meta.CreateTrans();
@@ -287,8 +289,6 @@ internal class MyJob : IDisposable
         // 如果短时间内重复执行，跳过
         var job2 = CronJob.FindByKey(job.Id);
         if (job2 != null && job2.LastTime.AddSeconds(5) > DateTime.Now) return false;
-
-        XTrace.WriteLine($"检测CheckRunning到这里了么111？");
 
         job2.LastTime = DateTime.Now;
         job2.Update();
