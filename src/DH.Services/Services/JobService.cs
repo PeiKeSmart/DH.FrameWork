@@ -1,4 +1,7 @@
-﻿using DH.Entity;
+﻿using System.Diagnostics;
+using System.Reflection;
+
+using DH.Entity;
 using DH.Services.Jobs;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -9,15 +12,15 @@ using NewLife.Log;
 using NewLife.Reflection;
 using NewLife.Threading;
 
-using System.Diagnostics;
-using System.Reflection;
+using NewLife.Common;
 
 using IHostedService = Microsoft.Extensions.Hosting.IHostedService;
 
 namespace DH.Services.Services;
 
 /// <summary>作业扩展</summary>
-public static class JobServiceExtersions {
+public static class JobServiceExtersions
+{
     /// <summary>启用魔方CronJob</summary>
     /// <param name="services"></param>
     /// <returns></returns>
@@ -42,7 +45,8 @@ public static class JobServiceExtersions {
 }
 
 /// <summary>定时作业服务</summary>
-public class JobService : IHostedService {
+public class JobService : IHostedService
+{
     #region 核心控制
 
     private static readonly IList<MyJob> _jobs = [];
@@ -177,7 +181,8 @@ public class JobService : IHostedService {
 }
 
 /// <summary>定时作业项</summary>
-internal class MyJob : IDisposable {
+internal class MyJob : IDisposable
+{
     public CronJob Job { get; set; }
 
     public ICacheProvider CacheProvider { get; set; }
@@ -271,7 +276,7 @@ internal class MyJob : IDisposable {
     private Boolean CheckRunning(CronJob job)
     {
         // 检查分布式锁，避免多节点重复执行
-        var key = $"Job:{job.Id}";
+        var key = $"{SysConfig.Current.Name}:Job:{job.Id}";
         if (CacheProvider != null && !CacheProvider.Cache.Add(key, job.Name, 5)) return false;
 
         // 有时候可能并没有配置Redis，借助数据库事务实现去重，需要20230804版本的XCode
