@@ -9,7 +9,7 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Models
     {
         public static class Types
         {
-            public class Payer : GetEducationPAPPayTransactionByOutTradeNumberResponse.Types.Payer
+            public class Payer : GetEducationPAPayTransactionByOutTradeNumberResponse.Types.Payer
             {
                 /// <summary>
                 /// 获取或设置用户在子商户下唯一标识。
@@ -19,15 +19,15 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Models
                 public string? SubOpenId { get; set; }
             }
 
-            public class Amount : GetEducationPAPPayTransactionByOutTradeNumberResponse.Types.Amount
+            public class Amount : GetEducationPAPayTransactionByOutTradeNumberResponse.Types.Amount
             {
             }
 
-            public class Device : GetEducationPAPPayTransactionByOutTradeNumberResponse.Types.Device
+            public class Device : GetEducationPAPayTransactionByOutTradeNumberResponse.Types.Device
             {
             }
 
-            public class Promotion : GetEducationPAPPayTransactionByOutTradeNumberResponse.Types.Promotion
+            public class Promotion : GetEducationPAPayTransactionByOutTradeNumberResponse.Types.Promotion
             {
             }
         }
