@@ -145,7 +145,6 @@ public static class DHWebHelper {
         //file.OpenReadStream().CopyTo(fs);
         file.CopyTo(fs);
         fs.SetLength(fs.Position);
-        fs.Close();
     }
 
     /// <summary>保存上传文件</summary>
@@ -161,7 +160,28 @@ public static class DHWebHelper {
         long updatedFileSize = fs.Length - Length;
         // 设置文件大小，这样的话会自动剪裁后面的指定字节
         fs.SetLength(updatedFileSize);
-        fs.Close();
+    }
+
+    /// <summary>
+    /// 保存指定长度的上传文件
+    /// </summary>
+    /// <param name="file">上传的文件</param>
+    /// <param name="filename">保存的文件名</param>
+    /// <param name="startPosition">起始位置</param>
+    /// <param name="length">要保留的字节长度</param>
+    public static void SaveAs(this IFormFile file, string filename, long startPosition, int length)
+    {
+        using var sourceStream = file.OpenReadStream();
+        // 直接跳转到指定开始位置
+        sourceStream.Seek(startPosition, SeekOrigin.Begin);
+        // 准备一个相应大小的字节容器来存放我们要的数据
+        byte[] buffer = new byte[length];
+        // 开始读取
+        sourceStream.Read(buffer, 0, length);
+        // 创建目标文件，或者打开已经存在的文件用于数据写入
+        using FileStream fs = new(filename, FileMode.OpenOrCreate);
+        // 写入数据
+        fs.Write(buffer, 0, buffer.Length);
     }
 
     private static Uri GetRawUrl(Uri uri, Func<String, String> headers)
