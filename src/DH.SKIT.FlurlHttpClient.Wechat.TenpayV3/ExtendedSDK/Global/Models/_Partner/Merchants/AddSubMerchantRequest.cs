@@ -129,6 +129,23 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.ExtendedSDK.Global.Models
                 [System.Text.Json.Serialization.JsonPropertyName("number")]
                 public string? IdNumber { get; set; }
             }
+
+            public class H5PaymentApplyment
+            {
+                /// <summary>
+                /// 获取或设置网站 URL。
+                /// </summary>
+                [Newtonsoft.Json.JsonProperty("website_url")]
+                [System.Text.Json.Serialization.JsonPropertyName("website_url")]
+                public string? WebsiteUrl { get; set; }
+
+                /// <summary>
+                /// 获取或设置域名列表。
+                /// </summary>
+                [Newtonsoft.Json.JsonProperty("domains")]
+                [System.Text.Json.Serialization.JsonPropertyName("domains")]
+                public IList<string>? DomainList { get; set; }
+            }
         }
 
         /// <summary>
@@ -139,7 +156,7 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.ExtendedSDK.Global.Models
         public string IdempotencyKey { get; set; } = string.Empty;
 
         /// <summary>
-        /// 获取或设置机构商户号。如果不指定将使用构造 <see cref="WechatTenpayClient"/> 时的 <see cref="WechatTenpayClientOptions.MerchantId"/> 参数。
+        /// 获取或设置机构商户号。如果不指定将使用构造 <see cref="WechatTenpayGlobalClient"/> 时的 <see cref="WechatTenpayGlobalClientOptions.MerchantId"/> 参数。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("sp_mchid")]
         [System.Text.Json.Serialization.JsonPropertyName("sp_mchid")]
@@ -256,5 +273,19 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.ExtendedSDK.Global.Models
         [Newtonsoft.Json.JsonProperty("principal")]
         [System.Text.Json.Serialization.JsonPropertyName("principal")]
         public Types.Principal? Principal { get; set; }
+
+        /// <summary>
+        /// 获取或设置是否申请开通 H5 支付权限。
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("apply_h5_payment")]
+        [System.Text.Json.Serialization.JsonPropertyName("apply_h5_payment")]
+        public bool? IsApplyH5Payment { get; set; }
+
+        /// <summary>
+        /// 获取或设置 H5 支付权限申请信息。
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("h5_payment_apply_info")]
+        [System.Text.Json.Serialization.JsonPropertyName("h5_payment_apply_info")]
+        public Types.H5PaymentApplyment? H5PaymentApplyment { get; set; }
     }
 }

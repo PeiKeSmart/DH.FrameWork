@@ -141,7 +141,7 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Models
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("payer_client_ip")]
                 [System.Text.Json.Serialization.JsonPropertyName("payer_client_ip")]
-                public string ClientIp { get; set; } = string.Empty;
+                public string? ClientIp { get; set; }
 
                 /// <summary>
                 /// 获取或设置商户端设备号。
@@ -149,6 +149,13 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Models
                 [Newtonsoft.Json.JsonProperty("device_id")]
                 [System.Text.Json.Serialization.JsonPropertyName("device_id")]
                 public string? DeviceId { get; set; }
+
+                /// <summary>
+                /// 获取或设置商户端设备 IP。
+                /// </summary>
+                [Newtonsoft.Json.JsonProperty("device_ip")]
+                [System.Text.Json.Serialization.JsonPropertyName("device_ip")]
+                public string? DeviceIp { get; set; }
 
                 /// <summary>
                 /// 获取或设置商户门店信息。
