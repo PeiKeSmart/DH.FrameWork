@@ -2,7 +2,6 @@
 using NewLife.Http;
 using NewLife.Model;
 using NewLife.Net;
-
 using WebSocket = NewLife.Http.WebSocket;
 using WebSocketMessageType = NewLife.Http.WebSocketMessageType;
 
@@ -29,10 +28,14 @@ public class WebSocketServerCodec : Handler
     public override Object? Read(IHandlerContext context, Object message)
     {
         if (message is not Packet pk) return base.Read(context, message);
+        if (context.Owner is not IExtend ss) return base.Read(context, message);
 
         // 连接必须是ws/wss协议
         if (context.Owner is not ISocketRemote session || session.Remote.Type != NetType.Tcp) return base.Read(context, message);
-        if (context.Owner is not IExtend ss) return base.Read(context, message);
+
+        // 如果是websocket，第一个包必须是握手
+        var isWs = ss["isWs"] as Boolean?;
+        if (isWs != null && !isWs.Value) return base.Read(context, message);
 
         var websocket = ss["_websocket"] as WebSocket;
         if (websocket == null)
@@ -40,22 +43,27 @@ public class WebSocketServerCodec : Handler
             var request = new HttpRequest();
             if (request.Parse(pk) && request.IsCompleted)
             {
-                var ctx = new DefaultHttpContext(session, request, null, null)
+                var ctx = new DefaultHttpContext(null, request, null, null)
                 {
                     ServiceProvider = session as IServiceProvider
                 };
 
                 // 处理 WebSocket 握手
                 websocket = WebSocket.Handshake(ctx);
-                if (websocket == null) return message;
+                if (websocket != null)
+                {
+                    var rs = ctx.Response;
+                    if (rs != null)
+                    {
+                        session.Send(rs.Build());
 
-                var rs = ctx.Response;
-                if (rs == null) return message;
+                        ss["_websocket"] = websocket;
+                        ss["isWs"] = true;
 
-                session.Send(rs.Build());
-
-                ss["_websocket"] = websocket;
-                return null;
+                        // 禁止向后传递
+                        return null;
+                    }
+                }
             }
         }
         if (websocket != null)
@@ -63,6 +71,8 @@ public class WebSocketServerCodec : Handler
             var msg = new WebSocketMessage();
             if (msg.Read(pk)) message = msg.Payload;
         }
+
+        ss["isWs"] = false;
 
         return base.Read(context, message);
     }
