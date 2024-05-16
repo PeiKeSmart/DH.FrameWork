@@ -2,7 +2,6 @@ using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Flurl;
 using Flurl.Http;
 
 namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop
@@ -10,142 +9,91 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop
     public static class TikTokShopClientExecuteLogisticsExtensions
     {
         /// <summary>
-        /// <para>异步调用 [GET] /logistics/get_warehouse_list 接口。</para>
+        /// <para>异步调用 [GET] /logistics/{version}/warehouses 接口。</para>
         /// <para>
         /// REF: <br/>
-        /// <![CDATA[ https://partner.tiktokshop.com/doc/page/262859 ]]>
+        /// <![CDATA[ https://partner.tiktokshop.com/docv2/page/650aa418defece02be6e66b6 ]]>
         /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public static async Task<Models.LogisticsGetWarehouseListResponse> ExecuteLogisticsGetWarehouseListAsync(this TikTokShopClient client, Models.LogisticsGetWarehouseListRequest request, CancellationToken cancellationToken = default)
+        public static async Task<Models.LogisticsGetWarehousesResponse> ExecuteLogisticsGetWarehousesAsync(this TikTokShopClient client, Models.LogisticsGetWarehousesRequest request, CancellationToken cancellationToken = default)
         {
             if (client is null) throw new ArgumentNullException(nameof(client));
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Get, "logistics", "get_warehouse_list");
+                .CreateFlurlRequest(request, HttpMethod.Get, "logistics", request.ApiVersion, "warehouses");
 
-            return await client.SendFlurlRequesAsJsontAsync<Models.LogisticsGetWarehouseListResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
+            return await client.SendFlurlRequesAsJsontAsync<Models.LogisticsGetWarehousesResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
-        /// <para>异步调用 [POST] /logistics/get_subscribed_deliveryoptions 接口。</para>
+        /// <para>异步调用 [GET] /logistics/{version}/global_warehouses 接口。</para>
         /// <para>
         /// REF: <br/>
-        /// <![CDATA[ https://partner.tiktokshop.com/doc/page/262854 ]]>
+        /// <![CDATA[ https://partner.tiktokshop.com/docv2/page/650aa3f0defece02be6e5ffb ]]>
         /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public static async Task<Models.LogisticsGetSubscribedDeliveryOptionsResponse> ExecuteLogisticsGetSubscribedDeliveryOptionsAsync(this TikTokShopClient client, Models.LogisticsGetSubscribedDeliveryOptionsRequest request, CancellationToken cancellationToken = default)
+        public static async Task<Models.LogisticsGetGlobalWarehousesResponse> ExecuteLogisticsGetGlobalWarehousesAsync(this TikTokShopClient client, Models.LogisticsGetGlobalWarehousesRequest request, CancellationToken cancellationToken = default)
         {
             if (client is null) throw new ArgumentNullException(nameof(client));
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Post, "logistics", "get_subscribed_deliveryoptions");
+                .CreateFlurlRequest(request, HttpMethod.Get, "logistics", request.ApiVersion, "global_warehouses");
 
-            return await client.SendFlurlRequesAsJsontAsync<Models.LogisticsGetSubscribedDeliveryOptionsResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
+            return await client.SendFlurlRequesAsJsontAsync<Models.LogisticsGetGlobalWarehousesResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
-        /// <para>异步调用 [GET] /logistics/shipping_providers 接口。</para>
+        /// <para>异步调用 [GET] /logistics/{version}/warehouses/{warehouse_id}/delivery_options 接口。</para>
         /// <para>
         /// REF: <br/>
-        /// <![CDATA[ https://partner.tiktokshop.com/doc/page/262857 ]]>
+        /// <![CDATA[ https://partner.tiktokshop.com/docv2/page/650aa46ebace3e02b75d9afa ]]>
         /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public static async Task<Models.LogisticsGetShippingProviderListResponse> ExecuteLogisticsGetShippingProviderListAsync(this TikTokShopClient client, Models.LogisticsGetShippingProviderListRequest request, CancellationToken cancellationToken = default)
+        public static async Task<Models.LogisticsGetWarehouseDeliveryOptionsResponse> ExecuteLogisticsGetWarehouseDeliveryOptionsAsync(this TikTokShopClient client, Models.LogisticsGetWarehouseDeliveryOptionsRequest request, CancellationToken cancellationToken = default)
         {
             if (client is null) throw new ArgumentNullException(nameof(client));
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Get, "logistics", "shipping_providers");
+                .CreateFlurlRequest(request, HttpMethod.Get, "logistics", request.ApiVersion, "warehouses", request.WarehouseId, "delivery_options");
 
-            return await client.SendFlurlRequesAsJsontAsync<Models.LogisticsGetShippingProviderListResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
+            return await client.SendFlurlRequesAsJsontAsync<Models.LogisticsGetWarehouseDeliveryOptionsResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
-        /// <para>异步调用 [GET] /logistics/shipping_document 接口。</para>
+        /// <para>异步调用 [GET] /logistics/{version}/delivery_options/{delivery_option_id}/shipping_providers 接口。</para>
         /// <para>
         /// REF: <br/>
-        /// <![CDATA[ https://partner.tiktokshop.com/doc/page/262856 ]]>
+        /// <![CDATA[ https://partner.tiktokshop.com/docv2/page/650aa48d4a0bb702c06d85cd ]]>
         /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public static async Task<Models.LogisticsGetShippingDocumentResponse> ExecuteLogisticsGetShippingDocumentAsync(this TikTokShopClient client, Models.LogisticsGetShippingDocumentRequest request, CancellationToken cancellationToken = default)
+        public static async Task<Models.LogisticsGetDeliveryOptionShippingProvidersResponse> ExecuteLogisticsGetDeliveryOptionShippingProvidersAsync(this TikTokShopClient client, Models.LogisticsGetDeliveryOptionShippingProvidersRequest request, CancellationToken cancellationToken = default)
         {
             if (client is null) throw new ArgumentNullException(nameof(client));
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Get, "logistics", "shipping_document")
-                .SetQueryParam("order_id", request.OrderId)
-                .SetQueryParam("document_type", request.DocumentType);
+                .CreateFlurlRequest(request, HttpMethod.Get, "logistics", request.ApiVersion, "delivery_options", request.DeliveryOptionId, "shipping_providers");
 
-            if (request.DocumentSize is not null)
-                flurlReq.SetQueryParam("document_size", request.DocumentSize);
-
-            return await client.SendFlurlRequesAsJsontAsync<Models.LogisticsGetShippingDocumentResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// <para>异步调用 [GET] /logistics/ship/get 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://partner.tiktokshop.com/doc/page/262858 ]]>
-        /// </para>
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public static async Task<Models.LogisticsGetShippingInfoResponse> ExecuteLogisticsGetShippingInfoAsync(this TikTokShopClient client, Models.LogisticsGetShippingInfoRequest request, CancellationToken cancellationToken = default)
-        {
-            if (client is null) throw new ArgumentNullException(nameof(client));
-            if (request is null) throw new ArgumentNullException(nameof(request));
-
-            IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Get, "logistics", "ship", "get")
-                .SetQueryParam("order_id", request.OrderId);
-
-            return await client.SendFlurlRequesAsJsontAsync<Models.LogisticsGetShippingInfoResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// <para>异步调用 [POST] /logistics/tracking 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://partner.tiktokshop.com/doc/page/262855 ]]>
-        /// </para>
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public static async Task<Models.LogisticsUpdateShippingInfoResponse> ExecuteLogisticsUpdateShippingInfoAsync(this TikTokShopClient client, Models.LogisticsUpdateShippingInfoRequest request, CancellationToken cancellationToken = default)
-        {
-            if (client is null) throw new ArgumentNullException(nameof(client));
-            if (request is null) throw new ArgumentNullException(nameof(request));
-
-            IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Post, "logistics", "tracking")
-                .SetQueryParam("order_id", request.OrderId);
-
-            return await client.SendFlurlRequesAsJsontAsync<Models.LogisticsUpdateShippingInfoResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
+            return await client.SendFlurlRequesAsJsontAsync<Models.LogisticsGetDeliveryOptionShippingProvidersResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
     }
 }

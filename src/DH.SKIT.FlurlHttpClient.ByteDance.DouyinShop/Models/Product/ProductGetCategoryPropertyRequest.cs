@@ -9,6 +9,7 @@
         /// 获取或设置叶子类目 ID。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("category_leaf_id")]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.TextualIntegerConverter))]
         [System.Text.Json.Serialization.JsonPropertyName("category_leaf_id")]
         [System.Text.Json.Serialization.JsonNumberHandling(System.Text.Json.Serialization.JsonNumberHandling.AllowReadingFromString | System.Text.Json.Serialization.JsonNumberHandling.WriteAsString)]
         public int CategoryLeafId { get; set; }

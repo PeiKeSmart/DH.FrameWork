@@ -9,6 +9,7 @@
         /// 获取或设置 SKU ID。与字段 <see cref="SKUCode"/> 二选一。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("sku_id")]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.TextualNullableLongConverter))]
         [System.Text.Json.Serialization.JsonPropertyName("sku_id")]
         [System.Text.Json.Serialization.JsonNumberHandling(System.Text.Json.Serialization.JsonNumberHandling.AllowReadingFromString | System.Text.Json.Serialization.JsonNumberHandling.WriteAsString)]
         public long? SKUId { get; set; }

@@ -1,7 +1,7 @@
 namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop.Models
 {
     /// <summary>
-    /// <para>表示 [GET] /products/categories/rules 接口的请求。</para>
+    /// <para>表示 [GET] /product/{version}/categories/{category_id}/rules 接口的请求。</para>
     /// </summary>
     public class ProductGetCategoryRulesRequest : TikTokShopRequest
     {

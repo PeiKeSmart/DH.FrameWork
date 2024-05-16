@@ -15,14 +15,18 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                 /// 获取或设置订单状态列表。
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("order_status")]
+                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.TextualIntegerListWithCommaSplitConverter))]
                 [System.Text.Json.Serialization.JsonPropertyName("order_status")]
+                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.TextualIntegerListWithCommaSplitConverter))]
                 public IList<int>? OrderStatusList { get; set; }
 
                 /// <summary>
                 /// 获取或设置主流程状态列表。
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("main_status")]
+                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.TextualIntegerListWithCommaSplitConverter))]
                 [System.Text.Json.Serialization.JsonPropertyName("main_status")]
+                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.TextualIntegerListWithCommaSplitConverter))]
                 public IList<int>? MainStatusList { get; set; }
             }
         }

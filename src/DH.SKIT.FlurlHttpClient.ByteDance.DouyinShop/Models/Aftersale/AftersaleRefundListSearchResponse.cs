@@ -44,6 +44,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("order_id")]
                                 [System.Text.Json.Serialization.JsonPropertyName("order_id")]
+                                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalStringReadOnlyConverter))]
                                 public string OrderId { get; set; } = default!;
 
                                 /// <summary>
@@ -127,7 +128,9 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                                 /// 获取或设置创建时间。
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("create_time")]
+                                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.RegularDateTimeOffsetConverter))]
                                 [System.Text.Json.Serialization.JsonPropertyName("create_time")]
+                                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.RegularDateTimeOffsetConverter))]
                                 public DateTimeOffset CreateTime { get; set; }
                             }
 
@@ -138,6 +141,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("order_id")]
                                 [System.Text.Json.Serialization.JsonPropertyName("order_id")]
+                                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalStringReadOnlyConverter))]
                                 public string OrderId { get; set; } = default!;
 
                                 /// <summary>
@@ -145,6 +149,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("aftersale_id")]
                                 [System.Text.Json.Serialization.JsonPropertyName("aftersale_id")]
+                                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalStringReadOnlyConverter))]
                                 public string AftersaleId { get; set; } = default!;
 
                                 /// <summary>
@@ -179,7 +184,9 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                                 /// 获取或设置操作时间。
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("op_time")]
+                                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.RegularDateTimeOffsetConverter))]
                                 [System.Text.Json.Serialization.JsonPropertyName("op_time")]
+                                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.RegularDateTimeOffsetConverter))]
                                 public DateTimeOffset OperateTime { get; set; }
 
                                 /// <summary>
@@ -252,6 +259,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("pid")]
                         [System.Text.Json.Serialization.JsonPropertyName("pid")]
+                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalStringReadOnlyConverter))]
                         public string ShopOrderId { get; set; } = default!;
 
                         /// <summary>
@@ -259,6 +267,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("order_id")]
                         [System.Text.Json.Serialization.JsonPropertyName("order_id")]
+                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalStringReadOnlyConverter))]
                         public string OrderId { get; set; } = default!;
 
                         /// <summary>
@@ -266,13 +275,16 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("aftersale_id")]
                         [System.Text.Json.Serialization.JsonPropertyName("aftersale_id")]
+                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalStringReadOnlyConverter))]
                         public string AftersaleId { get; set; } = default!;
 
                         /// <summary>
                         /// 获取或设置申请时间。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("apply_time")]
+                        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.RegularDateTimeOffsetConverter))]
                         [System.Text.Json.Serialization.JsonPropertyName("apply_time")]
+                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.RegularDateTimeOffsetConverter))]
                         public DateTimeOffset ApplyTime { get; set; }
 
                         /// <summary>
@@ -293,7 +305,9 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                         /// 获取或设置超时自动流转截止时间。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("status_deadline")]
+                        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.RegularNullableDateTimeOffsetConverter))]
                         [System.Text.Json.Serialization.JsonPropertyName("status_deadline")]
+                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.RegularNullableDateTimeOffsetConverter))]
                         public DateTimeOffset? StatusDeadlineTime { get; set; }
 
                         /// <summary>

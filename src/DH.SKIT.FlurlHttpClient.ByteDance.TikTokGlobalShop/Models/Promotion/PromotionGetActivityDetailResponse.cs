@@ -1,13 +1,13 @@
 namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop.Models
 {
     /// <summary>
-    /// <para>表示 [GET] /promotion/activity/get 接口的响应。</para>
+    /// <para>表示 [GET] /promotion/{version}/activities/{activity_id} 接口的响应。</para>
     /// </summary>
     public class PromotionGetActivityDetailResponse : TikTokShopResponse<PromotionGetActivityDetailResponse.Types.Data>
     {
         public static class Types
         {
-            public class Data
+            public class Data : PromotionSearchActivitiesResponse.Types.Data.Types.Activity
             {
                 public static class Types
                 {
@@ -15,177 +15,124 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop.Models
                     {
                         public static class Types
                         {
+                            public class Price
+                            {
+                                /// <summary>
+                                /// 获取或设置币种。
+                                /// </summary>
+                                [Newtonsoft.Json.JsonProperty("currency")]
+                                [System.Text.Json.Serialization.JsonPropertyName("currency")]
+                                public string Currency { get; set; } = default!;
+
+                                /// <summary>
+                                /// 获取或设置价格。
+                                /// </summary>
+                                [Newtonsoft.Json.JsonProperty("amount")]
+                                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.Common.TextualNumberConverter))]
+                                [System.Text.Json.Serialization.JsonPropertyName("amount")]
+                                [System.Text.Json.Serialization.JsonNumberHandling(System.Text.Json.Serialization.JsonNumberHandling.AllowReadingFromString)]
+                                public decimal Amount { get; set; }
+                            }
+
                             public class SKU
                             {
                                 /// <summary>
-                                /// 获取或设置商品 ID。
-                                /// </summary>
-                                [Newtonsoft.Json.JsonProperty("product_id")]
-                                [System.Text.Json.Serialization.JsonPropertyName("product_id")]
-                                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.NumericalStringReadOnlyConverter))]
-                                public string ProductId { get; set; } = default!;
-
-                                /// <summary>
                                 /// 获取或设置 SKU ID。
                                 /// </summary>
-                                [Newtonsoft.Json.JsonProperty("sku_id")]
-                                [System.Text.Json.Serialization.JsonPropertyName("sku_id")]
+                                [Newtonsoft.Json.JsonProperty("id")]
+                                [System.Text.Json.Serialization.JsonPropertyName("id")]
                                 [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.NumericalStringReadOnlyConverter))]
                                 public string SKUId { get; set; } = default!;
 
                                 /// <summary>
-                                /// 获取或设置促销价格。
+                                /// 获取或设置数量限制。
                                 /// </summary>
-                                [Newtonsoft.Json.JsonProperty("promotion_price")]
-                                [System.Text.Json.Serialization.JsonPropertyName("promotion_price")]
-                                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.TextualNumberReadOnlyConverter))]
-                                public decimal? PromotionPrice { get; set; }
+                                [Newtonsoft.Json.JsonProperty("quantity_limit")]
+                                [System.Text.Json.Serialization.JsonPropertyName("quantity_limit")]
+                                public int QuantityLimit { get; set; }
 
                                 /// <summary>
-                                /// 获取或设置折扣比例（单位：百分数）。
+                                /// 获取或设置单个用户数量限制。
+                                /// </summary>
+                                [Newtonsoft.Json.JsonProperty("quantity_per_user")]
+                                [System.Text.Json.Serialization.JsonPropertyName("quantity_per_user")]
+                                public int QuantityPerUser { get; set; }
+
+                                /// <summary>
+                                /// 获取或设置活动折扣（单位：百分数）。
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("discount")]
                                 [System.Text.Json.Serialization.JsonPropertyName("discount")]
-                                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.TextualNumberReadOnlyConverter))]
-                                public decimal? Discount { get; set; }
+                                public int? Discount { get; set; }
 
                                 /// <summary>
-                                /// 获取或设置库存上限。
+                                /// 获取或设置活动价信息。
                                 /// </summary>
-                                [Newtonsoft.Json.JsonProperty("num_limit")]
-                                [System.Text.Json.Serialization.JsonPropertyName("num_limit")]
-                                [System.Text.Json.Serialization.JsonNumberHandling(System.Text.Json.Serialization.JsonNumberHandling.AllowReadingFromString)]
-                                public int StockLimit { get; set; }
-
-                                /// <summary>
-                                /// 获取或设置用户使用上限。
-                                /// </summary>
-                                [Newtonsoft.Json.JsonProperty("user_limit")]
-                                [System.Text.Json.Serialization.JsonPropertyName("user_limit")]
-                                [System.Text.Json.Serialization.JsonNumberHandling(System.Text.Json.Serialization.JsonNumberHandling.AllowReadingFromString)]
-                                public int UserLimit { get; set; }
+                                [Newtonsoft.Json.JsonProperty("activity_price")]
+                                [System.Text.Json.Serialization.JsonPropertyName("activity_price")]
+                                public Types.Price? Price { get; set; }
                             }
                         }
 
                         /// <summary>
                         /// 获取或设置商品 ID。
                         /// </summary>
-                        [Newtonsoft.Json.JsonProperty("product_id")]
-                        [System.Text.Json.Serialization.JsonPropertyName("product_id")]
+                        [Newtonsoft.Json.JsonProperty("id")]
+                        [System.Text.Json.Serialization.JsonPropertyName("id")]
                         [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.NumericalStringReadOnlyConverter))]
                         public string ProductId { get; set; } = default!;
 
                         /// <summary>
-                        /// 获取或设置促销价格。
+                        /// 获取或设置数量限制。
                         /// </summary>
-                        [Newtonsoft.Json.JsonProperty("promotion_price")]
-                        [System.Text.Json.Serialization.JsonPropertyName("promotion_price")]
-                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.TextualNumberReadOnlyConverter))]
-                        public decimal? PromotionPrice { get; set; }
+                        [Newtonsoft.Json.JsonProperty("quantity_limit")]
+                        [System.Text.Json.Serialization.JsonPropertyName("quantity_limit")]
+                        public int QuantityLimit { get; set; }
 
                         /// <summary>
-                        /// 获取或设置折扣比例（单位：百分数）。
+                        /// 获取或设置单个用户数量限制。
+                        /// </summary>
+                        [Newtonsoft.Json.JsonProperty("quantity_per_user")]
+                        [System.Text.Json.Serialization.JsonPropertyName("quantity_per_user")]
+                        public int QuantityPerUser { get; set; }
+
+                        /// <summary>
+                        /// 获取或设置活动折扣（单位：百分数）。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("discount")]
                         [System.Text.Json.Serialization.JsonPropertyName("discount")]
-                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.TextualNumberReadOnlyConverter))]
-                        public decimal? Discount { get; set; }
+                        public int? Discount { get; set; }
 
                         /// <summary>
-                        /// 获取或设置库存上限。
+                        /// 获取或设置活动价信息。
                         /// </summary>
-                        [Newtonsoft.Json.JsonProperty("num_limit")]
-                        [System.Text.Json.Serialization.JsonPropertyName("num_limit")]
-                        [System.Text.Json.Serialization.JsonNumberHandling(System.Text.Json.Serialization.JsonNumberHandling.AllowReadingFromString)]
-                        public int StockLimit { get; set; }
-
-                        /// <summary>
-                        /// 获取或设置用户使用上限。
-                        /// </summary>
-                        [Newtonsoft.Json.JsonProperty("user_limit")]
-                        [System.Text.Json.Serialization.JsonPropertyName("user_limit")]
-                        [System.Text.Json.Serialization.JsonNumberHandling(System.Text.Json.Serialization.JsonNumberHandling.AllowReadingFromString)]
-                        public int UserLimit { get; set; }
+                        [Newtonsoft.Json.JsonProperty("activity_price")]
+                        [System.Text.Json.Serialization.JsonPropertyName("activity_price")]
+                        public Types.Price? Price { get; set; }
 
                         /// <summary>
                         /// 获取或设置 SKU 列表。
                         /// </summary>
-                        [Newtonsoft.Json.JsonProperty("sku_list")]
-                        [System.Text.Json.Serialization.JsonPropertyName("sku_list")]
-                        public Types.SKU[]? SKUList { get; set; }
+                        [Newtonsoft.Json.JsonProperty("skus")]
+                        [System.Text.Json.Serialization.JsonPropertyName("skus")]
+                        public Types.SKU[] SKUList { get; set; } = default!;
                     }
                 }
 
                 /// <summary>
-                /// 获取或设置促销 ID。
+                /// 获取或设置活动 ID。
                 /// </summary>
-                [Newtonsoft.Json.JsonProperty("promotion_id")]
-                [System.Text.Json.Serialization.JsonPropertyName("promotion_id")]
+                [Newtonsoft.Json.JsonProperty("activity_id")]
+                [System.Text.Json.Serialization.JsonPropertyName("activity_id")]
                 [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.NumericalStringReadOnlyConverter))]
-                public string PromotionId { get; set; } = default!;
-
-                /// <summary>
-                /// 获取或设置促销类型。
-                /// </summary>
-                [Newtonsoft.Json.JsonProperty("promotion_type")]
-                [System.Text.Json.Serialization.JsonPropertyName("promotion_type")]
-                public int PromotionType { get; set; }
-
-                /// <summary>
-                /// 获取或设置活动标题。
-                /// </summary>
-                [Newtonsoft.Json.JsonProperty("title")]
-                [System.Text.Json.Serialization.JsonPropertyName("title")]
-                public string Title { get; set; } = default!;
-
-                /// <summary>
-                /// 获取或设置商品类型。
-                /// </summary>
-                [Newtonsoft.Json.JsonProperty("product_type")]
-                [System.Text.Json.Serialization.JsonPropertyName("product_type")]
-                public int ProductType { get; set; }
+                public override string ActivityId { get; set; } = default!;
 
                 /// <summary>
                 /// 获取或设置商品列表。
                 /// </summary>
-                [Newtonsoft.Json.JsonProperty("product_list")]
-                [System.Text.Json.Serialization.JsonPropertyName("product_list")]
+                [Newtonsoft.Json.JsonProperty("products")]
+                [System.Text.Json.Serialization.JsonPropertyName("products")]
                 public Types.Product[] ProductList { get; set; } = default!;
-
-                /// <summary>
-                /// 获取或设置活动状态。
-                /// </summary>
-                [Newtonsoft.Json.JsonProperty("status")]
-                [System.Text.Json.Serialization.JsonPropertyName("status")]
-                public int Status { get; set; }
-
-                /// <summary>
-                /// 获取或设置活动开始时间戳。
-                /// </summary>
-                [Newtonsoft.Json.JsonProperty("begin_time")]
-                [System.Text.Json.Serialization.JsonPropertyName("begin_time")]
-                public long BeginTimestamp { get; set; }
-
-                /// <summary>
-                /// 获取或设置活动结束时间戳。
-                /// </summary>
-                [Newtonsoft.Json.JsonProperty("end_time")]
-                [System.Text.Json.Serialization.JsonPropertyName("end_time")]
-                public long EndTimestamp { get; set; }
-
-                /// <summary>
-                /// 获取或设置创建时间戳。
-                /// </summary>
-                [Newtonsoft.Json.JsonProperty("create_time")]
-                [System.Text.Json.Serialization.JsonPropertyName("create_time")]
-                public long CreateTimestamp { get; set; }
-
-                /// <summary>
-                /// 获取或设置更新时间戳。
-                /// </summary>
-                [Newtonsoft.Json.JsonProperty("update_time")]
-                [System.Text.Json.Serialization.JsonPropertyName("update_time")]
-                public long UpdateTimestamp { get; set; }
             }
         }
     }

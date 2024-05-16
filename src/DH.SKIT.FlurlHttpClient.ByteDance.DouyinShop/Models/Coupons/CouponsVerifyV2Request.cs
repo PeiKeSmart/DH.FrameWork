@@ -18,7 +18,9 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
         /// 获取或设置核销时间。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("verify_time")]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.RegularNullableDateTimeOffsetConverter))]
         [System.Text.Json.Serialization.JsonPropertyName("verify_time")]
+        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.RegularNullableDateTimeOffsetConverter))]
         public DateTimeOffset? VerifyTime { get; set; }
 
         /// <summary>

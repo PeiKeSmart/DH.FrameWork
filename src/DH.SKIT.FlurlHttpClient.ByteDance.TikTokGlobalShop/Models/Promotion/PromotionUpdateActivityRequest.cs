@@ -1,23 +1,16 @@
 namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop.Models
 {
     /// <summary>
-    /// <para>表示 [POST] /promotion/activity/update 接口的请求。</para>
+    /// <para>表示 [PUT] /promotion/{version}/activities/{activity_id} 接口的请求。</para>
     /// </summary>
     public class PromotionUpdateActivityRequest : TikTokShopRequest
     {
         /// <summary>
-        /// 获取或设置请求序列号。
+        /// 获取或设置活动 ID。
         /// </summary>
-        [Newtonsoft.Json.JsonProperty("request_serial_no")]
-        [System.Text.Json.Serialization.JsonPropertyName("request_serial_no")]
-        public string RequestSerialNumber { get; set; } = string.Empty;
-
-        /// <summary>
-        /// 获取或设置促销 ID。
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("promotion_id")]
-        [System.Text.Json.Serialization.JsonPropertyName("promotion_id")]
-        public string PromotionId { get; set; } = string.Empty;
+        [Newtonsoft.Json.JsonIgnore]
+        [System.Text.Json.Serialization.JsonIgnore]
+        public string ActivityId { get; set; } = string.Empty;
 
         /// <summary>
         /// 获取或设置活动标题。

@@ -30,6 +30,7 @@
         /// 获取或设置旗标等级（范围：0～5）。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("star")]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.TextualNullableIntegerConverter))]
         [System.Text.Json.Serialization.JsonPropertyName("star")]
         [System.Text.Json.Serialization.JsonNumberHandling(System.Text.Json.Serialization.JsonNumberHandling.AllowReadingFromString | System.Text.Json.Serialization.JsonNumberHandling.WriteAsString)]
         public int? Star { get; set; }

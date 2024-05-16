@@ -204,7 +204,9 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                         /// 获取或设置是否返回签回单。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("is_sign_back")]
+                        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.NumericalNullableBooleanConverter))]
                         [System.Text.Json.Serialization.JsonPropertyName("is_sign_back")]
+                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalNullableBooleanConverter))]
                         public bool? IsSignBack { get; set; }
 
                         /// <summary>

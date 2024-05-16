@@ -1,8 +1,11 @@
-﻿namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Events
+namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Events
 {
     /// <summary>
     /// <para>表示 doudian_trade_TradeCanceled 消息的数据。</para>
-    /// <para>REF: https://op.jinritemai.com/docs/message-docs/30/123 </para>
+    /// <para>
+    /// REF: <br/>
+    /// <![CDATA[ https://op.jinritemai.com/docs/message-docs/30/123 ]]>
+    /// </para>
     /// </summary>
     public class TradeCanceledEvent : DouyinShopEvent<TradeCanceledEvent.Types.Data>
     {
@@ -15,6 +18,7 @@
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("p_id")]
                 [System.Text.Json.Serialization.JsonPropertyName("p_id")]
+                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalStringReadOnlyConverter))]
                 public string ShopOrderId { get; set; } = default!;
 
                 /// <summary>

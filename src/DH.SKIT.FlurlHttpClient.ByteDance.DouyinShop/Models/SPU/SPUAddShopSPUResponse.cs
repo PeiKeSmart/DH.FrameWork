@@ -13,6 +13,7 @@
                 /// 获取或设置 SPU ID。
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("spu_id")]
+                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.TextualLongConverter))]
                 [System.Text.Json.Serialization.JsonPropertyName("spu_id")]
                 [System.Text.Json.Serialization.JsonNumberHandling(System.Text.Json.Serialization.JsonNumberHandling.AllowReadingFromString | System.Text.Json.Serialization.JsonNumberHandling.WriteAsString)]
                 public long SPUId { get; set; }

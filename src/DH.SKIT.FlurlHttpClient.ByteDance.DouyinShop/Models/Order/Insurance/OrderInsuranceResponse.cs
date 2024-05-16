@@ -165,14 +165,18 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                         /// 获取或设置出保时间。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("ins_ensured_time_begin")]
+                        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.RegularDateTimeOffsetConverter))]
                         [System.Text.Json.Serialization.JsonPropertyName("ins_ensured_time_begin")]
+                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.RegularDateTimeOffsetConverter))]
                         public DateTimeOffset InsuranceEnsuredBeginTime { get; set; }
 
                         /// <summary>
                         /// 获取或设置过期时间。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("ins_ensured_time_end")]
+                        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.RegularDateTimeOffsetConverter))]
                         [System.Text.Json.Serialization.JsonPropertyName("ins_ensured_time_end")]
+                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.RegularDateTimeOffsetConverter))]
                         public DateTimeOffset InsuranceEnsuredEndTime { get; set; }
                     }
                 }

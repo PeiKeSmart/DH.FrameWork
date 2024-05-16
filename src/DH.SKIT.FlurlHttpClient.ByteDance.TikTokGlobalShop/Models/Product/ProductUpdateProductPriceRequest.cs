@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop.Models
 {
     /// <summary>
-    /// <para>表示 [PUT] /products/prices 接口的请求。</para>
+    /// <para>表示 [POST] /product/{version}/products/{product_id}/prices/update 接口的请求。</para>
     /// </summary>
     public class ProductUpdateProductPriceRequest : TikTokShopRequest
     {
@@ -11,6 +11,13 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop.Models
         {
             public class SKU
             {
+                public static class Types
+                {
+                    public class Price : ProductCreateProductRequest.Types.SKU.Types.Price
+                    {
+                    }
+                }
+
                 /// <summary>
                 /// 获取或设置 SKU ID。
                 /// </summary>
@@ -19,19 +26,19 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop.Models
                 public string SKUId { get; set; } = string.Empty;
 
                 /// <summary>
-                /// 获取或设置原价。
+                /// 获取或设置价格信息。
                 /// </summary>
-                [Newtonsoft.Json.JsonProperty("original_price")]
-                [System.Text.Json.Serialization.JsonPropertyName("original_price")]
-                public decimal OriginalPrice { get; set; }
+                [Newtonsoft.Json.JsonProperty("price")]
+                [System.Text.Json.Serialization.JsonPropertyName("price")]
+                public Types.Price Price { get; set; } = new Types.Price();
             }
         }
 
         /// <summary>
         /// 获取或设置商品 ID。
         /// </summary>
-        [Newtonsoft.Json.JsonProperty("product_id")]
-        [System.Text.Json.Serialization.JsonPropertyName("product_id")]
+        [Newtonsoft.Json.JsonIgnore]
+        [System.Text.Json.Serialization.JsonIgnore]
         public string ProductId { get; set; } = string.Empty;
 
         /// <summary>
