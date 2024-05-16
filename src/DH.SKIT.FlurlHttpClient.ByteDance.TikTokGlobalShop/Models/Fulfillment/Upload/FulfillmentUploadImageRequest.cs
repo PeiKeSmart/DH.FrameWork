@@ -1,38 +1,22 @@
-using System;
-
 namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop.Models
 {
     /// <summary>
-    /// <para>表示 [POST] /fulfillment/{version}/images/upload 接口的请求。</para>
+    /// <para>表示 [POST] /fulfillment/uploadimage 接口的请求。</para>
     /// </summary>
     public class FulfillmentUploadImageRequest : TikTokShopRequest
     {
         /// <summary>
-        /// 获取或设置图片文件字节数组。
+        /// 获取或设置经 Base64 编码的图片内容。
         /// </summary>
-        [Newtonsoft.Json.JsonIgnore]
-        [System.Text.Json.Serialization.JsonIgnore]
-        public byte[] ImageFileBytes { get; set; } = Array.Empty<byte>();
+        [Newtonsoft.Json.JsonProperty("img_data")]
+        [System.Text.Json.Serialization.JsonPropertyName("img_data")]
+        public string EncodingImageData { get; set; } = string.Empty;
 
         /// <summary>
-        /// 获取或设置图片文件名。如果不指定将由系统自动生成。
+        /// 获取或设置图片使用场景。
         /// </summary>
-        [Newtonsoft.Json.JsonIgnore]
-        [System.Text.Json.Serialization.JsonIgnore]
-        public string? ImageFileName { get; set; }
-
-        /// <summary>
-        /// 获取或设置图片文件 MIME 类型。如果不指定将由系统自动生成。
-        /// </summary>
-        [Newtonsoft.Json.JsonIgnore]
-        [System.Text.Json.Serialization.JsonIgnore]
-        public string? ImageFileContentType { get; set; }
-
-        /// <summary>
-        /// 获取或设置使用场景。
-        /// </summary>
-        [Newtonsoft.Json.JsonIgnore]
-        [System.Text.Json.Serialization.JsonIgnore]
-        public string? UseCase { get; set; }
+        [Newtonsoft.Json.JsonProperty("img_scene")]
+        [System.Text.Json.Serialization.JsonPropertyName("img_scene")]
+        public int Scene { get; set; }
     }
 }

@@ -65,9 +65,7 @@
                         /// 获取或设置是否必填。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("require")]
-                        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.NumericalBooleanConverter))]
                         [System.Text.Json.Serialization.JsonPropertyName("require")]
-                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalBooleanConverter))]
                         public bool IsRequired { get; set; }
 
                         /// <summary>

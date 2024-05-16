@@ -13,7 +13,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop
         /// <para>异步调用 [GET] /token/get 接口。</para>
         /// <para>
         /// REF: <br/>
-        /// <![CDATA[ https://partner.tiktokshop.com/docv2/page/6632a7a926b40c02d97de61b ]]>
+        /// <![CDATA[ https://partner.tiktokshop.com/doc/page/261250 ]]>
         /// </para>
         /// </summary>
         /// <param name="client"></param>
@@ -32,7 +32,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop
                 .SetQueryParam("app_secret", client.Credentials.AppSecret)
                 .SetQueryParam("grant_type", request.GrantType)
                 .SetQueryParam("auth_code", request.AuthorizedCode)
-                .RemoveQueryParams("access_token", "timestamp", "shop_cipher");
+                .RemoveQueryParams("access_token", "timestamp", "shop_id", "shop_cipher", "version");
 
             return await client.SendFlurlRequesAsJsontAsync<Models.AuthGetTokenResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
@@ -41,7 +41,8 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop
         /// <para>异步调用 [GET] /token/refresh 接口。</para>
         /// <para>
         /// REF: <br/>
-        /// <![CDATA[ https://partner.tiktokshop.com/docv2/page/6632a7a926b40c02d97de61b ]]>
+        /// <![CDATA[ https://partner.tiktokshop.com/doc/page/261250 ]]> <br/>
+        /// <![CDATA[ https://partner.tiktokshop.com/doc/page/262967 ]]>
         /// </para>
         /// </summary>
         /// <param name="client"></param>
@@ -60,7 +61,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop
                 .SetQueryParam("app_secret", client.Credentials.AppSecret)
                 .SetQueryParam("grant_type", request.GrantType)
                 .SetQueryParam("refresh_token", request.RefreshToken)
-                .RemoveQueryParams("access_token", "timestamp", "shop_cipher");
+                .RemoveQueryParams("access_token", "timestamp", "shop_id", "shop_cipher", "version");
 
             return await client.SendFlurlRequesAsJsontAsync<Models.AuthRefreshTokenResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }

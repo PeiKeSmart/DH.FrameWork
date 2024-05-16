@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop.Models
 {
     /// <summary>
-    /// <para>表示 [DELETE] /product/{version}/products 接口的请求。</para>
+    /// <para>表示 [DELETE] /products 接口的请求。</para>
     /// </summary>
     public class ProductDeleteProductsRequest : TikTokShopRequest
     {

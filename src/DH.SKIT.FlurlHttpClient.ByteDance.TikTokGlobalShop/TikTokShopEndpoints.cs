@@ -8,12 +8,17 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop
         /// <summary>
         /// 主域名（默认）。
         /// </summary>
-        public const string DEFAULT = "https://open-api.tiktokglobalshop.com";
+        public const string DEFAULT = "https://open-api.tiktokglobalshop.com/api";
 
         /// <summary>
         /// 沙箱域名。
         /// </summary>
-        public const string SANDBOX = "https://open-api-sandbox.tiktokglobalshop.com";
+        public const string SANDBOX = "https://open-api-sandbox.tiktokglobalshop.com/api";
+
+        /// <summary>
+        /// 美国域名。
+        /// </summary>
+        public const string REGION_US = "https://open-api.us.tiktokglobalshop.com/api";
     }
 
     /// <summary>

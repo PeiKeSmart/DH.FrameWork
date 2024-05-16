@@ -1101,7 +1101,6 @@
                                 /// 获取或设置仓库 ID。
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("warehouse_id")]
-                                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.TextualNullableLongConverter))]
                                 [System.Text.Json.Serialization.JsonPropertyName("warehouse_id")]
                                 [System.Text.Json.Serialization.JsonNumberHandling(System.Text.Json.Serialization.JsonNumberHandling.AllowReadingFromString | System.Text.Json.Serialization.JsonNumberHandling.WriteAsString)]
                                 public long WarehouseId { get; set; }
@@ -1339,7 +1338,6 @@
                         /// 获取或设置外部商品 ID。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("out_product_id")]
-                        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.TextualNullableLongConverter))]
                         [System.Text.Json.Serialization.JsonPropertyName("out_product_id")]
                         [System.Text.Json.Serialization.JsonNumberHandling(System.Text.Json.Serialization.JsonNumberHandling.AllowReadingFromString | System.Text.Json.Serialization.JsonNumberHandling.WriteAsString)]
                         public long? OutProductId { get; set; }
@@ -1369,7 +1367,6 @@
                         /// 获取或设置外部 SKU ID。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("out_sku_id")]
-                        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.TextualNullableLongConverter))]
                         [System.Text.Json.Serialization.JsonPropertyName("out_sku_id")]
                         [System.Text.Json.Serialization.JsonNumberHandling(System.Text.Json.Serialization.JsonNumberHandling.AllowReadingFromString | System.Text.Json.Serialization.JsonNumberHandling.WriteAsString)]
                         public long? OutSKUId { get; set; }

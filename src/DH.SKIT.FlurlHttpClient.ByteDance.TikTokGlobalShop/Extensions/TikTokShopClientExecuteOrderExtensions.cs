@@ -9,10 +9,10 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop
     public static class TikTokShopClientExecuteOrderExtensions
     {
         /// <summary>
-        /// <para>异步调用 [POST] /order/{version}/orders/search 接口。</para>
+        /// <para>异步调用 [POST] /orders/search 接口。</para>
         /// <para>
         /// REF: <br/>
-        /// <![CDATA[ https://partner.tiktokshop.com/docv2/page/650aa8094a0bb702c06df242 ]]>
+        /// <![CDATA[ https://partner.tiktokshop.com/doc/page/262815 ]]>
         /// </para>
         /// </summary>
         /// <param name="client"></param>
@@ -25,36 +25,49 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Post, "order", request.ApiVersion, "orders", "search")
-                .SetQueryParam("sort_field", request.SortField)
-                .SetQueryParam("sort_order", request.SortOrder)
-                .SetQueryParam("page_size", request.PageSize)
-                .SetQueryParam("page_token", request.PageToken);
+                .CreateFlurlRequest(request, HttpMethod.Post, "orders", "search");
 
             return await client.SendFlurlRequesAsJsontAsync<Models.OrderSearchOrdersResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
-        /// <para>异步调用 [GET] /order/{version}/orders 接口。</para>
+        /// <para>异步调用 [POST] /orders/detail/query 接口。</para>
         /// <para>
         /// REF: <br/>
-        /// <![CDATA[ https://partner.tiktokshop.com/docv2/page/650aa8ccc16ffe02b8f167a0 ]]>
+        /// <![CDATA[ https://partner.tiktokshop.com/doc/page/262814 ]]>
         /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public static async Task<Models.OrderBatchGetOrderDetailResponse> ExecuteOrderBatchGetOrderDetailAsync(this TikTokShopClient client, Models.OrderBatchGetOrderDetailRequest request, CancellationToken cancellationToken = default)
+        public static async Task<Models.OrderGetOrderDetailResponse> ExecuteOrderGetOrderDetailAsync(this TikTokShopClient client, Models.OrderGetOrderDetailRequest request, CancellationToken cancellationToken = default)
         {
             if (client is null) throw new ArgumentNullException(nameof(client));
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Get, "order", request.ApiVersion, "orders")
-                .SetQueryParam("ids", request.OrderIdList);
+                .CreateFlurlRequest(request, HttpMethod.Post, "orders", "detail", "query");
 
-            return await client.SendFlurlRequesAsJsontAsync<Models.OrderBatchGetOrderDetailResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
+            return await client.SendFlurlRequesAsJsontAsync<Models.OrderGetOrderDetailResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// <para>异步调用 [POST] /orders/rts 接口。</para>
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public static async Task<Models.OrderShipOrderResponse> ExecuteOrderShipOrderAsync(this TikTokShopClient client, Models.OrderShipOrderRequest request, CancellationToken cancellationToken = default)
+        {
+            if (client is null) throw new ArgumentNullException(nameof(client));
+            if (request is null) throw new ArgumentNullException(nameof(request));
+
+            IFlurlRequest flurlReq = client
+                .CreateFlurlRequest(request, HttpMethod.Post, "orders", "rts");
+
+            return await client.SendFlurlRequesAsJsontAsync<Models.OrderShipOrderResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
     }
 }

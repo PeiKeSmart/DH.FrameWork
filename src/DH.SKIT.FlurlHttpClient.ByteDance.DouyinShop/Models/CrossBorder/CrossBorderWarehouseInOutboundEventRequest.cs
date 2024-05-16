@@ -61,9 +61,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                 /// 获取或设置调整原因编码。
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("expiry_date")]
-                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.RegularDateTimeOffsetConverter))]
                 [System.Text.Json.Serialization.JsonPropertyName("expiry_date")]
-                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.RegularDateTimeOffsetConverter))]
                 public DateTimeOffset ExpiryTime { get; set; }
             }
 

@@ -116,7 +116,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop.ExtendedSDK.Legacy.Mod
                 public int? Length { get; set; }
 
                 /// <summary>
-                /// 获取或设置宽度。
+                /// 获取或设置宽度单位。
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("width")]
                 [System.Text.Json.Serialization.JsonPropertyName("width")]
@@ -162,7 +162,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop.ExtendedSDK.Legacy.Mod
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("hand_over_time")]
                 [System.Text.Json.Serialization.JsonPropertyName("hand_over_time")]
-                public string HandoverTimeString { get; set; } = string.Empty;
+                public string HandOverTimeString { get; set; } = string.Empty;
             }
         }
 

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -14,10 +14,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
     {
         /// <summary>
         /// <para>异步调用 [POST] /order/searchList 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://op.jinritemai.com/docs/api-docs/15/555 ]]>
-        /// </para>
+        /// <para>REF: https://op.jinritemai.com/docs/api-docs/15/555 </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -37,10 +34,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
 
         /// <summary>
         /// <para>异步调用 [POST] /order/orderDetail 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://op.jinritemai.com/docs/api-docs/15/1144 ]]>
-        /// </para>
+        /// <para>REF: https://op.jinritemai.com/docs/api-docs/15/1144 </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -60,10 +54,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
 
         /// <summary>
         /// <para>异步调用 [POST] /order/addOrderRemark 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://op.jinritemai.com/docs/api-docs/15/568 ]]>
-        /// </para>
+        /// <para>REF: https://op.jinritemai.com/docs/api-docs/15/568 </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -83,10 +74,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
 
         /// <summary>
         /// <para>异步调用 [POST] /order/updatePostAmount 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://op.jinritemai.com/docs/api-docs/15/264 ]]>
-        /// </para>
+        /// <para>REF: https://op.jinritemai.com/docs/api-docs/15/264 </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -106,10 +94,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
 
         /// <summary>
         /// <para>异步调用 [POST] /order/updateOrderAmount 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://op.jinritemai.com/docs/api-docs/15/263 ]]>
-        /// </para>
+        /// <para>REF: https://op.jinritemai.com/docs/api-docs/15/263 </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -129,10 +114,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
 
         /// <summary>
         /// <para>异步调用 [POST] /order/addressModify 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://op.jinritemai.com/docs/api-docs/15/290 ]]>
-        /// </para>
+        /// <para>REF: https://op.jinritemai.com/docs/api-docs/15/290 </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -152,10 +134,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
 
         /// <summary>
         /// <para>异步调用 [POST] /order/AddressAppliedSwitch 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://op.jinritemai.com/docs/api-docs/15/500 ]]>
-        /// </para>
+        /// <para>REF: https://op.jinritemai.com/docs/api-docs/15/500 </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -175,10 +154,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
 
         /// <summary>
         /// <para>异步调用 [POST] /order/addressConfirm 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://op.jinritemai.com/docs/api-docs/15/505 ]]>
-        /// </para>
+        /// <para>REF: https://op.jinritemai.com/docs/api-docs/15/505 </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -198,10 +174,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
 
         /// <summary>
         /// <para>异步调用 [POST] /order/addresSwitchConfig 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://op.jinritemai.com/docs/api-docs/15/501 ]]>
-        /// </para>
+        /// <para>REF: https://op.jinritemai.com/docs/api-docs/15/501 </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -221,10 +194,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
 
         /// <summary>
         /// <para>异步调用 [POST] /order/addSerialNumber 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://op.jinritemai.com/docs/api-docs/15/687 ]]>
-        /// </para>
+        /// <para>REF: https://op.jinritemai.com/docs/api-docs/15/687 </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -245,10 +215,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
         #region Encryption
         /// <summary>
         /// <para>异步调用 [POST] /order/batchDecrypt 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://op.jinritemai.com/docs/api-docs/15/982 ]]>
-        /// </para>
+        /// <para>REF: https://op.jinritemai.com/docs/api-docs/15/982 </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -268,10 +235,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
 
         /// <summary>
         /// <para>异步调用 [POST] /order/batchEncrypt 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://op.jinritemai.com/docs/api-docs/15/487 ]]>
-        /// </para>
+        /// <para>REF: https://op.jinritemai.com/docs/api-docs/15/487 </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -291,10 +255,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
 
         /// <summary>
         /// <para>异步调用 [POST] /order/batchSensitive 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://op.jinritemai.com/docs/api-docs/15/508 ]]>
-        /// </para>
+        /// <para>REF: https://op.jinritemai.com/docs/api-docs/15/508 </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -314,10 +275,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
 
         /// <summary>
         /// <para>异步调用 [POST] /order/BatchSearchIndex 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://op.jinritemai.com/docs/api-docs/15/516 ]]>
-        /// </para>
+        /// <para>REF: https://op.jinritemai.com/docs/api-docs/15/516 </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -339,10 +297,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
         #region Insurance
         /// <summary>
         /// <para>异步调用 [POST] /order/insurance 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://op.jinritemai.com/docs/api-docs/32/626 ]]>
-        /// </para>
+        /// <para>REF: https://op.jinritemai.com/docs/api-docs/32/626 </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -362,10 +317,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
 
         /// <summary>
         /// <para>异步调用 [POST] /order/policy 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://op.jinritemai.com/docs/api-docs/32/902 ]]>
-        /// </para>
+        /// <para>REF: https://op.jinritemai.com/docs/api-docs/32/902 </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -387,10 +339,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
         #region Service
         /// <summary>
         /// <para>异步调用 [POST] /order/getServiceList 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://op.jinritemai.com/docs/api-docs/15/266 ]]>
-        /// </para>
+        /// <para>REF: https://op.jinritemai.com/docs/api-docs/15/266 </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -410,10 +359,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
 
         /// <summary>
         /// <para>异步调用 [POST] /order/serviceDetail 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://op.jinritemai.com/docs/api-docs/15/266 ]]>
-        /// </para>
+        /// <para>REF: https://op.jinritemai.com/docs/api-docs/15/266 </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -433,10 +379,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
 
         /// <summary>
         /// <para>异步调用 [POST] /order/replyService 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://op.jinritemai.com/docs/api-docs/15/75 ]]>
-        /// </para>
+        /// <para>REF: https://op.jinritemai.com/docs/api-docs/15/75 </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -458,10 +401,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
         #region Invoice
         /// <summary>
         /// <para>异步调用 [POST] /order/invoiceList 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://op.jinritemai.com/docs/api-docs/15/660 ]]>
-        /// </para>
+        /// <para>REF: https://op.jinritemai.com/docs/api-docs/15/660 </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -481,10 +421,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
 
         /// <summary>
         /// <para>异步调用 [POST] /order/invoiceUpload 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://op.jinritemai.com/docs/guide-docs/150/812 ]]>
-        /// </para>
+        /// <para>REF: https://op.jinritemai.com/docs/guide-docs/150/812 </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -516,10 +453,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
         #region CrossBorder
         /// <summary>
         /// <para>异步调用 [POST] /order/getCrossBorderFulfillInfo 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://op.jinritemai.com/docs/api-docs/15/495 ]]>
-        /// </para>
+        /// <para>REF: https://op.jinritemai.com/docs/api-docs/15/495 </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -541,10 +475,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
         #region Settle
         /// <summary>
         /// <para>异步调用 [POST] /order/settle 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://op.jinritemai.com/docs/api-docs/46/204 ]]>
-        /// </para>
+        /// <para>REF: https://op.jinritemai.com/docs/api-docs/46/204 </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -564,10 +495,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
 
         /// <summary>
         /// <para>异步调用 [POST] /order/getSettleBillDetail 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://op.jinritemai.com/docs/api-docs/46/1192 ]]>
-        /// </para>
+        /// <para>REF: https://op.jinritemai.com/docs/api-docs/46/1192 </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -587,10 +515,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
 
         /// <summary>
         /// <para>异步调用 [POST] /order/downloadToShop 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://op.jinritemai.com/docs/api-docs/46/1193 ]]>
-        /// </para>
+        /// <para>REF: https://op.jinritemai.com/docs/api-docs/46/1193 </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -610,10 +535,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
 
         /// <summary>
         /// <para>异步调用 [POST] /order/downloadSettleItemToShop 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://op.jinritemai.com/docs/api-docs/46/1191 ]]>
-        /// </para>
+        /// <para>REF: https://op.jinritemai.com/docs/api-docs/46/1191 </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -635,10 +557,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
         #region Logistics
         /// <summary>
         /// <para>异步调用 [POST] /order/logisticsAdd 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://op.jinritemai.com/docs/api-docs/16/389 ]]>
-        /// </para>
+        /// <para>REF: https://op.jinritemai.com/docs/api-docs/16/389 </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -658,10 +577,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
 
         /// <summary>
         /// <para>异步调用 [POST] /order/logisticsCompanyList 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://op.jinritemai.com/docs/api-docs/16/541 ]]>
-        /// </para>
+        /// <para>REF: https://op.jinritemai.com/docs/api-docs/16/541 </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -681,10 +597,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
 
         /// <summary>
         /// <para>异步调用 [POST] /order/logisticsEdit 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://op.jinritemai.com/docs/api-docs/16/390 ]]>
-        /// </para>
+        /// <para>REF: https://op.jinritemai.com/docs/api-docs/16/390 </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -704,10 +617,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
 
         /// <summary>
         /// <para>异步调用 [POST] /order/logisticsAddSinglePack 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://op.jinritemai.com/docs/api-docs/16/563 ]]>
-        /// </para>
+        /// <para>REF: https://op.jinritemai.com/docs/api-docs/16/563 </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -727,10 +637,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
 
         /// <summary>
         /// <para>异步调用 [POST] /order/logisticsAddMultiPack 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://op.jinritemai.com/docs/api-docs/16/562 ]]>
-        /// </para>
+        /// <para>REF: https://op.jinritemai.com/docs/api-docs/16/562 </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -750,10 +657,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
 
         /// <summary>
         /// <para>异步调用 [POST] /order/logisticsEditByPack 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://op.jinritemai.com/docs/api-docs/16/539 ]]>
-        /// </para>
+        /// <para>REF: https://op.jinritemai.com/docs/api-docs/16/539 </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
