@@ -1,19 +1,19 @@
 namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Models
 {
     /// <summary>
-    /// <para>表示 [GET] /edu-papay/contracts/id/{contract_id} 接口的请求。</para>
+    /// <para>表示 [GET] /payscore/partner/servicequotas/service-id/{service_id} 接口的请求。</para>
     /// </summary>
-    public class GetEducationPAPayContractByContractIdRequest : WechatTenpayRequest
+    public class GetPayScorePartnerServiceQuotasByServiceIdRequest : WechatTenpayRequest
     {
         /// <summary>
         /// 获取或设置子商户号。
         /// </summary>
         [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
-        public string? SubMerchantId { get; set; }
+        public string SubMerchantId { get; set; } = string.Empty;
 
         /// <summary>
-        /// 获取或设置微信 AppId。
+        /// 获取或设置服务商 AppId。
         /// </summary>
         [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
@@ -27,10 +27,17 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Models
         public string? SubAppId { get; set; }
 
         /// <summary>
-        /// 获取或设置签约协议号。
+        /// 获取或设置服务 ID。
         /// </summary>
         [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
-        public string ContractId { get; set; } = string.Empty;
+        public string ServiceId { get; set; } = string.Empty;
+
+        /// <summary>
+        /// 获取或设置分层版本。
+        /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
+        [System.Text.Json.Serialization.JsonIgnore]
+        public int RiskLevelVersion { get; set; }
     }
 }
