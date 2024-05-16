@@ -1,7 +1,7 @@
 namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop.Models
 {
     /// <summary>
-    /// <para>表示 [GET] /products/categories/rules 接口的响应。</para>
+    /// <para>表示 [GET] /product/{version}/categories/{category_id}/rules 接口的响应。</para>
     /// </summary>
     public class ProductGetCategoryRulesResponse : TikTokShopResponse<ProductGetCategoryRulesResponse.Types.Data>
     {
@@ -11,96 +11,120 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop.Models
             {
                 public static class Types
                 {
-                    public class CategoryRule
+                    public class Certification
                     {
-                        public static class Types
-                        {
-                            public class ProductCertification
-                            {
-                                /// <summary>
-                                /// 获取或设置商品认证 ID。
-                                /// </summary>
-                                [Newtonsoft.Json.JsonProperty("id")]
-                                [System.Text.Json.Serialization.JsonPropertyName("id")]
-                                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.NumericalStringReadOnlyConverter))]
-                                public string CertificationId { get; set; } = default!;
-
-                                /// <summary>
-                                /// 获取或设置商品认证名称。
-                                /// </summary>
-                                [Newtonsoft.Json.JsonProperty("name")]
-                                [System.Text.Json.Serialization.JsonPropertyName("name")]
-                                public string CertificationName { get; set; } = default!;
-
-                                /// <summary>
-                                /// 获取或设置示例。
-                                /// </summary>
-                                [Newtonsoft.Json.JsonProperty("sample")]
-                                [System.Text.Json.Serialization.JsonPropertyName("sample")]
-                                public string? Sample { get; set; }
-
-                                /// <summary>
-                                /// 获取或设置是否必填。
-                                /// </summary>
-                                [Newtonsoft.Json.JsonProperty("is_mandatory")]
-                                [System.Text.Json.Serialization.JsonPropertyName("is_mandatory")]
-                                public bool IsMandatory { get; set; }
-                            }
-
-                            public class ExemptionOfIdentifierCode
-                            {
-                                /// <summary>
-                                /// 获取或设置是否支持 GTIN 豁免。
-                                /// </summary>
-                                [Newtonsoft.Json.JsonProperty("support_identifier_code_exemption")]
-                                [System.Text.Json.Serialization.JsonPropertyName("support_identifier_code_exemption")]
-                                public bool IsSupportIdentifierCodeExemption { get; set; }
-                            }
-                        }
+                        /// <summary>
+                        /// 获取或设置商品认证 ID。
+                        /// </summary>
+                        [Newtonsoft.Json.JsonProperty("id")]
+                        [System.Text.Json.Serialization.JsonPropertyName("id")]
+                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.NumericalStringReadOnlyConverter))]
+                        public string CertificationId { get; set; } = default!;
 
                         /// <summary>
-                        /// 获取或设置是否支持输入尺码表。
+                        /// 获取或设置商品认证名称。
                         /// </summary>
-                        [Newtonsoft.Json.JsonProperty("support_size_chart")]
-                        [System.Text.Json.Serialization.JsonPropertyName("support_size_chart")]
-                        public bool IsSupportSizeChart { get; set; }
+                        [Newtonsoft.Json.JsonProperty("name")]
+                        [System.Text.Json.Serialization.JsonPropertyName("name")]
+                        public string Name { get; set; } = default!;
 
                         /// <summary>
-                        /// 获取或设置是否支持货到付款。
+                        /// 获取或设置示例图片 URL。
                         /// </summary>
-                        [Newtonsoft.Json.JsonProperty("support_cod")]
-                        [System.Text.Json.Serialization.JsonPropertyName("support_cod")]
-                        public bool IsSupportCashOnDelivery { get; set; }
+                        [Newtonsoft.Json.JsonProperty("sample_image_url")]
+                        [System.Text.Json.Serialization.JsonPropertyName("sample_image_url")]
+                        public string? SampleImageUrl { get; set; }
 
                         /// <summary>
-                        /// 获取或设置是否必填尺码表。
+                        /// 获取或设置是否必须。
                         /// </summary>
-                        [Newtonsoft.Json.JsonProperty("is_size_chart_mandatory")]
-                        [System.Text.Json.Serialization.JsonPropertyName("is_size_chart_mandatory")]
-                        public bool IsSizeChartMandatory { get; set; }
+                        [Newtonsoft.Json.JsonProperty("is_required")]
+                        [System.Text.Json.Serialization.JsonPropertyName("is_required")]
+                        public bool IsRequired { get; set; }
+                    }
+
+                    public class SizeChart
+                    {
+                        /// <summary>
+                        /// 获取或设置是否支持。
+                        /// </summary>
+                        [Newtonsoft.Json.JsonProperty("is_supported")]
+                        [System.Text.Json.Serialization.JsonPropertyName("is_supported")]
+                        public bool IsSupported { get; set; }
 
                         /// <summary>
-                        /// 获取或设置产品标识码豁免信息。
+                        /// 获取或设置是否必须。
                         /// </summary>
-                        [Newtonsoft.Json.JsonProperty("exemption_of_identifier_code")]
-                        [System.Text.Json.Serialization.JsonPropertyName("exemption_of_identifier_code")]
-                        public Types.ExemptionOfIdentifierCode? ExemptionOfIdentifierCode { get; set; }
+                        [Newtonsoft.Json.JsonProperty("is_required")]
+                        [System.Text.Json.Serialization.JsonPropertyName("is_required")]
+                        public bool IsRequired { get; set; }
+                    }
 
+                    public class CashOnDelivery
+                    {
                         /// <summary>
-                        /// 获取或设置商品认证列表。
+                        /// 获取或设置是否支持。
                         /// </summary>
-                        [Newtonsoft.Json.JsonProperty("product_certifications")]
-                        [System.Text.Json.Serialization.JsonPropertyName("product_certifications")]
-                        public Types.ProductCertification[] ProductCertificationList { get; set; } = default!;
+                        [Newtonsoft.Json.JsonProperty("is_supported")]
+                        [System.Text.Json.Serialization.JsonPropertyName("is_supported")]
+                        public bool IsSupported { get; set; }
+                    }
+
+                    public class PackageDimension
+                    {
+                        /// <summary>
+                        /// 获取或设置是否必须。
+                        /// </summary>
+                        [Newtonsoft.Json.JsonProperty("is_required")]
+                        [System.Text.Json.Serialization.JsonPropertyName("is_required")]
+                        public bool IsRequired { get; set; }
+                    }
+
+                    public class ExtendedProducerResponsibility
+                    {
+                        /// <summary>
+                        /// 获取或设置是否必须。
+                        /// </summary>
+                        [Newtonsoft.Json.JsonProperty("is_required")]
+                        [System.Text.Json.Serialization.JsonPropertyName("is_required")]
+                        public bool IsRequired { get; set; }
                     }
                 }
 
                 /// <summary>
-                /// 获取或设置分类规则列表。
+                /// 获取或设置商品认证列表。
                 /// </summary>
-                [Newtonsoft.Json.JsonProperty("category_rules")]
-                [System.Text.Json.Serialization.JsonPropertyName("category_rules")]
-                public Types.CategoryRule[] CategoryRuleList { get; set; } = default!;
+                [Newtonsoft.Json.JsonProperty("product_certifications")]
+                [System.Text.Json.Serialization.JsonPropertyName("product_certifications")]
+                public Types.Certification[] CertificationList { get; set; } = default!;
+
+                /// <summary>
+                /// 获取或设置尺码表信息。
+                /// </summary>
+                [Newtonsoft.Json.JsonProperty("size_chart")]
+                [System.Text.Json.Serialization.JsonPropertyName("size_chart")]
+                public Types.SizeChart? SizeChart { get; set; }
+
+                /// <summary>
+                /// 获取或设置货到付款信息。
+                /// </summary>
+                [Newtonsoft.Json.JsonProperty("cod")]
+                [System.Text.Json.Serialization.JsonPropertyName("cod")]
+                public Types.CashOnDelivery? CashOnDelivery { get; set; }
+
+                /// <summary>
+                /// 获取或设置包装尺寸信息。
+                /// </summary>
+                [Newtonsoft.Json.JsonProperty("package_dimension")]
+                [System.Text.Json.Serialization.JsonPropertyName("package_dimension")]
+                public Types.PackageDimension? PackageDimension { get; set; }
+
+                /// <summary>
+                /// 获取或设置 EPR 信息。
+                /// </summary>
+                [Newtonsoft.Json.JsonProperty("epr")]
+                [System.Text.Json.Serialization.JsonPropertyName("epr")]
+                public Types.ExtendedProducerResponsibility? ExtendedProducerResponsibility { get; set; }
             }
         }
     }

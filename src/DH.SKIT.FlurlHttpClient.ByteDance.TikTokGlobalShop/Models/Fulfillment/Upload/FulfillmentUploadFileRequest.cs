@@ -1,22 +1,31 @@
+using System;
+
 namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop.Models
 {
     /// <summary>
-    /// <para>表示 [POST] /fulfillment/uploadfile 接口的请求。</para>
+    /// <para>表示 [POST] /fulfillment/{version}/files/upload 接口的请求。</para>
     /// </summary>
     public class FulfillmentUploadFileRequest : TikTokShopRequest
     {
         /// <summary>
-        /// 获取或设置经 Base64 编码的文件内容。
+        /// 获取或设置文件字节数组。
         /// </summary>
-        [Newtonsoft.Json.JsonProperty("file_data")]
-        [System.Text.Json.Serialization.JsonPropertyName("file_data")]
-        public string EncodingFileData { get; set; } = string.Empty;
+        [Newtonsoft.Json.JsonIgnore]
+        [System.Text.Json.Serialization.JsonIgnore]
+        public byte[] FileBytes { get; set; } = Array.Empty<byte>();
 
         /// <summary>
-        /// 获取或设置文件名称。
+        /// 获取或设置文件名。如果不指定将由系统自动生成。
         /// </summary>
-        [Newtonsoft.Json.JsonProperty("file_name")]
-        [System.Text.Json.Serialization.JsonPropertyName("file_name")]
-        public string FileName { get; set; } = string.Empty;
+        [Newtonsoft.Json.JsonIgnore]
+        [System.Text.Json.Serialization.JsonIgnore]
+        public string? FileName { get; set; }
+
+        /// <summary>
+        /// 获取或设置文件 MIME 类型。如果不指定将由系统自动生成。
+        /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
+        [System.Text.Json.Serialization.JsonIgnore]
+        public string? FileContentType { get; set; }
     }
 }

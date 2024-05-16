@@ -1,7 +1,7 @@
 namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop.Models
 {
     /// <summary>
-    /// <para>表示 [PUT] /products 接口的响应。</para>
+    /// <para>表示 [PUT] /product/{version}/products/{product_id} 接口的响应。</para>
     /// </summary>
     public class ProductUpdateProductResponse : TikTokShopResponse<ProductUpdateProductResponse.Types.Data>
     {
@@ -11,43 +11,12 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop.Models
             {
                 public static class Types
                 {
-                    public class SKU
+                    public class SKU : ProductCreateProductResponse.Types.Data.Types.SKU
                     {
-                        public static class Types
-                        {
-                            public class SalesAttribute : ProductCreateProductResponse.Types.Data.Types.SKU.Types.SalesAttribute
-                            {
-                            }
-                        }
+                    }
 
-                        /// <summary>
-                        /// 获取或设置外部 SKU ID。
-                        /// </summary>
-                        [Newtonsoft.Json.JsonProperty("outer_sku_id")]
-                        [System.Text.Json.Serialization.JsonPropertyName("outer_sku_id")]
-                        public string? OuterSKUId { get; set; }
-
-                        /// <summary>
-                        /// 获取或设置 SKU ID。
-                        /// </summary>
-                        [Newtonsoft.Json.JsonProperty("id")]
-                        [System.Text.Json.Serialization.JsonPropertyName("id")]
-                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.NumericalStringReadOnlyConverter))]
-                        public string SKUId { get; set; } = default!;
-
-                        /// <summary>
-                        /// 获取或设置卖家 SKU 信息。
-                        /// </summary>
-                        [Newtonsoft.Json.JsonProperty("seller_sku")]
-                        [System.Text.Json.Serialization.JsonPropertyName("seller_sku")]
-                        public string? SellerSKU { get; set; }
-
-                        /// <summary>
-                        /// 获取或设置销售属性列表。
-                        /// </summary>
-                        [Newtonsoft.Json.JsonProperty("sales_attributes")]
-                        [System.Text.Json.Serialization.JsonPropertyName("sales_attributes")]
-                        public Types.SalesAttribute[] SalesAttributeList { get; set; } = default!;
+                    public class Warning : ProductCreateProductResponse.Types.Data.Types.Warning
+                    {
                     }
                 }
 
@@ -65,6 +34,13 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop.Models
                 [Newtonsoft.Json.JsonProperty("skus")]
                 [System.Text.Json.Serialization.JsonPropertyName("skus")]
                 public Types.SKU[] SKUList { get; set; } = default!;
+
+                /// <summary>
+                /// 获取或设置警告列表。
+                /// </summary>
+                [Newtonsoft.Json.JsonProperty("warnings")]
+                [System.Text.Json.Serialization.JsonPropertyName("warnings")]
+                public Types.Warning[]? WarningList { get; set; }
             }
         }
     }

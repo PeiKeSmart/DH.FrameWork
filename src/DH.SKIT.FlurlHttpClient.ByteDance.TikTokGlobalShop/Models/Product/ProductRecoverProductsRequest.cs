@@ -1,17 +1,9 @@
-using System.Collections.Generic;
-
 namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop.Models
 {
     /// <summary>
-    /// <para>表示 [POST] /products/recover 接口的请求。</para>
+    /// <para>表示 [POST] /product/{version}/products/recover 接口的请求。</para>
     /// </summary>
-    public class ProductRecoverProductsRequest : TikTokShopRequest
+    public class ProductRecoverProductsRequest : ProductDeleteProductsRequest
     {
-        /// <summary>
-        /// 获取或设置商品 ID 列表。
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("product_ids")]
-        [System.Text.Json.Serialization.JsonPropertyName("product_ids")]
-        public IList<string> ProductIdList { get; set; } = new List<string>();
     }
 }
