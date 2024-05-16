@@ -32,6 +32,7 @@ using System.Threading.Tasks;
 using Magicodes.IE.Excel.Images;
 using SixLabors.ImageSharp;
 using ImageExtensions = Magicodes.IE.Excel.Images.ImageExtensions;
+using NewLife.Log;
 
 namespace Magicodes.ExporterAndImporter.Excel.Utility
 {
@@ -235,6 +236,7 @@ namespace Magicodes.ExporterAndImporter.Excel.Utility
             catch (Exception ex)
             {
                 ImportResult.Exception = ex;
+                XTrace.WriteException(ex);
             }
 
             return Task.FromResult(ImportResult);
@@ -2141,7 +2143,7 @@ namespace Magicodes.ExporterAndImporter.Excel.Utility
         {
             return excelPackage.Workbook.Worksheets[typeof(T).GetDisplayName()] ??
                                excelPackage.Workbook.Worksheets[ExcelImporterSettings.SheetName] ??
-                               excelPackage.Workbook.Worksheets[0];
+                               excelPackage.Workbook.Worksheets[1];
         }
 
         /// <summary>

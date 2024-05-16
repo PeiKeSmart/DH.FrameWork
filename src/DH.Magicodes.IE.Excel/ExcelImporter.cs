@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 using Magicodes.ExporterAndImporter.Core.Extension;
 using Magicodes.ExporterAndImporter.Core;
 using Magicodes.IE.Core;
+using NewLife.Log;
 
 namespace Magicodes.ExporterAndImporter.Excel
 {
