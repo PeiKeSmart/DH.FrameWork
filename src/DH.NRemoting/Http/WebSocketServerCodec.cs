@@ -43,7 +43,7 @@ public class WebSocketServerCodec : Handler
             var request = new HttpRequest();
             if (request.Parse(pk) && request.IsCompleted)
             {
-                var ctx = new DefaultHttpContext(session, request, null, null)
+                var ctx = new DefaultHttpContext(null, request, null, null)
                 {
                     ServiceProvider = session as IServiceProvider
                 };
@@ -71,8 +71,10 @@ public class WebSocketServerCodec : Handler
             var msg = new WebSocketMessage();
             if (msg.Read(pk)) message = msg.Payload;
         }
-
-        ss["isWs"] = false;
+        else
+        {
+            ss["isWs"] = false;
+        }
 
         return base.Read(context, message);
     }
