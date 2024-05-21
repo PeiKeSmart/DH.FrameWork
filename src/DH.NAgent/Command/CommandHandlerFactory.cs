@@ -8,7 +8,7 @@ namespace NewLife.Agent.Command;
 public class CommandFactory
 {
     private readonly List<BaseCommandHandler> _commandHandlerList;
-    private Dictionary<String, BaseCommandHandler> _commandHandlerDict = new Dictionary<String, BaseCommandHandler>(StringComparer.OrdinalIgnoreCase);
+    private Dictionary<String, BaseCommandHandler> _commandHandlerDict = new(StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
     /// 
@@ -34,8 +34,8 @@ public class CommandFactory
         }
 
         // 使用反射获取所有实现了ICommandHandler接口的类型
-        var commandHandlerTypes = assemblies.Values.SelectMany(n=>n.GetTypes().Where(t => typeof(BaseCommandHandler).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract)).ToList();
-         var commandHandlers = new List<BaseCommandHandler>();
+        var commandHandlerTypes = assemblies.Values.SelectMany(n => n.GetTypes().Where(t => typeof(BaseCommandHandler).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract)).ToList();
+        var commandHandlers = new List<BaseCommandHandler>();
         foreach (var type in commandHandlerTypes)
         {
             var handler = (BaseCommandHandler)Activator.CreateInstance(type, service);
@@ -68,16 +68,14 @@ public class CommandFactory
     /// </summary>
     /// <param name="cmd">命令</param>
     /// <param name="args">参数</param>
-    public void Handle(String cmd, String[] args = null)
+    public Boolean Handle(String cmd, String[] args = null)
     {
         if (_commandHandlerDict.TryGetValue(cmd, out var handler))
         {
             handler.Process(args);
+            return true;
         }
-        else
-        {
-            Console.WriteLine($"您输入的命令参数 [{cmd}] 无效，请重新输入！");
-        }
+        return false;
     }
 
     /// <summary>
@@ -85,17 +83,17 @@ public class CommandFactory
     /// </summary>
     /// <param name="key"></param>
     /// <param name="args"></param>
-    public void Handle(Char key, String[] args = null)
+    public Boolean Handle(Char key, String[] args = null)
     {
         foreach (var commandHandler in _commandHandlerList)
         {
             if (commandHandler.ShortcutKey == key && commandHandler.IsShowMenu())
             {
                 Handle(commandHandler.Cmd, args);
-                return;
+                return true;
             }
         }
-        Console.WriteLine($"您输入的命令序号 [{key}] 无效，请重新输入！");
+        return false;
     }
 
     /// <summary>
@@ -105,11 +103,11 @@ public class CommandFactory
     public SortedSet<Menu> GetShortcutMenu()
     {
         var menus = new SortedSet<Menu>();
-        foreach (var commandHandler in _commandHandlerList)
+        foreach (var handler in _commandHandlerList)
         {
-            if (commandHandler.ShortcutKey != null && commandHandler.IsShowMenu())
+            if (handler.ShortcutKey != null && handler.IsShowMenu())
             {
-                menus.Add(new Menu(commandHandler.ShortcutKey.Value, commandHandler.Description, commandHandler.Cmd));
+                menus.Add(new Menu(handler.ShortcutKey.Value, handler.Description, handler.Cmd, null));
             }
         }
         return menus;

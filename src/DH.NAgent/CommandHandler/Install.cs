@@ -1,49 +1,32 @@
-﻿using NewLife.Model;
+﻿using NewLife.Agent.Command;
 
-namespace NewLife.Agent.Command;
+namespace NewLife.Agent.CommandHandler;
 
 /// <summary>
 /// 安装服务命令处理类
 /// </summary>
-public class InstallCommandHandler : BaseCommandHandler
+public class Install : BaseCommandHandler
 {
     /// <summary>
     /// 安装服务构造函数
     /// </summary>
     /// <param name="service"></param>
-    public InstallCommandHandler(ServiceBase service) : base(service)
+    public Install(ServiceBase service) : base(service)
     {
+        Cmd = CommandConst.Install;
+        Description = "安装服务";
+        ShortcutKey = '2';
     }
 
-    /// <inheritdoc/>
-    public override String Cmd { get; set; } = CommandConst.Install;
-
     /// <inheritdoc />
-    public override String Description { get; set; } = "安装并启动服务";
-
-    /// <inheritdoc />
-    public override Char? ShortcutKey { get; set; } = '2';
-
-    /// <inheritdoc />
-    public override Boolean IsShowMenu()
-    {
-        return !Service.Host.IsInstalled(Service.ServiceName);
-    }
+    public override Boolean IsShowMenu() => !Service.Host.IsInstalled(Service.ServiceName);
 
     /// <inheritdoc/>
     public override void Process(String[] args)
     {
-        Install();
-        // 稍微等一下，以便后续状态刷新
-        Thread.Sleep(500);
-    }
-
-    private void Install()
-    {
         var exe = GetExeName();
 
         // 兼容dotnet
-        var args = Environment.GetCommandLineArgs();
         if (args.Length >= 1)
         {
             var fileName = Path.GetFileName(exe);
@@ -67,18 +50,19 @@ public class InstallCommandHandler : BaseCommandHandler
             // 跳过系统内置参数
             var list = new List<String>();
             for (var i = 2; i < args.Length; i++)
-            {
                 if (args[i].EqualIgnoreCase("-server", "-user", "-group"))
                     i++;
                 else if (args[i].Contains(' '))
                     list.Add($"\"{args[i]}\"");
                 else
                     list.Add(args[i]);
-            }
             if (list.Count > 0) arg += " " + list.Join(" ");
         }
 
         Service.Host.Install(Service.ServiceName, Service.DisplayName, exe, arg, Description);
+
+        // 稍微等一下，以便后续状态刷新
+        Thread.Sleep(500);
     }
 
     /// <summary>Exe程序名</summary>
@@ -91,5 +75,4 @@ public class InstallCommandHandler : BaseCommandHandler
 
         return filename;
     }
-
 }

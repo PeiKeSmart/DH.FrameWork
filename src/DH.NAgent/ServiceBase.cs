@@ -3,6 +3,7 @@ using System.Runtime;
 using System.Runtime.CompilerServices;
 using System.Security;
 using NewLife.Agent.Command;
+using NewLife.Agent.Windows;
 using NewLife.Log;
 using NewLife.Reflection;
 
@@ -32,12 +33,10 @@ public abstract class ServiceBase : DisposeBase
 
     /// <summary>运行中</summary>
     public Boolean Running { get; set; }
-    #endregion
 
-    /// <summary>
-    /// 
-    /// </summary>
-    protected readonly CommandFactory Command;
+    /// <summary>命令工厂</summary>
+    public CommandFactory Command { get; }
+    #endregion
 
     #region 构造
     /// <summary>初始化</summary>
@@ -196,13 +195,27 @@ public abstract class ServiceBase : DisposeBase
 
             try
             {
-                Command.Handle(key.KeyChar, args);
+                var result = Command.Handle(key.KeyChar, args);
+                if (!result)
+                {
+                    // 兼容旧版本自定义菜单，相关代码已过时
+                    var menu = _Menus.FirstOrDefault(e => e.Key == key.KeyChar);
+                    if (menu != null)
+                    {
+                        menu.Callback();
+                    }
+                    else
+                    {
+                        Console.WriteLine($"您输入的命令序号 [{key.KeyChar}] 无效，请重新输入！");
+                    }
+                }
             }
             catch (Exception ex)
             {
                 XTrace.WriteException(ex);
             }
             Console.WriteLine();
+            Thread.Sleep(1000);
         }
     }
 
@@ -222,10 +235,38 @@ public abstract class ServiceBase : DisposeBase
             Console.WriteLine($" {menu.Key}、 {menu.Name}\t{menu.Cmd}");
         }
 
+        //兼容旧版本菜单，相关代码已过时
+        if (_Menus.Count > 0)
+        {
+            //foreach (var item in _Menus)
+            //{
+            //    Console.WriteLine("{0} {1}", item.Key, item.Value.Name);
+            //}
+            foreach (var menu in _Menus)
+            {
+                Console.WriteLine($" {menu.Key}、 {menu.Name}\t");
+            }
+        }
+
         Console.WriteLine($" 0、 退出\t");
         Console.WriteLine();
         Console.ForegroundColor = color;
     }
+    private readonly List<Menu> _Menus = [];
+    /// <summary>添加菜单</summary>
+    /// <param name="key"></param>
+    /// <param name="name"></param>
+    /// <param name="callbak"></param>
+    [Obsolete("建议定义命令处理类，并继承 BaseCommandHandler")]
+    public void AddMenu(Char key, String name, Action callbak)
+    {
+        //if (!_Menus.ContainsKey(key))
+        //{
+        _Menus.RemoveAll(e => e.Key == key);
+        _Menus.Add(new Menu(key, name, null, callbak));
+        //}
+    }
+
     #endregion
 
     #region 服务控制

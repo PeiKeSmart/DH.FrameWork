@@ -1,33 +1,21 @@
-﻿using NewLife.Log;
+﻿using NewLife.Agent.Command;
+using NewLife.Log;
 
-namespace NewLife.Agent.Command;
+namespace NewLife.Agent.CommandHandler;
 
 /// <summary>
 /// 安装并启动服务命令处理类
 /// </summary>
-public class InstallAndStartCommandHandler : BaseCommandHandler
+public class InstallAndStart : BaseCommandHandler
 {
     /// <summary>
     /// 安装并启动服务构造函数
     /// </summary>
     /// <param name="service"></param>
-    public InstallAndStartCommandHandler(ServiceBase service) : base(service)
+    public InstallAndStart(ServiceBase service) : base(service)
     {
-    }
-
-    /// <inheritdoc/>
-    public override String Cmd { get; set; } = CommandConst.InstallAndStart;
-
-    /// <inheritdoc />
-    public override String Description { get; set; } = "安装并启动服务";
-
-    /// <inheritdoc />
-    public override Char? ShortcutKey { get; set; }
-
-    /// <inheritdoc />
-    public override Boolean IsShowMenu()
-    {
-        return false;
+        Cmd = CommandConst.InstallAndStart;
+        Description = "安装并启动服务";
     }
 
     /// <inheritdoc/>
@@ -36,7 +24,7 @@ public class InstallAndStartCommandHandler : BaseCommandHandler
         // 可能服务已存在，安装时报错，但不要影响服务启动
         try
         {
-            new InstallCommandHandler(Service).Process(args);
+            Service.Command.Handle(CommandConst.Install, args);
         }
         catch (Exception ex)
         {
@@ -49,6 +37,7 @@ public class InstallAndStartCommandHandler : BaseCommandHandler
             Thread.Sleep(100);
         }
         Service.Host.Start(Service.ServiceName);
+
         // 稍微等一下，以便后续状态刷新
         Thread.Sleep(500);
     }

@@ -1,34 +1,25 @@
-﻿using System.Xml.Linq;
+﻿using NewLife.Agent.Command;
 
-namespace NewLife.Agent.Command;
+namespace NewLife.Agent.CommandHandler;
 
 /// <summary>
 /// 模拟运行命令处理类
 /// </summary>
-public class RunSimulationCommandHandler : BaseCommandHandler
+public class RunSimulation : BaseCommandHandler
 {
     /// <summary>
     /// 模拟运行构造函数
     /// </summary>
     /// <param name="service"></param>
-    public RunSimulationCommandHandler(ServiceBase service) : base(service)
+    public RunSimulation(ServiceBase service) : base(service)
     {
+        Cmd = CommandConst.RunSimulation;
+        Description = "模拟运行";
+        ShortcutKey = '5';
     }
 
-    /// <inheritdoc/>
-    public override String Cmd { get; set; } = CommandConst.RunSimulation;
-
     /// <inheritdoc />
-    public override String Description { get; set; } = "模拟运行";
-
-    /// <inheritdoc />
-    public override Char? ShortcutKey { get; set; } = '5';
-
-    /// <inheritdoc />
-    public override Boolean IsShowMenu()
-    {
-        return !Service.Host.IsRunning(Service.ServiceName);
-    }
+    public override Boolean IsShowMenu() => !Service.Host.IsRunning(Service.ServiceName);
 
     /// <inheritdoc/>
     public override void Process(String[] args)

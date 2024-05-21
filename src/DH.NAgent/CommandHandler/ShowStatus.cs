@@ -1,35 +1,24 @@
-﻿using NewLife.Log;
+﻿using NewLife.Agent.Command;
+using NewLife.Log;
 using NewLife.Reflection;
 using System.Reflection;
 
-namespace NewLife.Agent.Command;
+namespace NewLife.Agent.CommandHandler;
 
 /// <summary>
 /// 显示状态命令处理类
 /// </summary>
-public class ShowStatusCommandHandler : BaseCommandHandler
+public class ShowStatus : BaseCommandHandler
 {
     /// <summary>
     /// 显示状态构造函数
     /// </summary>
     /// <param name="service"></param>
-    public ShowStatusCommandHandler(ServiceBase service) : base(service)
+    public ShowStatus(ServiceBase service) : base(service)
     {
-    }
-
-    /// <inheritdoc/>
-    public override String Cmd { get; set; } = CommandConst.ShowStatus;
-
-    /// <inheritdoc />
-    public override String Description { get; set; } = "显示状态";
-
-    /// <inheritdoc />
-    public override Char? ShortcutKey { get; set; } = '1';
-
-    /// <inheritdoc />
-    public override Boolean IsShowMenu()
-    {
-        return true;
+        Cmd = CommandConst.ShowStatus;
+        Description = "显示状态";
+        ShortcutKey = '1';
     }
 
     /// <inheritdoc/>
