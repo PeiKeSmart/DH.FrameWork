@@ -113,7 +113,7 @@ public partial class UserE : User {
         }
         if (!key.IsNullOrWhiteSpace())
         {
-            exp &= _.Code.StartsWith(key) | _.Name.StartsWith(key) | _.DisplayName.StartsWith(key) | _.Mobile.StartsWith(key) | _.Mail.StartsWith(key);
+            exp &= _.Code.Contains(key) | _.Name.Contains(key) | _.DisplayName.Contains(key) | _.Mobile.Contains(key) | _.Mail.Contains(key);
         }
 
         p.Sort = "Id";
