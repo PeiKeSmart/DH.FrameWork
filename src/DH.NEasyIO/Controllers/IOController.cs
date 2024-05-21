@@ -4,12 +4,15 @@ using NewLife.EasyIO.Options;
 
 namespace NewLife.EasyWeb.Controllers;
 
+/// <summary>文件控制器</summary>
 [ApiController]
 [Route("[controller]/[action]")]
 public class IOController : ApiControllerBase
 {
     private readonly FileStorageOptions _storageOptions;
 
+    /// <summary>实例化</summary>
+    /// <param name="storageOptions"></param>
     public IOController(FileStorageOptions storageOptions) => _storageOptions = storageOptions;
 
     private String GetPath(String id)
@@ -22,6 +25,10 @@ public class IOController : ApiControllerBase
         return set.Path.CombinePath(id).GetFullPath();
     }
 
+    /// <summary>上传文件对象</summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
     [HttpPut]
     public async Task<Object> Put(String id)
     {
@@ -41,6 +48,10 @@ public class IOController : ApiControllerBase
         return new { name = id, length = fi.Length, time = fi.LastWriteTime, IsDirectory = false };
     }
 
+    /// <summary>获取文件对象内容</summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
     [HttpGet]
     public IActionResult Get(String id)
     {
@@ -53,6 +64,11 @@ public class IOController : ApiControllerBase
         return File(fi.ReadBytes(), "application/octet-stream");
     }
 
+    /// <summary>获取文件对象的访问Url</summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    /// <exception cref="NotImplementedException"></exception>
     [HttpGet]
     public String GetUrl(String id)
     {
@@ -66,6 +82,10 @@ public class IOController : ApiControllerBase
         throw new NotImplementedException();
     }
 
+    /// <summary>删除文件对象</summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
     [HttpDelete]
     public Int32 Delete(String id)
     {

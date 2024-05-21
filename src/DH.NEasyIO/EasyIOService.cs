@@ -14,12 +14,12 @@ public static class EasyIOService
     {
         using var span = DefaultTracer.Instance?.NewSpan(nameof(AddEasyIO));
 
-        XTrace.WriteLine("{0} Start 配置EasyIO {0}", new String('=', 32));
+        //XTrace.WriteLine("{0} Start 配置EasyIO {0}", new String('=', 32));
         Assembly.GetExecutingAssembly().WriteVersion();
 
         services.AddSingleton(new FileStorageOptions { Path = "../files" });
 
-        XTrace.WriteLine("{0} End   配置EasyIO {0}", new String('=', 32));
+        //XTrace.WriteLine("{0} End   配置EasyIO {0}", new String('=', 32));
 
         return services;
     }
@@ -32,13 +32,13 @@ public static class EasyIOService
     {
         using var span = DefaultTracer.Instance?.NewSpan(nameof(UseEasyIO));
 
-        XTrace.WriteLine("{0} Start 初始化EasyIO {0}", new String('=', 32));
+        //XTrace.WriteLine("{0} Start 初始化EasyIO {0}", new String('=', 32));
 
         var env = app.ApplicationServices.GetService<IWebHostEnvironment>();
 
         app.RegisterService("EasyIO", null, env.EnvironmentName);
 
-        XTrace.WriteLine("{0} End   初始化EasyIO {0}", new String('=', 32));
+        //XTrace.WriteLine("{0} End   初始化EasyIO {0}", new String('=', 32));
 
         return app;
     }
