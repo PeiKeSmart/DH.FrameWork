@@ -841,6 +841,14 @@
         <Column Name="UpdateIP" DataType="String" Description="更新地址" />
       </Columns>
     </Table>
+    <Table Name="AppVersionLan" TableName="DG_AppVersionLan" Description="APP版本翻译">
+      <Columns>
+        <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
+        <Column Name="AId" DataType="Int32" Description="APP版本Id" />
+        <Column Name="LId" DataType="Int32" Description="关联所属语言Id" />
+        <Column Name="Content" DataType="String" Length="1024" Description="升级内容" />
+      </Columns>
+    </Table>
     <Table Name="AppVersionLog" TableName="DG_AppVersionLog" Description="APP版本请求日志">
       <Columns>
         <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
