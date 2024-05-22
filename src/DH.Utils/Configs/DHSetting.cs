@@ -354,6 +354,11 @@ public class DHSetting : Config<DHSetting>
     [Category("通用")]
     public String ForceRedirect { get; set; }
 
+    /// <summary>是否兼容单页应用</summary>
+    [Description("是否兼容单页应用")]
+    [Category("通用")]
+    public Boolean IsSpa { get; set; }
+
     #region 系统功能
     /// <summary>多租户。是否支持多租户，租户模式禁止访问系统管理，平台管理模式禁止访问租户页面</summary>
     [Description("多租户。是否支持多租户，租户模式禁止访问系统管理，平台管理模式禁止访问租户页面")]
