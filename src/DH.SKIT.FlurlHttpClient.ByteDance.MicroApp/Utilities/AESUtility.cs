@@ -60,7 +60,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp.Utilities
         /// 基于 CBC 模式加密数据。
         /// </summary>
         /// <param name="keyBytes">AES 密钥字节数组。</param>
-        /// <param name="ivBytes">加密使用的初始化向量字节数组。</param>
+        /// <param name="ivBytes">初始化向量字节数组。</param>
         /// <param name="plainBytes">待加密数据字节数组。</param>
         /// <returns>加密后的数据字节数组。</returns>
         public static byte[] EncryptWithCBC(byte[] keyBytes, byte[] ivBytes, byte[] plainBytes)

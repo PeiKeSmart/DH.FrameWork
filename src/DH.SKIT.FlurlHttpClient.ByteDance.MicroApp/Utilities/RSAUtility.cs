@@ -115,17 +115,17 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp.Utilities
             return (RsaKeyParameters)PublicKeyFactory.CreateKey(publicKeyBytes);
         }
 
-        private static byte[] Sign(RsaKeyParameters rsaPrivateKeyParams, byte[] messageBytes, string digestAlgorithm)
+        private static byte[] Sign(RsaKeyParameters rsaPrivateKeyParams, byte[] messageBytes, string algorithm)
         {
-            ISigner signer = SignerUtilities.GetSigner(digestAlgorithm);
+            ISigner signer = SignerUtilities.GetSigner(algorithm);
             signer.Init(true, rsaPrivateKeyParams);
             signer.BlockUpdate(messageBytes, 0, messageBytes.Length);
             return signer.GenerateSignature();
         }
 
-        private static bool Verify(RsaKeyParameters rsaPublicKeyParams, byte[] messageBytes, byte[] signBytes, string digestAlgorithm)
+        private static bool Verify(RsaKeyParameters rsaPublicKeyParams, byte[] messageBytes, byte[] signBytes, string algorithm)
         {
-            ISigner signer = SignerUtilities.GetSigner(digestAlgorithm);
+            ISigner signer = SignerUtilities.GetSigner(algorithm);
             signer.Init(false, rsaPublicKeyParams);
             signer.BlockUpdate(messageBytes, 0, messageBytes.Length);
             return signer.VerifySignature(signBytes);
