@@ -69,17 +69,11 @@
   <ItemGroup>
     <None Remove="index.html" />
     <None Remove="IndexDark.html" />
-    <None Remove="wwwroot\*\*\*\*.*" />
-    <None Remove="wwwroot\*\*\*.*" />
-    <None Remove="wwwroot\*\*.*" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="index.html" />
     <EmbeddedResource Include="IndexDark.html" />
-    <EmbeddedResource Include="wwwroot\*\*\*.*" />
-    <EmbeddedResource Include="wwwroot\*\*.*" />
-    <EmbeddedResource Include="wwwroot\*\*\*\*.*" />
   </ItemGroup>
 
   <ItemGroup>
