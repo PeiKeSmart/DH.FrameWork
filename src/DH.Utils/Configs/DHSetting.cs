@@ -1,11 +1,11 @@
-﻿using DH.Extensions;
+﻿using System.ComponentModel;
+
+using DH.Extensions;
 using DH.Security;
 
 using NewLife;
 using NewLife.Configuration;
 using NewLife.Security;
-
-using System.ComponentModel;
 
 using XCode.Configuration;
 
@@ -18,6 +18,7 @@ namespace DH;
 public class DHSetting : Config<DHSetting>
 {
     #region 静态
+    /// <summary>指向数据库参数字典表</summary>
     static DHSetting() => Provider = new DbConfigProvider { UserId = 0, Category = "DH" };
     #endregion
 
@@ -358,6 +359,16 @@ public class DHSetting : Config<DHSetting>
     [Description("是否兼容单页应用")]
     [Category("通用")]
     public Boolean IsSpa { get; set; }
+
+    /// <summary>最大导出行数。页面允许导出的最大行数，默认10_000_000</summary>
+    [Description("最大导出行数。页面允许导出的最大行数，默认10_000_000")]
+    [Category("系统功能")]
+    public Int32 MaxExport { get; set; } = 10_000_000;
+
+    /// <summary>最大备份行数。页面允许备份的最大行数，默认10_000_000</summary>
+    [Description("最大备份行数。页面允许备份的最大行数，默认10_000_000")]
+    [Category("系统功能")]
+    public Int32 MaxBackup { get; set; } = 10_000_000;
 
     #region 系统功能
     /// <summary>多租户。是否支持多租户，租户模式禁止访问系统管理，平台管理模式禁止访问租户页面</summary>
