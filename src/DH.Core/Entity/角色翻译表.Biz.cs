@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Script.Serialization;
 using System.Xml.Serialization;
+
 using NewLife;
 using NewLife.Data;
 using NewLife.Log;
@@ -17,17 +18,16 @@ using NewLife.Model;
 using NewLife.Reflection;
 using NewLife.Threading;
 using NewLife.Web;
+
 using XCode;
 using XCode.Cache;
 using XCode.Configuration;
 using XCode.DataAccessLayer;
 using XCode.Membership;
 
-namespace DH.Entity
-{
+namespace DH.Entity {
     /// <summary>角色翻译表</summary>
-    public partial class RoleLan : DHEntityBase<RoleLan>
-    {
+    public partial class RoleLan : DHEntityBase<RoleLan> {
         #region 对象操作
         static RoleLan()
         {
@@ -182,18 +182,17 @@ namespace DH.Entity
             }
         }
 
+        /// <summary>根据关联角色表Id、关联所属语言Id查找</summary>
+        /// <param name="rId">关联角色表Id</param>
+        /// <param name="lId">关联所属语言Id</param>
+        /// <returns>实体对象</returns>
+        public static RoleLan FindByRIdAndLId(Int32 rId, Int32 lId)
+        {
+            // 实体缓存
+            if (Meta.Session.Count < 1000) return Meta.Cache.Find(e => e.RId == rId && e.LId == lId);
 
-    /// <summary>根据关联角色表Id、关联所属语言Id查找</summary>
-    /// <param name="rId">关联角色表Id</param>
-    /// <param name="lId">关联所属语言Id</param>
-    /// <returns>实体对象</returns>
-    public static RoleLan FindByRIdAndLId(Int32 rId, Int32 lId)
-    {
-        // 实体缓存
-        if (Meta.Session.Count < 1000) return Meta.Cache.Find(e => e.RId == rId && e.LId == lId);
-
-        return Find(_.RId == rId & _.LId == lId);
-    }
+            return Find(_.RId == rId & _.LId == lId);
+        }
         #endregion
 
         #region 高级查询

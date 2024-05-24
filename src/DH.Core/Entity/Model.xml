@@ -850,6 +850,9 @@
         <Column Name="LId" DataType="Int32" Description="关联所属语言Id" />
         <Column Name="Content" DataType="String" Length="1024" Description="升级内容" />
       </Columns>
+      <Indexes>
+        <Index Columns="AId,LId" Unique="True" />
+      </Indexes>
     </Table>
     <Table Name="AppVersionLog" TableName="DG_AppVersionLog" Description="APP版本请求日志">
       <Columns>

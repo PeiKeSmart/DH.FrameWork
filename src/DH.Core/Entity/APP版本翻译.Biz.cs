@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -109,6 +109,96 @@ public partial class AppVersionLan : DHEntityBase<AppVersionLan>
         return Meta.SingleCache[id];
 
         //return Find(_.Id == id);
+    }
+
+    /// <summary>
+    /// 根据版本Id获取所属语言数据
+    /// </summary>
+    /// <param name="aId">版本Id</param>
+    /// <returns></returns>
+    public static IList<AppVersionLan> FindAllByAId(Int32 aId)
+    {
+        if (aId <= 0) return new List<AppVersionLan>();
+
+        if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => e.AId == aId);
+
+        return FindAll(_.AId == aId);
+    }
+
+    /// <summary>
+    /// 通过版本Id和语言Id获取翻译数据
+    /// </summary>
+    /// <param name="aId">版本Id</param>
+    /// <param name="lId">语言Id</param>
+    /// <param name="IsGetDefault">是否获取默认数据</param>
+    /// <returns></returns>
+    public static String FindByAIdAndLId(Int32 aId, Int32 lId, Boolean IsGetDefault = true)
+    {
+        if (aId <= 0 || lId <= 0) return "";
+
+        if (Meta.Session.Count < 1000)
+        {
+            var model = Meta.Cache.Find(e => e.AId == aId && e.LId == lId);
+            if (IsGetDefault)
+            {
+                return FindNameAndRemark(aId, model);
+            }
+            else
+            {
+                if (model == null)
+                    return "";
+                return model.Content;
+            }
+        }
+
+        var exp = new WhereExpression();
+        exp = _.AId == aId & _.LId == lId;
+
+        var m = Find(exp);
+
+        if (IsGetDefault)
+        {
+            return FindNameAndRemark(aId, m);
+        }
+        else
+        {
+            if (m == null)
+                return "";
+            return m.Content;
+        }
+    }
+
+    /// <summary>
+    /// 获取翻译数据
+    /// </summary>
+    /// <param name="aId"></param>
+    /// <param name="model"></param>
+    /// <returns></returns>
+    private static String FindNameAndRemark(Int32 aId, AppVersionLan model)
+    {
+        var r = AppVersion.FindById(aId);
+
+        if (model == null)
+        {
+            return r.Content;
+        }
+        else
+        {
+            var Remark = model.Content.IsNullOrWhiteSpace() ? r.Content : model.Content;
+            return Remark;
+        }
+    }
+
+    /// <summary>根据APP版本Id、关联所属语言Id查找</summary>
+    /// <param name="aId">APP版本Id</param>
+    /// <param name="lId">关联所属语言Id</param>
+    /// <returns>实体对象</returns>
+    public static AppVersionLan FindByAIdAndLId(Int32 aId, Int32 lId)
+    {
+        // 实体缓存
+        if (Meta.Session.Count < 1000) return Meta.Cache.Find(e => e.AId == aId && e.LId == lId);
+
+        return Find(_.AId == aId & _.LId == lId);
     }
     #endregion
 

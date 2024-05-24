@@ -17,6 +17,7 @@ namespace DH.Entity;
 [Serializable]
 [DataObject]
 [Description("APP版本翻译")]
+[BindIndex("IU_DG_AppVersionLan_AId_LId", true, "AId,LId")]
 [BindTable("DG_AppVersionLan", Description = "APP版本翻译", ConnName = "DG", DbType = DatabaseType.None)]
 public partial class AppVersionLan : IAppVersionLan, IEntity<IAppVersionLan>
 {
