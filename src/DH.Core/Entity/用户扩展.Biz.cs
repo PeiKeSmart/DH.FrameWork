@@ -1,6 +1,7 @@
 using NewLife;
 using NewLife.Data;
 
+using System.ComponentModel;
 using System.Runtime.Serialization;
 using System.Web.Script.Serialization;
 using System.Xml.Serialization;
@@ -9,6 +10,21 @@ using XCode;
 using XCode.Membership;
 
 namespace DH.Entity;
+
+/// <summary>用户类型</summary>
+public enum UserKinds {
+    /// <summary>无</summary>
+    [Description("无")]
+    No = 1,
+
+    /// <summary>供应商/厂商</summary>
+    [Description("供应商/厂商")]
+    Vendor = 2,
+
+    /// <summary>代理商</summary>
+    [Description("代理商")]
+    Agent = 3,
+}
 
 public partial class UserDetail : DHEntityBase<UserDetail>
 {
@@ -151,7 +167,7 @@ public partial class UserDetail : DHEntityBase<UserDetail>
         if (uType <= 0) return new List<UserDetail>();
 
         // 实体缓存
-        if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => e.UType == uType);
+        if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => (Int16)e.UType == uType);
 
         return FindAll(_.UType == uType);
     }
@@ -164,7 +180,7 @@ public partial class UserDetail : DHEntityBase<UserDetail>
         if (uType <= 0) return 0;
 
         // 实体缓存
-        if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => e.UType == uType).Count;
+        if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => (Int16)e.UType == uType).Count;
 
         return FindCount(_.UType == uType);
     }

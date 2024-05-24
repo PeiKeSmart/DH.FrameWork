@@ -27,7 +27,7 @@ public partial interface IUserDetail
     Int32 TenantId { get; set; }
 
     /// <summary>用户类型。类型自定义</summary>
-    Int16 UType { get; set; }
+    UserKinds UType { get; set; }
 
     /// <summary>会员前台权限</summary>
     String RoleExIds { get; set; }
