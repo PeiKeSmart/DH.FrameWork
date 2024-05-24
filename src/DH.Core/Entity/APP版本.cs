@@ -29,6 +29,14 @@ public partial class AppVersion : IAppVersion, IEntity<IAppVersion>
     [BindColumn("Id", "编号", "")]
     public Int32 Id { get => _Id; set { if (OnPropertyChanging("Id", value)) { _Id = value; OnPropertyChanged("Id"); } } }
 
+    private Int32 _AType;
+    /// <summary>App类型。1为Android，2为IOS</summary>
+    [DisplayName("App类型")]
+    [Description("App类型。1为Android，2为IOS")]
+    [DataObjectField(false, false, false, 0)]
+    [BindColumn("AType", "App类型。1为Android，2为IOS", "")]
+    public Int32 AType { get => _AType; set { if (OnPropertyChanging("AType", value)) { _AType = value; OnPropertyChanged("AType"); } } }
+
     private String _Version;
     /// <summary>版本号</summary>
     [DisplayName("版本号")]
@@ -54,12 +62,20 @@ public partial class AppVersion : IAppVersion, IEntity<IAppVersion>
     public String FilePath { get => _FilePath; set { if (OnPropertyChanging("FilePath", value)) { _FilePath = value; OnPropertyChanged("FilePath"); } } }
 
     private String _CstFilepath;
-    /// <summary>第三方平台下载地址</summary>
-    [DisplayName("第三方平台下载地址")]
-    [Description("第三方平台下载地址")]
+    /// <summary>国内第三方平台下载地址</summary>
+    [DisplayName("国内第三方平台下载地址")]
+    [Description("国内第三方平台下载地址")]
     [DataObjectField(false, false, true, 100)]
-    [BindColumn("CST_FilePath", "第三方平台下载地址", "")]
+    [BindColumn("CstFilepath", "国内第三方平台下载地址", "")]
     public String CstFilepath { get => _CstFilepath; set { if (OnPropertyChanging("CstFilepath", value)) { _CstFilepath = value; OnPropertyChanged("CstFilepath"); } } }
+
+    private String _ForeignCstFilepath;
+    /// <summary>国外第三方平台下载地址</summary>
+    [DisplayName("国外第三方平台下载地址")]
+    [Description("国外第三方平台下载地址")]
+    [DataObjectField(false, false, true, 100)]
+    [BindColumn("ForeignCstFilepath", "国外第三方平台下载地址", "")]
+    public String ForeignCstFilepath { get => _ForeignCstFilepath; set { if (OnPropertyChanging("ForeignCstFilepath", value)) { _ForeignCstFilepath = value; OnPropertyChanged("ForeignCstFilepath"); } } }
 
     private String _FileName;
     /// <summary>文件名称</summary>
@@ -156,10 +172,12 @@ public partial class AppVersion : IAppVersion, IEntity<IAppVersion>
     public void Copy(IAppVersion model)
     {
         Id = model.Id;
+        AType = model.AType;
         Version = model.Version;
         Content = model.Content;
         FilePath = model.FilePath;
         CstFilepath = model.CstFilepath;
+        ForeignCstFilepath = model.ForeignCstFilepath;
         FileName = model.FileName;
         IsQiangZhi = model.IsQiangZhi;
         Size = model.Size;
@@ -183,10 +201,12 @@ public partial class AppVersion : IAppVersion, IEntity<IAppVersion>
         get => name switch
         {
             "Id" => _Id,
+            "AType" => _AType,
             "Version" => _Version,
             "Content" => _Content,
             "FilePath" => _FilePath,
             "CstFilepath" => _CstFilepath,
+            "ForeignCstFilepath" => _ForeignCstFilepath,
             "FileName" => _FileName,
             "IsQiangZhi" => _IsQiangZhi,
             "Size" => _Size,
@@ -205,10 +225,12 @@ public partial class AppVersion : IAppVersion, IEntity<IAppVersion>
             switch (name)
             {
                 case "Id": _Id = value.ToInt(); break;
+                case "AType": _AType = value.ToInt(); break;
                 case "Version": _Version = Convert.ToString(value); break;
                 case "Content": _Content = Convert.ToString(value); break;
                 case "FilePath": _FilePath = Convert.ToString(value); break;
                 case "CstFilepath": _CstFilepath = Convert.ToString(value); break;
+                case "ForeignCstFilepath": _ForeignCstFilepath = Convert.ToString(value); break;
                 case "FileName": _FileName = Convert.ToString(value); break;
                 case "IsQiangZhi": _IsQiangZhi = value.ToBoolean(); break;
                 case "Size": _Size = value.ToInt(); break;
@@ -236,6 +258,9 @@ public partial class AppVersion : IAppVersion, IEntity<IAppVersion>
         /// <summary>编号</summary>
         public static readonly Field Id = FindByName("Id");
 
+        /// <summary>App类型。1为Android，2为IOS</summary>
+        public static readonly Field AType = FindByName("AType");
+
         /// <summary>版本号</summary>
         public static readonly Field Version = FindByName("Version");
 
@@ -245,8 +270,11 @@ public partial class AppVersion : IAppVersion, IEntity<IAppVersion>
         /// <summary>下载地址</summary>
         public static readonly Field FilePath = FindByName("FilePath");
 
-        /// <summary>第三方平台下载地址</summary>
+        /// <summary>国内第三方平台下载地址</summary>
         public static readonly Field CstFilepath = FindByName("CstFilepath");
+
+        /// <summary>国外第三方平台下载地址</summary>
+        public static readonly Field ForeignCstFilepath = FindByName("ForeignCstFilepath");
 
         /// <summary>文件名称</summary>
         public static readonly Field FileName = FindByName("FileName");
@@ -290,6 +318,9 @@ public partial class AppVersion : IAppVersion, IEntity<IAppVersion>
         /// <summary>编号</summary>
         public const String Id = "Id";
 
+        /// <summary>App类型。1为Android，2为IOS</summary>
+        public const String AType = "AType";
+
         /// <summary>版本号</summary>
         public const String Version = "Version";
 
@@ -299,8 +330,11 @@ public partial class AppVersion : IAppVersion, IEntity<IAppVersion>
         /// <summary>下载地址</summary>
         public const String FilePath = "FilePath";
 
-        /// <summary>第三方平台下载地址</summary>
+        /// <summary>国内第三方平台下载地址</summary>
         public const String CstFilepath = "CstFilepath";
+
+        /// <summary>国外第三方平台下载地址</summary>
+        public const String ForeignCstFilepath = "ForeignCstFilepath";
 
         /// <summary>文件名称</summary>
         public const String FileName = "FileName";

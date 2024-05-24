@@ -41,7 +41,7 @@ public partial interface IUserOnline
     /// <summary>设备。手机品牌型号</summary>
     String Device { get; set; }
 
-    /// <summary>浏览器。浏览器名称，带版本</summary>
+    /// <summary>用户代理。浏览器名称，带版本</summary>
     String Brower { get; set; }
 
     /// <summary>网络。微信访问时，感知到WIFI或4G网络</summary>
