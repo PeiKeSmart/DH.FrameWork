@@ -2,12 +2,19 @@
 
 using Microsoft.AspNetCore.Mvc;
 
+using NewLife;
+
 namespace DH.Helpers;
 
 /// <summary>
 /// Vue等前端专用返回
 /// </summary>
 public class DvResult : JsonResult {
+    /// <summary>
+    /// 消息标识
+    /// </summary>
+    public string id { get; set; }
+
     /// <summary>
     /// 状态码
     /// </summary>
@@ -22,6 +29,11 @@ public class DvResult : JsonResult {
     /// 数据
     /// </summary>
     public dynamic data { get; set; }
+
+    /// <summary>
+    /// 其他数据
+    /// </summary>
+    public dynamic extData { get; set; }
 
     /// <summary>
     /// 操作时间
@@ -43,12 +55,15 @@ public class DvResult : JsonResult {
     /// <param name="code">状态码</param>
     /// <param name="message">消息</param>
     /// <param name="data">数据</param>
-    public DvResult(StateCode code, string message, dynamic data = null) : base(null)
+    /// <param name="extdata">其他数据</param>
+    public DvResult(StateCode code, string message, dynamic data = null, dynamic extdata = null) : base(null)
     {
         this.code = code;
         this.message = message;
         this.data = data;
         this.operationTime = DateTime.Now;
+        this.extData = extdata;
+        this.id = Guid.NewGuid().ToString();
     }
 
     /// <summary>
@@ -58,12 +73,20 @@ public class DvResult : JsonResult {
     {
         if (context == null)
             throw new ArgumentNullException(nameof(context));
+
+        if (id.IsNullOrWhiteSpace())
+        {
+            id = Guid.NewGuid().ToString();
+        }
+
         this.Value = new
         {
             code = code.Value(),
             message,
             operationTime,
-            data
+            data,
+            extData,
+            id
         };
         return base.ExecuteResultAsync(context);
     }
