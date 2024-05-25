@@ -129,12 +129,23 @@ public partial class AppVersion : DHEntityBase<AppVersion>
 
     /// <summary>根据Id倒序查找最新</summary>
     /// <returns>实体对象</returns>
-    public static AppVersion? FindLast()
+    public static AppVersion FindLast()
     {
         // 实体缓存
         if (Meta.Session.Count < 1000) return Meta.Cache.Entities.OrderByDescending(e => e.Id).FirstOrDefault();
 
         return FindAll().FirstOrDefault();
+    }
+
+    /// <summary>根据编号查找</summary>
+    /// <param name="selects">字段</param>
+    /// <returns>实体对象</returns>
+    public static IList<AppVersion> GetAll(String selects = null)
+    {
+        // 实体缓存
+        if (Meta.Session.Count < 1000) return Meta.Cache.Entities;
+
+        return FindAll(null, null, selects);
     }
     #endregion
 
