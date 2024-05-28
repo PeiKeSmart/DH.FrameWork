@@ -11,7 +11,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
     public static class DouyinMicroAppClientExecuteLegacyAppsExtensions
     {
         /// <summary>
-        /// <para>异步调用 [POST] /apps/v2/token 接口。</para>
+        /// <para>异步调用 [POST] /api/apps/v2/token 接口。</para>
         /// <para>
         /// REF: <br/>
         /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/interface-request-credential/get-access-token ]]> <br/>
@@ -35,14 +35,14 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
                 request.AppSecret = client.Credentials.AppSecret;
 
             IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Post, "apps", "v2", "token")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v2", "token"));
+                .CreateFlurlRequest(request, HttpMethod.Post, "api", "apps", "v2", "token")
+                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("api", "apps", "v2", "token"));
 
             return await client.SendFlurlRequestAsJsonAsync<Models.AppsTokenV2Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
-        /// <para>异步调用 [POST] /apps/v2/jscode2session 接口。</para>
+        /// <para>异步调用 [POST] /api/apps/v2/jscode2session 接口。</para>
         /// <para>
         /// REF: <br/>
         /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/log-in/code-2-session ]]> <br/>
@@ -66,15 +66,15 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
                 request.AppSecret = client.Credentials.AppSecret;
 
             IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Post, "apps", "v2", "jscode2session")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v2", "jscode2session"));
+                .CreateFlurlRequest(request, HttpMethod.Post, "api", "apps", "v2", "jscode2session")
+                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("api", "apps", "v2", "jscode2session"));
 
             return await client.SendFlurlRequestAsJsonAsync<Models.AppsJsCode2SessionV2Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         #region Capacity
         /// <summary>
-        /// <para>异步调用 [POST] /apps/v1/capacity/upload_material 接口。</para>
+        /// <para>异步调用 [POST] /api/apps/v1/capacity/upload_material 接口。</para>
         /// <para>
         /// REF: <br/>
         /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/other/upload-material ]]>
@@ -96,8 +96,8 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
                 request.MaterialFileContentType = Utilities.FileNameToContentTypeMapper.GetContentTypeForMaterial(request.MaterialFileName) ?? "image/jpeg";
 
             IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Post, "apps", "v1", "capacity", "upload_material")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "capacity", "upload_material"))
+                .CreateFlurlRequest(request, HttpMethod.Post, "api", "apps", "v1", "capacity", "upload_material")
+                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("api", "apps", "v1", "capacity", "upload_material"))
                 .WithHeader("access-token", request.AccessToken);
 
             using var httpContent = Utilities.FileHttpContentBuilder.Build(fileName: request.MaterialFileName, fileBytes: request.MaterialFileBytes, fileContentType: request.MaterialFileContentType, formDataName: "material_file");
@@ -106,112 +106,9 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
             return await client.SendFlurlRequestAsync<Models.AppsCapacityUploadMaterialV1Response>(flurlReq, httpContent: httpContent, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
-        #region Capacity/Aweme
-        /// <summary>
-        /// <para>异步调用 [GET] /apps/v1/capacity/query_aweme_permission_list 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/aweme-capacity/query-aweme-permission-list ]]>
-        /// </para>
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [Obsolete("相关接口或字段于 2024-01-01 下线。")]
-        public static async Task<Models.AppsCapacityQueryAwemePermissionListV1Response> ExecuteAppsCapacityQueryAwemePermissionListV1Async(this DouyinMicroAppClient client, Models.AppsCapacityQueryAwemePermissionListV1Request request, CancellationToken cancellationToken = default)
-        {
-            if (client is null) throw new ArgumentNullException(nameof(client));
-            if (request is null) throw new ArgumentNullException(nameof(request));
-
-            IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Get, "apps", "v1", "capacity", "query_aweme_permission_list")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "capacity", "query_aweme_permission_list"))
-                .WithHeader("access-token", request.AccessToken);
-
-            return await client.SendFlurlRequestAsJsonAsync<Models.AppsCapacityQueryAwemePermissionListV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// <para>异步调用 [POST] /apps/v1/capacity/apply_aweme_permission 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/aweme-capacity/apply-aweme-permission ]]>
-        /// </para>
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [Obsolete("相关接口或字段于 2024-01-01 下线。")]
-        public static async Task<Models.AppsCapacityApplyAwemePermissionV1Response> ExecuteAppsCapacityApplyAwemePermissionV1Async(this DouyinMicroAppClient client, Models.AppsCapacityApplyAwemePermissionV1Request request, CancellationToken cancellationToken = default)
-        {
-            if (client is null) throw new ArgumentNullException(nameof(client));
-            if (request is null) throw new ArgumentNullException(nameof(request));
-
-            IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Post, "apps", "v1", "capacity", "apply_aweme_permission")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "capacity", "apply_aweme_permission"))
-                .WithHeader("access-token", request.AccessToken);
-
-            return await client.SendFlurlRequestAsJsonAsync<Models.AppsCapacityApplyAwemePermissionV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// <para>异步调用 [GET] /apps/v1/capacity/query_scope_quota_detail 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/aweme-capacity/query-scope-quota-detail ]]>
-        /// </para>
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [Obsolete("相关接口或字段于 2024-01-01 下线。")]
-        public static async Task<Models.AppsCapacityQueryScopeQuotaDetailV1Response> ExecuteAppsCapacityQueryScopeQuotaDetailV1Async(this DouyinMicroAppClient client, Models.AppsCapacityQueryScopeQuotaDetailV1Request request, CancellationToken cancellationToken = default)
-        {
-            if (client is null) throw new ArgumentNullException(nameof(client));
-            if (request is null) throw new ArgumentNullException(nameof(request));
-
-            IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Get, "apps", "v1", "capacity", "query_scope_quota_detail")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "capacity", "query_scope_quota_detail"))
-                .WithHeader("access-token", request.AccessToken)
-                .SetQueryParam("permission_key", request.PermissionKey);
-
-            return await client.SendFlurlRequestAsJsonAsync<Models.AppsCapacityQueryScopeQuotaDetailV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// <para>异步调用 [POST] /apps/v1/capacity/apply_scope_quota 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/aweme-capacity/apply-scope-quota ]]>
-        /// </para>
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [Obsolete("相关接口或字段于 2024-01-01 下线。")]
-        public static async Task<Models.AppsCapacityApplyScopeQuotaV1Response> ExecuteAppsCapacityApplyScopeQuotaV1Async(this DouyinMicroAppClient client, Models.AppsCapacityApplyScopeQuotaV1Request request, CancellationToken cancellationToken = default)
-        {
-            if (client is null) throw new ArgumentNullException(nameof(client));
-            if (request is null) throw new ArgumentNullException(nameof(request));
-
-            IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Post, "apps", "v1", "capacity", "apply_scope_quota")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "capacity", "apply_scope_quota"))
-                .WithHeader("access-token", request.AccessToken);
-
-            return await client.SendFlurlRequestAsJsonAsync<Models.AppsCapacityApplyScopeQuotaV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
-        #endregion
-
         #region Capacity/ClueComponent
         /// <summary>
-        /// <para>异步调用 [POST] /apps/v1/capacity/create_clue_component_info 接口。</para>
+        /// <para>异步调用 [POST] /api/apps/v1/capacity/create_clue_component_info 接口。</para>
         /// <para>
         /// REF: <br/>
         /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/clue-component-info/create ]]>
@@ -227,15 +124,15 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Post, "apps", "v1", "capacity", "create_clue_component_info")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "capacity", "create_clue_component_info"))
+                .CreateFlurlRequest(request, HttpMethod.Post, "api", "apps", "v1", "capacity", "create_clue_component_info")
+                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("api", "apps", "v1", "capacity", "create_clue_component_info"))
                 .WithHeader("access-token", request.AccessToken);
 
             return await client.SendFlurlRequestAsJsonAsync<Models.AppsCapacityCreateClueComponentInfoV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
-        /// <para>异步调用 [GET] /apps/v1/capacity/query_clue_component_info 接口。</para>
+        /// <para>异步调用 [GET] /api/apps/v1/capacity/query_clue_component_info 接口。</para>
         /// <para>
         /// REF: <br/>
         /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/clue-component-info/query ]]>
@@ -251,8 +148,8 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Get, "apps", "v1", "capacity", "query_clue_component_info")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "capacity", "query_clue_component_info"))
+                .CreateFlurlRequest(request, HttpMethod.Get, "api", "apps", "v1", "capacity", "query_clue_component_info")
+                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("api", "apps", "v1", "capacity", "query_clue_component_info"))
                 .WithHeader("access-token", request.AccessToken);
 
             if (request.PageNumber is not null)
@@ -265,7 +162,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
         }
 
         /// <summary>
-        /// <para>异步调用 [POST] /apps/v1/capacity/update_clue_component_info 接口。</para>
+        /// <para>异步调用 [POST] /api/apps/v1/capacity/update_clue_component_info 接口。</para>
         /// <para>
         /// REF: <br/>
         /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/clue-component-info/update ]]>
@@ -281,15 +178,15 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Post, "apps", "v1", "capacity", "update_clue_component_info")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "capacity", "update_clue_component_info"))
+                .CreateFlurlRequest(request, HttpMethod.Post, "api", "apps", "v1", "capacity", "update_clue_component_info")
+                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("api", "apps", "v1", "capacity", "update_clue_component_info"))
                 .WithHeader("access-token", request.AccessToken);
 
             return await client.SendFlurlRequestAsJsonAsync<Models.AppsCapacityUpdateClueComponentInfoV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
-        /// <para>异步调用 [DELETE] /apps/v1/capacity/delete_clue_component_info 接口。</para>
+        /// <para>异步调用 [DELETE] /api/apps/v1/capacity/delete_clue_component_info 接口。</para>
         /// <para>
         /// REF: <br/>
         /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/clue-component-info/delete ]]>
@@ -305,123 +202,139 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Delete, "apps", "v1", "capacity", "delete_clue_component_info")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "capacity", "delete_clue_component_info"))
+                .CreateFlurlRequest(request, HttpMethod.Delete, "api", "apps", "v1", "capacity", "delete_clue_component_info")
+                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("api", "apps", "v1", "capacity", "delete_clue_component_info"))
                 .WithHeader("access-token", request.AccessToken);
 
             return await client.SendFlurlRequestAsJsonAsync<Models.AppsCapacityDeleteClueComponentInfoV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
         #endregion
 
-        #region Capacity/FollowAweme
+        #region Capacity/Doudian
         /// <summary>
-        /// <para>异步调用 [POST] /apps/v1/capacity/bind_aweme_user 接口。</para>
+        /// <para>异步调用 [POST] /api/apps/v1/capacity/bind_doudian_account 接口。</para>
         /// <para>
         /// REF: <br/>
-        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/follow-aweme/bind-aweme-user ]]>
+        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/doudian-bind/bind-doudian-account ]]>
         /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        [Obsolete("相关接口或字段于 2024-01-01 下线。")]
-        public static async Task<Models.AppsCapacityBindAwemeUserV1Response> ExecuteAppsCapacityBindAwemeUserV1Async(this DouyinMicroAppClient client, Models.AppsCapacityBindAwemeUserV1Request request, CancellationToken cancellationToken = default)
+        public static async Task<Models.AppsCapacityBindDoudianAccountV1Response> ExecuteAppsCapacityBindDoudianAccountV1Async(this DouyinMicroAppClient client, Models.AppsCapacityBindDoudianAccountV1Request request, CancellationToken cancellationToken = default)
         {
             if (client is null) throw new ArgumentNullException(nameof(client));
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Post, "apps", "v1", "capacity", "bind_aweme_user")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "capacity", "bind_aweme_user"))
+                .CreateFlurlRequest(request, HttpMethod.Post, "api", "apps", "v1", "capacity", "bind_doudian_account")
+                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("api", "apps", "v1", "capacity", "bind_doudian_account"))
                 .WithHeader("access-token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsJsonAsync<Models.AppsCapacityBindAwemeUserV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
+            return await client.SendFlurlRequestAsJsonAsync<Models.AppsCapacityBindDoudianAccountV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
-        /// <para>异步调用 [POST] /apps/v1/capacity/unbind_aweme_user_bind 接口。</para>
+        /// <para>异步调用 [GET] /api/apps/v1/capacity/query_bind_doudian_account 接口。</para>
         /// <para>
         /// REF: <br/>
-        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/follow-aweme/unbind-aweme-user ]]>
+        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/doudian-bind/query-bind-doudian-account ]]>
         /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        [Obsolete("相关接口或字段于 2024-01-01 下线。")]
-        public static async Task<Models.AppsCapacityUnbindAwemeUserV1Response> ExecuteAppsCapacityUnbindAwemeUserV1Async(this DouyinMicroAppClient client, Models.AppsCapacityUnbindAwemeUserV1Request request, CancellationToken cancellationToken = default)
+        public static async Task<Models.AppsCapacityQueryBindDoudianAccountV1Response> ExecuteAppsCapacityQueryBindDoudianAccountV1Async(this DouyinMicroAppClient client, Models.AppsCapacityQueryBindDoudianAccountV1Request request, CancellationToken cancellationToken = default)
         {
             if (client is null) throw new ArgumentNullException(nameof(client));
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Post, "apps", "v1", "capacity", "unbind_aweme_user_bind")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "capacity", "unbind_aweme_user_bind"))
+                .CreateFlurlRequest(request, HttpMethod.Get, "api", "apps", "v1", "capacity", "query_bind_doudian_account")
+                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("api", "apps", "v1", "capacity", "query_bind_doudian_account"))
                 .WithHeader("access-token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsJsonAsync<Models.AppsCapacityUnbindAwemeUserV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
+            return await client.SendFlurlRequestAsJsonAsync<Models.AppsCapacityQueryBindDoudianAccountV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
-        /// <para>异步调用 [GET] /apps/v1/capacity/get_aweme_user_bind_qrcode 接口。</para>
+        /// <para>异步调用 [POST] /api/apps/v1/capacity/create_doudian_app 接口。</para>
         /// <para>
         /// REF: <br/>
-        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/follow-aweme/get-aweme-user-bind-qrcode ]]>
+        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/doudian-bind/create-doudian-app ]]>
         /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        [Obsolete("相关接口或字段于 2024-01-01 下线。")]
-        public static async Task<Models.AppsCapacityGetAwemeUserBindQrcodeV1Response> ExecuteAppsCapacityGetAwemeUserBindQrcodeV1Async(this DouyinMicroAppClient client, Models.AppsCapacityGetAwemeUserBindQrcodeV1Request request, CancellationToken cancellationToken = default)
+        public static async Task<Models.AppsCapacityCreateDoudianAppV1Response> ExecuteAppsCapacityCreateDoudianAppV1Async(this DouyinMicroAppClient client, Models.AppsCapacityCreateDoudianAppV1Request request, CancellationToken cancellationToken = default)
         {
             if (client is null) throw new ArgumentNullException(nameof(client));
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Get, "apps", "v1", "capacity", "get_aweme_user_bind_qrcode")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "capacity", "get_aweme_user_bind_qrcode"))
-                .WithHeader("access-token", request.AccessToken)
-                .SetQueryParam("type", request.BindType);
+                .CreateFlurlRequest(request, HttpMethod.Post, "api", "apps", "v1", "capacity", "create_doudian_app")
+                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("api", "apps", "v1", "capacity", "create_doudian_app"))
+                .WithHeader("access-token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsJsonAsync<Models.AppsCapacityGetAwemeUserBindQrcodeV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
+            return await client.SendFlurlRequestAsJsonAsync<Models.AppsCapacityCreateDoudianAppV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
-        /// <para>异步调用 [GET] /apps/v1/capacity/query_aweme_user_bind_list 接口。</para>
+        /// <para>异步调用 [GET] /api/apps/v1/capacity/query_doudian_app 接口。</para>
         /// <para>
         /// REF: <br/>
-        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/follow-aweme/query-aweme-user-bind-list ]]>
+        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/doudian-bind/query-doudian-app ]]>
         /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        [Obsolete("相关接口或字段于 2024-01-01 下线。")]
-        public static async Task<Models.AppsCapacityQueryAwemeUserBindListV1Response> ExecuteAppsCapacityQueryAwemeUserBindListV1Async(this DouyinMicroAppClient client, Models.AppsCapacityQueryAwemeUserBindListV1Request request, CancellationToken cancellationToken = default)
+        public static async Task<Models.AppsCapacityQueryDoudianAppV1Response> ExecuteAppsCapacityQueryDoudianAppV1Async(this DouyinMicroAppClient client, Models.AppsCapacityQueryDoudianAppV1Request request, CancellationToken cancellationToken = default)
         {
             if (client is null) throw new ArgumentNullException(nameof(client));
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Get, "apps", "v1", "capacity", "query_aweme_user_bind_list")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "capacity", "query_aweme_user_bind_list"))
-                .WithHeader("access-token", request.AccessToken)
-                .SetQueryParam("type", request.BindType)
-                .SetQueryParam("page_num", request.PageNumber)
-                .SetQueryParam("page_size", request.PageSize);
+                .CreateFlurlRequest(request, HttpMethod.Get, "api", "apps", "v1", "capacity", "query_doudian_app")
+                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("api", "apps", "v1", "capacity", "query_doudian_app"))
+                .WithHeader("access-token", request.AccessToken);
 
-            return await client.SendFlurlRequestAsJsonAsync<Models.AppsCapacityQueryAwemeUserBindListV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
+            return await client.SendFlurlRequestAsJsonAsync<Models.AppsCapacityQueryDoudianAppV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// <para>异步调用 [GET] /api/apps/v1/capacity/query_doudian_shop_info 接口。</para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/doudian-bind/query_doudian_shop_info ]]>
+        /// </para>
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public static async Task<Models.AppsCapacityQueryDoudianShopInfoV1Response> ExecuteAppsCapacityQueryDoudianShopInfoV1Async(this DouyinMicroAppClient client, Models.AppsCapacityQueryDoudianShopInfoV1Request request, CancellationToken cancellationToken = default)
+        {
+            if (client is null) throw new ArgumentNullException(nameof(client));
+            if (request is null) throw new ArgumentNullException(nameof(request));
+
+            IFlurlRequest flurlReq = client
+                .CreateFlurlRequest(request, HttpMethod.Get, "api", "apps", "v1", "capacity", "query_doudian_shop_info")
+                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("api", "apps", "v1", "capacity", "query_doudian_shop_info"))
+                .WithHeader("access-token", request.AccessToken);
+
+            return await client.SendFlurlRequestAsJsonAsync<Models.AppsCapacityQueryDoudianShopInfoV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
         #endregion
 
         #region Capacity/Mount
         /// <summary>
-        /// <para>异步调用 [POST] /apps/v1/capacity/apply_capacity 接口。</para>
+        /// <para>异步调用 [POST] /api/apps/v1/capacity/apply_capacity 接口。</para>
         /// <para>
         /// REF: <br/>
         /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/mount/apply-self-mount ]]> <br/>
@@ -435,22 +348,21 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
         /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        [Obsolete("相关接口或字段于 2024-01-01 下线。")]
         public static async Task<Models.AppsCapacityApplyCapacityV1Response> ExecuteAppsCapacityApplyCapacityV1Async(this DouyinMicroAppClient client, Models.AppsCapacityApplyCapacityV1Request request, CancellationToken cancellationToken = default)
         {
             if (client is null) throw new ArgumentNullException(nameof(client));
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Post, "apps", "v1", "capacity", "apply_capacity")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "capacity", "apply_capacity"))
+                .CreateFlurlRequest(request, HttpMethod.Post, "api", "apps", "v1", "capacity", "apply_capacity")
+                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("api", "apps", "v1", "capacity", "apply_capacity"))
                 .WithHeader("access-token", request.AccessToken);
 
             return await client.SendFlurlRequestAsJsonAsync<Models.AppsCapacityApplyCapacityV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
-        /// <para>异步调用 [GET] /apps/v1/capacity/query_apply_status 接口。</para>
+        /// <para>异步调用 [GET] /api/apps/v1/capacity/query_apply_status 接口。</para>
         /// <para>
         /// REF: <br/>
         /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/mount/query-video-self-mount ]]> <br/>
@@ -464,722 +376,25 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
         /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        [Obsolete("相关接口或字段于 2024-01-01 下线。")]
         public static async Task<Models.AppsCapacityQueryApplyStatusV1Response> ExecuteAppsCapacityQueryApplyStatusV1Async(this DouyinMicroAppClient client, Models.AppsCapacityQueryApplyStatusV1Request request, CancellationToken cancellationToken = default)
         {
             if (client is null) throw new ArgumentNullException(nameof(client));
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Get, "apps", "v1", "capacity", "query_apply_status")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "capacity", "query_apply_status"))
+                .CreateFlurlRequest(request, HttpMethod.Get, "api", "apps", "v1", "capacity", "query_apply_status")
+                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("api", "apps", "v1", "capacity", "query_apply_status"))
                 .WithHeader("access-token", request.AccessToken)
                 .SetQueryParam("capacity_key", request.CapacityKey);
 
             return await client.SendFlurlRequestAsJsonAsync<Models.AppsCapacityQueryApplyStatusV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// <para>异步调用 [POST] /apps/v1/capacity/bind_self_mount_user 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/mount/bind-self-mount-user ]]>
-        /// </para>
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [Obsolete("相关接口或字段于 2024-01-01 下线。")]
-        public static async Task<Models.AppsCapacityBindSelfMountUserV1Response> ExecuteAppsCapacityBindSelfMountUserV1Async(this DouyinMicroAppClient client, Models.AppsCapacityBindSelfMountUserV1Request request, CancellationToken cancellationToken = default)
-        {
-            if (client is null) throw new ArgumentNullException(nameof(client));
-            if (request is null) throw new ArgumentNullException(nameof(request));
-
-            IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Post, "apps", "v1", "capacity", "bind_self_mount_user")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "capacity", "bind_self_mount_user"))
-                .WithHeader("access-token", request.AccessToken);
-
-            return await client.SendFlurlRequestAsJsonAsync<Models.AppsCapacityBindSelfMountUserV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// <para>异步调用 [POST] /apps/v1/capacity/unbind_self_mount_user 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/mount/unbind-self-mount-user ]]>
-        /// </para>
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [Obsolete("相关接口或字段于 2024-01-01 下线。")]
-        public static async Task<Models.AppsCapacityUnbindSelfMountUserV1Response> ExecuteAppsCapacityUnbindSelfMountUserV1Async(this DouyinMicroAppClient client, Models.AppsCapacityUnbindSelfMountUserV1Request request, CancellationToken cancellationToken = default)
-        {
-            if (client is null) throw new ArgumentNullException(nameof(client));
-            if (request is null) throw new ArgumentNullException(nameof(request));
-
-            IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Post, "apps", "v1", "capacity", "unbind_self_mount_user")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "capacity", "unbind_self_mount_user"))
-                .WithHeader("access-token", request.AccessToken);
-
-            return await client.SendFlurlRequestAsJsonAsync<Models.AppsCapacityUnbindSelfMountUserV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// <para>异步调用 [GET] /apps/v1/capacity/get_self_mount_bind_qrcode 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/mount/get-self-mount-bind-qrcode ]]>
-        /// </para>
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [Obsolete("相关接口或字段于 2024-01-01 下线。")]
-        public static async Task<Models.AppsCapacityGetSelfMountBindQrcodeV1Response> ExecuteAppsCapacityGetSelfMountBindQrcodeV1Async(this DouyinMicroAppClient client, Models.AppsCapacityGetSelfMountBindQrcodeV1Request request, CancellationToken cancellationToken = default)
-        {
-            if (client is null) throw new ArgumentNullException(nameof(client));
-            if (request is null) throw new ArgumentNullException(nameof(request));
-
-            IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Get, "apps", "v1", "capacity", "get_self_mount_bind_qrcode")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "capacity", "get_self_mount_bind_qrcode"))
-                .WithHeader("access-token", request.AccessToken)
-                .SetQueryParam("capacity_key", request.CapacityKey);
-
-            return await client.SendFlurlRequestAsJsonAsync<Models.AppsCapacityGetSelfMountBindQrcodeV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// <para>异步调用 [GET] /apps/v1/capacity/query_self_mount_user_list 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/mount/query-self-mount-user-list ]]>
-        /// </para>
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [Obsolete("相关接口或字段于 2024-01-01 下线。")]
-        public static async Task<Models.AppsCapacityQuerySelfMountUserListV1Response> ExecuteAppsCapacityQuerySelfMountUserListV1Async(this DouyinMicroAppClient client, Models.AppsCapacityQuerySelfMountUserListV1Request request, CancellationToken cancellationToken = default)
-        {
-            if (client is null) throw new ArgumentNullException(nameof(client));
-            if (request is null) throw new ArgumentNullException(nameof(request));
-
-            IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Get, "apps", "v1", "capacity", "query_self_mount_user_list")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "capacity", "query_self_mount_user_list"))
-                .WithHeader("access-token", request.AccessToken)
-                .SetQueryParam("capacity_key", request.CapacityKey)
-                .SetQueryParam("page_num", request.PageNumber)
-                .SetQueryParam("page_size", request.PageSize);
-
-            return await client.SendFlurlRequestAsJsonAsync<Models.AppsCapacityQuerySelfMountUserListV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
-
-        #region Capacity/Mount/Capcut
-        /// <summary>
-        /// <para>异步调用 [GET] /apps/v1/capacity/query_capcut_info 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/mount/capcut-video-template/query-capcut-info ]]>
-        /// </para>
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [Obsolete("相关接口或字段于 2024-01-01 下线。")]
-        public static async Task<Models.AppsCapacityQueryCapcutInfoV1Response> ExecuteAppsCapacityQueryCapcutInfoV1Async(this DouyinMicroAppClient client, Models.AppsCapacityQueryCapcutInfoV1Request request, CancellationToken cancellationToken = default)
-        {
-            if (client is null) throw new ArgumentNullException(nameof(client));
-            if (request is null) throw new ArgumentNullException(nameof(request));
-
-            IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Get, "apps", "v1", "capacity", "query_capcut_info")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "capacity", "query_capcut_info"))
-                .WithHeader("access-token", request.AccessToken);
-
-            return await client.SendFlurlRequestAsJsonAsync<Models.AppsCapacityQueryCapcutInfoV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// <para>异步调用 [GET] /apps/v1/capacity/query_capcut_template_list 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/mount/capcut-video-template/query-capcut-template-list ]]>
-        /// </para>
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [Obsolete("相关接口或字段于 2024-01-01 下线。")]
-        public static async Task<Models.AppsCapacityQueryCapcutTemplateListV1Response> ExecuteAppsCapacityQueryCapcutTemplateListV1Async(this DouyinMicroAppClient client, Models.AppsCapacityQueryCapcutTemplateListV1Request request, CancellationToken cancellationToken = default)
-        {
-            if (client is null) throw new ArgumentNullException(nameof(client));
-            if (request is null) throw new ArgumentNullException(nameof(request));
-
-            IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Get, "apps", "v1", "capacity", "query_capcut_template_list")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "capacity", "query_capcut_template_list"))
-                .WithHeader("access-token", request.AccessToken)
-                .SetQueryParam("page_num", request.PageNumber)
-                .SetQueryParam("page_size", request.PageSize);
-
-            return await client.SendFlurlRequestAsJsonAsync<Models.AppsCapacityQueryCapcutTemplateListV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// <para>异步调用 [POST] /apps/v1/capacity/update_capcut_template_status 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/mount/capcut-video-template/update-template-status ]]>
-        /// </para>
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [Obsolete("相关接口或字段于 2024-01-01 下线。")]
-        public static async Task<Models.AppsCapacityUpdateCapcutTemplateStatusV1Response> ExecuteAppsCapacityUpdateCapcutTemplateStatusV1Async(this DouyinMicroAppClient client, Models.AppsCapacityUpdateCapcutTemplateStatusV1Request request, CancellationToken cancellationToken = default)
-        {
-            if (client is null) throw new ArgumentNullException(nameof(client));
-            if (request is null) throw new ArgumentNullException(nameof(request));
-
-            IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Post, "apps", "v1", "capacity", "update_capcut_template_status")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "capacity", "update_capcut_template_status"))
-                .WithHeader("access-token", request.AccessToken);
-
-            return await client.SendFlurlRequestAsJsonAsync<Models.AppsCapacityUpdateCapcutTemplateStatusV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
-        #endregion
-        #endregion
-
-        #region Capacity/SimpleQrcode
-        /// <summary>
-        /// <para>异步调用 [GET] /apps/v1/capacity/query_simple_qr_bind_list 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/simple-qr-code/query-simple-qr-bind-list ]]>
-        /// </para>
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [Obsolete("相关接口或字段于 2024-02-02 下线。")]
-        public static async Task<Models.AppsCapacityQuerySimpleQrcodeBindListV1Response> ExecuteAppsCapacityQuerySimpleQrcodeBindListV1Async(this DouyinMicroAppClient client, Models.AppsCapacityQuerySimpleQrcodeBindListV1Request request, CancellationToken cancellationToken = default)
-        {
-            if (client is null) throw new ArgumentNullException(nameof(client));
-            if (request is null) throw new ArgumentNullException(nameof(request));
-
-            IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Get, "apps", "v1", "capacity", "query_simple_qr_bind_list")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "capacity", "query_simple_qr_bind_list"))
-                .WithHeader("access-token", request.AccessToken)
-                .SetQueryParam("page_num", request.PageNumber)
-                .SetQueryParam("page_size", request.PageSize);
-
-            return await client.SendFlurlRequestAsJsonAsync<Models.AppsCapacityQuerySimpleQrcodeBindListV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// <para>异步调用 [POST] /apps/v1/capacity/add_simple_qr_bind 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/simple-qr-code/add-simple-qr-bind ]]>
-        /// </para>
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [Obsolete("相关接口或字段于 2024-02-02 下线。")]
-        public static async Task<Models.AppsCapacityAddSimpleQrcodeBindV1Response> ExecuteAppsCapacityAddSimpleQrcodeBindV1Async(this DouyinMicroAppClient client, Models.AppsCapacityAddSimpleQrcodeBindV1Request request, CancellationToken cancellationToken = default)
-        {
-            if (client is null) throw new ArgumentNullException(nameof(client));
-            if (request is null) throw new ArgumentNullException(nameof(request));
-
-            IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Post, "apps", "v1", "capacity", "add_simple_qr_bind")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "capacity", "add_simple_qr_bind"))
-                .WithHeader("access-token", request.AccessToken);
-
-            return await client.SendFlurlRequestAsJsonAsync<Models.AppsCapacityAddSimpleQrcodeBindV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// <para>异步调用 [POST] /apps/v1/capacity/update_simple_qr_bind 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/simple-qr-code/update-simple-qr-bind ]]>
-        /// </para>
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [Obsolete("相关接口或字段于 2024-02-02 下线。")]
-        public static async Task<Models.AppsCapacityUpdateSimpleQrcodeBindV1Response> ExecuteAppsCapacityUpdateSimpleQrcodeBindV1Async(this DouyinMicroAppClient client, Models.AppsCapacityUpdateSimpleQrcodeBindV1Request request, CancellationToken cancellationToken = default)
-        {
-            if (client is null) throw new ArgumentNullException(nameof(client));
-            if (request is null) throw new ArgumentNullException(nameof(request));
-
-            IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Post, "apps", "v1", "capacity", "update_simple_qr_bind")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "capacity", "update_simple_qr_bind"))
-                .WithHeader("access-token", request.AccessToken);
-
-            return await client.SendFlurlRequestAsJsonAsync<Models.AppsCapacityUpdateSimpleQrcodeBindV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// <para>异步调用 [POST] /apps/v1/capacity/update_simple_qr_bind_status 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/simple-qr-code/update-simple-qr-bind-status ]]>
-        /// </para>
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [Obsolete("相关接口或字段于 2024-02-02 下线。")]
-        public static async Task<Models.AppsCapacityUpdateSimpleQrcodeBindStatusV1Response> ExecuteAppsCapacityUpdateSimpleQrcodeBindStatusV1Async(this DouyinMicroAppClient client, Models.AppsCapacityUpdateSimpleQrcodeBindStatusV1Request request, CancellationToken cancellationToken = default)
-        {
-            if (client is null) throw new ArgumentNullException(nameof(client));
-            if (request is null) throw new ArgumentNullException(nameof(request));
-
-            IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Post, "apps", "v1", "capacity", "update_simple_qr_bind_status")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "capacity", "update_simple_qr_bind_status"))
-                .WithHeader("access-token", request.AccessToken);
-
-            return await client.SendFlurlRequestAsJsonAsync<Models.AppsCapacityUpdateSimpleQrcodeBindStatusV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// <para>异步调用 [POST] /apps/v1/capacity/delete_simple_qr_bind 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/simple-qr-code/delete-simple-qr-bind ]]>
-        /// </para>
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [Obsolete("相关接口或字段于 2024-02-02 下线。")]
-        public static async Task<Models.AppsCapacityDeleteSimpleQrcodeBindV1Response> ExecuteAppsCapacityDeleteSimpleQrcodeBindV1Async(this DouyinMicroAppClient client, Models.AppsCapacityDeleteSimpleQrcodeBindV1Request request, CancellationToken cancellationToken = default)
-        {
-            if (client is null) throw new ArgumentNullException(nameof(client));
-            if (request is null) throw new ArgumentNullException(nameof(request));
-
-            IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Post, "apps", "v1", "capacity", "delete_simple_qr_bind")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "capacity", "delete_simple_qr_bind"))
-                .WithHeader("access-token", request.AccessToken);
-
-            return await client.SendFlurlRequestAsJsonAsync<Models.AppsCapacityDeleteSimpleQrcodeBindV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
-        #endregion
-
-        #region Capacity/SubscribeNotification
-        /// <summary>
-        /// <para>异步调用 [GET] /apps/v1/capacity/query_subscribe_notification_tpl_list 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/subscribe-notification/query-template-list ]]>
-        /// </para>
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [Obsolete("相关接口或字段于 2024-01-30 下线。")]
-        public static async Task<Models.AppsCapacityQuerySubscribeNotificationTemplateListV1Response> ExecuteAppsCapacityQuerySubscribeNotificationTemplateListV1Async(this DouyinMicroAppClient client, Models.AppsCapacityQuerySubscribeNotificationTemplateListV1Request request, CancellationToken cancellationToken = default)
-        {
-            if (client is null) throw new ArgumentNullException(nameof(client));
-            if (request is null) throw new ArgumentNullException(nameof(request));
-
-            IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Get, "apps", "v1", "capacity", "query_subscribe_notification_tpl_list")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "capacity", "query_subscribe_notification_tpl_list"))
-                .WithHeader("access-token", request.AccessToken)
-                .SetQueryParam("page_num", request.PageNumber)
-                .SetQueryParam("page_size", request.PageSize)
-                .SetQueryParam("classification", request.Classification)
-                .SetQueryParam("template_type", request.TemplateType);
-
-            if (request.CategoryIdList is not null)
-                flurlReq.SetQueryParam("category_ids", string.Join(",", request.CategoryIdList));
-
-            if (request.Keyword is not null)
-                flurlReq.SetQueryParam("keyword", request.Keyword);
-
-            return await client.SendFlurlRequestAsJsonAsync<Models.AppsCapacityQuerySubscribeNotificationTemplateListV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// <para>异步调用 [GET] /apps/v1/capacity/query_app_subscribe_notification_tpl 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/subscribe-notification/query-app-template-list ]]>
-        /// </para>
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [Obsolete("相关接口或字段于 2024-01-30 下线。")]
-        public static async Task<Models.AppsCapacityQueryAppSubscribeNotificationTemplateV1Response> ExecuteAppsCapacityQueryAppSubscribeNotificationTemplateV1Async(this DouyinMicroAppClient client, Models.AppsCapacityQueryAppSubscribeNotificationTemplateV1Request request, CancellationToken cancellationToken = default)
-        {
-            if (client is null) throw new ArgumentNullException(nameof(client));
-            if (request is null) throw new ArgumentNullException(nameof(request));
-
-            IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Get, "apps", "v1", "capacity", "query_app_subscribe_notification_tpl")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "capacity", "query_app_subscribe_notification_tpl"))
-                .WithHeader("access-token", request.AccessToken)
-                .SetQueryParam("page_num", request.PageNumber)
-                .SetQueryParam("page_size", request.PageSize)
-                .SetQueryParam("classification", request.Classification);
-
-            if (request.CategoryIdList is not null)
-                flurlReq.SetQueryParam("category_ids", string.Join(",", request.CategoryIdList));
-
-            return await client.SendFlurlRequestAsJsonAsync<Models.AppsCapacityQueryAppSubscribeNotificationTemplateV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// <para>异步调用 [GET] /apps/v1/capacity/query_created_subscribe_notification_tpl_list 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/subscribe-notification/query-created-template-list ]]>
-        /// </para>
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [Obsolete("相关接口或字段于 2024-01-30 下线。")]
-        public static async Task<Models.AppsCapacityQueryCreatedSubscribeNotificationTemplateListV1Response> ExecuteAppsCapacityQueryCreatedSubscribeNotificationTemplateListV1Async(this DouyinMicroAppClient client, Models.AppsCapacityQueryCreatedSubscribeNotificationTemplateListV1Request request, CancellationToken cancellationToken = default)
-        {
-            if (client is null) throw new ArgumentNullException(nameof(client));
-            if (request is null) throw new ArgumentNullException(nameof(request));
-
-            IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Get, "apps", "v1", "capacity", "query_created_subscribe_notification_tpl_list")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "capacity", "query_created_subscribe_notification_tpl_list"))
-                .WithHeader("access-token", request.AccessToken)
-                .SetQueryParam("page_num", request.PageNumber)
-                .SetQueryParam("page_size", request.PageSize);
-
-            if (request.Status is not null)
-                flurlReq.SetQueryParam("status", request.Status);
-
-            return await client.SendFlurlRequestAsJsonAsync<Models.AppsCapacityQueryCreatedSubscribeNotificationTemplateListV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// <para>异步调用 [POST] /apps/v1/capacity/add_app_subscribe_notification_tpl 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/subscribe-notification/add-template ]]>
-        /// </para>
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [Obsolete("相关接口或字段于 2024-01-30 下线。")]
-        public static async Task<Models.AppsCapacityAddAppSubscribeNotificationTemplateV1Response> ExecuteAppsCapacityAddAppSubscribeNotificationTemplateV1Async(this DouyinMicroAppClient client, Models.AppsCapacityAddAppSubscribeNotificationTemplateV1Request request, CancellationToken cancellationToken = default)
-        {
-            if (client is null) throw new ArgumentNullException(nameof(client));
-            if (request is null) throw new ArgumentNullException(nameof(request));
-
-            IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Post, "apps", "v1", "capacity", "add_app_subscribe_notification_tpl")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "capacity", "add_app_subscribe_notification_tpl"))
-                .WithHeader("access-token", request.AccessToken);
-
-            return await client.SendFlurlRequestAsJsonAsync<Models.AppsCapacityAddAppSubscribeNotificationTemplateV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// <para>异步调用 [POST] /apps/v1/capacity/modify_app_subscribe_notification_tpl 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/subscribe-notification/modify-app-template ]]>
-        /// </para>
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [Obsolete("相关接口或字段于 2024-01-30 下线。")]
-        public static async Task<Models.AppsCapacityModifyAppSubscribeNotificationTemplateV1Response> ExecuteAppsCapacityModifyAppSubscribeNotificationTemplateV1Async(this DouyinMicroAppClient client, Models.AppsCapacityModifyAppSubscribeNotificationTemplateV1Request request, CancellationToken cancellationToken = default)
-        {
-            if (client is null) throw new ArgumentNullException(nameof(client));
-            if (request is null) throw new ArgumentNullException(nameof(request));
-
-            IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Post, "apps", "v1", "capacity", "modify_app_subscribe_notification_tpl")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "capacity", "modify_app_subscribe_notification_tpl"))
-                .WithHeader("access-token", request.AccessToken);
-
-            return await client.SendFlurlRequestAsJsonAsync<Models.AppsCapacityModifyAppSubscribeNotificationTemplateV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// <para>异步调用 [POST] /apps/v1/capacity/delete_app_subscribe_notification_tpl 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/subscribe-notification/delete-template ]]>
-        /// </para>
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [Obsolete("相关接口或字段于 2024-01-30 下线。")]
-        public static async Task<Models.AppsCapacityDeleteAppSubscribeNotificationTemplateV1Response> ExecuteAppsCapacityDeleteAppSubscribeNotificationTemplateV1Async(this DouyinMicroAppClient client, Models.AppsCapacityDeleteAppSubscribeNotificationTemplateV1Request request, CancellationToken cancellationToken = default)
-        {
-            if (client is null) throw new ArgumentNullException(nameof(client));
-            if (request is null) throw new ArgumentNullException(nameof(request));
-
-            IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Post, "apps", "v1", "capacity", "delete_app_subscribe_notification_tpl")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "capacity", "delete_app_subscribe_notification_tpl"))
-                .WithHeader("access-token", request.AccessToken);
-
-            return await client.SendFlurlRequestAsJsonAsync<Models.AppsCapacityDeleteAppSubscribeNotificationTemplateV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// <para>异步调用 [POST] /apps/v1/capacity/create_subscribe_notification_tpl 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/subscribe-notification/create-template ]]>
-        /// </para>
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [Obsolete("相关接口或字段于 2024-01-30 下线。")]
-        public static async Task<Models.AppsCapacityCreateAppSubscribeNotificationTemplateV1Response> ExecuteAppsCapacityCreateAppSubscribeNotificationTemplateV1Async(this DouyinMicroAppClient client, Models.AppsCapacityCreateAppSubscribeNotificationTemplateV1Request request, CancellationToken cancellationToken = default)
-        {
-            if (client is null) throw new ArgumentNullException(nameof(client));
-            if (request is null) throw new ArgumentNullException(nameof(request));
-
-            IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Post, "apps", "v1", "capacity", "create_subscribe_notification_tpl")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "capacity", "create_subscribe_notification_tpl"))
-                .WithHeader("access-token", request.AccessToken);
-
-            return await client.SendFlurlRequestAsJsonAsync<Models.AppsCapacityCreateAppSubscribeNotificationTemplateV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
-        #endregion
-
-        #region Capacity/TrafficPermission
-        /// <summary>
-        /// <para>异步调用 [GET] /apps/v1/capacity/query_traffic_permission_status 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/traffic-permission/query-status ]]>
-        /// </para>
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [Obsolete("相关接口或字段于 2024-02-29 下线。")]
-        public static async Task<Models.AppsCapacityQueryTrafficPermissionStatusV1Response> ExecuteAppsCapacityQueryTrafficPermissionStatusV1Async(this DouyinMicroAppClient client, Models.AppsCapacityQueryTrafficPermissionStatusV1Request request, CancellationToken cancellationToken = default)
-        {
-            if (client is null) throw new ArgumentNullException(nameof(client));
-            if (request is null) throw new ArgumentNullException(nameof(request));
-
-            IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Get, "apps", "v1", "capacity", "query_traffic_permission_status")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "capacity", "query_traffic_permission_status"))
-                .WithHeader("access-token", request.AccessToken);
-
-            return await client.SendFlurlRequestAsJsonAsync<Models.AppsCapacityQueryTrafficPermissionStatusV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// <para>异步调用 [POST] /apps/v1/capacity/open_traffic_permission 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/traffic-permission/open-traffic-permission ]]>
-        /// </para>
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [Obsolete("相关接口或字段于 2024-02-29 下线。")]
-        public static async Task<Models.AppsCapacityOpenTrafficPermissionV1Response> ExecuteAppsCapacityOpenTrafficPermissionV1Async(this DouyinMicroAppClient client, Models.AppsCapacityOpenTrafficPermissionV1Request request, CancellationToken cancellationToken = default)
-        {
-            if (client is null) throw new ArgumentNullException(nameof(client));
-            if (request is null) throw new ArgumentNullException(nameof(request));
-
-            IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Post, "apps", "v1", "capacity", "open_traffic_permission")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "capacity", "open_traffic_permission"))
-                .WithHeader("access-token", request.AccessToken);
-
-            return await client.SendFlurlRequestAsJsonAsync<Models.AppsCapacityOpenTrafficPermissionV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// <para>异步调用 [GET] /apps/v1/capacity/query_ad_placement_list 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/traffic-permission/query-ad-placement-list ]]>
-        /// </para>
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [Obsolete("相关接口或字段于 2024-02-29 下线。")]
-        public static async Task<Models.AppsCapacityQueryAdPlacementListV1Response> ExecuteAppsCapacityQueryAdPlacementListV1Async(this DouyinMicroAppClient client, Models.AppsCapacityQueryAdPlacementListV1Request request, CancellationToken cancellationToken = default)
-        {
-            if (client is null) throw new ArgumentNullException(nameof(client));
-            if (request is null) throw new ArgumentNullException(nameof(request));
-
-            IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Get, "apps", "v1", "capacity", "query_ad_placement_list")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "capacity", "query_ad_placement_list"))
-                .WithHeader("access-token", request.AccessToken);
-
-            return await client.SendFlurlRequestAsJsonAsync<Models.AppsCapacityQueryAdPlacementListV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// <para>异步调用 [POST] /apps/v1/capacity/add_ad_placement 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/traffic-permission/add-ad-placement ]]>
-        /// </para>
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [Obsolete("相关接口或字段于 2024-02-29 下线。")]
-        public static async Task<Models.AppsCapacityAddAdPlacementV1Response> ExecuteAppsCapacityAddAdPlacementV1Async(this DouyinMicroAppClient client, Models.AppsCapacityAddAdPlacementV1Request request, CancellationToken cancellationToken = default)
-        {
-            if (client is null) throw new ArgumentNullException(nameof(client));
-            if (request is null) throw new ArgumentNullException(nameof(request));
-
-            IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Post, "apps", "v1", "capacity", "add_ad_placement")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "capacity", "add_ad_placement"))
-                .WithHeader("access-token", request.AccessToken);
-
-            return await client.SendFlurlRequestAsJsonAsync<Models.AppsCapacityAddAdPlacementV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// <para>异步调用 [POST] /apps/v1/capacity/update_ad_placement_status 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/traffic-permission/update-ad-placement-status ]]>
-        /// </para>
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [Obsolete("相关接口或字段于 2024-02-29 下线。")]
-        public static async Task<Models.AppsCapacityUpdateAdPlacementStatusV1Response> ExecuteAppsCapacityUpdateAdPlacementStatusV1Async(this DouyinMicroAppClient client, Models.AppsCapacityUpdateAdPlacementStatusV1Request request, CancellationToken cancellationToken = default)
-        {
-            if (client is null) throw new ArgumentNullException(nameof(client));
-            if (request is null) throw new ArgumentNullException(nameof(request));
-
-            IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Post, "apps", "v1", "capacity", "update_ad_placement_status")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "capacity", "update_ad_placement_status"))
-                .WithHeader("access-token", request.AccessToken);
-
-            return await client.SendFlurlRequestAsJsonAsync<Models.AppsCapacityUpdateAdPlacementStatusV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// <para>异步调用 [GET] /apps/v1/capacity/query_ad_income 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/traffic-permission/query-ad-income ]]>
-        /// </para>
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public static async Task<Models.AppsCapacityQueryAdIncomeV1Response> ExecuteAppsCapacityQueryAdIncomeV1Async(this DouyinMicroAppClient client, Models.AppsCapacityQueryAdIncomeV1Request request, CancellationToken cancellationToken = default)
-        {
-            if (client is null) throw new ArgumentNullException(nameof(client));
-            if (request is null) throw new ArgumentNullException(nameof(request));
-
-            IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Get, "apps", "v1", "capacity", "query_ad_income")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "capacity", "query_ad_income"))
-                .WithHeader("access-token", request.AccessToken)
-                .SetQueryParam("start_date", request.StartDateString)
-                .SetQueryParam("end_date", request.EndDateString);
-
-            if (request.HostName is not null)
-                flurlReq.SetQueryParam("host_name", request.HostName);
-
-            return await client.SendFlurlRequestAsJsonAsync<Models.AppsCapacityQueryAdIncomeV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// <para>异步调用 [GET] /apps/v1/capacity/query_ad_settlement_list 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/traffic-permission/query-ad-settlement-list ]]>
-        /// </para>
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public static async Task<Models.AppsCapacityQueryAdSettlementListV1Response> ExecuteAppsCapacityQueryAdSettlementListV1Async(this DouyinMicroAppClient client, Models.AppsCapacityQueryAdSettlementListV1Request request, CancellationToken cancellationToken = default)
-        {
-            if (client is null) throw new ArgumentNullException(nameof(client));
-            if (request is null) throw new ArgumentNullException(nameof(request));
-
-            IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Get, "apps", "v1", "capacity", "query_ad_settlement_list")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "capacity", "query_ad_settlement_list"))
-                .WithHeader("access-token", request.AccessToken);
-
-            if (request.PeriodString is not null)
-                flurlReq.SetQueryParam("month", request.PeriodString);
-
-            if (request.Status is not null)
-                flurlReq.SetQueryParam("status", request.Status);
-
-            return await client.SendFlurlRequestAsJsonAsync<Models.AppsCapacityQueryAdSettlementListV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
         #endregion
         #endregion
 
         #region Censor
         /// <summary>
-        /// <para>异步调用 [POST] /apps/censor/image 接口。</para>
+        /// <para>异步调用 [POST] /api/apps/censor/image 接口。</para>
         /// <para>
         /// REF: <br/>
         /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/content-security/picture-detect-v2 ]]> <br/>
@@ -1199,8 +414,8 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
                 request.AppId = client.Credentials.AppId;
 
             IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Post, "apps", "censor", "image")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "censor", "image"));
+                .CreateFlurlRequest(request, HttpMethod.Post, "api", "apps", "censor", "image")
+                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("api", "apps", "censor", "image"));
 
             return await client.SendFlurlRequestAsJsonAsync<Models.AppsCensorImageResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
@@ -1208,7 +423,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
 
         #region CustomerService
         /// <summary>
-        /// <para>异步调用 [GET] /apps/customer_service/url 接口。</para>
+        /// <para>异步调用 [GET] /api/apps/customer_service/url 接口。</para>
         /// <para>
         /// REF: <br/>
         /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/thirdparty/API/smallprogram/auth-app-manage/operation/microapp/customer-service ]]>
@@ -1227,8 +442,8 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
                 request.AppId = client.Credentials.AppId;
 
             IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Get, "apps", "customer_service", "url")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "customer_service", "url"))
+                .CreateFlurlRequest(request, HttpMethod.Get, "api", "apps", "customer_service", "url")
+                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("api", "apps", "customer_service", "url"))
                 .SetQueryParam("access_token", request.AccessToken)
                 .SetQueryParam("appid", request.AppId)
                 .SetQueryParam("openid", request.OpenId)
@@ -1241,7 +456,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
 
         #region Chat
         /// <summary>
-        /// <para>异步调用 [GET] /apps/chat/customer_service_url 接口。</para>
+        /// <para>异步调用 [GET] /api/apps/chat/customer_service_url 接口。</para>
         /// <para>
         /// REF: <br/>
         /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/im/customer-service-url ]]>
@@ -1261,8 +476,8 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
                 request.AppId = client.Credentials.AppId;
 
             IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Get, "apps", "chat", "customer_service_url")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "chat", "customer_service_url"))
+                .CreateFlurlRequest(request, HttpMethod.Get, "api", "apps", "chat", "customer_service_url")
+                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("api", "apps", "chat", "customer_service_url"))
                 .WithHeader("access-token", request.AccessToken)
                 .SetQueryParam("appid", request.AppId)
                 .SetQueryParam("openid", request.OpenId)
@@ -1279,437 +494,9 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
         }
         #endregion
 
-        #region DataAnalysis
-        #region DataAnalysis/TransactionAnalysis
-        /// <summary>
-        /// <para>异步调用 [GET] /apps/v1/data_analysis/query_deal_overview_data 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/data-analysis/transaction-analysis/overview-analysis ]]>
-        /// </para>
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [Obsolete("相关接口或字段于 2024-02-02 下线。")]
-        public static async Task<Models.AppsDataAnalysisQueryDealOverviewDataV1Response> ExecuteAppsDataAnalysisQueryDealOverviewDataV1Async(this DouyinMicroAppClient client, Models.AppsDataAnalysisQueryDealOverviewDataV1Request request, CancellationToken cancellationToken = default)
-        {
-            if (client is null) throw new ArgumentNullException(nameof(client));
-            if (request is null) throw new ArgumentNullException(nameof(request));
-
-            IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Get, "apps", "v1", "data_analysis", "query_deal_overview_data")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "data_analysis", "query_deal_overview_data"))
-                .WithHeader("access-token", request.AccessToken)
-                .SetQueryParam("start_time", request.StartTimestamp)
-                .SetQueryParam("end_time", request.EndTimestamp);
-
-            if (request.HostName is not null)
-                flurlReq.SetQueryParam("host_name", request.HostName);
-
-            if (request.VersionType is not null)
-                flurlReq.SetQueryParam("version_type", request.VersionType);
-
-            return await client.SendFlurlRequestAsJsonAsync<Models.AppsDataAnalysisQueryDealOverviewDataV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// <para>异步调用 [GET] /apps/v1/data_analysis/query_video_deal_data 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/data-analysis/transaction-analysis/video-analysis ]]>
-        /// </para>
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [Obsolete("相关接口或字段于 2024-02-02 下线。")]
-        public static async Task<Models.AppsDataAnalysisQueryVideoDealDataV1Response> ExecuteAppsDataAnalysisQueryVideoDealDataV1Async(this DouyinMicroAppClient client, Models.AppsDataAnalysisQueryVideoDealDataV1Request request, CancellationToken cancellationToken = default)
-        {
-            if (client is null) throw new ArgumentNullException(nameof(client));
-            if (request is null) throw new ArgumentNullException(nameof(request));
-
-            IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Get, "apps", "v1", "data_analysis", "query_video_deal_data")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "data_analysis", "query_video_deal_data"))
-                .WithHeader("access-token", request.AccessToken)
-                .SetQueryParam("start_time", request.StartTimestamp)
-                .SetQueryParam("end_time", request.EndTimestamp);
-
-            if (request.HostName is not null)
-                flurlReq.SetQueryParam("host_name", request.HostName);
-
-            return await client.SendFlurlRequestAsJsonAsync<Models.AppsDataAnalysisQueryVideoDealDataV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// <para>异步调用 [GET] /apps/v1/data_analysis/query_live_room 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/data-analysis/transaction-analysis/query-live-room ]]>
-        /// </para>
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [Obsolete("相关接口或字段于 2024-02-02 下线。")]
-        public static async Task<Models.AppsDataAnalysisQueryLiveRoomV1Response> ExecuteAppsDataAnalysisQueryLiveRoomV1Async(this DouyinMicroAppClient client, Models.AppsDataAnalysisQueryLiveRoomV1Request request, CancellationToken cancellationToken = default)
-        {
-            if (client is null) throw new ArgumentNullException(nameof(client));
-            if (request is null) throw new ArgumentNullException(nameof(request));
-
-            IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Get, "apps", "v1", "data_analysis", "query_live_room")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "data_analysis", "query_live_room"))
-                .WithHeader("access-token", request.AccessToken);
-
-            if (request.AnchorName is not null)
-                flurlReq.SetQueryParam("anchor_name", request.AnchorName);
-
-            return await client.SendFlurlRequestAsJsonAsync<Models.AppsDataAnalysisQueryLiveRoomV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// <para>异步调用 [GET] /apps/v1/data_analysis/query_live_room_data 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/data-analysis/transaction-analysis/live-room-data-analysis ]]>
-        /// </para>
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [Obsolete("相关接口或字段于 2024-02-02 下线。")]
-        public static async Task<Models.AppsDataAnalysisQueryLiveRoomDataV1Response> ExecuteAppsDataAnalysisQueryLiveRoomDataV1Async(this DouyinMicroAppClient client, Models.AppsDataAnalysisQueryLiveRoomDataV1Request request, CancellationToken cancellationToken = default)
-        {
-            if (client is null) throw new ArgumentNullException(nameof(client));
-            if (request is null) throw new ArgumentNullException(nameof(request));
-
-            IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Get, "apps", "v1", "data_analysis", "query_live_room_data")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "data_analysis", "query_live_room_data"))
-                .WithHeader("access-token", request.AccessToken)
-                .SetQueryParam("live_room_id", request.LiveRoomId);
-
-            return await client.SendFlurlRequestAsJsonAsync<Models.AppsDataAnalysisQueryLiveRoomDataV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// <para>异步调用 [GET] /apps/v1/data_analysis/query_live_deal_data 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/data-analysis/transaction-analysis/live-deal-analysis ]]>
-        /// </para>
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [Obsolete("相关接口或字段于 2024-02-02 下线。")]
-        public static async Task<Models.AppsDataAnalysisQueryLiveDealDataV1Response> ExecuteAppsDataAnalysisQueryLiveDealDataV1Async(this DouyinMicroAppClient client, Models.AppsDataAnalysisQueryLiveDealDataV1Request request, CancellationToken cancellationToken = default)
-        {
-            if (client is null) throw new ArgumentNullException(nameof(client));
-            if (request is null) throw new ArgumentNullException(nameof(request));
-
-            IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Get, "apps", "v1", "data_analysis", "query_live_deal_data")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "data_analysis", "query_live_deal_data"))
-                .WithHeader("access-token", request.AccessToken)
-                .SetQueryParam("live_room_id", request.LiveRoomId);
-
-            return await client.SendFlurlRequestAsJsonAsync<Models.AppsDataAnalysisQueryLiveDealDataV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// <para>异步调用 [GET] /apps/v1/data_analysis/query_product_deal_data 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/data-analysis/transaction-analysis/product-deal-analysis ]]>
-        /// </para>
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [Obsolete("相关接口或字段于 2024-02-02 下线。")]
-        public static async Task<Models.AppsDataAnalysisQueryProductDealDataV1Response> ExecuteAppsDataAnalysisQueryProductDealDataV1Async(this DouyinMicroAppClient client, Models.AppsDataAnalysisQueryProductDealDataV1Request request, CancellationToken cancellationToken = default)
-        {
-            if (client is null) throw new ArgumentNullException(nameof(client));
-            if (request is null) throw new ArgumentNullException(nameof(request));
-
-            IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Get, "apps", "v1", "data_analysis", "query_product_deal_data")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "data_analysis", "query_product_deal_data"))
-                .WithHeader("access-token", request.AccessToken)
-                .SetQueryParam("start_time", request.StartTimestamp)
-                .SetQueryParam("end_time", request.EndTimestamp)
-                .SetQueryParam("page_num", request.PageNumber)
-                .SetQueryParam("page_size", request.PageSize);
-
-            if (request.HostName is not null)
-                flurlReq.SetQueryParam("host_name", request.HostName);
-
-            return await client.SendFlurlRequestAsJsonAsync<Models.AppsDataAnalysisQueryProductDealDataV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
-        #endregion
-
-        #region DataAnalysis/UserAnalysis
-        /// <summary>
-        /// <para>异步调用 [GET] /apps/v1/data_analysis/query_behavior_data 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/data-analysis/user-analysis/behavior-analysis ]]>
-        /// </para>
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [Obsolete("相关接口或字段于 2024-02-02 下线。")]
-        public static async Task<Models.AppsDataAnalysisQueryBehaviorDataV1Response> ExecuteAppsDataAnalysisQueryBehaviorDataV1Async(this DouyinMicroAppClient client, Models.AppsDataAnalysisQueryBehaviorDataV1Request request, CancellationToken cancellationToken = default)
-        {
-            if (client is null) throw new ArgumentNullException(nameof(client));
-            if (request is null) throw new ArgumentNullException(nameof(request));
-
-            IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Get, "apps", "v1", "data_analysis", "query_behavior_data")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "data_analysis", "query_behavior_data"))
-                .WithHeader("access-token", request.AccessToken)
-                .SetQueryParam("start_time", request.StartTimestamp)
-                .SetQueryParam("end_time", request.EndTimestamp);
-
-            if (request.HostName is not null)
-                flurlReq.SetQueryParam("host_name", request.HostName);
-
-            if (request.OS is not null)
-                flurlReq.SetQueryParam("os", request.OS);
-
-            if (request.VersionType is not null)
-                flurlReq.SetQueryParam("version_type", request.VersionType);
-
-            return await client.SendFlurlRequestAsJsonAsync<Models.AppsDataAnalysisQueryBehaviorDataV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// <para>异步调用 [GET] /apps/v1/data_analysis/query_real_time_user_data 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/data-analysis/user-analysis/realtime-analysis ]]>
-        /// </para>
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [Obsolete("相关接口或字段于 2024-02-02 下线。")]
-        public static async Task<Models.AppsDataAnalysisQueryRealTimeUserDataV1Response> ExecuteAppsDataAnalysisQueryRealTimeUserDataV1Async(this DouyinMicroAppClient client, Models.AppsDataAnalysisQueryRealTimeUserDataV1Request request, CancellationToken cancellationToken = default)
-        {
-            if (client is null) throw new ArgumentNullException(nameof(client));
-            if (request is null) throw new ArgumentNullException(nameof(request));
-
-            IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Get, "apps", "v1", "data_analysis", "query_real_time_user_data")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "data_analysis", "query_real_time_user_data"))
-                .WithHeader("access-token", request.AccessToken);
-
-            if (request.HostName is not null)
-                flurlReq.SetQueryParam("host_name", request.HostName);
-
-            if (request.VersionType is not null)
-                flurlReq.SetQueryParam("version_type", request.VersionType);
-
-            return await client.SendFlurlRequestAsJsonAsync<Models.AppsDataAnalysisQueryRealTimeUserDataV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// <para>异步调用 [GET] /apps/v1/data_analysis/query_retention_data 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/data-analysis/user-analysis/retention-analysis ]]>
-        /// </para>
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [Obsolete("相关接口或字段于 2024-02-02 下线。")]
-        public static async Task<Models.AppsDataAnalysisQueryRetentionDataV1Response> ExecuteAppsDataAnalysisQueryRetentionDataV1Async(this DouyinMicroAppClient client, Models.AppsDataAnalysisQueryRetentionDataV1Request request, CancellationToken cancellationToken = default)
-        {
-            if (client is null) throw new ArgumentNullException(nameof(client));
-            if (request is null) throw new ArgumentNullException(nameof(request));
-
-            IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Get, "apps", "v1", "data_analysis", "query_retention_data")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "data_analysis", "query_retention_data"))
-                .WithHeader("access-token", request.AccessToken)
-                .SetQueryParam("start_time", request.StartTimestamp)
-                .SetQueryParam("end_time", request.EndTimestamp);
-
-            if (request.UserType is not null)
-                flurlReq.SetQueryParam("user_type", request.UserType);
-
-            if (request.HostName is not null)
-                flurlReq.SetQueryParam("host_name", request.HostName);
-
-            if (request.OS is not null)
-                flurlReq.SetQueryParam("os", request.OS);
-
-            if (request.VersionType is not null)
-                flurlReq.SetQueryParam("version_type", request.VersionType);
-
-            return await client.SendFlurlRequestAsJsonAsync<Models.AppsDataAnalysisQueryRetentionDataV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// <para>异步调用 [GET] /apps/v1/data_analysis/query_scene_data 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/data-analysis/user-analysis/scene-analysis ]]>
-        /// </para>
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [Obsolete("相关接口或字段于 2024-02-02 下线。")]
-        public static async Task<Models.AppsDataAnalysisQuerySceneDataV1Response> ExecuteAppsDataAnalysisQuerySceneDataV1Async(this DouyinMicroAppClient client, Models.AppsDataAnalysisQuerySceneDataV1Request request, CancellationToken cancellationToken = default)
-        {
-            if (client is null) throw new ArgumentNullException(nameof(client));
-            if (request is null) throw new ArgumentNullException(nameof(request));
-
-            IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Get, "apps", "v1", "data_analysis", "query_scene_data")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "data_analysis", "query_scene_data"))
-                .WithHeader("access-token", request.AccessToken)
-                .SetQueryParam("start_time", request.StartTimestamp)
-                .SetQueryParam("end_time", request.EndTimestamp);
-
-            if (request.HostName is not null)
-                flurlReq.SetQueryParam("host_name", request.HostName);
-
-            if (request.VersionType is not null)
-                flurlReq.SetQueryParam("version_type", request.VersionType);
-
-            return await client.SendFlurlRequestAsJsonAsync<Models.AppsDataAnalysisQuerySceneDataV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// <para>异步调用 [GET] /apps/v1/data_analysis/query_user_portrait_data 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/data-analysis/user-analysis/user-portrait-analysis ]]>
-        /// </para>
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [Obsolete("相关接口或字段于 2024-02-02 下线。")]
-        public static async Task<Models.AppsDataAnalysisQueryUserPortraitDataV1Response> ExecuteAppsDataAnalysisQueryUserPortraitDataV1Async(this DouyinMicroAppClient client, Models.AppsDataAnalysisQueryUserPortraitDataV1Request request, CancellationToken cancellationToken = default)
-        {
-            if (client is null) throw new ArgumentNullException(nameof(client));
-            if (request is null) throw new ArgumentNullException(nameof(request));
-
-            IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Get, "apps", "v1", "data_analysis", "query_user_portrait_data")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "data_analysis", "query_user_portrait_data"))
-                .WithHeader("access-token", request.AccessToken)
-                .SetQueryParam("start_time", request.StartTimestamp)
-                .SetQueryParam("end_time", request.EndTimestamp);
-
-            if (request.UserType is not null)
-                flurlReq.SetQueryParam("user_type", request.UserType);
-
-            if (request.HostName is not null)
-                flurlReq.SetQueryParam("host_name", request.HostName);
-
-            if (request.VersionType is not null)
-                flurlReq.SetQueryParam("version_type", request.VersionType);
-
-            return await client.SendFlurlRequestAsJsonAsync<Models.AppsDataAnalysisQueryUserPortraitDataV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// <para>异步调用 [GET] /apps/v1/data_analysis/query_client_data 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/data-analysis/user-analysis/client-analysis ]]>
-        /// </para>
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [Obsolete("相关接口或字段于 2024-02-02 下线。")]
-        public static async Task<Models.AppsDataAnalysisQueryClientDataV1Response> ExecuteAppsDataAnalysisQueryClientDataV1Async(this DouyinMicroAppClient client, Models.AppsDataAnalysisQueryClientDataV1Request request, CancellationToken cancellationToken = default)
-        {
-            if (client is null) throw new ArgumentNullException(nameof(client));
-            if (request is null) throw new ArgumentNullException(nameof(request));
-
-            IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Get, "apps", "v1", "data_analysis", "query_client_data")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "data_analysis", "query_client_data"))
-                .WithHeader("access-token", request.AccessToken)
-                .SetQueryParam("start_time", request.StartTimestamp)
-                .SetQueryParam("end_time", request.EndTimestamp);
-
-            if (request.UserType is not null)
-                flurlReq.SetQueryParam("user_type", request.UserType);
-
-            if (request.HostName is not null)
-                flurlReq.SetQueryParam("host_name", request.HostName);
-
-            if (request.VersionType is not null)
-                flurlReq.SetQueryParam("version_type", request.VersionType);
-
-            return await client.SendFlurlRequestAsJsonAsync<Models.AppsDataAnalysisQueryClientDataV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// <para>异步调用 [GET] /apps/v1/data_analysis/query_page_data 接口。</para>
-        /// <para>
-        /// REF: <br/>
-        /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/data-analysis/user-analysis/page-analysis ]]>
-        /// </para>
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [Obsolete("相关接口或字段于 2024-02-02 下线。")]
-        public static async Task<Models.AppsDataAnalysisQueryPageDataV1Response> ExecuteAppsDataAnalysisQueryPageDataV1Async(this DouyinMicroAppClient client, Models.AppsDataAnalysisQueryPageDataV1Request request, CancellationToken cancellationToken = default)
-        {
-            if (client is null) throw new ArgumentNullException(nameof(client));
-            if (request is null) throw new ArgumentNullException(nameof(request));
-
-            IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Get, "apps", "v1", "data_analysis", "query_page_data")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "data_analysis", "query_page_data"))
-                .WithHeader("access-token", request.AccessToken)
-                .SetQueryParam("start_time", request.StartTimestamp)
-                .SetQueryParam("end_time", request.EndTimestamp);
-
-            if (request.HostName is not null)
-                flurlReq.SetQueryParam("host_name", request.HostName);
-
-            if (request.OS is not null)
-                flurlReq.SetQueryParam("os", request.OS);
-
-            if (request.VersionType is not null)
-                flurlReq.SetQueryParam("version_type", request.VersionType);
-
-            return await client.SendFlurlRequestAsJsonAsync<Models.AppsDataAnalysisQueryPageDataV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
-        #endregion
-        #endregion
-
         #region Live
         /// <summary>
-        /// <para>异步调用 [POST] /apps/upload_live_image 接口。</para>
+        /// <para>异步调用 [POST] /api/apps/upload_live_image 接口。</para>
         /// <para>
         /// REF: <br/>
         /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/other/live-bg-image ]]>
@@ -1734,8 +521,8 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
                 request.ImageFileContentType = Utilities.FileNameToContentTypeMapper.GetContentTypeForMaterial(request.ImageFileName) ?? "image/jpeg";
 
             IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Post, "apps", "upload_live_image")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "upload_live_image"))
+                .CreateFlurlRequest(request, HttpMethod.Post, "api", "apps", "upload_live_image")
+                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("api", "apps", "upload_live_image"))
                 .WithHeader("access-token", request.AccessToken);
 
             using var httpContent = Utilities.FileHttpContentBuilder.Build(fileName: request.ImageFileName, fileBytes: request.ImageFileBytes, fileContentType: request.ImageFileContentType, formDataName: "image");
@@ -1748,7 +535,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
         }
 
         /// <summary>
-        /// <para>异步调用 [POST] /apps/v1/live/set_black_white_list 接口。</para>
+        /// <para>异步调用 [POST] /api/apps/v1/live/set_black_white_list 接口。</para>
         /// <para>
         /// REF: <br/>
         /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/mount/live-black-white-list ]]>
@@ -1767,8 +554,8 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
                 request.AppId = client.Credentials.AppId;
 
             IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Post, "apps", "v1", "live", "set_black_white_list")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "v1", "live", "set_black_white_list"))
+                .CreateFlurlRequest(request, HttpMethod.Post, "api", "apps", "v1", "live", "set_black_white_list")
+                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("api", "apps", "v1", "live", "set_black_white_list"))
                 .WithHeader("access-token", request.AccessToken);
 
             return await client.SendFlurlRequestAsJsonAsync<Models.AppsLiveSetBlackWhiteListV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -1777,7 +564,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
 
         #region Message
         /// <summary>
-        /// <para>异步调用 [POST] /apps/message/custom/send 接口。</para>
+        /// <para>异步调用 [POST] /api/apps/message/custom/send 接口。</para>
         /// <para>
         /// REF: <br/>
         /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/component/message-push-customer-service#%E5%8F%91%E9%80%81%E5%AE%A2%E6%9C%8D%E6%B6%88%E6%81%AF%E6%8E%A5%E5%8F%A3 ]]>
@@ -1793,8 +580,8 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Post, "apps", "message", "custom", "send")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "message", "custom", "send"))
+                .CreateFlurlRequest(request, HttpMethod.Post, "api", "apps", "message", "custom", "send")
+                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("api", "apps", "message", "custom", "send"))
                 .SetQueryParam("access_token", request.AccessToken);
 
             return await client.SendFlurlRequestAsJsonAsync<Models.AppsMessageCustomSendResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -1803,7 +590,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
 
         #region Order
         /// <summary>
-        /// <para>异步调用 [POST] /apps/order/v2/push 接口。</para>
+        /// <para>异步调用 [POST] /api/apps/order/v2/push 接口。</para>
         /// <para>
         /// REF: <br/>
         /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/ecpay/order/order-sync ]]> <br/>
@@ -1820,14 +607,14 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Post, "apps", "order", "v2", "push")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "order", "v2", "push"));
+                .CreateFlurlRequest(request, HttpMethod.Post, "api", "apps", "order", "v2", "push")
+                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("api", "apps", "order", "v2", "push"));
 
             return await client.SendFlurlRequestAsJsonAsync<Models.AppsOrderPushV2Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
-        /// <para>异步调用 [POST] /apps/order/delete 接口。</para>
+        /// <para>异步调用 [POST] /api/apps/order/delete 接口。</para>
         /// <para>
         /// REF: <br/>
         /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/thirdparty/API/smallprogram/auth-app-manage/payment/deleteOrder ]]>
@@ -1843,8 +630,8 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Post, "apps", "order", "delete")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "order", "delete"));
+                .CreateFlurlRequest(request, HttpMethod.Post, "api", "apps", "order", "delete")
+                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("api", "apps", "order", "delete"));
 
             return await client.SendFlurlRequestAsJsonAsync<Models.AppsOrderDeleteResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
@@ -1852,7 +639,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
 
         #region Qrcode
         /// <summary>
-        /// <para>异步调用 [POST] /apps/qrcode 接口。</para>
+        /// <para>异步调用 [POST] /api/apps/qrcode 接口。</para>
         /// <para>
         /// REF: <br/>
         /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-game/develop/server/qr-code/create-qr-code ]]> <br/>
@@ -1869,8 +656,8 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Post, "apps", "qrcode")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "qrcode"));
+                .CreateFlurlRequest(request, HttpMethod.Post, "api", "apps", "qrcode")
+                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("api", "apps", "qrcode"));
 
             return await client.SendFlurlRequestAsJsonAsync<Models.AppsQrcodeResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
@@ -1878,7 +665,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
 
         #region SubscribeNotification
         /// <summary>
-        /// <para>异步调用 [POST] /apps/subscribe_notification/developer/v1/notify 接口。</para>
+        /// <para>异步调用 [POST] /api/apps/subscribe_notification/developer/v1/notify 接口。</para>
         /// <para>
         /// REF: <br/>
         /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/subscribe-notification/notify ]]> <br/>
@@ -1899,8 +686,8 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
                 request.AppId = client.Credentials.AppId;
 
             IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Post, "apps", "subscribe_notification", "developer", "v1", "notify")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "subscribe_notification", "developer", "v1", "notify"));
+                .CreateFlurlRequest(request, HttpMethod.Post, "api", "apps", "subscribe_notification", "developer", "v1", "notify")
+                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("api", "apps", "subscribe_notification", "developer", "v1", "notify"));
 
             return await client.SendFlurlRequestAsJsonAsync<Models.AppsSubscribeNotificationDeveloperNotifyV1Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
@@ -1908,7 +695,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
 
         #region ShareConfig
         /// <summary>
-        /// <para>异步调用 [POST] /apps/share_config 接口。</para>
+        /// <para>异步调用 [POST] /api/apps/share_config 接口。</para>
         /// <para>
         /// REF: <br/>
         /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/mount/ShareConfig ]]>
@@ -1927,8 +714,8 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
                 request.AppId = client.Credentials.AppId;
 
             IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Post, "apps", "share_config")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "share_config"));
+                .CreateFlurlRequest(request, HttpMethod.Post, "api", "apps", "share_config")
+                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("api", "apps", "share_config"));
 
             return await client.SendFlurlRequestAsJsonAsync<Models.AppsShareConfigResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
@@ -1936,7 +723,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
 
         #region TaskBox
         /// <summary>
-        /// <para>异步调用 [POST] /apps/taskbox/add_task 接口。</para>
+        /// <para>异步调用 [POST] /api/apps/taskbox/add_task 接口。</para>
         /// <para>
         /// REF: <br/>
         /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/promote/taskbox/taskbox-task-upload ]]>
@@ -1956,14 +743,14 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
                 request.AppId = client.Credentials.AppId;
 
             IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Post, "apps", "taskbox", "add_task")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "taskbox", "add_task"));
+                .CreateFlurlRequest(request, HttpMethod.Post, "api", "apps", "taskbox", "add_task")
+                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("api", "apps", "taskbox", "add_task"));
 
             return await client.SendFlurlRequestAsJsonAsync<Models.AppsTaskBoxAddTaskResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
-        /// <para>异步调用 [POST] /apps/taskbox/update_task 接口。</para>
+        /// <para>异步调用 [POST] /api/apps/taskbox/update_task 接口。</para>
         /// <para>
         /// REF: <br/>
         /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/promote/taskbox/updatetasks ]]>
@@ -1983,14 +770,14 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
                 request.AppId = client.Credentials.AppId;
 
             IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Post, "apps", "taskbox", "update_task")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "taskbox", "update_task"));
+                .CreateFlurlRequest(request, HttpMethod.Post, "api", "apps", "taskbox", "update_task")
+                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("api", "apps", "taskbox", "update_task"));
 
             return await client.SendFlurlRequestAsJsonAsync<Models.AppsTaskBoxUpdateTaskResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
-        /// <para>异步调用 [POST] /apps/taskbox/update/status 接口。</para>
+        /// <para>异步调用 [POST] /api/apps/taskbox/update/status 接口。</para>
         /// <para>
         /// REF: <br/>
         /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/promote/taskbox/updatetaskstatus ]]>
@@ -2010,14 +797,14 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
                 request.AppId = client.Credentials.AppId;
 
             IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Post, "apps", "taskbox", "update", "status")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "taskbox", "update", "status"));
+                .CreateFlurlRequest(request, HttpMethod.Post, "api", "apps", "taskbox", "update", "status")
+                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("api", "apps", "taskbox", "update", "status"));
 
             return await client.SendFlurlRequestAsJsonAsync<Models.AppsTaskBoxUpdateStatusResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
-        /// <para>异步调用 [POST] /apps/taskbox/query_app_task_id 接口。</para>
+        /// <para>异步调用 [POST] /api/apps/taskbox/query_app_task_id 接口。</para>
         /// <para>
         /// REF: <br/>
         /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/promote/taskbox/taskbox-query-app-task-id ]]>
@@ -2037,14 +824,14 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
                 request.AppId = client.Credentials.AppId;
 
             IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Post, "apps", "taskbox", "query_app_task_id")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "taskbox", "query_app_task_id"));
+                .CreateFlurlRequest(request, HttpMethod.Post, "api", "apps", "taskbox", "query_app_task_id")
+                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("api", "apps", "taskbox", "query_app_task_id"));
 
             return await client.SendFlurlRequestAsJsonAsync<Models.AppsTaskBoxQueryAppTaskIdResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
-        /// <para>异步调用 [POST] /apps/taskbox/query_task_video_data 接口。</para>
+        /// <para>异步调用 [POST] /api/apps/taskbox/query_task_video_data 接口。</para>
         /// <para>
         /// REF: <br/>
         /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/promote/taskbox/taskbox-query-task-video-data ]]>
@@ -2064,14 +851,14 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
                 request.AppId = client.Credentials.AppId;
 
             IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Post, "apps", "taskbox", "query_task_video_data")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "taskbox", "query_task_video_data"));
+                .CreateFlurlRequest(request, HttpMethod.Post, "api", "apps", "taskbox", "query_task_video_data")
+                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("api", "apps", "taskbox", "query_task_video_data"));
 
             return await client.SendFlurlRequestAsJsonAsync<Models.AppsTaskBoxQueryTaskVideoDataResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
-        /// <para>异步调用 [POST] /apps/taskbox/update_orient_talents/ 接口。</para>
+        /// <para>异步调用 [POST] /api/apps/taskbox/update_orient_talents/ 接口。</para>
         /// <para>
         /// REF: <br/>
         /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/promote/taskbox/updateorienttalent ]]>
@@ -2090,8 +877,8 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
                 request.AppId = client.Credentials.AppId;
 
             IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Post, "apps", "taskbox", "update_orient_talents/")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "taskbox", "update_orient_talents/"));
+                .CreateFlurlRequest(request, HttpMethod.Post, "api", "apps", "taskbox", "update_orient_talents/")
+                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("api", "apps", "taskbox", "update_orient_talents/"));
 
             return await client.SendFlurlRequestAsJsonAsync<Models.AppsTaskBoxUpdateOrientTalentsResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
@@ -2099,7 +886,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
 
         #region Video
         /// <summary>
-        /// <para>异步调用 [POST] /apps/convert_video_id/video_id_to_open_item_id 接口。</para>
+        /// <para>异步调用 [POST] /api/apps/convert_video_id/video_id_to_open_item_id 接口。</para>
         /// <para>
         /// REF: <br/>
         /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/other/video-id-convert ]]>
@@ -2121,14 +908,14 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
                 request.AccessKey = client.Credentials.AppId;
 
             IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Post, "apps", "convert_video_id", "video_id_to_open_item_id")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "convert_video_id", "video_id_to_open_item_id"));
+                .CreateFlurlRequest(request, HttpMethod.Post, "api", "apps", "convert_video_id", "video_id_to_open_item_id")
+                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("api", "apps", "convert_video_id", "video_id_to_open_item_id"));
 
             return await client.SendFlurlRequestAsJsonAsync<Models.AppsConvertVideoIdToOpenItemIdResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
-        /// <para>异步调用 [POST] /apps/convert_video_id/open_item_id_to_encrypt_id 接口。</para>
+        /// <para>异步调用 [POST] /api/apps/convert_video_id/open_item_id_to_encrypt_id 接口。</para>
         /// <para>
         /// REF: <br/>
         /// <![CDATA[ https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/other/video-id-convert ]]>
@@ -2147,8 +934,8 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
                 request.AccessKey = client.Credentials.AppId;
 
             IFlurlRequest flurlReq = client
-                .CreateFlurlRequest(request, HttpMethod.Post, "apps", "convert_video_id", "open_item_id_to_encrypt_id")
-                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("apps", "convert_video_id", "open_item_id_to_encrypt_id"));
+                .CreateFlurlRequest(request, HttpMethod.Post, "api", "apps", "convert_video_id", "open_item_id_to_encrypt_id")
+                .WithUrl(url => new Url(client._BASEURL_LEGACY).AppendPathSegments("api", "apps", "convert_video_id", "open_item_id_to_encrypt_id"));
 
             return await client.SendFlurlRequestAsJsonAsync<Models.AppsConvertOpenItemIdToEncryptIdResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
