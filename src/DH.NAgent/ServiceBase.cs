@@ -186,13 +186,13 @@ public abstract class ServiceBase : DisposeBase
             //输出菜单
             ShowMenu();
             Console.Write("请输入命令序号：");
+            Console.WriteLine();
 
             //读取命令
             var key = Console.ReadKey();
-            if (key.KeyChar == '0') break;
-            Console.WriteLine();
             Console.WriteLine();
 
+            if (key.KeyChar == '0') break;
             try
             {
                 var result = Command.Handle(key.KeyChar, args);
@@ -320,7 +320,7 @@ public abstract class ServiceBase : DisposeBase
                 XTrace.WriteException(ex);
             }
 
-            _event.WaitOne(10_000);
+            _event.WaitOne(set.WatchInterval * 1000);
         }
 
         _event.Dispose();

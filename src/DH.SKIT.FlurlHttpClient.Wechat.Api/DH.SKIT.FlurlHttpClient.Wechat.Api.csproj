@@ -57,7 +57,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="BouncyCastle.Cryptography" Version="2.3.1" />
+		<PackageReference Include="BouncyCastle.Cryptography" Version="2.4.0" />
 		<ProjectReference Include="..\DH.SKIT.FlurlHttpClient.Common\DH.SKIT.FlurlHttpClient.Common.csproj" />
 	</ItemGroup>
 
