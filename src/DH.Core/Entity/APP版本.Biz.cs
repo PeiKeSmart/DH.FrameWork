@@ -137,6 +137,19 @@ public partial class AppVersion : DHEntityBase<AppVersion>
         return FindAll().FirstOrDefault();
     }
 
+    /// <summary>根据Id倒序查找最新</summary>
+    /// <returns>实体对象</returns>
+    public static AppVersion? FindLast(String Os)
+    {
+        // 实体缓存
+        if (Meta.Session.Count < 1000)
+        {
+            return Meta.Cache.FindAll(e => e.AType == (Os.EqualIgnoreCase("ios") ? 2 : 1)).OrderByDescending(e => e.Version).FirstOrDefault();
+        }
+
+        return FindAll(_.AType == (Os.EqualIgnoreCase("ios") ? 2 : 1), new PageParameter { Desc = true, OrderBy = _.Version, PageSize = 1 }).FirstOrDefault();
+    }
+
     /// <summary>根据编号查找</summary>
     /// <param name="selects">字段</param>
     /// <returns>实体对象</returns>
@@ -150,6 +163,25 @@ public partial class AppVersion : DHEntityBase<AppVersion>
     #endregion
 
     #region 高级查询
+
+    /// <summary>高级查询</summary>
+    /// <param name="key">关键字</param>
+    /// <param name="page">分页参数信息。可携带统计和数据权限扩展查询等信息</param>
+    /// <param name="AType">系统编号</param>
+    /// <returns>实体列表</returns>
+    public static IList<AppVersion> Search(String key, PageParameter page, Int32 AType)
+    {
+        var exp = new WhereExpression();
+
+        if (!key.IsNullOrEmpty()) exp &= _.FileName.Contains(key) | _.Version.Contains(key) | _.Content.Contains(key);
+
+        if (AType > 0)
+        {
+            exp &= _.AType == AType;
+        }
+
+        return FindAll(exp, page);
+    }
 
     // Select Count(Id) as Id,Category From DG_AppVersion Where CreateTime>'2020-01-24 00:00:00' Group By Category Order By Id Desc limit 20
     //static readonly FieldCache<AppVersion> _CategoryCache = new FieldCache<AppVersion>(nameof(Category))
