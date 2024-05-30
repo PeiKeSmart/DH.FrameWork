@@ -1,9 +1,9 @@
 namespace SKIT.FlurlHttpClient.ByteDance.MicroApp.Models
 {
     /// <summary>
-    /// <para>表示 [POST] /api/apps/ecpay/saas/query_merchant_balance 接口的请求。</para>
+    /// <para>表示 [POST] /api/apps/ecpay/saas/query_withdraw_order/ 接口的请求。</para>
     /// </summary>
-    public class AppsECPaySaaSQueryMerchantBalanceRequest : DouyinMicroAppRequest
+    public class AppsECPaySaaSQueryWithdrawOrderV3Request : DouyinMicroAppRequest
     {
         /// <summary>
         /// 获取或设置小程序第三方平台应用 ID。
@@ -20,13 +20,6 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp.Models
         public string? AppId { get; set; }
 
         /// <summary>
-        /// 获取或设置商户主体标识。
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("merchant_entity")]
-        [System.Text.Json.Serialization.JsonPropertyName("merchant_entity")]
-        public int? MerchantEntity { get; set; }
-
-        /// <summary>
         /// 获取或设置商户号。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("merchant_uid")]
@@ -41,10 +34,10 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp.Models
         public string ChannelType { get; set; } = string.Empty;
 
         /// <summary>
-        /// 获取或设置签名。如果不指定将由系统自动生成。
+        /// 获取或设置商户提现单号。
         /// </summary>
-        [Newtonsoft.Json.JsonProperty("sign")]
-        [System.Text.Json.Serialization.JsonPropertyName("sign")]
-        public string? Signature { get; set; }
+        [Newtonsoft.Json.JsonProperty("out_order_id")]
+        [System.Text.Json.Serialization.JsonPropertyName("out_order_id")]
+        public string OutOrderId { get; set; } = string.Empty;
     }
 }

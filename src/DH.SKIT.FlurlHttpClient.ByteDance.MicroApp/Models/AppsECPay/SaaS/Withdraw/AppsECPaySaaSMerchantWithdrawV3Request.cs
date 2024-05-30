@@ -1,9 +1,9 @@
 namespace SKIT.FlurlHttpClient.ByteDance.MicroApp.Models
 {
     /// <summary>
-    /// <para>表示 [POST] /api/apps/ecpay/saas/query_merchant_balance 接口的请求。</para>
+    /// <para>表示 [POST] /api/apps/ecpay/saas/merchant_withdraw/ 接口的请求。</para>
     /// </summary>
-    public class AppsECPaySaaSQueryMerchantBalanceRequest : DouyinMicroAppRequest
+    public class AppsECPaySaaSMerchantWithdrawV3Request : DouyinMicroAppRequest
     {
         /// <summary>
         /// 获取或设置小程序第三方平台应用 ID。
@@ -41,10 +41,31 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp.Models
         public string ChannelType { get; set; } = string.Empty;
 
         /// <summary>
-        /// 获取或设置签名。如果不指定将由系统自动生成。
+        /// 获取或设置提现金额（单位：分）。
         /// </summary>
-        [Newtonsoft.Json.JsonProperty("sign")]
-        [System.Text.Json.Serialization.JsonPropertyName("sign")]
-        public string? Signature { get; set; }
+        [Newtonsoft.Json.JsonProperty("withdraw_amount")]
+        [System.Text.Json.Serialization.JsonPropertyName("withdraw_amount")]
+        public int WithdrawAmount { get; set; }
+
+        /// <summary>
+        /// 获取或设置商户提现单号。
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("out_order_id")]
+        [System.Text.Json.Serialization.JsonPropertyName("out_order_id")]
+        public string OutOrderId { get; set; } = string.Empty;
+
+        /// <summary>
+        /// 获取或设置自定义字段。
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("cp_extra")]
+        [System.Text.Json.Serialization.JsonPropertyName("cp_extra")]
+        public string? Extra { get; set; }
+
+        /// <summary>
+        /// 获取或设置回调通知地址。
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("callback")]
+        [System.Text.Json.Serialization.JsonPropertyName("callback")]
+        public string? NotifyUrl { get; set; }
     }
 }
