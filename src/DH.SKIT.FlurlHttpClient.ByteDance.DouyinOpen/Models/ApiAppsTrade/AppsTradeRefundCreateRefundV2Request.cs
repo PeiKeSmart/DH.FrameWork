@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 
-namespace SKIT.FlurlHttpClient.ByteDance.MicroApp.Models
+namespace SKIT.FlurlHttpClient.ByteDance.DouyinOpen.Models
 {
     /// <summary>
-    /// <para>表示 [POST] /api/trade_basic/v1/developer/refund_create/ 接口的请求。</para>
+    /// <para>表示 [POST] /api/apps/trade/v2/refund/create_refund 接口的请求。</para>
     /// </summary>
-    public class TradeBasicDeveloperRefundCreateV1Request : DouyinMicroAppRequest
+    public class AppsTradeRefundCreateRefundV2Request : DouyinOpenRequest
     {
         public static class Types
         {
@@ -26,23 +26,6 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp.Models
                 public int RefundAmount { get; set; }
             }
 
-            public class RefundReason
-            {
-                /// <summary>
-                /// 获取或设置退款原因编码。
-                /// </summary>
-                [Newtonsoft.Json.JsonProperty("code")]
-                [System.Text.Json.Serialization.JsonPropertyName("code")]
-                public int Code { get; set; }
-
-                /// <summary>
-                /// 获取或设置退款原因描述。
-                /// </summary>
-                [Newtonsoft.Json.JsonProperty("text")]
-                [System.Text.Json.Serialization.JsonPropertyName("text")]
-                public string Text { get; set; } = string.Empty;
-            }
-
             public class MicroAppSchema
             {
                 /// <summary>
@@ -59,14 +42,24 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp.Models
                 [System.Text.Json.Serialization.JsonPropertyName("params")]
                 public string? ParamsString { get; set; } = string.Empty;
             }
+
+            public class TimesCardRefundParameter
+            {
+                /// <summary>
+                /// 获取或设置退款类型。
+                /// </summary>
+                [Newtonsoft.Json.JsonProperty("times_card_refund_type")]
+                [System.Text.Json.Serialization.JsonPropertyName("times_card_refund_type")]
+                public int RefundType { get; set; }
+            }
         }
 
         /// <summary>
-        /// 获取或设置订单号。
+        /// 获取或设置开发者订单号。
         /// </summary>
-        [Newtonsoft.Json.JsonProperty("order_id")]
-        [System.Text.Json.Serialization.JsonPropertyName("order_id")]
-        public string OrderId { get; set; } = string.Empty;
+        [Newtonsoft.Json.JsonProperty("out_order_no")]
+        [System.Text.Json.Serialization.JsonPropertyName("out_order_no")]
+        public string OutOrderNumber { get; set; } = string.Empty;
 
         /// <summary>
         /// 获取或设置开发者退款单号。
@@ -90,20 +83,6 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp.Models
         public IList<Types.ItemOrder>? ItemOrderList { get; set; }
 
         /// <summary>
-        /// 获取或设置是否整单退款。
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("refund_all")]
-        [System.Text.Json.Serialization.JsonPropertyName("refund_all")]
-        public bool? IsRefundAll { get; set; }
-
-        /// <summary>
-        /// 获取或设置退款原因列表。
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("refund_reason")]
-        [System.Text.Json.Serialization.JsonPropertyName("refund_reason")]
-        public IList<Types.RefundReason> RefundReasonList { get; set; } = new List<Types.RefundReason>();
-
-        /// <summary>
         /// 获取或设置自定义字段。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("cp_extra")]
@@ -118,7 +97,14 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp.Models
         public string? NotifyUrl { get; set; }
 
         /// <summary>
-        /// 获取或设置退款单详情页的 Schema。
+        /// 获取或设置次卡退款参数。
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("times_card_refund_param")]
+        [System.Text.Json.Serialization.JsonPropertyName("times_card_refund_param")]
+        public Types.TimesCardRefundParameter? TimesCardRefundParameter { get; set; }
+
+        /// <summary>
+        /// 获取或设置订单详情页的 Schema。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("order_entry_schema")]
         [System.Text.Json.Serialization.JsonPropertyName("order_entry_schema")]
