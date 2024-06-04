@@ -330,8 +330,8 @@ public class DHSetting : Config<DHSetting>
     [Description("项目启动时间")]
     public DateTime StartTime { get; set; }
 
-    /// <summary>数据保留时间。审计日期与OAuth日志，默认30天</summary>
-    [Description("数据保留时间。审计日期与OAuth日志，默认30天")]
+    /// <summary>数据保留时间。审计日志与OAuth日志，默认30天</summary>
+    [Description("数据保留时间。审计日志与OAuth日志，默认30天")]
     [Category("系统功能")]
     public Int32 DataRetention { get; set; } = 30;
 
