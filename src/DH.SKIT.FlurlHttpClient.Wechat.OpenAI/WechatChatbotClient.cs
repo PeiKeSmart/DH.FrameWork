@@ -9,7 +9,7 @@ namespace SKIT.FlurlHttpClient.Wechat.OpenAI
     /// <summary>
     /// 一个微信智能对话 API HTTP 客户端。
     /// </summary>
-    public class WechatOpenAIClient : CommonClientBase, ICommonClient
+    public class WechatChatbotClient : CommonClientBase, ICommonClient
     {
         /// <summary>
         /// 获取当前客户端使用的微信智能对话平台凭证。
@@ -17,10 +17,10 @@ namespace SKIT.FlurlHttpClient.Wechat.OpenAI
         public Settings.Credentials Credentials { get; }
 
         /// <summary>
-        /// 用指定的配置项初始化 <see cref="WechatOpenAIClient"/> 类的新实例。
+        /// 用指定的配置项初始化 <see cref="WechatChatbotClient"/> 类的新实例。
         /// </summary>
         /// <param name="options">配置项。</param>
-        public WechatOpenAIClient(WechatOpenAIClientOptions options)
+        public WechatChatbotClient(WechatChatbotClientOptions options)
             : this(options, null)
         {
         }
@@ -31,24 +31,15 @@ namespace SKIT.FlurlHttpClient.Wechat.OpenAI
         /// <param name="options"></param>
         /// <param name="httpClient"></param>
         /// <param name="disposeClient"></param>
-        internal protected WechatOpenAIClient(WechatOpenAIClientOptions options, HttpClient? httpClient, bool disposeClient = true)
+        internal protected WechatChatbotClient(WechatChatbotClientOptions options, HttpClient? httpClient, bool disposeClient = true)
             : base(httpClient, disposeClient)
         {
             if (options is null) throw new ArgumentNullException(nameof(options));
 
             Credentials = new Settings.Credentials(options);
 
-            FlurlClient.BaseUrl = options.Endpoint ?? WechatOpenAIEndpoints.DEFAULT;
+            FlurlClient.BaseUrl = options.Endpoint ?? WechatChatbotEndpoints.DEFAULT;
             FlurlClient.WithTimeout(options.Timeout <= 0 ? Timeout.InfiniteTimeSpan : TimeSpan.FromMilliseconds(options.Timeout));
-
-            Interceptors.Add(new Interceptors.WechatOpenAIRequestEncryptionInterceptor(
-                baseUrl: FlurlClient.BaseUrl,
-                encodingAESKey: options.EncodingAESKey,
-                customEncryptedRequestPathMatcher: options.CustomEncryptedRequestPathMatcher
-            ));
-            Interceptors.Add(new Interceptors.WechatOpenAIRequestSigningInterceptor(
-                token: options.Token
-            ));
         }
 
         /// <summary>
@@ -58,19 +49,11 @@ namespace SKIT.FlurlHttpClient.Wechat.OpenAI
         /// <param name="httpMethod"></param>
         /// <param name="urlSegments"></param>
         /// <returns></returns>
-        public IFlurlRequest CreateFlurlRequest(WechatOpenAIRequest request, HttpMethod httpMethod, params object[] urlSegments)
+        public IFlurlRequest CreateFlurlRequest(WechatChatbotRequest request, HttpMethod httpMethod, params object[] urlSegments)
         {
             IFlurlRequest flurlRequest = base.CreateFlurlRequest(request, httpMethod, urlSegments);
 
-            if (request.RequestId is null)
-            {
-                request.RequestId = Guid.NewGuid().ToString("N");
-            }
-
-            return flurlRequest
-                .WithHeader("X-APPID", Credentials.AppId)
-                .WithHeader("X-OPENAI-TOKEN", request.AccessToken)
-                .WithHeader("request_id", request.RequestId);
+            return flurlRequest;
         }
 
         /// <summary>
@@ -82,7 +65,7 @@ namespace SKIT.FlurlHttpClient.Wechat.OpenAI
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         public async Task<T> SendFlurlRequestAsync<T>(IFlurlRequest flurlRequest, HttpContent? httpContent = null, CancellationToken cancellationToken = default)
-            where T : WechatOpenAIResponse, new()
+            where T : WechatChatbotResponse, new()
         {
             if (flurlRequest is null) throw new ArgumentNullException(nameof(flurlRequest));
 
@@ -99,9 +82,16 @@ namespace SKIT.FlurlHttpClient.Wechat.OpenAI
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         public async Task<T> SendFlurlRequestAsJsonAsync<T>(IFlurlRequest flurlRequest, object? data = null, CancellationToken cancellationToken = default)
-            where T : WechatOpenAIResponse, new()
+            where T : WechatChatbotResponse, new()
         {
             if (flurlRequest is null) throw new ArgumentNullException(nameof(flurlRequest));
+
+            if (data is WechatChatbotRequest.Serialization.IEncryptedXmlable)
+            {
+                string plainXml = Utilities.XmlHelper.ConvertFromJson(JsonSerializer.Serialize(data));
+                string encryptedXml = Utilities.WxMsgCryptor.AESEncrypt(plainText: plainXml, encodingAESKey: Credentials.EncodingAESKey!, appId: Credentials.AppId!);
+                data = new { encrypt = encryptedXml };
+            }
 
             bool isSimpleRequest = data is null ||
                 flurlRequest.Verb == HttpMethod.Get ||

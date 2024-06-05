@@ -6,43 +6,36 @@ namespace SKIT.FlurlHttpClient.Wechat.OpenAI
     public abstract class WechatOpenAIResponse : CommonResponseBase, ICommonResponse
     {
         /// <summary>
-        /// 获取微信智能对话 API 返回的错误码。
+        /// 获取微信智能对话 API 返回的返回码。
         /// </summary>
-        [Newtonsoft.Json.JsonProperty("errcode")]
-        [System.Text.Json.Serialization.JsonPropertyName("errcode")]
-        public virtual int? ErrorCode { get; set; }
+        [Newtonsoft.Json.JsonProperty("code")]
+        [System.Text.Json.Serialization.JsonPropertyName("code")]
+        public virtual int? Code { get; set; }
 
         /// <summary>
-        /// 获取微信智能对话 API 返回的错误信息。
+        /// 获取微信智能对话 API 返回的返回信息。
         /// </summary>
-        [Newtonsoft.Json.JsonProperty("errmsg")]
-        [System.Text.Json.Serialization.JsonPropertyName("errmsg")]
-        public virtual string? ErrorMessage { get; set; }
+        [Newtonsoft.Json.JsonProperty("msg")]
+        [System.Text.Json.Serialization.JsonPropertyName("msg")]
+        public virtual string? Message { get; set; }
 
         /// <summary>
-        /// 获取微信智能对话 API 返回的错误码。
+        /// 获取微信智能对话 API 返回的请求唯一标识。
         /// </summary>
-        [Newtonsoft.Json.JsonProperty("ret")]
-        [System.Text.Json.Serialization.JsonPropertyName("ret")]
-        public virtual int? ReturnCode { get; set; }
-
-        /// <summary>
-        /// 获取微信智能对话 API 返回的错误信息。
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("error")]
-        [System.Text.Json.Serialization.JsonPropertyName("error")]
-        public virtual string? ReturnError { get; set; }
+        [Newtonsoft.Json.JsonProperty("request_id")]
+        [System.Text.Json.Serialization.JsonPropertyName("request_id")]
+        public virtual string? RequestId { get; set; }
 
         /// <summary>
         /// 获取一个值，该值指示调用微信 API 是否成功。
         /// <para>
-        /// （即 HTTP 状态码为 200，且 <see cref="ErrorCode"/>、<see cref="ReturnCode"/> 值都为 0）
+        /// （即 HTTP 状态码为 200，且 <see cref="Code"/> 值都为 0）
         /// </para>
         /// </summary>
         /// <returns></returns>
         public override bool IsSuccessful()
         {
-            return GetRawStatus() == 200 && ErrorCode.GetValueOrDefault() == 0 && ReturnCode.GetValueOrDefault() == 0 && string.IsNullOrEmpty(ReturnError);
+            return GetRawStatus() == 200 && Code.GetValueOrDefault() == 0;
         }
     }
 

@@ -1,11 +1,9 @@
-using System;
-
 namespace SKIT.FlurlHttpClient.Wechat.OpenAI
 {
     /// <summary>
-    /// 一个用于构造 <see cref="WechatOpenAIClient"/> 时使用的配置项。
+    /// 一个用于构造 <see cref="WechatChatbotClient"/> 时使用的配置项。
     /// </summary>
-    public class WechatOpenAIClientOptions
+    public class WechatChatbotClientOptions
     {
         /// <summary>
         /// 获取或设置请求超时时间（单位：毫秒）。
@@ -15,9 +13,9 @@ namespace SKIT.FlurlHttpClient.Wechat.OpenAI
 
         /// <summary>
         /// 获取或设置微信智能对话 API 入口点。
-        /// <para>默认值：<see cref="WechatOpenAIEndpoints.DEFAULT"/></para>
+        /// <para>默认值：<see cref="WechatChatbotEndpoints.DEFAULT"/></para>
         /// </summary>
-        public string Endpoint { get; set; } = WechatOpenAIEndpoints.DEFAULT;
+        public string Endpoint { get; set; } = WechatChatbotEndpoints.DEFAULT;
 
         /// <summary>
         /// 获取或设置微信智能对话 AppId。
@@ -33,10 +31,5 @@ namespace SKIT.FlurlHttpClient.Wechat.OpenAI
         /// 获取或设置微信智能对话 EncodingAESKey。
         /// </summary>
         public string EncodingAESKey { get; set; } = string.Empty;
-
-        /// <summary>
-        /// 获取或设置自定义需加密请求路径匹配器。
-        /// </summary>
-        public Func<string, bool>? CustomEncryptedRequestPathMatcher { get; set; }
     }
 }
