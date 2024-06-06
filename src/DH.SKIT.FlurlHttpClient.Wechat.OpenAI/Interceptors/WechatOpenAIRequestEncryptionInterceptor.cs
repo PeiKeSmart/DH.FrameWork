@@ -9,6 +9,7 @@ using Flurl.Http;
 namespace SKIT.FlurlHttpClient.Wechat.OpenAI.Interceptors
 {
     using SKIT.FlurlHttpClient.Internal;
+    using SKIT.FlurlHttpClient.Primitives;
 
     internal class WechatOpenAIRequestEncryptionInterceptor : HttpInterceptor
     {
@@ -30,15 +31,6 @@ namespace SKIT.FlurlHttpClient.Wechat.OpenAI.Interceptors
             _baseUrl = baseUrl;
             _encodingAESKey = encodingAESKey;
             _customEncryptedRequestPathMatcher = customEncryptedRequestPathMatcher;
-
-            // AES 密钥的长度不是 4 的倍数需要补齐，确保其始终为有效的 Base64 字符串
-            const int MULTI = 4;
-            int tLen = _encodingAESKey.Length;
-            int tRem = tLen % MULTI;
-            if (tRem > 0)
-            {
-                _encodingAESKey = _encodingAESKey.PadRight(tLen - tRem + MULTI, '=');
-            }
         }
 
         public override async Task BeforeCallAsync(HttpInterceptorContext context, CancellationToken cancellationToken = default)
@@ -83,7 +75,7 @@ namespace SKIT.FlurlHttpClient.Wechat.OpenAI.Interceptors
             }
 
             context.FlurlCall.HttpRequestMessage!.Content?.Dispose();
-            context.FlurlCall.HttpRequestMessage!.Content = new ByteArrayContent(reqBytesEncrypted);
+            context.FlurlCall.HttpRequestMessage!.Content = new StringContent(Convert.ToBase64String(reqBytesEncrypted));
             context.FlurlCall.Request.WithHeader(HttpHeaders.ContentType, MimeTypes.Text);
         }
 
@@ -99,19 +91,19 @@ namespace SKIT.FlurlHttpClient.Wechat.OpenAI.Interceptors
             if (context.FlurlCall.HttpResponseMessage.StatusCode != HttpStatusCode.OK)
                 return;
 
-            byte[] respBytes = Array.Empty<byte>();
+            string respBody = string.Empty;
             if (context.FlurlCall.HttpResponseMessage.Content is not null)
             {
                 HttpContent httpContent = context.FlurlCall.HttpResponseMessage.Content;
-                respBytes = await
+                respBody = await
 #if NET5_0_OR_GREATER
-                    httpContent.ReadAsByteArrayAsync(cancellationToken).ConfigureAwait(false);
+                    httpContent.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 #else
-                    _AsyncEx.RunTaskWithCancellationTokenAsync(httpContent.ReadAsByteArrayAsync(), cancellationToken).ConfigureAwait(false);
+                    _AsyncEx.RunTaskWithCancellationTokenAsync(httpContent.ReadAsStringAsync(), cancellationToken).ConfigureAwait(false);
 #endif
             }
 
-            byte[] respBytesDecrypted;
+            string respBodyDecrypted;
             try
             {
                 const int AES_BLOCK_SIZE = 16;
@@ -119,10 +111,10 @@ namespace SKIT.FlurlHttpClient.Wechat.OpenAI.Interceptors
                 byte[] ivBytes = new byte[AES_BLOCK_SIZE]; // iv 是 key 的前 16 个字节
                 Buffer.BlockCopy(keyBytes, 0, ivBytes, 0, ivBytes.Length);
 
-                respBytesDecrypted = Utilities.AESUtility.DecryptWithCBC(
-                    keyBytes: keyBytes,
-                    ivBytes: ivBytes,
-                    cipherBytes: respBytes
+                respBodyDecrypted = Utilities.AESUtility.DecryptWithCBC(
+                    encodingKey: EncodedString.ToBase64String(keyBytes),
+                    encodingIV: EncodedString.ToBase64String(ivBytes),
+                    encodingCipher: new EncodedString(respBody, EncodingKinds.Base64)
                 )!;
             }
             catch (Exception ex)
@@ -131,7 +123,7 @@ namespace SKIT.FlurlHttpClient.Wechat.OpenAI.Interceptors
             }
 
             context.FlurlCall.HttpResponseMessage!.Content?.Dispose();
-            context.FlurlCall.HttpResponseMessage!.Content = new ByteArrayContent(respBytesDecrypted);
+            context.FlurlCall.HttpResponseMessage!.Content = new StringContent(respBodyDecrypted);
         }
 
         private string GetRequestUrlPath(Uri uri)
@@ -150,6 +142,7 @@ namespace SKIT.FlurlHttpClient.Wechat.OpenAI.Interceptors
             { 
                 if (_customEncryptedRequestPathMatcher is not null)
                     return _customEncryptedRequestPathMatcher(relativeUrl);
+                return false;
             }
 
             return true;
