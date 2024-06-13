@@ -114,7 +114,7 @@ public partial class AppVersion : DHEntityBase<AppVersion>
     /// <summary>根据编号查找</summary>
     /// <param name="id">编号</param>
     /// <returns>实体对象</returns>
-    public static AppVersion? FindById(Int32 id)
+    public static AppVersion FindById(Int32 id)
     {
         if (id <= 0) return null;
 
@@ -139,7 +139,7 @@ public partial class AppVersion : DHEntityBase<AppVersion>
 
     /// <summary>根据Id倒序查找最新</summary>
     /// <returns>实体对象</returns>
-    public static AppVersion? FindLast(String Os)
+    public static AppVersion FindLast(String Os)
     {
         // 实体缓存
         if (Meta.Session.Count < 1000)
@@ -186,7 +186,7 @@ public partial class AppVersion : DHEntityBase<AppVersion>
     {
         var exp = new WhereExpression();
 
-        if (!key.IsNullOrEmpty()) exp &= _.FileName.Contains(key) | _.Version.Contains(key) | _.Content.Contains(key);
+        if (!key.IsNullOrEmpty()) exp &= _.FileName.Contains(key) | _.Version.Contains(key) | _.Content.Contains(key) | _.BoundId.Contains(key);
 
         if (AType > 0)
         {
