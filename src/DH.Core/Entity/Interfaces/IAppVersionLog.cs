@@ -20,6 +20,9 @@ public partial interface IAppVersionLog
     /// <summary>版本号</summary>
     String Version { get; set; }
 
+    /// <summary>APP包名</summary>
+    String BoundId { get; set; }
+
     /// <summary>创建者</summary>
     String CreateUser { get; set; }
 

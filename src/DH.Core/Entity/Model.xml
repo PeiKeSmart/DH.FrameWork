@@ -863,6 +863,7 @@
         <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
         <Column Name="Os" DataType="String" Description="平台" />
         <Column Name="Version" DataType="String" Description="版本号" />
+        <Column Name="BoundId" DataType="String" Length="100" Description="APP包名" />
         <Column Name="CreateUser" DataType="String" Description="创建者" />
         <Column Name="CreateUserID" DataType="Int32" Description="创建者" />
         <Column Name="CreateTime" DataType="DateTime" Description="创建时间" />
