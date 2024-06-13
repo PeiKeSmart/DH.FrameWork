@@ -139,15 +139,15 @@ public partial class AppVersion : DHEntityBase<AppVersion>
 
     /// <summary>根据Id倒序查找最新</summary>
     /// <returns>实体对象</returns>
-    public static AppVersion FindLast(String Os)
+    public static AppVersion FindLast(String Os, String BoundId)
     {
         // 实体缓存
         if (Meta.Session.Count < 1000)
         {
-            return Meta.Cache.FindAll(e => e.AType == (Os.EqualIgnoreCase("ios") ? 2 : 1)).OrderByDescending(e => e.Version).FirstOrDefault();
+            return Meta.Cache.FindAll(e => e.AType == (Os.EqualIgnoreCase("ios") ? 2 : 1) && e.BoundId == BoundId).OrderByDescending(e => e.Version).FirstOrDefault();
         }
 
-        return FindAll(_.AType == (Os.EqualIgnoreCase("ios") ? 2 : 1), new PageParameter { Desc = true, OrderBy = _.Version, PageSize = 1 }).FirstOrDefault();
+        return FindAll(_.AType == (Os.EqualIgnoreCase("ios") ? 2 : 1) & _.BoundId == BoundId, new PageParameter { Desc = true, OrderBy = _.Version, PageSize = 1 }).FirstOrDefault();
     }
 
     /// <summary>根据编号查找</summary>
