@@ -17,6 +17,7 @@ namespace DH.Entity;
 [Serializable]
 [DataObject]
 [Description("APP版本")]
+[BindIndex("IX_DG_AppVersion_BoundId", false, "BoundId")]
 [BindTable("DG_AppVersion", Description = "APP版本", ConnName = "DG", DbType = DatabaseType.None)]
 public partial class AppVersion : IAppVersion, IEntity<IAppVersion>
 {

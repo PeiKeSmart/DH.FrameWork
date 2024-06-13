@@ -843,6 +843,9 @@
         <Column Name="UpdateTime" DataType="DateTime" Description="更新时间" />
         <Column Name="UpdateIP" DataType="String" Description="更新地址" />
       </Columns>
+      <Indexes>
+        <Index Columns="BoundId" />
+      </Indexes>
     </Table>
     <Table Name="AppVersionLan" TableName="DG_AppVersionLan" Description="APP版本翻译">
       <Columns>

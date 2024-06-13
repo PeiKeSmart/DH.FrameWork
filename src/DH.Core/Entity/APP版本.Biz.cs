@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -159,6 +159,19 @@ public partial class AppVersion : DHEntityBase<AppVersion>
         if (Meta.Session.Count < 1000) return Meta.Cache.Entities;
 
         return FindAll(null, null, selects);
+    }
+
+    /// <summary>根据APP包名查找</summary>
+    /// <param name="boundId">APP包名</param>
+    /// <returns>实体列表</returns>
+    public static IList<AppVersion> FindAllByBoundId(String boundId)
+    {
+        if (boundId.IsNullOrEmpty()) return new List<AppVersion>();
+
+        // 实体缓存
+        if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => e.BoundId.EqualIgnoreCase(boundId));
+
+        return FindAll(_.BoundId == boundId);
     }
     #endregion
 
