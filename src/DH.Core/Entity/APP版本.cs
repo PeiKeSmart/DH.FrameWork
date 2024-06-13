@@ -77,6 +77,14 @@ public partial class AppVersion : IAppVersion, IEntity<IAppVersion>
     [BindColumn("ForeignCstFilepath", "国外第三方平台下载地址", "")]
     public String ForeignCstFilepath { get => _ForeignCstFilepath; set { if (OnPropertyChanging("ForeignCstFilepath", value)) { _ForeignCstFilepath = value; OnPropertyChanged("ForeignCstFilepath"); } } }
 
+    private String _BoundId;
+    /// <summary>APP包名</summary>
+    [DisplayName("APP包名")]
+    [Description("APP包名")]
+    [DataObjectField(false, false, true, 100)]
+    [BindColumn("BoundId", "APP包名", "")]
+    public String BoundId { get => _BoundId; set { if (OnPropertyChanging("BoundId", value)) { _BoundId = value; OnPropertyChanged("BoundId"); } } }
+
     private String _FileName;
     /// <summary>文件名称</summary>
     [DisplayName("文件名称")]
@@ -178,6 +186,7 @@ public partial class AppVersion : IAppVersion, IEntity<IAppVersion>
         FilePath = model.FilePath;
         CstFilepath = model.CstFilepath;
         ForeignCstFilepath = model.ForeignCstFilepath;
+        BoundId = model.BoundId;
         FileName = model.FileName;
         IsQiangZhi = model.IsQiangZhi;
         Size = model.Size;
@@ -207,6 +216,7 @@ public partial class AppVersion : IAppVersion, IEntity<IAppVersion>
             "FilePath" => _FilePath,
             "CstFilepath" => _CstFilepath,
             "ForeignCstFilepath" => _ForeignCstFilepath,
+            "BoundId" => _BoundId,
             "FileName" => _FileName,
             "IsQiangZhi" => _IsQiangZhi,
             "Size" => _Size,
@@ -231,6 +241,7 @@ public partial class AppVersion : IAppVersion, IEntity<IAppVersion>
                 case "FilePath": _FilePath = Convert.ToString(value); break;
                 case "CstFilepath": _CstFilepath = Convert.ToString(value); break;
                 case "ForeignCstFilepath": _ForeignCstFilepath = Convert.ToString(value); break;
+                case "BoundId": _BoundId = Convert.ToString(value); break;
                 case "FileName": _FileName = Convert.ToString(value); break;
                 case "IsQiangZhi": _IsQiangZhi = value.ToBoolean(); break;
                 case "Size": _Size = value.ToInt(); break;
@@ -275,6 +286,9 @@ public partial class AppVersion : IAppVersion, IEntity<IAppVersion>
 
         /// <summary>国外第三方平台下载地址</summary>
         public static readonly Field ForeignCstFilepath = FindByName("ForeignCstFilepath");
+
+        /// <summary>APP包名</summary>
+        public static readonly Field BoundId = FindByName("BoundId");
 
         /// <summary>文件名称</summary>
         public static readonly Field FileName = FindByName("FileName");
@@ -335,6 +349,9 @@ public partial class AppVersion : IAppVersion, IEntity<IAppVersion>
 
         /// <summary>国外第三方平台下载地址</summary>
         public const String ForeignCstFilepath = "ForeignCstFilepath";
+
+        /// <summary>APP包名</summary>
+        public const String BoundId = "BoundId";
 
         /// <summary>文件名称</summary>
         public const String FileName = "FileName";

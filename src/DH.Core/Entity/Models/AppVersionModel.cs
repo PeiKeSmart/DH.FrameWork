@@ -32,6 +32,9 @@ public partial class AppVersionModel
     /// <summary>国外第三方平台下载地址</summary>
     public String ForeignCstFilepath { get; set; }
 
+    /// <summary>APP包名</summary>
+    public String BoundId { get; set; }
+
     /// <summary>文件名称</summary>
     public String FileName { get; set; }
 
@@ -78,6 +81,7 @@ public partial class AppVersionModel
         FilePath = model.FilePath;
         CstFilepath = model.CstFilepath;
         ForeignCstFilepath = model.ForeignCstFilepath;
+        BoundId = model.BoundId;
         FileName = model.FileName;
         IsQiangZhi = model.IsQiangZhi;
         Size = model.Size;

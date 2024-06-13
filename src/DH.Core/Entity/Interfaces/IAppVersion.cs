@@ -32,6 +32,9 @@ public partial interface IAppVersion
     /// <summary>国外第三方平台下载地址</summary>
     String ForeignCstFilepath { get; set; }
 
+    /// <summary>APP包名</summary>
+    String BoundId { get; set; }
+
     /// <summary>文件名称</summary>
     String FileName { get; set; }
 

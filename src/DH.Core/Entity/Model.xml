@@ -830,6 +830,7 @@
         <Column Name="FilePath" DataType="String" Length="100" Description="下载地址" />
         <Column Name="CstFilepath" DataType="String" Length="100" Description="国内第三方平台下载地址" />
         <Column Name="ForeignCstFilepath" DataType="String" Length="100" Description="国外第三方平台下载地址" />
+        <Column Name="BoundId" DataType="String" Length="100" Description="APP包名" />
         <Column Name="FileName" DataType="String" Description="文件名称" />
         <Column Name="IsQiangZhi" DataType="Boolean" Description="是否强制升级" />
         <Column Name="Size" DataType="Int32" Description="文件大小" />
