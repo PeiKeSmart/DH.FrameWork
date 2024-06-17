@@ -9,16 +9,17 @@ using WebSocket = System.Net.WebSockets.WebSocket;
 
 namespace NewLife.Remoting.Extensions;
 
-/// <summary>设备控制器</summary>
+/// <summary>设备类控制器基类</summary>
 [ApiFilter]
 [ApiController]
 [Route("[controller]")]
 public class BaseDeviceController : BaseController
 {
     /// <summary>设备</summary>
-    protected IDevice _device = null!;
+    protected IDeviceModel _device = null!;
 
     private readonly IDeviceService _deviceService;
+    private readonly TokenService _tokenService;
     private readonly ITracer? _tracer;
 
     #region 构造
@@ -27,6 +28,7 @@ public class BaseDeviceController : BaseController
     public BaseDeviceController(IServiceProvider serviceProvider) : base(serviceProvider)
     {
         _deviceService = serviceProvider.GetRequiredService<IDeviceService>();
+        _tokenService = serviceProvider.GetRequiredService<TokenService>();
         _tracer = serviceProvider.GetService<ITracer>();
     }
 
@@ -42,7 +44,6 @@ public class BaseDeviceController : BaseController
         if (dv == null || !dv.Enable) throw new ApiException(ApiCode.Forbidden, "无效设备！");
 
         _device = dv;
-        _deviceService.Current = dv;
 
         return true;
     }
@@ -54,7 +55,28 @@ public class BaseDeviceController : BaseController
     /// <returns></returns>
     [AllowAnonymous]
     [HttpPost(nameof(Login))]
-    public virtual ILoginResponse Login(ILoginRequest request) => _deviceService.Login(request, "Http", UserHost);
+    public virtual ILoginResponse Login(ILoginRequest request)
+    {
+        // 先查一次，后续即使登录失败，也可以写设备历史
+        _device = _deviceService.QueryDevice(request.Code);
+
+        var (dv, online, rs) = _deviceService.Login(request, "Http", UserHost);
+
+        rs ??= new LoginResponse { Name = dv.Name, };
+
+        rs.Code = dv.Code;
+        rs.Time = DateTime.UtcNow.ToLong();
+
+        // 动态注册的设备不可用时，不要发令牌，只发证书
+        if (dv.Enable)
+        {
+            var tm = _tokenService.IssueToken(dv.Code, request.ClientId);
+
+            rs.Token = tm.AccessToken;
+        }
+
+        return rs;
+    }
 
     /// <summary>设备注销</summary>
     /// <param name="reason">注销原因</param>
@@ -62,11 +84,11 @@ public class BaseDeviceController : BaseController
     [HttpGet(nameof(Logout))]
     public virtual ILogoutResponse Logout(String reason)
     {
-        var device = _deviceService.Logout(reason, "Http", UserHost);
+        var olt = _deviceService.Logout(_device, reason, "Http", UserHost);
 
         return new LogoutResponse
         {
-            Name = device?.Name,
+            Name = _device?.Name,
             Token = null,
         };
     }
@@ -77,20 +99,32 @@ public class BaseDeviceController : BaseController
     /// <param name="request"></param>
     /// <returns></returns>
     [HttpPost(nameof(Ping))]
-    public virtual IPingResponse Ping(IPingRequest request)
+    public virtual IPingResponse Ping(IPingRequest request) => OnPing(request);
+
+    /// <summary>设备心跳</summary>
+    /// <returns></returns>
+    [HttpGet(nameof(Ping))]
+    public virtual IPingResponse Ping() => OnPing(null);
+
+    /// <summary>设备心跳</summary>
+    /// <param name="request"></param>
+    /// <returns></returns>
+    protected IPingResponse OnPing(IPingRequest? request)
     {
         var rs = new PingResponse
         {
-            Time = request.Time,
+            Time = 0,
             ServerTime = DateTime.UtcNow.ToLong(),
         };
+
+        if (request != null) rs.Time = request.Time;
 
         var device = _device;
         if (device != null)
         {
             //rs.Period = device.Period;
 
-            _deviceService.Ping(request, Token, UserHost);
+            _deviceService.Ping(device, request, Token, UserHost);
 
             // 令牌有效期检查，10分钟内到期的令牌，颁发新令牌。
             // 这里将来由客户端提交刷新令牌，才能颁发新的访问令牌。
@@ -101,11 +135,6 @@ public class BaseDeviceController : BaseController
 
         return rs;
     }
-
-    /// <summary>设备心跳</summary>
-    /// <returns></returns>
-    [HttpGet(nameof(Ping))]
-    public virtual IPingResponse Ping() => new PingResponse() { Time = 0, ServerTime = DateTime.UtcNow.ToLong(), };
     #endregion
 
     #region 升级
@@ -154,5 +183,13 @@ public class BaseDeviceController : BaseController
         _ = Task.Run(() => socket.ConsumeAndPushAsync(queue, onProcess: null, source));
         await socket.WaitForClose(null, source);
     }
+    #endregion
+
+    #region 辅助
+    /// <summary>写日志</summary>
+    /// <param name="action"></param>
+    /// <param name="success"></param>
+    /// <param name="message"></param>
+    protected override void WriteLog(String action, Boolean success, String message) => _deviceService.WriteHistory(_device, action, success, message, UserHost);
     #endregion
 }
