@@ -6,6 +6,7 @@
 		<OutputType>Library</OutputType>
 		<TargetFrameworks>net45;net461;netstandard2.0;netstandard2.1</TargetFrameworks>
 		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
 		<RootNamespace>DH.Caching</RootNamespace>
 		<AssemblyName>DH.NRedis</AssemblyName>
 		<AssemblyTitle>Redis客户端组件</AssemblyTitle>
