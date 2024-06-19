@@ -57,6 +57,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<Compile Remove="Services\ServicModelMetadataProvider.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<Content Include="..\..\Doc\DH.png" Link="DH.png" PackagePath="\" />
 	</ItemGroup>
 	<ItemGroup>
