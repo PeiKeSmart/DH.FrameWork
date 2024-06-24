@@ -1,5 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Net;
 using System.Net.NetworkInformation;
 using System.Reflection;
 using NewLife.Caching;
@@ -11,6 +13,9 @@ using NewLife.Remoting.Models;
 using NewLife.Security;
 using NewLife.Serialization;
 using NewLife.Threading;
+#if !NET40
+using TaskEx = System.Threading.Tasks.Task;
+#endif
 
 namespace NewLife.Remoting.Clients;
 
@@ -61,6 +66,7 @@ public abstract class ClientBase : DisposeBase, ICommandClient, IEventProvider, 
 
     /// <summary>协议版本</summary>
     private readonly static String _version;
+    private readonly static String _name;
     private TimeSpan _span;
     private readonly ConcurrentQueue<IPingRequest> _fails = new();
     private readonly ICache _cache = new MemoryCache();
@@ -71,6 +77,7 @@ public abstract class ClientBase : DisposeBase, ICommandClient, IEventProvider, 
     {
         var asm = AssemblyX.Entry ?? AssemblyX.Create(Assembly.GetExecutingAssembly());
         _version = asm?.FileVersion + "";
+        _name = asm?.Name ?? "NewLifeRemoting";
     }
 
     /// <summary>实例化</summary>
@@ -141,7 +148,7 @@ public abstract class ClientBase : DisposeBase, ICommandClient, IEventProvider, 
     /// <summary>创建Http客户端</summary>
     /// <param name="urls"></param>
     /// <returns></returns>
-    protected virtual ApiHttpClient CreateHttp(String urls) => new(urls) { Log = Log };
+    protected virtual ApiHttpClient CreateHttp(String urls) => new(urls) { Log = Log, DefaultUserAgent = $"{_name}/v{_version}" };
 
     /// <summary>创建RPC客户端</summary>
     /// <param name="urls"></param>
@@ -173,8 +180,8 @@ public abstract class ClientBase : DisposeBase, ICommandClient, IEventProvider, 
 
             rs = await http.InvokeAsync<TResult>(method, action, args, null, cancellationToken);
         }
-
-        rs = await _client!.InvokeAsync<TResult>(action, args, cancellationToken);
+        else
+            rs = await _client!.InvokeAsync<TResult>(action, args, cancellationToken);
 
         if (Log != null && Log.Level <= LogLevel.Debug) WriteLog("[{0}]<={1}", action, rs?.ToJson());
 
@@ -217,6 +224,14 @@ public abstract class ClientBase : DisposeBase, ICommandClient, IEventProvider, 
         }
     }
 
+    /// <summary>同步调用</summary>
+    /// <typeparam name="TResult"></typeparam>
+    /// <param name="action"></param>
+    /// <param name="args"></param>
+    /// <returns></returns>
+    [return: MaybeNull]
+    public virtual TResult Invoke<TResult>(String action, Object? args = null) => TaskEx.Run(() => InvokeAsync<TResult>(action, args)).Result;
+
     /// <summary>设置令牌。派生类可重定义逻辑</summary>
     /// <param name="token"></param>
     protected virtual void SetToken(String? token)
@@ -254,6 +269,14 @@ public abstract class ClientBase : DisposeBase, ICommandClient, IEventProvider, 
                 WriteLog("下发密钥：{0}/{1}", rs.Code, rs.Secret);
                 Code = rs.Code;
                 Secret = rs.Secret;
+
+                var set = Setting;
+                if (set != null)
+                {
+                    set.Code = rs.Code;
+                    set.Secret = rs.Secret;
+                    set.Save();
+                }
             }
 
             FixTime(rs.Time, rs.Time);
@@ -263,14 +286,6 @@ public abstract class ClientBase : DisposeBase, ICommandClient, IEventProvider, 
             Logined = true;
 
             OnLogined?.Invoke(this, new(request, rs));
-
-            var set = Setting;
-            if (set != null && !rs.Code.IsNullOrEmpty())
-            {
-                set.Code = rs.Code;
-                set.Secret = rs.Secret;
-                set.Save();
-            }
 
             StartTimer();
 
@@ -315,7 +330,12 @@ public abstract class ClientBase : DisposeBase, ICommandClient, IEventProvider, 
         info.Code = Code;
         info.Secret = Secret;
         info.ClientId = $"{NetHelper.MyIP()}@{Process.GetCurrentProcess().Id}";
-        info.Version = _version;
+
+        if (info is LoginRequest request)
+        {
+            request.Version = _version;
+            request.Time = DateTime.UtcNow.ToLong();
+        }
 
         return info;
     }
@@ -446,14 +466,36 @@ public abstract class ClientBase : DisposeBase, ICommandClient, IEventProvider, 
         Init();
 
         var request = GetService<IPingRequest>() ?? new PingRequest();
-        request.Uptime = Environment.TickCount / 1000;
         request.Time = DateTime.UtcNow.ToLong();
-        request.Delay = Delay;
 
-        // 开始时间 Environment.TickCount 很容易溢出，导致开机24天后变成负数。
-        // 后来在 netcore3.0 增加了Environment.TickCount64
-        // 现在借助 Stopwatch 来解决
-        if (Stopwatch.IsHighResolution) request.Uptime = (Int32)(Stopwatch.GetTimestamp() / Stopwatch.Frequency);
+        if (request is PingRequest req)
+        {
+            var path = ".".GetFullPath();
+            var driveInfo = DriveInfo.GetDrives().FirstOrDefault(e => path.StartsWithIgnoreCase(e.Name));
+            var mi = MachineInfo.GetCurrent();
+            mi.Refresh();
+
+            req.Memory = mi.Memory;
+            req.AvailableMemory = mi.AvailableMemory;
+            req.TotalSize = (UInt64)(driveInfo?.TotalSize ?? 0);
+            req.AvailableFreeSpace = (UInt64)(driveInfo?.AvailableFreeSpace ?? 0);
+            req.CpuRate = Math.Round(mi.CpuRate, 3);
+            req.Temperature = Math.Round(mi.Temperature, 1);
+            req.Battery = Math.Round(mi.Battery, 3);
+            req.UplinkSpeed = mi.UplinkSpeed;
+            req.DownlinkSpeed = mi.DownlinkSpeed;
+
+            var ip = NetHelper.GetIPs().Where(ip => ip.IsIPv4() && !IPAddress.IsLoopback(ip) && ip.GetAddressBytes()[0] != 169).Join();
+            req.IP = ip;
+
+            req.Delay = Delay;
+            req.Uptime = Environment.TickCount / 1000;
+
+            // 开始时间 Environment.TickCount 很容易溢出，导致开机24天后变成负数。
+            // 后来在 netcore3.0 增加了Environment.TickCount64
+            // 现在借助 Stopwatch 来解决
+            if (Stopwatch.IsHighResolution) req.Uptime = (Int32)(Stopwatch.GetTimestamp() / Stopwatch.Frequency);
+        }
 
         return request;
     }
