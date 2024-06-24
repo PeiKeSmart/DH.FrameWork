@@ -42,7 +42,7 @@ public partial class LocaleStringResource : ILocaleStringResource, IEntity<ILoca
     /// <summary>资源值</summary>
     [DisplayName("资源值")]
     [Description("资源值")]
-    [DataObjectField(false, false, true, 2048)]
+    [DataObjectField(false, false, true, 4096)]
     [BindColumn("LanValue", "资源值", "")]
     public String LanValue { get => _LanValue; set { if (OnPropertyChanging("LanValue", value)) { _LanValue = value; OnPropertyChanged("LanValue"); } } }
 

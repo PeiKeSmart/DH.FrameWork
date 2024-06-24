@@ -154,7 +154,7 @@
       <Columns>
         <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
         <Column Name="LanKey" DataType="String" Master="True" Length="300" Description="资源名称" />
-        <Column Name="LanValue" DataType="String" Length="2048" Description="资源值" />
+        <Column Name="LanValue" DataType="String" Length="4096" Description="资源值" />
         <Column Name="CultureId" DataType="Int32" Description="语言标识符" />
         <Column Name="CreateUser" DataType="String" Description="创建者" />
         <Column Name="CreateUserID" DataType="Int32" Description="创建者" />

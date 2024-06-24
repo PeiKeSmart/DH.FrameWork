@@ -60,7 +60,7 @@ public static class JsonHelper
 {
 #if NET7_0_OR_GREATER
     /// <summary>默认实现</summary>
-    public static IJsonHost Default { get; set; } = new FastJson();
+    public static IJsonHost Default { get; set; } = new SystemJson();
 #else
     /// <summary>默认实现</summary>
     public static IJsonHost Default { get; set; } = new FastJson();
