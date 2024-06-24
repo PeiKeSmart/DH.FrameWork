@@ -30,6 +30,10 @@ public abstract class ClientBase : DisposeBase, ICommandClient, IEventProvider, 
     public String? Secret { get; set; }
 
     /// <summary>密码提供者</summary>
+    /// <remarks>
+    /// 用于保护密码传输，默认提供者为空，密码将明文传输。
+    /// 推荐使用SaltPasswordProvider。
+    /// </remarks>
     public IPasswordProvider? PasswordProvider { get; set; }
 
     /// <summary>服务提供者</summary>
@@ -58,8 +62,14 @@ public abstract class ClientBase : DisposeBase, ICommandClient, IEventProvider, 
     /// <summary>收到命令时触发</summary>
     public event EventHandler<CommandEventArgs>? Received;
 
+    /// <summary>客户端功能特性。默认登录注销心跳，可添加更新等</summary>
+    public ClientFeatures Features { get; set; } = ClientFeatures.Login | ClientFeatures.Logout | ClientFeatures.Ping;
+
     /// <summary>命令前缀。默认Device/</summary>
     public String Prefix { get; set; } = "Device/";
+
+    /// <summary>允许匿名访问的动作</summary>
+    public IList<String> AllowAnonymous { get; set; } = new List<String>(["Login", "Logout", "*/Login", "*/Logout"]);
 
     /// <summary>客户端设置</summary>
     public IClientSetting? Setting { get; set; }
@@ -134,7 +144,8 @@ public abstract class ClientBase : DisposeBase, ICommandClient, IEventProvider, 
             container.TryAddTransient<IUpgradeInfo, UpgradeInfo>();
         }
 
-        PasswordProvider ??= GetService<IPasswordProvider>() ?? new SaltPasswordProvider { Algorithm = "md5" };
+        //PasswordProvider ??= GetService<IPasswordProvider>() ?? new SaltPasswordProvider { Algorithm = "md5", SaltTime = 60 };
+        PasswordProvider ??= GetService<IPasswordProvider>();
 
         if (Client == null)
         {
@@ -196,8 +207,8 @@ public abstract class ClientBase : DisposeBase, ICommandClient, IEventProvider, 
     /// <returns></returns>
     public virtual async Task<TResult?> InvokeAsync<TResult>(String action, Object? args = null, CancellationToken cancellationToken = default)
     {
-        var needLogin = !action.EndsWithIgnoreCase("/Login", "/Logout");
-        if (!Logined && needLogin) await Login();
+        var needLogin = !AllowAnonymous.Any(e => e.IsMatch(action));
+        if (!Logined && needLogin && Features.HasFlag(ClientFeatures.Login)) await Login();
 
         try
         {
@@ -208,7 +219,7 @@ public abstract class ClientBase : DisposeBase, ICommandClient, IEventProvider, 
             var ex2 = ex.GetTrue();
             if (ex2 is ApiException aex)
             {
-                if (Logined && aex.Code == ApiCode.Unauthorized && needLogin)
+                if (Logined && aex.Code == ApiCode.Unauthorized && needLogin && Features.HasFlag(ClientFeatures.Login))
                 {
                     Log?.Debug("{0}", ex);
                     WriteLog("重新登录！");
@@ -328,8 +339,10 @@ public abstract class ClientBase : DisposeBase, ICommandClient, IEventProvider, 
 
         var info = GetService<ILoginRequest>() ?? new LoginRequest();
         info.Code = Code;
-        info.Secret = Secret;
         info.ClientId = $"{NetHelper.MyIP()}@{Process.GetCurrentProcess().Id}";
+
+        if (!Secret.IsNullOrEmpty())
+            info.Secret = PasswordProvider?.Hash(Secret) ?? Secret;
 
         if (info is LoginRequest request)
         {
@@ -446,7 +459,7 @@ public abstract class ClientBase : DisposeBase, ICommandClient, IEventProvider, 
             span?.SetError(ex, null);
 
             var ex2 = ex.GetTrue();
-            if (ex2 is ApiException aex && (aex.Code == ApiCode.Unauthorized || aex.Code == ApiCode.Forbidden))
+            if (ex2 is ApiException aex && (aex.Code == ApiCode.Unauthorized || aex.Code == ApiCode.Forbidden) && Features.HasFlag(ClientFeatures.Login))
             {
                 WriteLog("重新登录");
                 await Login();
@@ -516,9 +529,11 @@ public abstract class ClientBase : DisposeBase, ICommandClient, IEventProvider, 
             {
                 if (_timer == null)
                 {
-                    _timer = new TimerX(OnPing, null, 3_000, 60_000, "Client") { Async = true };
-                    _timerUpgrade = new TimerX(s => Upgrade(), null, 5_000, 600_000, "Client") { Async = true };
-                    _eventTimer = new TimerX(DoPostEvent, null, 3_000, 60_000, "Client") { Async = true };
+                    if (Features.HasFlag(ClientFeatures.Ping) || Features.HasFlag(ClientFeatures.Notify))
+                        _timer = new TimerX(OnPing, null, 3_000, 60_000, "Client") { Async = true };
+
+                    if (Features.HasFlag(ClientFeatures.Upgrade))
+                        _timerUpgrade = new TimerX(s => Upgrade(), null, 5_000, 600_000, "Client") { Async = true };
                 }
             }
         }
@@ -548,9 +563,9 @@ public abstract class ClientBase : DisposeBase, ICommandClient, IEventProvider, 
         using var span = Tracer?.NewSpan("DevicePing");
         try
         {
-            var rs = await Ping();
+            if (Features.HasFlag(ClientFeatures.Ping)) await Ping();
 
-            if (_client is ApiHttpClient http)
+            if (_client is ApiHttpClient http && Features.HasFlag(ClientFeatures.Notify))
             {
 #if NETCOREAPP
                 _ws ??= new WsChannelCore(this);
@@ -648,10 +663,21 @@ public abstract class ClientBase : DisposeBase, ICommandClient, IEventProvider, 
     private TimerX? _eventTimer;
     private String? _eventTraceId;
 
+    void InitEvent()
+    {
+        _eventTimer ??= new TimerX(DoPostEvent, null, 3_000, 60_000, "Client") { Async = true };
+    }
+
     /// <summary>批量上报事件</summary>
     /// <param name="events"></param>
     /// <returns></returns>
-    public virtual Task<Int32> PostEvents(params EventModel[] events) => InvokeAsync<Int32>(Prefix + "PostEvents", events);
+    public virtual Task<Int32> PostEvents(params EventModel[] events)
+    {
+        // 使用时才创建定时器
+        InitEvent();
+
+        return InvokeAsync<Int32>(Prefix + "PostEvents", events);
+    }
 
     async Task DoPostEvent(Object state)
     {

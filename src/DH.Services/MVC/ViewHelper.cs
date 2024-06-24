@@ -1,5 +1,6 @@
-﻿using DH.AspNetCore.Extensions;
-using DH.AspNetCore.ViewModels;
+﻿using System.Text;
+
+using DH.AspNetCore.Extensions;
 using DH.Common;
 using DH.Entity;
 using DH.Models;
@@ -11,6 +12,7 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Routing;
 
 using NewLife;
+using NewLife.Reflection;
 
 using XCode;
 using XCode.Configuration;
@@ -79,6 +81,513 @@ public static class ViewHelper {
         }
 
         return dic;
+    }
+
+    internal static Boolean MakeListView(Type entityType, String vpath, List<DataField> fields)
+    {
+        var tmp = """
+            @model IList<{EntityType}>
+            @using {Namespace}
+            @using NewLife;
+            @using NewLife.Cube;
+            @using NewLife.Web;
+            @using XCode;
+            @using XCode.Configuration;
+            @using XCode.Membership;
+            @{
+                var fact = ViewBag.Factory as IEntityFactory;
+                var page = ViewBag.Page as Pager;
+                var ukey = fact.Unique;
+                var set = ViewBag.PageSetting as PageSetting ?? PageSetting.Global;
+                //var provider = ManageProvider.Provider;
+            }
+            <table class="table table-bordered table-hover table-striped table-condensed table-data-list">
+                <thead>
+                    <tr>
+                        @if (set.EnableSelect && ukey != null)
+                        {
+                            <th class="text-center" style="width:10px;"><input type="checkbox" id="chkAll" title="全选" /></th>
+                        }
+                        @foreach(var item in fields)
+                        {
+                            var sortUrl = item.OriField != null ? page.GetSortUrl(item.OriField.Name) : page.GetSortUrl(item.Name);
+                            <th class="text-center"><a href="@Html.Raw(sortUrl)">@item.DisplayName</a></th>
+                        }
+                        @if (this.Has(PermissionFlags.Detail, PermissionFlags.Update, PermissionFlags.Delete))
+                        {
+                            <th class="text-center">操作</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var entity in Model)
+                    {
+                        <tr>
+                            @if (set.EnableSelect && ukey != null)
+                            {
+                                <td class="text-center"><input type="checkbox" name="keys" value="@entity.ID" /></td>
+                            }
+                            @foreach (var item in fields)
+                            {
+                                @await Html.PartialAsync("_List_Data_Item", new ValueTuple<IEntity, DataField>(entity, item))
+                            }
+                            @if (this.Has(PermissionFlags.Detail, PermissionFlags.Update, PermissionFlags.Delete))
+                            {
+                                <td class="text-center">
+                                    @await Html.PartialAsync("_List_Data_Action", (Object)entity)
+                                </td>
+                            }
+                        </tr>
+                    }
+                    @if (page.State is {EntityType})
+                    {
+                        var entity = page.State as {EntityType};
+                        <tr>
+                            @if (set.EnableSelect)
+                            {
+                                <td></td>
+                            }
+                            @await Html.PartialAsync("_List_Data_Stat", entity)
+                            @if (this.Has(PermissionFlags.Detail, PermissionFlags.Update, PermissionFlags.Delete))
+                            {
+                                <td></td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            """;
+        var sb = new StringBuilder();
+        var fact = EntityFactory.CreateFactory(entityType);
+
+        tmp = tmp.Replace("{EntityType}", entityType.Name);
+        tmp = tmp.Replace("{Namespace}", entityType.Namespace);
+
+        var str = tmp.Substring(null, "            @foreach");
+        // 如果有用户字段，则启用provider
+        if (fields.Any(f => f.Name.EqualIgnoreCase("CreateUserID", "UpdateUserID")))
+            str = str.Replace("//var provider", "var provider");
+        sb.Append(str);
+
+        var ident = new String(' ', 4 * 3);
+
+        foreach (var item in fields)
+        {
+            // 缩进
+            sb.Append(ident);
+
+            var name = item.MapField ?? item.Name;
+            var des = item.DisplayName ?? item.Name;
+
+            // 样式
+            sb.Append(@"<th class=""text-center""");
+
+            // 固定宽度
+            if (item.Type == typeof(DateTime) && item.Services.Count == 0)
+            {
+                var width = item.ItemType == "Date" ? 80 : 134;
+                sb.AppendFormat(@" style=""min-width:{0}px;""", width);
+            }
+
+            // 备注
+            if (!item.Description.IsNullOrEmpty() && item.Description != des) sb.AppendFormat(@" title=""{0}""", item.Description);
+
+            // 内容
+            sb.AppendFormat(@"><a href=""@Html.Raw(page.GetSortUrl(""{1}""))"">{0}</a></th>", des, name);
+
+            sb.AppendLine();
+        }
+
+        var ps = new Int32[2];
+        str = tmp.Substring("            @if (this.Has", "                @foreach (var item in fields)", 0, ps);
+        if (fact.Unique != null)
+            str = str.Replace("@entity.ID", "@entity." + fact.Unique.Name);
+        else
+            str = str.Replace("@entity.ID", "");
+
+        sb.Append("            @if (this.Has");
+        sb.Append(str);
+
+        var digits = new[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+        ident = new String(' ', 4 * 4);
+        foreach (var item in fields)
+        {
+            // 第二名称，去掉后面的数字，便于模式匹配
+            var name2 = item.Name.TrimEnd(digits);
+
+            // 缩进
+            sb.Append(ident);
+            //sb.AppendLine(@"@Html.Partial(""_List_Data_Item"", new Pair(entity, item))");
+            if (item.PrimaryKey)
+                sb.AppendFormat(@"<td class=""text-center"">@entity.{0}</td>", item.Name);
+            else
+            {
+                switch (Type.GetTypeCode(item.Type))
+                {
+                    case TypeCode.Boolean:
+                        sb.AppendLine(@"<td class=""text-center"">");
+                        sb.Append(ident);
+                        sb.AppendFormat(@"    <i class=""glyphicon glyphicon-@(entity.{0} ? ""ok"" : ""remove"")"" style=""color: @(entity.{0} ? ""green"" : ""red"");""></i>", item.Name);
+                        sb.AppendLine();
+                        sb.Append(ident);
+                        sb.Append(@"</td>");
+                        break;
+                    case TypeCode.DateTime:
+                        if (name2.EndsWith("Date"))
+                            sb.AppendFormat(@"<td class=""text-center"">@entity.{0}.ToString(""yyyy-MM-dd"")</td>", item.Name);
+                        else
+                            sb.AppendFormat(@"<td class=""text-center"">@entity.{0}.ToFullString("""")</td>", item.Name);
+                        break;
+                    case TypeCode.Decimal:
+                        sb.AppendFormat(@"<td class=""text-right"">@entity.{0}.ToString(""n2"")</td>", item.Name);
+                        break;
+                    case TypeCode.Single:
+                    case TypeCode.Double:
+                        if (name2.EndsWith("Rate") || name2.EndsWith("Ratio") || item.ItemType.EqualIgnoreCase("percent", "Percentage"))
+                        {
+                            var des = item.Description + "";
+                            if (des.Contains("十分之一"))
+                                sb.AppendFormat(@"<td class=""text-center"">@((entity.{0} / 10).ToString(""p2""))</td>", item.Name);
+                            else if (des.Contains("百分之一"))
+                                sb.AppendFormat(@"<td class=""text-center"">@((entity.{0} / 100).ToString(""p2""))</td>", item.Name);
+                            else if (des.Contains("千分之一"))
+                                sb.AppendFormat(@"<td class=""text-center"">@((entity.{0} / 1000).ToString(""p2""))</td>", item.Name);
+                            else if (des.Contains("万分之一"))
+                                sb.AppendFormat(@"<td class=""text-center"">@((entity.{0} / 10000).ToString(""p2""))</td>", item.Name);
+                            else
+                                sb.AppendFormat(@"<td class=""text-center"">@entity.{0}.ToString(""p2"")</td>", item.Name);
+                        }
+                        else
+                        {
+                            sb.AppendFormat(@"<td class=""text-right"">@entity.{0}.ToString(""n2"")</td>", item.Name);
+                        }
+                        break;
+                    case TypeCode.Byte:
+                    case TypeCode.Int16:
+                    case TypeCode.Int32:
+                    case TypeCode.Int64:
+                    case TypeCode.UInt16:
+                    case TypeCode.UInt32:
+                    case TypeCode.UInt64:
+                        // 特殊处理枚举
+                        if (item.Type.IsEnum)
+                            sb.AppendFormat(@"<td class=""text-center"">@entity.{0}</td>", item.Name);
+                        else if (item.Name.EqualIgnoreCase("CreateUserID", "UpdateUserID"))
+                            BuildUser(item, sb);
+                        else if (name2.EndsWith("Rate") || name2.EndsWith("Ratio") || item.ItemType.EqualIgnoreCase("percent", "Percentage"))
+                        {
+                            var des = item.Description + "";
+                            if (des.Contains("十分之一"))
+                                sb.AppendFormat(@"<td class=""text-center"">@((entity.{0} / 10d).ToString(""p2""))</td>", item.Name);
+                            else if (des.Contains("百分之一"))
+                                sb.AppendFormat(@"<td class=""text-center"">@((entity.{0} / 100d).ToString(""p2""))</td>", item.Name);
+                            else if (des.Contains("千分之一"))
+                                sb.AppendFormat(@"<td class=""text-center"">@((entity.{0} / 1000d).ToString(""p2""))</td>", item.Name);
+                            else if (des.Contains("万分之一"))
+                                sb.AppendFormat(@"<td class=""text-center"">@((entity.{0} / 10000d).ToString(""p2""))</td>", item.Name);
+                            else
+                                sb.AppendFormat(@"<td class=""text-center"">@entity.{0}.ToString(""p2"")</td>", item.Name);
+                        }
+                        else
+                            sb.AppendFormat(@"<td class=""text-right"">@entity.{0}.ToString(""n0"")</td>", item.Name);
+                        break;
+                    case TypeCode.String:
+                        if (!item.MapField.IsNullOrEmpty())
+                        {
+                            if (item.MapProvider != null)
+                            {
+                                var prv = item.MapProvider;
+                                sb.AppendFormat(@"<td><a href=""{1}?{2}=@entity.{3}"">@entity.{0}</a></td>", item.Name, prv.EntityType.Name, prv.Key, item.MapField);
+                            }
+                            else
+                            {
+                                sb.AppendFormat(@"<td class=""text-center"">@entity.{0}</td>", item.Name);
+                            }
+                        }
+                        else if (item.Name.EqualIgnoreCase("CreateIP", "UpdateIP"))
+                            BuildIP(item, sb);
+                        else
+                            sb.AppendFormat(@"<td>@entity.{0}</td>", item.Name);
+                        break;
+                    default:
+                        sb.AppendFormat(@"<td>@entity.{0}</td>", item.Name);
+                        break;
+                }
+            }
+            sb.AppendLine();
+        }
+
+        // 构造统计
+        str = BuildStat(fields);
+
+        sb.Append("                @if");
+        var str2 = tmp.Substring("                @if", null, ps[1]);
+        str = str2.Replace("                @await Html.PartialAsync(\"_List_Data_Stat\", entity)", str);
+        sb.Append(str);
+
+        File.WriteAllText(vpath.GetFullPath().EnsureDirectory(true), sb.ToString(), Encoding.UTF8);
+
+        return true;
+    }
+
+    private static void BuildUser(DataField item, StringBuilder sb) => sb.AppendFormat(@"<td class=""text-center"">@provider.FindByID(entity.{0})</td>", item.Name);
+
+    private static void BuildIP(DataField item, StringBuilder sb) => sb.AppendFormat(@"<td class=""text-center"" title=""@entity.{0}.IPToAddress()"">@entity.{0}</td>", item.Name);
+
+    private static String BuildStat(IList<DataField> fields)
+    {
+        var digits = new[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+        var ident = new String(' ', 4 * 4);
+        var sb = new StringBuilder();
+        foreach (var item in fields)
+        {
+            // 第二名称，去掉后面的数字，便于模式匹配
+            var name2 = item.Name.TrimEnd(digits);
+
+            // 缩进
+            sb.Append(ident);
+            if (item.PrimaryKey)
+                sb.AppendFormat(@"<td class=""text-center"">总计</td>");
+            else
+            {
+                switch (Type.GetTypeCode(item.Type))
+                {
+                    case TypeCode.Boolean:
+                    case TypeCode.DateTime:
+                        sb.Append(@"<td></td>");
+                        break;
+                    case TypeCode.Decimal:
+                        sb.AppendFormat(@"<td class=""text-right"">@entity.{0}.ToString(""n2"")</td>", item.Name);
+                        break;
+                    case TypeCode.Single:
+                    case TypeCode.Double:
+                        if (name2.EndsWith("Rate") || name2.EndsWith("Ratio") || item.ItemType.EqualIgnoreCase("percent", "Percentage"))
+                        {
+                            var des = item.Description + "";
+                            if (des.Contains("十分之一"))
+                                sb.AppendFormat(@"<td class=""text-center"">@((entity.{0} / 10).ToString(""p2""))</td>", item.Name);
+                            else if (des.Contains("百分之一"))
+                                sb.AppendFormat(@"<td class=""text-center"">@((entity.{0} / 100).ToString(""p2""))</td>", item.Name);
+                            else if (des.Contains("千分之一"))
+                                sb.AppendFormat(@"<td class=""text-center"">@((entity.{0} / 1000).ToString(""p2""))</td>", item.Name);
+                            else if (des.Contains("万分之一"))
+                                sb.AppendFormat(@"<td class=""text-center"">@((entity.{0} / 10000).ToString(""p2""))</td>", item.Name);
+                            else
+                                sb.AppendFormat(@"<td class=""text-center"">@entity.{0}.ToString(""p2"")</td>", item.Name);
+                        }
+                        else
+                        {
+                            sb.AppendFormat(@"<td class=""text-right"">@entity.{0}.ToString(""n2"")</td>", item.Name);
+                        }
+                        //sb.AppendFormat(@"<td class=""text-right"">@entity.{0:n2}</td>", item.Name);
+                        break;
+                    case TypeCode.Byte:
+                    case TypeCode.Int16:
+                    case TypeCode.Int32:
+                    case TypeCode.Int64:
+                    case TypeCode.UInt16:
+                    case TypeCode.UInt32:
+                    case TypeCode.UInt64:
+                        // 特殊处理枚举
+                        if (item.Type.IsEnum)
+                            sb.Append(@"<td></td>");
+                        else if (item.Name.EqualIgnoreCase("CreateUserID", "UpdateUserID"))
+                            sb.Append(@"<td></td>");
+                        else if (name2.EndsWith("Rate") || name2.EndsWith("Ratio") || item.ItemType.EqualIgnoreCase("percent", "Percentage"))
+                        {
+                            var des = item.Description + "";
+                            if (des.Contains("十分之一"))
+                                sb.AppendFormat(@"<td class=""text-center"">@((entity.{0} / 10d).ToString(""p2""))</td>", item.Name);
+                            else if (des.Contains("百分之一"))
+                                sb.AppendFormat(@"<td class=""text-center"">@((entity.{0} / 100d).ToString(""p2""))</td>", item.Name);
+                            else if (des.Contains("千分之一"))
+                                sb.AppendFormat(@"<td class=""text-center"">@((entity.{0} / 1000d).ToString(""p2""))</td>", item.Name);
+                            else if (des.Contains("万分之一"))
+                                sb.AppendFormat(@"<td class=""text-center"">@((entity.{0} / 10000d).ToString(""p2""))</td>", item.Name);
+                            else
+                                sb.AppendFormat(@"<td class=""text-center"">@entity.{0}.ToString(""p2"")</td>", item.Name);
+                        }
+                        else
+                            sb.AppendFormat(@"<td class=""text-right"">@entity.{0}.ToString(""n0"")</td>", item.Name);
+                        break;
+                    case TypeCode.String:
+                    default:
+                        sb.Append(@"<td></td>");
+                        break;
+                }
+            }
+            sb.AppendLine();
+        }
+
+        return sb.ToString();
+    }
+
+    private static void BuildFormItem(DataField field, StringBuilder sb, IEntityFactory fact)
+    {
+        var des = field.Description.TrimStart(field.DisplayName).TrimStart(",", ".", "，", "。");
+
+        var err = 0;
+
+        var total = 12;
+        var label = 3;
+        var span = 4;
+        if (err == 0 && des.IsNullOrEmpty())
+        {
+            span = 0;
+        }
+        else if (field.Type == typeof(Boolean) || field.Type.IsEnum)
+        {
+            span += 1;
+        }
+        var input = total - label - span;
+        var ident = new String(' ', 4 * 1);
+
+        sb.AppendLine($"    <label class=\"control-label col-xs-{label} col-sm-{label}\">{field.DisplayName}</label>");
+        sb.AppendLine($"    <div class=\"input-group col-xs-{total - label} col-sm-{input}\">");
+
+        // 优先处理映射。因为映射可能是字符串
+        if (!field.MapField.IsNullOrEmpty() && field.MapProvider != null)
+        {
+            sb.AppendLine($"        @Html.ForDropDownList(\"{field.MapField}\", {fact.EntityType.Name}.Meta.AllFields.First(e=>e.Name==\"{field.Name}\").Map.Provider.GetDataSource(), @entity.{field.Name})");
+        }
+        else if (field.ReadOnly)
+            sb.AppendLine($"        <label class=\"form-control\">@entity.{field.Name}</label>");
+        else if (field.Type == typeof(String))
+            BuildStringItem(field, sb);
+        else if (fact.EntityType.As<IEntityTree>() && fact.EntityType.GetValue("Setting") is IEntityTreeSetting set && set?.Parent == field.Name)
+            sb.AppendLine($"        @Html.ForEditor({fact.EntityType.Name}._.{field.Name}, entity)");
+        else
+        {
+            switch (field.Type.GetTypeCode())
+            {
+                case TypeCode.Boolean:
+                    sb.AppendLine($"        @Html.CheckBox(\"{field.Name}\", @entity.{field.Name}, new {{ @class = \"chkSwitch\" }})");
+                    break;
+                case TypeCode.DateTime:
+                    //sb.AppendLine($"        @Html.ForDateTime(\"{field.Name}\", @entity.{field.Name})");
+                    sb.AppendLine($"        <span class=\"input-group-addon\"><i class=\"fa fa-calendar\"></i></span>");
+                    sb.AppendLine($"        @Html.TextBox(\"{field.Name}\", @entity.{field.Name}.ToFullString(\"\"), new {{ @class = \"form-control date form_datetime\" }})");
+                    break;
+                case TypeCode.Decimal:
+                    //sb.AppendLine($"        @Html.ForDecimal(\"{field.Name}\", @entity.{field.Name})");
+                    sb.AppendLine($"        <span class=\"input-group-addon\"><i class=\"fa fa-yen\"></i></span>");
+                    sb.AppendLine($"        @Html.TextBox(\"{field.Name}\", @entity.{field.Name}, new {{ @class = \"form-control\" }})");
+                    break;
+                case TypeCode.Single:
+                case TypeCode.Double:
+                    //sb.AppendLine($"        @Html.ForDouble(\"{field.Name}\", @entity.{field.Name})");
+                    sb.AppendLine($"        @Html.TextBox(\"{field.Name}\", @entity.{field.Name}, new {{ @class = \"form-control\" }})");
+                    break;
+                case TypeCode.Byte:
+                case TypeCode.SByte:
+                case TypeCode.Int16:
+                case TypeCode.Int32:
+                case TypeCode.Int64:
+                case TypeCode.UInt16:
+                case TypeCode.UInt32:
+                case TypeCode.UInt64:
+                    if (field.Type.IsEnum)
+                        sb.AppendLine($"        @Html.ForEnum(\"{field.Name}\", @entity.{field.Name})");
+                    else
+                        sb.AppendLine($"        @Html.TextBox(\"{field.Name}\", @entity.{field.Name}, new {{ @class = \"form-control\", role=\"number\" }})");
+                    break;
+                case TypeCode.String:
+                    BuildStringItem(field, sb);
+                    break;
+                default:
+                    sb.AppendLine($"        @Html.ForEditor({fact.EntityType.Name}._.{field.Name}, entity)");
+                    break;
+            }
+        }
+
+        sb.AppendLine(@"    </div>");
+
+        if (!des.IsNullOrEmpty()) sb.AppendLine($"    <span class=\"hidden-xs col-sm-{span}\"><span class=\"middle\">{des}</span></span>");
+    }
+
+    private static void BuildStringItem(DataField field, StringBuilder sb)
+    {
+        var cls = "form-control";
+        var type = "text";
+        var name = field.Name;
+
+        // 首先输出图标
+        var ico = "";
+
+        var txt = "";
+        if (name.EqualIgnoreCase("Pass", "Password"))
+        {
+            //type = "password";
+            type = "password\" autocomplete=\"off";
+        }
+        else if (name.EqualIgnoreCase("Phone", "Mobile"))
+        {
+            type = "tel";
+            ico = "phone";
+        }
+        else if (name.EqualIgnoreCase("email", "mail"))
+        {
+            type = "email";
+            ico = "envelope";
+        }
+        else if (name.EndsWithIgnoreCase("url"))
+        {
+            type = "url";
+            ico = "home";
+        }
+        else if (field.IsBigText())
+        {
+            txt = $"<textarea class=\"{cls}\" cols=\"20\" id=\"{name}\" name=\"{name}\" rows=\"3\">@entity.{name}</textarea>";
+        }
+
+        if (txt.IsNullOrEmpty()) txt = $"<input class=\"{cls}\" id=\"{name}\" name=\"{name}\" type=\"{type}\" value=\"@entity.{name}\" />";
+
+        if (!ico.IsNullOrEmpty())
+        {
+            txt = $"<div class=\"input-group\"><span class=\"input-group-addon\"><i class=\"glyphicon glyphicon-{ico}\"></i></span>{txt}</div>";
+        }
+
+        sb.AppendLine($"        {txt}");
+    }
+
+    internal static Boolean MakeSearchView(Type entityType, String vpath, List<DataField> fields)
+    {
+        var tmp = """
+            @using {Namespace}
+            @using NewLife;
+            @using NewLife.Cube;
+            @using NewLife.Web;
+            @using XCode;
+            @using XCode.Configuration;
+            @using XCode.Membership;
+            @{
+                var fact = ViewBag.Factory as IEntityFactory;
+                var page = ViewBag.Page as Pager;
+            }
+            @*<div class="form-group">
+                @Html.ActionLink("用户链接", "Index", "UserConnect", null, new { @class = "btn btn-success btn-sm" })
+                @Html.ActionLink("用户在线", "Index", "UserOnline", null, new { @class = "btn btn-success btn-sm" })
+                <label for="RoleID" class="control-label">角色：</label>
+                @Html.ForDropDownList("RoleID", Role.FindAllWithCache().Cast<IEntity>().ToList(), page["roldId"], "全部", true)
+                @Html.ForDropDownList("p", VisitStat.FindAllPageName(), page["p"], "全部页面", true)
+                @Html.ForListBox("roleIds", Role.FindAllWithCache(), page["roleIds"])
+            </ div>*@
+            @*@await Html.PartialAsync("_SelectDepartment", "departmentId")*@
+            @*@await Html.PartialAsync("_DateRange")*@
+            """;
+
+        //var sb = new StringBuilder();
+        //var fact = EntityFactory.CreateFactory(entityType);
+
+        tmp = tmp.Replace("{EntityType}", entityType.Name);
+        tmp = tmp.Replace("{Namespace}", entityType.Namespace);
+
+        //sb.Append(tmp.Substring(p));
+        //tmp = sb.ToString();
+
+        File.WriteAllText(vpath.GetFullPath().EnsureDirectory(true), tmp, Encoding.UTF8);
+
+        return true;
     }
 
     /// <summary>是否启用多选</summary>
@@ -198,7 +707,7 @@ public static class ViewHelper {
     /// <returns></returns>
     public static IList<MenuTree> GetMenus(this IUser user)
     {
-        if (user == null) user = User.FindAll().FirstOrDefault();
+        user ??= User.FindAll().FirstOrDefault();
 
         var fact = ManageProvider.Menu;
         var menus = fact.Root.Childs;
