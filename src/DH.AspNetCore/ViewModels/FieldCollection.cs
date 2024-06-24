@@ -1,16 +1,17 @@
-﻿using DH.AspNetCore.ViewModels;
-
-using Microsoft.AspNetCore.Http;
-
-using NewLife;
-using NewLife.Reflection;
-
-using System.Collections;
+﻿using System.Collections;
 using System.ComponentModel;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 using System.Xml.Serialization;
+
+using DH.AspNetCore.ViewModels;
+
+using Microsoft.AspNetCore.Http;
+
+using NewLife;
+using NewLife.Data;
+using NewLife.Reflection;
 
 using XCode;
 using XCode.Configuration;
@@ -18,11 +19,16 @@ using XCode.DataAccessLayer;
 
 namespace DH.ViewModels;
 
+/// <summary>获取数据委托</summary>
+/// <param name="model"></param>
+/// <returns></returns>
+public delegate String GetValueDelegate(IModel model);
+
 /// <summary>分组可见委托</summary>
-/// <param name="entity"></param>
+/// <param name="model"></param>
 /// <param name="group"></param>
 /// <returns></returns>
-public delegate Boolean GroupVisibleDelegate(IEntity entity, String group);
+public delegate Boolean GroupVisibleDelegate(IModel model, String group);
 
 /// <summary>字段集合</summary>
 public class FieldCollection : List<DataField> {
@@ -37,6 +43,10 @@ public class FieldCollection : List<DataField> {
     /// <summary>需要隐藏的分组名</summary>
     [XmlIgnore, IgnoreDataMember, JsonIgnore]
     public ICollection<String> HiddenGroups { get; } = new HashSet<String>();
+
+    /// <summary>获取样式委托。可用于自定义列表页单元格的样式</summary>
+    [XmlIgnore, IgnoreDataMember, JsonIgnore]
+    public GetValueDelegate GetRowClass { get; set; }
 
     /// <summary>是否显示分组</summary>
     [XmlIgnore, IgnoreDataMember, JsonIgnore]
