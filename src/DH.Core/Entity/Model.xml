@@ -716,11 +716,11 @@
     <Table Name="SysOnlineUsers" TableName="DH_SysOnlineUsers" Description="在线用户表">
       <Columns>
         <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
-        <Column Name="Uid" DataType="Int32" RawType="int(11)" Description="用户id" />
+        <Column Name="Uid" DataType="Int32" Description="用户id" />
         <Column Name="Sid" DataType="Int64" Description="用户sessionid" />
         <Column Name="NickName" DataType="String" Nullable="False" Description="用户昵称" />
-        <Column Name="Name" DataType="String" RawType="varchar(100)" Master="True" Length="100" Nullable="False" Description="用户名" />
-        <Column Name="Ip" DataType="String" RawType="varchar(20)" Length="20" Nullable="False" Description="用户ip" />
+        <Column Name="Name" DataType="String" Master="True" Length="100" Nullable="False" Description="用户名" />
+        <Column Name="Ip" DataType="String" Length="30" Nullable="False" Description="用户ip" />
         <Column Name="Region" DataType="String" Length="150" Description="用户所在区域" />
         <Column Name="Clicks" DataType="Int32" Description="请求次数" />
         <Column Name="UserAgent" DataType="String" Length="1000" Description="特征字符串" />
