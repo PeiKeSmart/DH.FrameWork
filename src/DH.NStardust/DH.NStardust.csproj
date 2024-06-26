@@ -78,6 +78,8 @@
     <Compile Remove="RpcClient.cs" />
     <Compile Remove="RpcServer.cs" />
     <Compile Remove="Services\CacheService.cs" />
+	<Compile Remove="Services\ICommandClient.cs" />
+    <Compile Remove="Services\IEventProvider.cs" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)'=='net45' or '$(TargetFramework)'=='net461'">
