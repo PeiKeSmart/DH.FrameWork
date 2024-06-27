@@ -190,9 +190,10 @@ public class Systemd : DefaultHost
     {
         XTrace.WriteLine("{0}.Remove {1}", Name, serviceName);
 
+        Process.Start("systemctl", $"disable  {serviceName}");
         var file = ServicePath.CombinePath($"{serviceName}.service");
         if (File.Exists(file)) File.Delete(file);
-
+        Process.Start("systemctl", "daemon-reload");
         return true;
     }
 
@@ -274,11 +275,13 @@ public class Systemd : DefaultHost
     /// </summary>
     /// <param name="serviceName">服务名称</param>
     /// <returns></returns>
-    private String GetServicePath(String serviceName)
+    public static String GetServicePath(String serviceName)
     {
-        var file = ServicePath.CombinePath($"{serviceName}.service");
-        if (File.Exists(file)) return file;
-
+        foreach (var path in SystemdPaths)
+        {
+            var file = Path.Combine(path, $"{serviceName}.service");
+            if (File.Exists(file)) return file;
+        }
         return null;
     }
 }
