@@ -39,7 +39,7 @@ public class StarClient : ClientBase, ICommandClient, IEventProvider
     /// <summary>实例化</summary>
     public StarClient()
     {
-        Features = Features.Login | Features.Logout | Features.Ping | Features.Notify | Features.CommandReply | Features.PostEvent;
+        Features = Features.Login | Features.Logout | Features.Ping | Features.Notify | Features.Upgrade | Features.CommandReply | Features.PostEvent;
         SetActions("Node/");
 
         Log = XTrace.Log;
@@ -73,7 +73,7 @@ public class StarClient : ClientBase, ICommandClient, IEventProvider
     #region 登录
     /// <summary>登录</summary>
     /// <returns></returns>
-    public override async Task<ILoginResponse?> Login(CancellationToken cancellationToken = default)
+    public override async Task<ILoginResponse?> Login()
     {
         var rs = await base.Login();
 
@@ -375,7 +375,7 @@ public class StarClient : ClientBase, ICommandClient, IEventProvider
 
     /// <summary>心跳</summary>
     /// <returns></returns>
-    public override async Task<IPingResponse?> Ping(CancellationToken cancellationToken = default)
+    public override async Task<IPingResponse?> Ping()
     {
         var rs = await base.Ping();
         if (rs != null)
