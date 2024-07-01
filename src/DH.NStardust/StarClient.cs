@@ -73,7 +73,7 @@ public class StarClient : ClientBase, ICommandClient, IEventProvider
     #region 登录
     /// <summary>登录</summary>
     /// <returns></returns>
-    public override async Task<ILoginResponse?> Login()
+    public override async Task<ILoginResponse?> Login(CancellationToken cancellationToken = default)
     {
         var rs = await base.Login();
 
@@ -375,7 +375,7 @@ public class StarClient : ClientBase, ICommandClient, IEventProvider
 
     /// <summary>心跳</summary>
     /// <returns></returns>
-    public override async Task<IPingResponse?> Ping()
+    public override async Task<IPingResponse?> Ping(CancellationToken cancellationToken = default)
     {
         var rs = await base.Ping();
         if (rs != null)
