@@ -108,6 +108,13 @@ public static class JsonHelper
         return (T?)Default.Read(json, typeof(T));
     }
 
+    /// <summary>从Json字符串中反序列化对象</summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="jsonHost"></param>
+    /// <param name="json"></param>
+    /// <returns></returns>
+    public static T? Read<T>(this IJsonHost jsonHost, String json) => (T?)jsonHost.Read(json, typeof(T));
+
     /// <summary>格式化Json文本</summary>
     /// <param name="json"></param>
     /// <returns></returns>
@@ -181,13 +188,18 @@ public static class JsonHelper
     /// <summary>Json类型对象转换实体类</summary>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static T? Convert<T>(Object obj)
+    public static T? Convert<T>(Object obj) => Default.Convert<T>(obj);
+
+    /// <summary>Json类型对象转换实体类</summary>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    public static T? Convert<T>(this IJsonHost jsonHost, Object obj)
     {
         if (obj == null) return default;
         if (obj is T t) return t;
         if (obj.GetType().As<T>()) return (T)obj;
 
-        return (T?)Default.Convert(obj, typeof(T));
+        return (T?)jsonHost.Convert(obj, typeof(T));
     }
 
     /// <summary>分析Json字符串得到字典</summary>
