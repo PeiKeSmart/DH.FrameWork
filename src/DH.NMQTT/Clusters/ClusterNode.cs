@@ -1,5 +1,6 @@
 ﻿using System.Runtime.Serialization;
 using NewLife.Log;
+using NewLife.MQTT.Messaging;
 using NewLife.Net;
 using NewLife.Remoting;
 
@@ -16,20 +17,36 @@ public class ClusterNode : DisposeBase
     [IgnoreDataMember]
     public IApiSession? Session { get; set; }
 
+    /// <summary>客户端</summary>
     [IgnoreDataMember]
-    public IApiClient Client { get; set; }
+    public IApiClient Client { get; set; } = null!;
 
+    /// <summary>次数</summary>
     public Int32 Times { get; set; }
 
+    /// <summary>最后活跃</summary>
     public DateTime LastActive { get; set; } = DateTime.Now;
+
+    private NodeInfo? _myNode;
+    private NodeInfo? _remoteNode;
     #endregion
 
     #region 构造
+    /// <summary>已重载</summary>
+    /// <returns></returns>
     public override String ToString() => EndPoint ?? base.ToString();
 
+    /// <summary>销毁</summary>
+    /// <param name="disposing"></param>
     protected override void Dispose(Boolean disposing)
     {
         base.Dispose(disposing);
+
+        try
+        {
+            if (_remoteNode != null && _myNode != null) _ = Leave(_myNode).Wait(500);
+        }
+        catch { }
 
         Session.TryDispose();
         Client.TryDispose();
@@ -49,67 +66,90 @@ public class ClusterNode : DisposeBase
             Log = XTrace.Log
         };
 #if DEBUG
-        client.EncoderLog = client.Log;
+        //client.Log = XTrace.Log;
+        //client.EncoderLog = client.Log;
 #endif
         client.Open();
 
         Client = client;
     }
 
-    public async Task<String> Echo(String msg)
+    /// <summary>回响</summary>
+    /// <param name="msg"></param>
+    /// <returns></returns>
+    public async Task<String?> Echo(String msg)
     {
         Init();
 
         return await Client.InvokeAsync<String>("Cluster/Echo", msg);
     }
 
-    public async Task<NodeInfo> Join(NodeInfo info)
+    /// <summary>加入集群</summary>
+    public async Task<NodeInfo?> Join(NodeInfo info)
     {
         Init();
 
-        return await Client.InvokeAsync<NodeInfo>("Cluster/Join", info);
+        _myNode = info;
+
+        return _remoteNode = await Client.InvokeAsync<NodeInfo>("Cluster/Join", info);
     }
 
-    public async Task<NodeInfo> Ping(NodeInfo info)
+    /// <summary>心跳</summary>
+    public async Task<NodeInfo?> Ping(NodeInfo info)
     {
         Init();
 
-        return await Client.InvokeAsync<NodeInfo>("Cluster/Ping", info);
+        _myNode = info;
+
+        if (_remoteNode == null)
+            return await Join(info);
+        else
+            return await Client.InvokeAsync<NodeInfo>("Cluster/Ping", info);
     }
 
-    public async Task<String> Leave(NodeInfo info)
+    /// <summary>离开集群</summary>
+    public async Task<String?> Leave(NodeInfo info)
     {
         Init();
 
         return await Client.InvokeAsync<String>("Cluster/Leave", info);
     }
 
-    public async Task<String> Subscribe()
+    /// <summary>订阅</summary>
+    /// <param name="infos"></param>
+    /// <returns></returns>
+    public async Task<String?> Subscribe(SubscriptionInfo[] infos)
     {
         Init();
 
-        return await Client.InvokeAsync<String>("Cluster/Subscribe");
+        return await Client.InvokeAsync<String>("Cluster/Subscribe", infos);
     }
 
-    public async Task<String> Unsubscribe()
+    /// <summary>退订</summary>
+    /// <param name="infos"></param>
+    /// <returns></returns>
+    public async Task<String?> Unsubscribe(SubscriptionInfo[] infos)
     {
         Init();
 
-        return await Client.InvokeAsync<String>("Cluster/Unsubscribe");
+        return await Client.InvokeAsync<String>("Cluster/Unsubscribe", infos);
     }
 
-    public async Task<String> Ping()
+    /// <summary>心跳</summary>
+    /// <returns></returns>
+    public async Task<String?> Ping()
     {
         Init();
 
         return await Client.InvokeAsync<String>("Cluster/Ping");
     }
 
-    public async Task<String> Publish()
+    /// <summary>发布</summary>
+    public async Task<String?> Publish(PublishInfo info)
     {
         Init();
 
-        return await Client.InvokeAsync<String>("Cluster/Publish");
+        return await Client.InvokeAsync<String>("Cluster/Publish", info);
     }
     #endregion
 }
