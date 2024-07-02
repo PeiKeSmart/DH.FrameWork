@@ -149,10 +149,13 @@ public abstract class ClientBase : DisposeBase, IApiClient, ICommandClient, IEve
             [Features.Login] = prefix + "Login",
             [Features.Logout] = prefix + "Logout",
             [Features.Ping] = prefix + "Ping",
-            [Features.Notify] = prefix + "Notify",
             [Features.Upgrade] = prefix + "Upgrade",
-            [Features.PostEvent] = prefix + "PostEvents"
+            [Features.Notify] = prefix + "Notify",
+            [Features.CommandReply] = prefix + "CommandReply",
+            [Features.PostEvent] = prefix + "PostEvents",
         };
+
+        this.RegisterCommand(prefix + "Upgrade", s => _ = CheckUpgrade(null));
     }
 
     /// <summary>初始化</summary>
@@ -200,9 +203,7 @@ public abstract class ClientBase : DisposeBase, IApiClient, ICommandClient, IEve
     /// <returns></returns>
     protected virtual ApiHttpClient CreateHttp(String urls) => new(urls)
     {
-#if !NET40
         JsonHost = JsonHost,
-#endif
         DefaultUserAgent = $"{_name}/v{_version}",
         Log = Log,
     };
@@ -288,7 +289,7 @@ public abstract class ClientBase : DisposeBase, IApiClient, ICommandClient, IEve
 
         // 验证登录
         var needLogin = !Actions[Features.Login].EqualIgnoreCase(action);
-        if (!Logined && needLogin && Features.HasFlag(Features.Login)) await Login();
+        if (!Logined && needLogin && Features.HasFlag(Features.Login)) await Login(cancellationToken);
 
         // GET请求
         var rs = await http.InvokeAsync<TResult>(HttpMethod.Get, action, args, null, cancellationToken);
@@ -311,7 +312,7 @@ public abstract class ClientBase : DisposeBase, IApiClient, ICommandClient, IEve
     {
         // 验证登录。如果该接口需要登录，且未登录，则先登录
         var needLogin = !Actions[Features.Login].EqualIgnoreCase(action);
-        if (!Logined && needLogin && Features.HasFlag(Features.Login)) await Login();
+        if (!Logined && needLogin && Features.HasFlag(Features.Login)) await Login(cancellationToken);
 
         try
         {
@@ -327,7 +328,7 @@ public abstract class ClientBase : DisposeBase, IApiClient, ICommandClient, IEve
                 {
                     Log?.Debug("{0}", ex);
                     WriteLog("重新登录！");
-                    await Login();
+                    await Login(cancellationToken);
 
                     // 再次执行当前请求
                     return await OnInvokeAsync<TResult>(action, args, cancellationToken);
@@ -557,7 +558,8 @@ public abstract class ClientBase : DisposeBase, IApiClient, ICommandClient, IEve
             // 如果网络不可用，直接保存到队列
             if (!NetworkInterface.GetIsNetworkAvailable())
             {
-                if (_fails.Count < MaxFails) _fails.Enqueue(request);
+                // 如果心跳请求实现了ICloneable接口，可以克隆一份，避免后续修改
+                if (_fails.Count < MaxFails) _fails.Enqueue((request as ICloneable)?.Clone() as IPingRequest ?? request);
                 return null;
             }
 
@@ -588,7 +590,8 @@ public abstract class ClientBase : DisposeBase, IApiClient, ICommandClient, IEve
             catch
             {
                 // 失败时保存到队列
-                if (_fails.Count < MaxFails) _fails.Enqueue(request);
+                //if (_fails.Count < MaxFails) _fails.Enqueue(request);
+                if (_fails.Count < MaxFails) _fails.Enqueue((request as ICloneable)?.Clone() as IPingRequest ?? request);
 
                 throw;
             }
@@ -682,6 +685,114 @@ public abstract class ClientBase : DisposeBase, IApiClient, ICommandClient, IEve
     protected virtual Task<IPingResponse?> PingAsync(IPingRequest request, CancellationToken cancellationToken) => InvokeAsync<IPingResponse>(Actions[Features.Ping], request, cancellationToken);
     #endregion
 
+    #region 升级更新
+    private async Task CheckUpgrade(Object? data)
+    {
+        if (!NetworkInterface.GetIsNetworkAvailable()) return;
+
+        await Upgrade(null);
+    }
+
+    private String? _lastVersion;
+    /// <summary>获取更新信息。如有更新，则下载解压覆盖并重启应用</summary>
+    /// <returns></returns>
+    public virtual async Task<IUpgradeInfo?> Upgrade(String? channel, CancellationToken cancellationToken = default)
+    {
+        using var span = Tracer?.NewSpan(nameof(Upgrade));
+        WriteLog("检查更新");
+
+        // 清理旧版备份文件
+        var ug = new Upgrade { Log = XTrace.Log };
+        ug.DeleteBackup(".");
+
+        // 调用接口查询思否存在更新信息
+        var info = await UpgradeAsync(channel, cancellationToken);
+        if (info != null && info.Version != _lastVersion)
+        {
+            // _lastVersion避免频繁更新同一个版本
+            WriteLog("发现更新：{0}", info.ToJson(true));
+            this.WriteInfoEvent("Upgrade", $"准备从[{_lastVersion}]更新到[{info.Version}]，开始下载 {info.Source}");
+
+            // 下载文件包
+            ug.Url = BuildUrl(info.Source!);
+            await ug.Download(cancellationToken);
+
+            // 检查文件完整性
+            if (!info.FileHash.IsNullOrEmpty() && !ug.CheckFileHash(info.FileHash))
+            {
+                this.WriteInfoEvent("Upgrade", "下载完成，哈希校验失败");
+            }
+            else
+            {
+                this.WriteInfoEvent("Upgrade", "下载完成，准备解压文件");
+                if (!ug.Extract())
+                {
+                    this.WriteInfoEvent("Upgrade", "解压失败");
+                }
+                else
+                {
+                    if (info is UpgradeInfo info2 && !info2.Preinstall.IsNullOrEmpty())
+                    {
+                        this.WriteInfoEvent("Upgrade", "执行预安装脚本");
+
+                        ug.Run(info2.Preinstall);
+                    }
+
+                    this.WriteInfoEvent("Upgrade", "解压完成，准备覆盖文件");
+
+                    // 执行更新，解压缩覆盖文件
+                    var rs = ug.Update();
+
+                    // 执行前置命令
+                    if (rs && !info.Executor.IsNullOrEmpty()) ug.Run(info.Executor);
+                    _lastVersion = info.Version;
+
+                    // 强制更新时，马上重启
+                    if (rs && info.Force) Restart(ug);
+                }
+            }
+        }
+
+        return info;
+    }
+
+    /// <summary>更新完成，重启自己</summary>
+    /// <param name="upgrade"></param>
+    protected virtual void Restart(Upgrade upgrade)
+    {
+        var asm = Assembly.GetEntryAssembly();
+        if (asm == null) return;
+
+        var name = asm.GetName().Name;
+        if (name.IsNullOrEmpty()) return;
+
+        // 重新拉起进程
+        var rs = upgrade.Run(name, $"-upgrade {Environment.CommandLine}");
+
+        if (rs)
+        {
+            var pid = Process.GetCurrentProcess().Id;
+            this.WriteInfoEvent("Upgrade", "强制更新完成，新进程已拉起，准备退出当前进程！PID=" + pid);
+
+            upgrade.KillSelf();
+        }
+        else
+        {
+            this.WriteInfoEvent("Upgrade", "强制更新完成，但拉起新进程失败");
+        }
+    }
+
+    /// <summary>放弃更新异步请求。由Upgrade内部调用</summary>
+    /// <returns></returns>
+    protected virtual async Task<IUpgradeInfo?> UpgradeAsync(String? channel, CancellationToken cancellationToken)
+    {
+        if (_client is ApiHttpClient)
+            return await GetAsync<IUpgradeInfo>(Actions[Features.Upgrade], new { channel }, cancellationToken);
+
+        return await InvokeAsync<IUpgradeInfo>(Actions[Features.Upgrade], new { channel }, cancellationToken);
+    }
+    #endregion
+
     #region 下行通知
     private TimerX? _timer;
     private TimerX? _timerUpgrade;
@@ -698,7 +809,7 @@ public abstract class ClientBase : DisposeBase, IApiClient, ICommandClient, IEve
                         _timer = new TimerX(OnPing, null, 1000, 60_000, "Client") { Async = true };
 
                     if (Features.HasFlag(Features.Upgrade))
-                        _timerUpgrade = new TimerX(s => Upgrade(null), null, 5_000, 600_000, "Client") { Async = true };
+                        _timerUpgrade = new TimerX(CheckUpgrade, null, 5_000, 600_000, "Client") { Async = true };
                 }
             }
         }
@@ -763,7 +874,7 @@ public abstract class ClientBase : DisposeBase, IApiClient, ICommandClient, IEve
         if (model == null) return null;
 
         // 去重，避免命令被重复执行
-        if (!_cache.Add($"cmd:{model.Id}", model, 3600)) return null;
+        if (model.Id > 0 && !_cache.Add($"cmd:{model.Id}", model, 3600)) return null;
 
         // 埋点，建立调用链
         using var span = Tracer?.NewSpan("cmd:" + model.Command, model);
@@ -934,72 +1045,24 @@ public abstract class ClientBase : DisposeBase, IApiClient, ICommandClient, IEve
     }
     #endregion
 
-    #region 升级更新
-    private String? _lastVersion;
-    /// <summary>获取更新信息。如有更新，则下载解压覆盖并重启应用</summary>
+    #region 辅助
+    /// <summary>
+    /// 把Url相对路径格式化为绝对路径。常用于文件下载
+    /// </summary>
+    /// <param name="url"></param>
     /// <returns></returns>
-    public virtual async Task<IUpgradeInfo?> Upgrade(String? channel, CancellationToken cancellationToken = default)
+    public virtual String BuildUrl(String url)
     {
-        using var span = Tracer?.NewSpan(nameof(Upgrade));
-        WriteLog("检查更新");
-
-        // 清理旧版备份文件
-        var ug = new Upgrade { Log = XTrace.Log };
-        ug.DeleteBackup(".");
-
-        // 调用接口查询思否存在更新信息
-        var info = await UpgradeAsync(channel, cancellationToken);
-        if (info != null && info.Version != _lastVersion)
+        if (Client is ApiHttpClient client && !url.StartsWithIgnoreCase("http://", "https://"))
         {
-            // _lastVersion避免频繁更新同一个版本
-            WriteLog("发现更新：{0}", info.ToJson(true));
-
-            // 下载文件包
-            ug.Url = info.Source;
-            await ug.Download(cancellationToken);
-
-            // 检查文件完整性
-            if (info.FileHash.IsNullOrEmpty() || ug.CheckFileHash(info.FileHash))
-            {
-                // 执行更新，解压缩覆盖文件
-                var rs = ug.Update();
-
-                // 执行前置命令
-                if (rs && !info.Executor.IsNullOrEmpty()) ug.Run(info.Executor);
-                _lastVersion = info.Version;
-
-                // 强制更新时，马上重启
-                if (rs && info.Force) Restart(ug);
-            }
+            var svr = client.Services.FirstOrDefault(e => e.Name == client.Source) ?? client.Services.FirstOrDefault();
+            if (svr != null && svr.Address != null)
+                url = new Uri(svr.Address, url) + "";
         }
 
-        return info;
+        return url;
     }
 
-    /// <summary>更新完成，重启自己</summary>
-    /// <param name="upgrade"></param>
-    protected virtual void Restart(Upgrade upgrade)
-    {
-        var asm = Assembly.GetEntryAssembly();
-
-        // 重新拉起进程
-        var rs = upgrade.Run("dotnet", $"{asm!.Location} -upgrade {Environment.CommandLine}");
-
-        if (rs) upgrade.KillSelf();
-    }
-
-    /// <summary>放弃更新异步请求。由Upgrade内部调用</summary>
-    /// <returns></returns>
-    protected virtual async Task<IUpgradeInfo?> UpgradeAsync(String? channel, CancellationToken cancellationToken)
-    {
-        if (_client is ApiHttpClient)
-            return await GetAsync<IUpgradeInfo>(Actions[Features.Upgrade], new { channel }, cancellationToken);
-
-        return await InvokeAsync<IUpgradeInfo>(Actions[Features.Upgrade], new { channel }, cancellationToken);
-    }
-    #endregion
-
-    #region 辅助
     /// <summary>从服务提供者（对象容器）创建模型对象</summary>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
