@@ -11,15 +11,12 @@ using NewLife.Caching;
 using System.Net.NetworkInformation;
 using NewLife.Remoting.Models;
 using NewLife.Remoting.Clients;
-using NewLife.Security;
 using NewLife.Remoting;
 using NewLife.Http;
+using NewLife.Security;
 
 
-
-
-#if NET45_OR_GREATER || NETCOREAPP || NETSTANDARD
-using System.Net.WebSockets;
+#if !NET40
 using TaskEx = System.Threading.Tasks.Task;
 #endif
 
@@ -69,8 +66,11 @@ public class AppClient : ClientBase, IRegistry
     /// <summary>实例化</summary>
     public AppClient()
     {
-        Features = Features.Ping | Features.Notify;
+        Features = Features.Ping | Features.Notify | Features.CommandReply;
         SetActions("App/");
+        Actions[Features.CommandReply] = "App/CommandReply";
+
+        PasswordProvider = new PasswordProvider();
 
         // 加载已保存数据
         var dic = LoadConsumeServicese();
@@ -178,7 +178,6 @@ public class AppClient : ClientBase, IRegistry
             WriteLog("接入星尘服务端：{0}", rs);
 
             Logined = true;
-            //if (Filter is NewLife.Http.TokenHttpFilter thf) Token = thf.Token?.AccessToken;
 
             return rs;
         }
@@ -193,7 +192,9 @@ public class AppClient : ClientBase, IRegistry
             return null;
         }
     }
+    #endregion
 
+    #region 心跳
     /// <summary>构建心跳请求</summary>
     /// <returns></returns>
     public override IPingRequest BuildPingRequest()
@@ -220,9 +221,7 @@ public class AppClient : ClientBase, IRegistry
 
         return await local.PingAsync(_appInfo, WatchdogTimeout);
     }
-    #endregion
 
-    #region 心跳
     /// <summary>心跳</summary>
     /// <param name="state"></param>
     /// <returns></returns>
