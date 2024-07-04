@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
 	<Import Project="../../version.props" />
 
 	<PropertyGroup>
@@ -6,10 +6,10 @@
 		<OutputType>Library</OutputType>
 		<TargetFramework>net8.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<RootNamespace>DH.Npoi</RootNamespace>
-		<AssemblyName>DH.Npoi</AssemblyName>
-		<AssemblyTitle>NPOI扩展类库</AssemblyTitle>
-		<Description>DH框架基于NPOI的扩展类库，支持Excel/Csv。参考https://github.com/WeihanLi/WeihanLi.Npoi</Description>
+		<RootNamespace>DH.Sprache</RootNamespace>
+		<AssemblyName>DH.Sprache</AssemblyName>
+		<AssemblyTitle>解析器构造库</AssemblyTitle>
+		<Description>用于DH框架的一个小巧、友好的 C# 解析器构造库。参考https://github.com/sprache/Sprache</Description>
 		<Company>湖北登灏科技有限公司</Company>
 
 		<OutputPath>..\Bin</OutputPath>
@@ -36,7 +36,7 @@
 		<RepositoryUrl>https://gitee.com/dengho/DH.FrameWork</RepositoryUrl>
 		<RepositoryType>Git</RepositoryType>
 		<PackageTags>湖北登灏科技有限公司;DH组件;DH;$(AssemblyName)</PackageTags>
-		<PackageReleaseNotes>DH框架基于NPOI的扩展类库，支持Excel/Csv</PackageReleaseNotes>
+		<PackageReleaseNotes>用于DH框架的一个小巧、友好的 C# 解析器构造库</PackageReleaseNotes>
 		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>
 		<EmbedUntrackedSources>true</EmbedUntrackedSources>
@@ -70,29 +70,6 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="NPOI" Version="2.7.1" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\DH.Base\DH.Base.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Compile Update="Resource.Designer.cs">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>Resource.resx</DependentUpon>
-		</Compile>
-	</ItemGroup>
-
-	<ItemGroup>
-		<EmbeddedResource Update="Resource.resx">
-			<Generator>ResXFileCodeGenerator</Generator>
-			<LastGenOutput>Resource.Designer.cs</LastGenOutput>
-		</EmbeddedResource>
 	</ItemGroup>
 
 </Project>

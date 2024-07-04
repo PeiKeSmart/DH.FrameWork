@@ -400,6 +400,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DH.DotNetDetour", "src\DH.D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DH.AspNetCoreProxy", "src\DH.AspNetCoreProxy\DH.AspNetCoreProxy.csproj", "{412C8B00-5CC9-4A19-BBD8-4A9EDDB00617}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DH.Sprache", "src\DH.Sprache\DH.Sprache.csproj", "{56D56548-54CC-4B0A-95A7-82B13078ABB3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -994,6 +996,10 @@ Global
 		{412C8B00-5CC9-4A19-BBD8-4A9EDDB00617}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{412C8B00-5CC9-4A19-BBD8-4A9EDDB00617}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{412C8B00-5CC9-4A19-BBD8-4A9EDDB00617}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56D56548-54CC-4B0A-95A7-82B13078ABB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56D56548-54CC-4B0A-95A7-82B13078ABB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56D56548-54CC-4B0A-95A7-82B13078ABB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56D56548-54CC-4B0A-95A7-82B13078ABB3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1189,6 +1195,7 @@ Global
 		{D38B536D-1F8E-43C0-81CD-778DF436928C} = {23EC386A-09DB-4210-BD66-A131F0AB4D11}
 		{D65ABE0F-D1CF-480D-8F41-849D1694F583} = {8ED504DD-57C1-47D3-82E7-9F7E4CDE4137}
 		{412C8B00-5CC9-4A19-BBD8-4A9EDDB00617} = {AD7AB001-3AF0-48C7-B277-513A2A2D6275}
+		{56D56548-54CC-4B0A-95A7-82B13078ABB3} = {8ED504DD-57C1-47D3-82E7-9F7E4CDE4137}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8C334959-AE8C-42FF-B144-7B36F5C1B16A}
