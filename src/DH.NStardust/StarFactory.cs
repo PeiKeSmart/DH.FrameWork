@@ -195,12 +195,12 @@ public class StarFactory : DisposeBase
                 else
                     XTrace.WriteLine("星尘探测：StarAgent Not Found, Cost={0}ms", sw.ElapsedMilliseconds);
 
-                if (inf != null && !inf.PluginServer.IsNullOrEmpty())
+                if (inf != null && !inf.PluginServer.IsNullOrEmpty() && !AppId.EqualIgnoreCase("StarWeb", "StarServer"))
                 {
                     var core = NewLife.Setting.Current;
                     if (!inf.PluginServer.EqualIgnoreCase(core.PluginServer))
                     {
-                        XTrace.WriteLine("插件服务器PluginServer变更为 {0}", inf.PluginServer);
+                        XTrace.WriteLine("据星尘代理公布，插件服务器PluginServer变更为 {0}", inf.PluginServer);
                         core.PluginServer = inf.PluginServer;
                         core.Save();
                     }
@@ -374,6 +374,11 @@ public class StarFactory : DisposeBase
                 };
                 //if (!ClientId.IsNullOrEmpty()) config.ClientId = ClientId;
                 config.Attach(_client);
+
+                // 为了兼容旧版本，优先给它ApiHttpClient
+                var ver = typeof(HttpConfigProvider).Assembly.GetName().Version;
+                if (ver <= new Version(10, 10, 2024, 0701) && _client.Client is ApiHttpClient client)
+                    config.Client = client;
 
                 //!! 不需要默认加载，直到首次使用配置数据时才加载。因为有可能应用并不使用配置中心，仅仅是获取这个对象。避免网络不通时的报错日志
                 //config.LoadAll();
