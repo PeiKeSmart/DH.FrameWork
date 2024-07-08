@@ -138,17 +138,6 @@ public partial class PdRecharge : DHEntityBase<PdRecharge> {
         return FindAll(_.UId == uId);
     }
 
-    /// <summary>根据订单号查找</summary>
-    /// <param name="Sn">记录惟一标识</param>
-    /// <returns>实体集合</returns>
-    public static PdRecharge FindBySn(string Sn)
-    {
-        // 实体缓存
-        if (Meta.Session.Count < 1000) return Meta.Cache.Find(e => e.Sn == Sn);
-
-        return Find(_.Sn == Sn);
-    }
-
     /// <summary>
     /// 根据条件查询充值记录
     /// </summary>

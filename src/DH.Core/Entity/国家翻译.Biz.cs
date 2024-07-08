@@ -125,7 +125,7 @@ public partial class CountryLan : DHEntityBase<CountryLan> {
     /// <param name="lId">语言Id</param>
     /// <param name="IsGetDefault">是否获取默认数据</param>
     /// <returns></returns>
-    public static String FindByCIdAndLId(Int32 cId, Int32 lId, Boolean IsGetDefault = true)
+    public static String FindNameByCIdAndLId(Int32 cId, Int32 lId, Boolean IsGetDefault = true)
     {
         if (cId <= 0 || lId <= 0) return "";
 
@@ -201,22 +201,6 @@ public partial class CountryLan : DHEntityBase<CountryLan> {
     ///// <summary>获取类别列表，字段缓存10分钟，分组统计数据最多的前20种，用于魔方前台下拉选择</summary>
     ///// <returns></returns>
     //public static IDictionary<String, String> GetCategoryList() => _CategoryCache.FindAllName();
-
-
-    /// <summary>
-    /// 根据国家和语言获取
-    /// </summary>
-    /// <param name="CId"></param>
-    /// <param name="lId"></param>
-    /// <returns></returns>
-    public static CountryLan FindByCIdAndLIds(Int32 CId, Int32 lId)
-    {
-        if (CId <= 0 || lId <= 0) return null;
-        if (Meta.Session.Count < 1000) return Meta.Cache.Find(e => e.CId == CId & e.LId == lId);
-
-        return Find(_.CId == CId & _.LId == lId);
-    }
-
 
     /// <summary>
     /// 根据区域集合删除数据
