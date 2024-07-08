@@ -703,10 +703,10 @@ internal class SQLiteMetaData : FileDbMetaData
     #endregion
 
     #region 数据定义
-    public override Object SetSchema(DDLSchema schema, params Object[] values)
+    public override Object? SetSchema(DDLSchema schema, params Object[] values)
     {
         {
-            var db = Database as DbBase;
+            var db = (Database as DbBase)!;
             var tracer = db.Tracer;
             if (schema is not DDLSchema.BackupDatabase) tracer = null;
             using var span = tracer?.NewSpan($"db:{db.ConnName}:SetSchema:{schema}", values);
@@ -729,19 +729,19 @@ internal class SQLiteMetaData : FileDbMetaData
 
     protected override void CreateDatabase()
     {
-        if (!(Database as SQLite).IsMemoryDatabase) base.CreateDatabase();
+        if (!(Database as SQLite)!.IsMemoryDatabase) base.CreateDatabase();
     }
 
     protected override void DropDatabase()
     {
-        if (!(Database as SQLite).IsMemoryDatabase) base.DropDatabase();
+        if (!(Database as SQLite)!.IsMemoryDatabase) base.DropDatabase();
     }
 
     /// <summary>备份文件到目标文件</summary>
     /// <param name="dbname"></param>
     /// <param name="bakfile"></param>
     /// <param name="compressed"></param>
-    public override String Backup(String dbname, String bakfile, Boolean compressed)
+    public override String? Backup(String dbname, String? bakfile, Boolean compressed)
     {
         var dbfile = FileName;
 
@@ -996,6 +996,7 @@ internal class SQLiteMetaData : FileDbMetaData
 
         // SQLite只有一种整数，不去比较类型差异
         if (type1 == type2) return false;
+        if (type1 == null || type2 == null) return true;
         if (type1.IsInt() && type2.IsInt()) return false;
         //if ((type1 == typeof(Int32) || type1 == typeof(Int64)) &&
         //    (type2 == typeof(Int32) || type2 == typeof(Int64)))
@@ -1006,7 +1007,7 @@ internal class SQLiteMetaData : FileDbMetaData
 
     //public override String AlterColumnSQL(IDataColumn field, IDataColumn oldfield) => null;
 
-    public override String CompactDatabaseSQL() => "VACUUM";
+    public override String? CompactDatabaseSQL() => "VACUUM";
 
     //public override Int32 CompactDatabase() => Database.CreateSession().Execute("VACUUM");
     #endregion
