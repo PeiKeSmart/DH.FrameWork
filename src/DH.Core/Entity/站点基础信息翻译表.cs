@@ -153,6 +153,9 @@ public partial class SiteInfoLan : ISiteInfoLan, IEntity<ISiteInfoLan>
     #region 关联映射
     #endregion
 
+    #region 扩展查询
+    #endregion
+
     #region 字段名
     /// <summary>取得站点基础信息翻译表字段信息的快捷方式</summary>
     public partial class _

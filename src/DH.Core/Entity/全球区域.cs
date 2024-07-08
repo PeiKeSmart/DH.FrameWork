@@ -343,6 +343,24 @@ public partial class Regions : IRegions, IEntity<IRegions>
     #region 关联映射
     #endregion
 
+    #region 扩展查询
+    /// <summary>根据编号查找</summary>
+    /// <param name="id">编号</param>
+    /// <returns>实体对象</returns>
+    public static Regions FindById(Int32 id)
+    {
+        if (id < 0) return null;
+
+        // 实体缓存
+        if (Meta.Session.Count < 1000) return Meta.Cache.Find(e => e.Id == id);
+
+        // 单对象缓存
+        return Meta.SingleCache[id];
+
+        //return Find(_.Id == id);
+    }
+    #endregion
+
     #region 字段名
     /// <summary>取得全球区域字段信息的快捷方式</summary>
     public partial class _

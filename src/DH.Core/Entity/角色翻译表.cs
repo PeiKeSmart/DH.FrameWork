@@ -109,6 +109,9 @@ public partial class RoleLan : IRoleLan, IEntity<IRoleLan>
     #region 关联映射
     #endregion
 
+    #region 扩展查询
+    #endregion
+
     #region 字段名
     /// <summary>取得角色翻译表字段信息的快捷方式</summary>
     public partial class _

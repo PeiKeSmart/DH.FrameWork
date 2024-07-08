@@ -86,6 +86,24 @@ public partial class RoleEx : IRoleEx, IEntity<IRoleEx>
     #region 关联映射
     #endregion
 
+    #region 扩展查询
+    /// <summary>根据角色编号查找</summary>
+    /// <param name="id">角色编号</param>
+    /// <returns>实体对象</returns>
+    public static RoleEx FindById(Int32 id)
+    {
+        if (id < 0) return null;
+
+        // 实体缓存
+        if (Meta.Session.Count < 1000) return Meta.Cache.Find(e => e.Id == id);
+
+        // 单对象缓存
+        return Meta.SingleCache[id];
+
+        //return Find(_.Id == id);
+    }
+    #endregion
+
     #region 字段名
     /// <summary>取得角色扩展表字段信息的快捷方式</summary>
     public partial class _

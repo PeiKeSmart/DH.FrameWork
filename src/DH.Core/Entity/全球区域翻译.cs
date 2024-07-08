@@ -142,6 +142,9 @@ public partial class RegionsLan : IRegionsLan, IEntity<IRegionsLan>
     #region 关联映射
     #endregion
 
+    #region 扩展查询
+    #endregion
+
     #region 字段名
     /// <summary>取得全球区域翻译字段信息的快捷方式</summary>
     public partial class _

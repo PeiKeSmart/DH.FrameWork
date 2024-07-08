@@ -497,6 +497,24 @@ public partial class SysOnlineTime : ISysOnlineTime, IEntity<ISysOnlineTime>
     #region 关联映射
     #endregion
 
+    #region 扩展查询
+    /// <summary>根据用户编号查找</summary>
+    /// <param name="id">用户编号</param>
+    /// <returns>实体对象</returns>
+    public static SysOnlineTime FindByID(Int32 id)
+    {
+        if (id < 0) return null;
+
+        // 实体缓存
+        if (Meta.Session.Count < 1000) return Meta.Cache.Find(e => e.ID == id);
+
+        // 单对象缓存
+        return Meta.SingleCache[id];
+
+        //return Find(_.ID == id);
+    }
+    #endregion
+
     #region 字段名
     /// <summary>取得在线时间表字段信息的快捷方式</summary>
     public partial class _

@@ -808,6 +808,21 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
     #region 关联映射
     #endregion
 
+    #region 扩展查询
+    /// <summary>根据用户类型查找</summary>
+    /// <param name="uType">用户类型</param>
+    /// <returns>实体列表</returns>
+    public static IList<UserDetail> FindAllByUType(UserKinds uType)
+    {
+        if (uType < 0) return [];
+
+        // 实体缓存
+        if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => e.UType == uType);
+
+        return FindAll(_.UType == uType);
+    }
+    #endregion
+
     #region 字段名
     /// <summary>取得用户扩展字段信息的快捷方式</summary>
     public partial class _

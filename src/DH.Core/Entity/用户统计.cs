@@ -233,6 +233,9 @@ public partial class UserStat : IUserStat, IEntity<IUserStat>
     #region 关联映射
     #endregion
 
+    #region 扩展查询
+    #endregion
+
     #region 字段名
     /// <summary>取得用户统计字段信息的快捷方式</summary>
     public partial class _

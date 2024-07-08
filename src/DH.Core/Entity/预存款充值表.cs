@@ -198,6 +198,21 @@ public partial class PdRecharge : IPdRecharge, IEntity<IPdRecharge>
     #region 关联映射
     #endregion
 
+    #region 扩展查询
+    /// <summary>根据记录唯一标示查找</summary>
+    /// <param name="sn">记录唯一标示</param>
+    /// <returns>实体对象</returns>
+    public static PdRecharge FindBySn(String sn)
+    {
+        if (sn.IsNullOrEmpty()) return null;
+
+        // 实体缓存
+        if (Meta.Session.Count < 1000) return Meta.Cache.Find(e => e.Sn.EqualIgnoreCase(sn));
+
+        return Find(_.Sn == sn);
+    }
+    #endregion
+
     #region 字段名
     /// <summary>取得预存款充值表字段信息的快捷方式</summary>
     public partial class _

@@ -142,6 +142,9 @@ public partial class AppVersionLog : IAppVersionLog, IEntity<IAppVersionLog>
     #region 关联映射
     #endregion
 
+    #region 扩展查询
+    #endregion
+
     #region 字段名
     /// <summary>取得APP版本请求日志字段信息的快捷方式</summary>
     public partial class _

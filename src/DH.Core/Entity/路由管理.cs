@@ -52,7 +52,7 @@ public partial class SystemRout : ISystemRout, IEntity<ISystemRout>
     [DisplayName("Url路由")]
     [Description("Url路由")]
     [DataObjectField(false, false, true, 50)]
-    [BindColumn("Url", "Url路由", "varchar(50)")]
+    [BindColumn("Url", "Url路由", "varchar(100)")]
     public String Url { get => _Url; set { if (OnPropertyChanging("Url", value)) { _Url = value; OnPropertyChanged("Url"); } } }
 
     private String _Parms;
@@ -185,6 +185,9 @@ public partial class SystemRout : ISystemRout, IEntity<ISystemRout>
     #endregion
 
     #region 关联映射
+    #endregion
+
+    #region 扩展查询
     #endregion
 
     #region 字段名
