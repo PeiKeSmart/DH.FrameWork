@@ -448,8 +448,8 @@
         <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
         <Column Name="RType" DataType="Byte" RawType="tinyint(1)" Description="类型，1为控制器，2为Razor Page" />
         <Column Name="Name" DataType="String" RawType="varchar(30)" Master="True" Length="30" Description="路由名称" />
-        <Column Name="Url" DataType="String" RawType="varchar(100)" Description="Url路由" />
-        <Column Name="Parms" DataType="String" RawType="varchar(100)" Description="Url路由参数" />
+        <Column Name="Url" DataType="String" RawType="varchar(100)" Length="100" Description="Url路由" />
+        <Column Name="Parms" DataType="String" RawType="varchar(100)" Length="100" Description="Url路由参数" />
         <Column Name="Pages" DataType="String" RawType="varchar(50)" Description="Razor Page实际路径" />
         <Column Name="AreaName" DataType="String" RawType="varchar(30)" Length="30" Description="区域名称" />
         <Column Name="ControllerName" DataType="String" RawType="varchar(30)" Length="30" Description="控制器" />

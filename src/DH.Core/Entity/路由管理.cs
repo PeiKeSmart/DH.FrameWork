@@ -51,7 +51,7 @@ public partial class SystemRout : ISystemRout, IEntity<ISystemRout>
     /// <summary>Url路由</summary>
     [DisplayName("Url路由")]
     [Description("Url路由")]
-    [DataObjectField(false, false, true, 50)]
+    [DataObjectField(false, false, true, 100)]
     [BindColumn("Url", "Url路由", "varchar(100)")]
     public String Url { get => _Url; set { if (OnPropertyChanging("Url", value)) { _Url = value; OnPropertyChanged("Url"); } } }
 
@@ -59,7 +59,7 @@ public partial class SystemRout : ISystemRout, IEntity<ISystemRout>
     /// <summary>Url路由参数</summary>
     [DisplayName("Url路由参数")]
     [Description("Url路由参数")]
-    [DataObjectField(false, false, true, 50)]
+    [DataObjectField(false, false, true, 100)]
     [BindColumn("Parms", "Url路由参数", "varchar(100)")]
     public String Parms { get => _Parms; set { if (OnPropertyChanging("Parms", value)) { _Parms = value; OnPropertyChanged("Parms"); } } }
 
