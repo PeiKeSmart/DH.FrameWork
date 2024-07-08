@@ -138,7 +138,7 @@ internal class ServiceController : DisposeBase
                 var isZip = src.EndsWithIgnoreCase(".zip");
 
                 // 在环境变量中设置BasePath，不用担心影响当前进程，因为PathHelper仅读取一次
-                Environment.SetEnvironmentVariable("BasePath", workDir);
+                //Environment.SetEnvironmentVariable("BasePath", workDir);
 
                 // 工作模式
                 switch (service.Mode)
@@ -270,6 +270,7 @@ internal class ServiceController : DisposeBase
             FileName = file,
             WorkingDirectory = workDir,
             UserName = service.UserName,
+            Environments = service.Environments,
             Overwrite = DeployInfo?.Overwrite,
 
             Tracer = Tracer,
@@ -327,6 +328,17 @@ internal class ServiceController : DisposeBase
             // true时目标控制台独立窗口，不会一起退出；
             UseShellExecute = false,
         };
+        si.EnvironmentVariables["BasePath"] = workDir;
+
+        // 环境变量。不能用于ShellExecute
+        if (service.Environments.IsNullOrEmpty() && !si.UseShellExecute)
+        {
+            foreach (var item in service.Environments.SplitAsDictionary("=", ";"))
+            {
+                if (!item.Key.IsNullOrEmpty())
+                    si.EnvironmentVariables[item.Key] = item.Value;
+            }
+        }
 
         if (Runtime.Linux)
         {
@@ -677,6 +689,8 @@ internal class ServiceController : DisposeBase
 
     private void MonitorFileChange(Object? state)
     {
+        if (Info?.ReloadOnChange == false) return;
+
         var first = _files.Count == 0;
         var changed = "";
 
