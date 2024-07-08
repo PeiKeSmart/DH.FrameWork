@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using System.Text;
+﻿using System.Text;
 using NewLife;
 using NewLife.Collections;
 using NewLife.Log;
@@ -18,11 +17,20 @@ public class EntityBuilder : ClassBuilder
     /// <summary>合并业务类，当业务类已存在时。默认true</summary>
     public Boolean MergeBusiness { get; set; } = true;
 
+    /// <summary>使用缓存。默认true，标记为大数据的表不使用缓存</summary>
+    public Boolean UsingCache { get; set; } = true;
+
+    /// <summary>数据规模字段。标识是否大数据表</summary>
+    public IDataColumn? ScaleColumn { get; set; }
+
     /// <summary>所有表类型名。用于扩展属性</summary>
-    public IList<IDataTable> AllTables { get; set; } = new List<IDataTable>();
+    public IList<IDataTable> AllTables { get; set; } = [];
 
     /// <summary>实体类生成选型</summary>
-    public EntityBuilderOption EntityOption => Option as EntityBuilderOption;
+    public EntityBuilderOption EntityOption => (EntityBuilderOption)Option;
+
+    /// <summary>成员集合。主要用于避免重复生成相同签名的成员，方法的签名包括参数列表</summary>
+    public IList<String> Members { get; set; } = [];
     #endregion 属性
 
     #region 静态快速
@@ -96,9 +104,60 @@ public class EntityBuilder : ClassBuilder
             }
         }
 
+        // 雪花Id主键，默认设置数据规模DataScale
+        foreach (var table in tables)
+        {
+            if (table.Columns.Any(e => !e.DataScale.IsNullOrEmpty())) continue;
+
+            // 雪花Id主键，默认设置数据规模DataScale
+            if (table.PrimaryKeys.Length == 1)
+            {
+                var column = table.PrimaryKeys[0];
+                if (!column.Identity && column.DataType == typeof(Int64))
+                {
+                    column.DataScale = "time";
+                    continue;
+                }
+            }
+
+            // 只读日志表
+            if (table.InsertOnly)
+            {
+                // 第一个时间日期索引字段
+                IDataColumn? column = null;
+                foreach (var di in table.Indexes.OrderBy(e => e.Columns.Length).OrderByDescending(e => e.Unique).ThenByDescending(e => e.PrimaryKey))
+                {
+                    if (di.Columns == null || di.Columns.Length == 0) continue;
+
+                    var col = table.GetColumn(di.Columns[0]);
+                    if (col != null && col.DataType == typeof(DateTime))
+                    {
+                        column = col;
+                        break;
+                    }
+                }
+
+                if (column != null && column.DataType == typeof(DateTime))
+                {
+                    column.DataScale = "time";
+                    continue;
+                }
+            }
+        }
+
+        // 使用缓存
+        foreach (var table in tables)
+        {
+            var cache = table.Properties["UsingCache"];
+            if (!cache.IsNullOrEmpty() && !cache.ToBoolean(true))
+                table.Properties["UsingCache"] = false.ToString();
+            else
+                table.Properties.Remove("UsingCache");
+        }
+
         // 更新xsd
-        atts["xmlns"] = "https://newlifex.com/Model202309.xsd";
-        atts["xs:schemaLocation"] = "https://newlifex.com https://newlifex.com/Model202309.xsd";
+        atts["xmlns"] = "https://newlifex.com/Model202407.xsd";
+        atts["xs:schemaLocation"] = "https://newlifex.com https://newlifex.com/Model202407.xsd";
 
         // 版本和教程
         //var asm = AssemblyX.Create(Assembly.GetExecutingAssembly());
@@ -152,7 +211,7 @@ public class EntityBuilder : ClassBuilder
             {
                 AllTables = tables,
                 Option = option.Clone(),
-                Log = log
+                Log = log!
             };
 
             // 不能对option赋值，否则所有table的ModelNameForToModel就相同了
@@ -221,6 +280,20 @@ public class EntityBuilder : ClassBuilder
         }
         else if (!modelClass.IsNullOrEmpty())
             option.ModelNameForCopy = modelClass;
+
+        // 使用缓存
+        if (UsingCache)
+        {
+            var cache = table.Properties["UsingCache"];
+            if (!cache.IsNullOrEmpty() && !cache.ToBoolean(true)) UsingCache = false;
+        }
+
+        if (UsingCache)
+        {
+            // 标记为大数据的表不使用缓存
+            var fi = table.Columns.FirstOrDefault(e => e.DataScale.EqualIgnoreCase("time") || e.DataScale.StartsWithIgnoreCase("time:", "timeShard:"));
+            if (fi != null) UsingCache = false;
+        }
     }
 
     #endregion 方法
@@ -229,10 +302,50 @@ public class EntityBuilder : ClassBuilder
     /// <summary>生成前的准备工作。计算类型以及命名空间等</summary>
     protected override void Prepare()
     {
+        // 标记为大数据的表不使用缓存
+        var column = Table.Columns.FirstOrDefault(e => e.DataScale.EqualIgnoreCase("time") || e.DataScale.StartsWithIgnoreCase("time:", "timeShard:"));
+        if (column != null)
+        {
+            UsingCache = false;
+            ScaleColumn = column;
+
+            if (column.DataScale.StartsWithIgnoreCase("timeShard:"))
+            {
+                var us = Option.Usings;
+                us.Add("System.Linq");
+                us.Add("NewLife.Log");
+            }
+        }
+
         // 增加常用命名空间
         AddNameSpace();
 
         base.Prepare();
+
+        if (!Business)
+        {
+            // 读取biz文件，识别其中已生成的扩展查询方法，避免在数据类中重复生成
+            var bizFile = GetFileName(".Biz.cs", Option.ChineseFileName);
+            LoadCodeFile(bizFile);
+        }
+    }
+
+    /// <summary>加载代码文件，读取其中的方法作为成员，避免重复生成</summary>
+    /// <param name="file"></param>
+    public void LoadCodeFile(String file)
+    {
+        if (!file.IsNullOrEmpty() && File.Exists(file))
+        {
+            var txt = File.ReadAllText(file);
+            if (!txt.IsNullOrEmpty())
+            {
+                var sections = MemberSection.GetMethods(txt);
+                foreach (var sec in sections)
+                {
+                    Members.Add(sec.FullName);
+                }
+            }
+        }
     }
 
     /// <summary>增加常用命名空间</summary>
@@ -272,6 +385,14 @@ public class EntityBuilder : ClassBuilder
             us.Add("XCode.Membership");
             us.Add("XCode.Shards");
         }
+    }
+
+    /// <summary>清空上下文。便于重新生成</summary>
+    public override void Clear()
+    {
+        base.Clear();
+
+        Members.Clear();
     }
 
     /// <summary>获取基类</summary>
@@ -355,8 +476,8 @@ public class EntityBuilder : ClassBuilder
         // 合并扩展属性
         {
             var sname = "#region 扩展属性";
-            var newNs = Find(newLines, sname, "#endregion");
-            var oldNs = Find(oldLines, sname, "#endregion");
+            var newNs = CodeRange.Find(newLines, sname, "#endregion");
+            var oldNs = CodeRange.Find(oldLines, sname, "#endregion");
 
             // 两个都有才合并
             if (newNs != null && oldNs != null)
@@ -384,8 +505,8 @@ public class EntityBuilder : ClassBuilder
         // 合并扩展查询
         {
             var sname = "#region 扩展查询";
-            var newNs = Find(newLines, sname, "#endregion");
-            var oldNs = Find(oldLines, sname, "#endregion");
+            var newNs = CodeRange.Find(newLines, sname, "#endregion");
+            var oldNs = CodeRange.Find(oldLines, sname, "#endregion");
 
             // 两个都有才合并
             if (newNs != null && oldNs != null)
@@ -415,50 +536,6 @@ public class EntityBuilder : ClassBuilder
         if (changed > 0) File.WriteAllText(fileName, oldLines.Join(Environment.NewLine).Trim());
     }
 
-    class MyRange
-    {
-        public Int32 Start { get; set; }
-        public Int32 Count { get; set; }
-        public IList<MemberSection>? Sections { get; set; }
-    }
-
-    MyRange Find(IList<String> lines, String start, String end)
-    {
-        var s = -1;
-        var e = -1;
-        var flag = 0;
-        for (var i = 0; i < lines.Count && flag < 2; i++)
-        {
-            if (flag == 0)
-            {
-                if (lines[i].Contains(start))
-                {
-                    s = i;
-                    flag = 1;
-                }
-            }
-            else if (flag == 1)
-            {
-                if (lines[i].Contains(end))
-                {
-                    e = i;
-                    flag = 2;
-                }
-            }
-        }
-
-        if (s < 0 || e < 0) return null;
-
-        var ns = lines.Skip(s).Take(e - s + 1).ToArray();
-        var list = MemberSection.Parse(ns);
-        foreach (var item in list)
-        {
-            item.StartLine += s;
-        }
-
-        return new MyRange { Start = s, Count = e - s + 1, Sections = list };
-    }
-
     /// <summary>生成尾部</summary>
     protected override void OnExecuted()
     {
@@ -484,14 +561,14 @@ public class EntityBuilder : ClassBuilder
         {
             BuildAction();
 
-                WriteLine();
-                BuildExtendProperty();
+            WriteLine();
+            BuildExtendProperty();
 
-                WriteLine();
-                BuildExtendSearch();
+            //WriteLine();
+            //BuildExtendSearch();
 
-                WriteLine();
-                BuildSearch();
+            WriteLine();
+            BuildSearch();
 
             WriteLine();
             BuildBusiness();
@@ -515,6 +592,15 @@ public class EntityBuilder : ClassBuilder
 
             WriteLine();
             BuildMap();
+
+            WriteLine();
+            BuildExtendSearch();
+
+            if (ScaleColumn != null)
+            {
+                WriteLine();
+                BuildDelete(ScaleColumn);
+            }
 
             WriteLine();
             BuildFieldName();
@@ -610,12 +696,17 @@ public class EntityBuilder : ClassBuilder
         var sb = Pool.StringBuilder.Get();
         sb.AppendFormat("[BindColumn(\"{0}\", \"{1}\", \"{2}\"", dc.ColumnName, dc.Description, dc.RawType);
 
-        // 支持生成带精度的特性
+        // 元素类型
         if (!dc.ItemType.IsNullOrEmpty()) sb.AppendFormat(", ItemType = \"{0}\"", dc.ItemType);
 
+        // 支持生成带精度的特性
         if (dc.Precision > 0 || dc.Scale > 0) sb.AppendFormat(", Precision = {0}, Scale = {1}", dc.Precision, dc.Scale);
 
+        // 默认值
         if (!dc.DefaultValue.IsNullOrEmpty()) sb.AppendFormat(", DefaultValue = \"{0}\"", dc.DefaultValue);
+
+        // 数据规模
+        if (!dc.DataScale.IsNullOrEmpty()) sb.AppendFormat(", DataScale = \"{0}\"", dc.DataScale);
 
         ////添加自定义控件默认值
         //if (!dc.ItemDefaultValue.IsNullOrEmpty()) sb.AppendFormat(", ItemDefaultValue = \"{0}\"", dc.ItemDefaultValue);
@@ -872,6 +963,81 @@ public class EntityBuilder : ClassBuilder
         WriteLine("#endregion");
     }
 
+    /// <summary>按时间删除数据</summary>
+    protected virtual void BuildDelete(IDataColumn column)
+    {
+        WriteLine("#region 数据清理");
+
+        WriteLine("/// <summary>清理指定时间段内的数据</summary>");
+        WriteLine("/// <param name=\"start\">开始时间。未指定时清理小于指定时间的所有数据</param>");
+        WriteLine("/// <param name=\"end\">结束时间</param>");
+        WriteLine("/// <returns>清理行数</returns>");
+        WriteLine("public static Int32 DeleteWith(DateTime start, DateTime end)");
+        WriteLine("{");
+        {
+            // 分为时间、雪花Id、字符串三种
+            var type = column.DataType;
+            if (type == typeof(DateTime))
+            {
+                WriteLine("if (start == end) return Delete(_.{0} == start);", column.Name);
+                WriteLine();
+                WriteLine("return Delete(_.{0}.Between(start, end));", column.Name);
+            }
+            else if (type == typeof(Int64))
+            {
+                //WriteLine("var where = new WhereExpression()");
+                //WriteLine("if (start.Year > 2000) where &= _.{0} >= Meta.Factory.Snow.GetId(start)", column.Name);
+                //WriteLine("if (end.Year > 2000) where &= _.{0} < Meta.Factory.Snow.GetId(end)", column.Name);
+                WriteLine("return Delete(_.{0}.Between(start, end, Meta.Factory.Snow));", column.Name);
+            }
+            else if (type == typeof(String))
+            {
+                WriteLine("if (start == end) return Delete(_.{0} == start);", column.Name);
+                WriteLine();
+                WriteLine("var where = new WhereExpression();");
+                WriteLine("if (start.Year > 2000) where &= _.{0} >= start;", column.Name);
+                WriteLine("if (end.Year > 2000) where &= _.{0} < end;", column.Name);
+                WriteLine("return Delete(where);");
+            }
+        }
+        WriteLine("}");
+
+        // 对于分库分表的大数据表，生成删表方法
+        if (column.DataScale.StartsWithIgnoreCase("timeShard:"))
+        {
+            WriteLine();
+            WriteLine("/// <summary>删除指定时间段内的数据表</summary>");
+            WriteLine("/// <param name=\"start\">开始时间</param>");
+            WriteLine("/// <param name=\"end\">结束时间</param>");
+            WriteLine("/// <returns>清理行数</returns>");
+            WriteLine("public static Int32 DropWith(DateTime start, DateTime end)");
+            WriteLine("{");
+            {
+                WriteLine("return Meta.AutoShard(start, end, session =>", column.Name);
+                WriteLine("{");
+                {
+                    WriteLine("try");
+                    WriteLine("{");
+                    {
+                        WriteLine("return session.Execute($\"Drop Table {session.FormatedTableName}\");");
+                    }
+                    WriteLine("}");
+                    WriteLine("catch (Exception ex)");
+                    WriteLine("{");
+                    {
+                        WriteLine("XTrace.WriteException(ex);");
+                        WriteLine("return 0;");
+                    }
+                    WriteLine("}");
+                }
+                WriteLine("}");
+                WriteLine(").Sum();");
+            }
+            WriteLine("}");
+        }
+
+        WriteLine("#endregion");
+    }
     #endregion 数据类
 
     #region 业务类
@@ -930,16 +1096,9 @@ public class EntityBuilder : ClassBuilder
             }
 
             // 自动分表
-            dc = Table.Columns.FirstOrDefault(e => !e.Identity && e.PrimaryKey && e.DataType == typeof(Int64));
-            if (dc != null)
-            {
-                WriteLine("// 按天分表");
-                WriteLine("//Meta.ShardPolicy = new TimeShardPolicy(nameof({0}), Meta.Factory)", dc.Name);
-                WriteLine("//{");
-                WriteLine("//    TablePolicy = \"{0}_{1:yyyyMMdd}\",");
-                WriteLine("//    Step = TimeSpan.FromDays(1),");
-                WriteLine("//};");
-            }
+            dc = ScaleColumn;
+            if (dc != null && !dc.DataScale.IsNullOrEmpty() && dc.DataScale.StartsWithIgnoreCase("timeShard:"))
+                BuildShardPolicy(dc);
 
             var ns = new HashSet<String>(Table.Columns.Select(e => e.Name), StringComparer.OrdinalIgnoreCase);
             WriteLine();
@@ -985,7 +1144,53 @@ public class EntityBuilder : ClassBuilder
         WriteLine("}");
     }
 
-    static String[] _validExcludes = ["CreateUser", "CreateUserIP", "UpdateUser", "UpdateUserIP", "TraceId"];
+    /// <summary>生成分表策略</summary>
+    /// <param name="dc"></param>
+    protected virtual void BuildShardPolicy(IDataColumn dc)
+    {
+        if (dc.DataScale.IsNullOrEmpty()) return;
+
+        var ss = dc.DataScale.Split(":");
+        var tablePolicy = ss.Length >= 2 ? ss[1] : "";
+        var connPolicy = ss.Length >= 3 ? ss[2] : "";
+        if (!connPolicy.IsNullOrEmpty() || !tablePolicy.IsNullOrEmpty())
+        {
+            WriteLine();
+
+            if (tablePolicy.Contains("HH") || connPolicy.Contains("HH"))
+                WriteLine("// 按小时分表");
+            else if (tablePolicy.Contains("dd") || connPolicy.Contains("dd"))
+                WriteLine("// 按天分表");
+            else if (tablePolicy.Contains("MM") || connPolicy.Contains("MM"))
+                WriteLine("// 按月分表");
+            else if (tablePolicy.Contains("yy") || connPolicy.Contains("yy"))
+                WriteLine("// 按年分表");
+            else
+                WriteLine("// 按[{0}/{1}]分表", connPolicy, tablePolicy);
+
+            WriteLine("Meta.ShardPolicy = new TimeShardPolicy(nameof({0}), Meta.Factory)", dc.Name);
+            WriteLine("{");
+            if (!connPolicy.IsNullOrEmpty())
+                WriteLine($"    ConnPolicy = \"{{0}}_{{1:{connPolicy}}}\",");
+            if (!tablePolicy.IsNullOrEmpty())
+                WriteLine($"    TablePolicy = \"{{0}}_{{1:{tablePolicy}}}\",");
+
+            if (tablePolicy.Contains("HH") || connPolicy.Contains("HH"))
+                WriteLine("    Step = TimeSpan.FromHours(1),");
+            else if (tablePolicy.Contains("dd") || connPolicy.Contains("dd"))
+                WriteLine("    Step = TimeSpan.FromDays(1),");
+            else if (tablePolicy.Contains("MM") || connPolicy.Contains("MM"))
+                WriteLine("    Step = TimeSpan.FromDays(30),");
+            else if (tablePolicy.Contains("yy") || connPolicy.Contains("yy"))
+                WriteLine("    Step = TimeSpan.FromDays(365),");
+            else
+                WriteLine("    Step = TimeSpan.FromDays(1),");
+
+            WriteLine("};");
+        }
+    }
+
+    static String[] _validExcludes = ["CreateUser", "CreateUserID", "CreateTime", "CreateIP", "UpdateUser", "UpdateUserID", "UpdateTime", "UpdateIP", "Remark", "TraceId"];
     /// <summary>数据验证</summary>
     protected virtual void BuildValid()
     {
@@ -1117,10 +1322,12 @@ public class EntityBuilder : ClassBuilder
         foreach (var column in Table.Columns)
         {
             if (column.Identity) continue;
+            if (column.DataType == null) continue;
 
             // 跳过排除项
-            if (Option.Excludes.Contains(column.Name)) continue;
-            if (Option.Excludes.Contains(column.ColumnName)) continue;
+            if (Option.Excludes.Contains(column.Name, StringComparer.OrdinalIgnoreCase)) continue;
+            if (Option.Excludes.Contains(column.ColumnName, StringComparer.OrdinalIgnoreCase)) continue;
+            if (_validExcludes.Contains(column.Name, StringComparer.OrdinalIgnoreCase)) continue;
 
             switch (column.DataType.GetTypeCode())
             {
@@ -1319,50 +1526,17 @@ public class EntityBuilder : ClassBuilder
     {
         WriteLine("#region 扩展查询");
 
-        var names = new List<String>();
+        var methods = 0;
 
         // 主键
-        IDataColumn? pk = null;
-        if (Table.PrimaryKeys.Length == 1)
+        var pks = Table.PrimaryKeys;
+        if (pks.Length > 0)
         {
-            pk = Table.PrimaryKeys[0];
-            var name = pk.CamelName();
-
-            var type = pk.Properties["Type"];
-            if (type.IsNullOrEmpty()) type = pk.DataType?.Name;
-
-            var methodName = $"FindBy{pk.Name}";
-            names.Add(methodName);
-
-            WriteLine("/// <summary>根据{0}查找</summary>", pk.DisplayName);
-            WriteLine("/// <param name=\"{0}\">{1}</param>", name, pk.DisplayName);
-            WriteLine("/// <returns>实体对象</returns>");
-            WriteLine("public static {3} {0}({1} {2})", methodName, type, name, ClassName);
-            WriteLine("{");
-            {
-                if (pk.DataType != null && pk.DataType.IsInt())
-                    WriteLine("if ({0} <= 0) return null;", name);
-                else if (pk.DataType == typeof(String))
-                    WriteLine("if ({0}.IsNullOrEmpty()) return null;", name);
-
-                WriteLine();
-                WriteLine("// 实体缓存");
-                if (pk.DataType == typeof(String))
-                    WriteLine("if (Meta.Session.Count < 1000) return Meta.Cache.Find(e => e.{0}.EqualIgnoreCase({1}));", pk.Name, name);
-                else
-                    WriteLine("if (Meta.Session.Count < 1000) return Meta.Cache.Find(e => e.{0} == {1});", pk.Name, name);
-
-                WriteLine();
-                WriteLine("// 单对象缓存");
-                WriteLine("return Meta.SingleCache[{0}];", name);
-
-                WriteLine();
-                WriteLine("//return Find(_.{0} == {1});", pk.Name, name);
-            }
-            WriteLine("}");
+            if (BuildExtendFind(pks, methods)) methods++;
         }
 
         // 索引
+        var pk = pks.FirstOrDefault();
         foreach (var di in Table.Indexes)
         {
             // 跳过主键
@@ -1381,140 +1555,224 @@ public class EntityBuilder : ClassBuilder
             }
 
             // 只有整数和字符串能生成查询函数
-            var flag = true;
-            foreach (var dc in cs)
-            {
-                if (dc.DataType.IsInt() || dc.DataType == typeof(String))
-                {
-                    flag = true;
-                }
-                else if (dc.DataType == typeof(DateTime))
-                {
-                    if (dc.Name.EqualIgnoreCase("CreateTime", "UpdateTime"))
-                    {
-                        flag = false;
-                    }
-                }
-                else
-                {
-                    flag = false;
-                }
-
-                if (!flag) break;
-            }
-            if (!flag) continue;
-
-            WriteLine();
-            WriteLine("/// <summary>根据{0}查找</summary>", cs.Select(e => e.DisplayName).Join("、"));
-            foreach (var dc in cs)
-            {
-                WriteLine("/// <param name=\"{0}\">{1}</param>", dc.CamelName(), dc.DisplayName);
-            }
-
-            var ps = new Dictionary<String, String>();
-            foreach (var dc in cs)
-            {
-                var type = dc.Properties["Type"];
-                if (type.IsNullOrEmpty()) type = dc.DataType?.Name;
-
-                ps[dc.CamelName()] = type!;
-            }
-            var args = ps.Join(", ", e => $"{e.Value} {e.Key}");
-
-            // 如果方法名已存在，则不生成
-            var methodName = cs.Select(e => e.Name).Join("And");
-            methodName = di.Unique ? $"FindBy{methodName}" : $"FindAllBy{methodName}";
-            if (names.Contains(methodName)) continue;
-            names.Add(methodName);
+            if (cs.Any(e => !IsIntOrString(e))) continue;
 
             // 返回类型
             if (di.Unique)
             {
-                WriteLine("/// <returns>{0}</returns>", di.Unique ? "实体对象" : "实体列表");
-                WriteLine("public static {2} {0}({1})", methodName, args, ClassName);
-                WriteLine("{");
-                {
-                    if (cs.Length == 1)
-                    {
-                        var dc = cs[0];
-                        if (dc.DataType.IsInt())
-                            WriteLine("if ({0} <= 0) return null;", dc.CamelName());
-                        else if (dc.DataType == typeof(String))
-                            WriteLine("if ({0}.IsNullOrEmpty()) return null;", dc.CamelName());
-                    }
-
-                    var exp = new StringBuilder();
-                    var wh = new StringBuilder();
-                    foreach (var dc in cs)
-                    {
-                        if (exp.Length > 0) exp.Append(" & ");
-                        exp.AppendFormat("_.{0} == {1}", dc.Name, dc.CamelName());
-
-                        if (wh.Length > 0) wh.Append(" && ");
-                        if (dc.DataType == typeof(String))
-                            wh.AppendFormat("e.{0}.EqualIgnoreCase({1})", dc.Name, dc.CamelName());
-                        else
-                            wh.AppendFormat("e.{0} == {1}", dc.Name, dc.CamelName());
-                    }
-
-                    if (cs.Length == 1) WriteLine();
-                    WriteLine("// 实体缓存");
-                    WriteLine("if (Meta.Session.Count < 1000) return Meta.Cache.Find(e => {0});", wh);
-
-                    // 单对象缓存
-                    if (cs.Length == 1 && cs[0].Master)
-                    {
-                        WriteLine();
-                        WriteLine("// 单对象缓存");
-                        WriteLine("//return Meta.SingleCache.GetItemWithSlaveKey({0}) as {1};", cs[0].CamelName(), ClassName);
-                    }
-
-                    WriteLine();
-                    WriteLine("return Find({0});", exp);
-                }
-                WriteLine("}");
+                if (BuildExtendFind(cs, methods)) methods++;
             }
             else
             {
-                WriteLine("/// <returns>{0}</returns>", di.Unique ? "实体对象" : "实体列表");
-                WriteLine("public static IList<{2}> {0}({1})", methodName, args, ClassName);
-                WriteLine("{");
+                if (BuildExtendFindAll(cs, methods)) methods++;
+            }
+        }
+
+        // 作为多个索引头部的字段，生成FindAll。例如多个索引都使用Ds开头，那么应该生成FindAllByDs
+        var mcolumns = new List<String>();
+        foreach (var di in Table.Indexes)
+        {
+            if (di.Columns.Length > 1) mcolumns.Add(di.Columns[0]);
+        }
+        // 实际生成时，可能已经有了FindAllByDs，则根据方法名和签名跳过
+        foreach (var item in mcolumns.GroupBy(e => e))
+        {
+            if (item.Count() > 1)
+            {
+                var dc = Table.GetColumn(item.Key);
+                if (dc != null)
                 {
-                    if (cs.Length == 1)
-                    {
-                        var dc = cs[0];
-                        if (dc.DataType.IsInt())
-                            WriteLine("if ({0} <= 0) return new List<{1}>();", dc.CamelName(), ClassName);
-                        else if (dc.DataType == typeof(String))
-                            WriteLine("if ({0}.IsNullOrEmpty()) return new List<{1}>();", dc.CamelName(), ClassName);
-                    }
-
-                    var exp = new StringBuilder();
-                    var wh = new StringBuilder();
-                    foreach (var dc in cs)
-                    {
-                        if (exp.Length > 0) exp.Append(" & ");
-                        exp.AppendFormat("_.{0} == {1}", dc.Name, dc.CamelName());
-
-                        if (wh.Length > 0) wh.Append(" && ");
-                        if (dc.DataType == typeof(String))
-                            wh.AppendFormat("e.{0}.EqualIgnoreCase({1})", dc.Name, dc.CamelName());
-                        else
-                            wh.AppendFormat("e.{0} == {1}", dc.Name, dc.CamelName());
-                    }
-
-                    if (cs.Length == 1) WriteLine();
-                    WriteLine("// 实体缓存");
-                    WriteLine("if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => {0});", wh);
-
-                    WriteLine();
-                    WriteLine("return FindAll({0});", exp);
+                    if (BuildExtendFindAll([dc], methods)) methods++;
                 }
-                WriteLine("}");
             }
         }
 
         WriteLine("#endregion");
+    }
+
+    /// <summary>生成扩展Find查询单对象</summary>
+    /// <param name="columns"></param>
+    /// <param name="index"></param>
+    protected virtual Boolean BuildExtendFind(IDataColumn[] columns, Int32 index)
+    {
+        var methodName = columns.Select(e => e.Name).Join("And");
+        methodName = $"FindBy{methodName}";
+
+        var ps = new Dictionary<String, String>();
+        var ps2 = new Dictionary<String, String>();
+        foreach (var dc in columns)
+        {
+            var type = dc.Properties["Type"];
+            if (type.IsNullOrEmpty()) type = dc.DataType?.Name + "";
+
+            ps[dc.CamelName()] = type;
+
+            var p = type.LastIndexOf('.');
+            if (p > 0) type = type[(p + 1)..];
+            ps2[dc.CamelName()] = type;
+        }
+        var args = ps.Join(", ", e => $"{e.Value} {e.Key}");
+
+        // 如果方法名已存在，则不生成
+        var key = $"{methodName}({ps2.Join(",", e => e.Value)})";
+        if (Members.Contains(key)) return false;
+        Members.Add(key);
+
+        if (index > 0) WriteLine();
+        WriteLine("/// <summary>根据{0}查找</summary>", columns.Select(e => e.DisplayName).Join("、"));
+        foreach (var dc in columns)
+        {
+            WriteLine("/// <param name=\"{0}\">{1}</param>", dc.CamelName(), dc.DisplayName);
+        }
+
+        WriteLine("/// <returns>实体对象</returns>");
+        WriteLine("public static {2} {0}({1})", methodName, args, ClassName);
+        WriteLine("{");
+        {
+            var header = false;
+            foreach (var dc in columns)
+            {
+                if (dc.DataType != null && dc.DataType.IsInt())
+                    WriteLine("if ({0} < 0) return null;", dc.CamelName());
+                else if (dc.DataType == typeof(String))
+                    WriteLine("if ({0}.IsNullOrEmpty()) return null;", dc.CamelName());
+
+                header |= IsIntOrString(dc);
+            }
+
+            var exp = new StringBuilder();
+            var wh = new StringBuilder();
+            foreach (var dc in columns)
+            {
+                if (exp.Length > 0) exp.Append(" & ");
+                exp.AppendFormat("_.{0} == {1}", dc.Name, dc.CamelName());
+
+                if (wh.Length > 0) wh.Append(" && ");
+                if (dc.DataType == typeof(String))
+                    wh.AppendFormat("e.{0}.EqualIgnoreCase({1})", dc.Name, dc.CamelName());
+                else
+                    wh.AppendFormat("e.{0} == {1}", dc.Name, dc.CamelName());
+            }
+
+            var singleCache = false;
+            if (UsingCache)
+            {
+                if (header) WriteLine();
+                WriteLine("// 实体缓存");
+                WriteLine("if (Meta.Session.Count < 1000) return Meta.Cache.Find(e => {0});", wh);
+
+                // 单对象缓存
+                if (columns.Length == 1)
+                {
+                    var pk = columns[0];
+                    if (pk.PrimaryKey)
+                    {
+                        WriteLine();
+                        WriteLine("// 单对象缓存");
+                        WriteLine("return Meta.SingleCache[{0}];", pk.CamelName());
+
+                        singleCache = true;
+                    }
+                    else if (pk.Master)
+                    {
+                        WriteLine();
+                        WriteLine("// 单对象缓存");
+                        WriteLine("return Meta.SingleCache.GetItemWithSlaveKey({0}) as {1};", pk.CamelName(), ClassName);
+
+                        singleCache = true;
+                    }
+                }
+            }
+
+            if (header) WriteLine();
+
+            if (singleCache)
+                WriteLine("//return Find({0});", exp);
+            else
+                WriteLine("return Find({0});", exp);
+        }
+        WriteLine("}");
+
+        return true;
+    }
+
+    /// <summary>生成扩展FindAll查询对象列表</summary>
+    /// <param name="columns"></param>
+    /// <param name="index"></param>
+    protected virtual Boolean BuildExtendFindAll(IDataColumn[] columns, Int32 index)
+    {
+        var methodName = columns.Select(e => e.Name).Join("And");
+        methodName = $"FindAllBy{methodName}";
+
+        var ps = new Dictionary<String, String>();
+        var ps2 = new Dictionary<String, String>();
+        foreach (var dc in columns)
+        {
+            var type = dc.Properties["Type"];
+            if (type.IsNullOrEmpty()) type = dc.DataType?.Name + "";
+
+            ps[dc.CamelName()] = type;
+
+            var p = type.LastIndexOf('.');
+            if (p > 0) type = type[(p + 1)..];
+            ps2[dc.CamelName()] = type;
+        }
+        var args = ps.Join(", ", e => $"{e.Value} {e.Key}");
+
+        // 如果方法名已存在，则不生成
+        var key = $"{methodName}({ps2.Join(",", e => e.Value)})";
+        if (Members.Contains(key)) return false;
+        Members.Add(key);
+
+        if (index > 0) WriteLine();
+        WriteLine("/// <summary>根据{0}查找</summary>", columns.Select(e => e.DisplayName).Join("、"));
+        foreach (var dc in columns)
+        {
+            WriteLine("/// <param name=\"{0}\">{1}</param>", dc.CamelName(), dc.DisplayName);
+        }
+
+        WriteLine("/// <returns>实体列表</returns>");
+        WriteLine("public static IList<{2}> {0}({1})", methodName, args, ClassName);
+        WriteLine("{");
+        {
+            var header = false;
+            foreach (var dc in columns)
+            {
+                if (dc.DataType != null && dc.DataType.IsInt())
+                    WriteLine("if ({0} < 0) return [];", dc.CamelName(), ClassName);
+                else if (dc.DataType == typeof(String))
+                    WriteLine("if ({0}.IsNullOrEmpty()) return [];", dc.CamelName(), ClassName);
+
+                header |= IsIntOrString(dc);
+            }
+
+            var exp = new StringBuilder();
+            var wh = new StringBuilder();
+            foreach (var dc in columns)
+            {
+                if (exp.Length > 0) exp.Append(" & ");
+                exp.AppendFormat("_.{0} == {1}", dc.Name, dc.CamelName());
+
+                if (wh.Length > 0) wh.Append(" && ");
+                if (dc.DataType == typeof(String))
+                    wh.AppendFormat("e.{0}.EqualIgnoreCase({1})", dc.Name, dc.CamelName());
+                else
+                    wh.AppendFormat("e.{0} == {1}", dc.Name, dc.CamelName());
+            }
+
+            if (UsingCache)
+            {
+                if (header) WriteLine();
+                WriteLine("// 实体缓存");
+                WriteLine("if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => {0});", wh);
+            }
+
+            if (header) WriteLine();
+            WriteLine("return FindAll({0});", exp);
+        }
+        WriteLine("}");
+
+        return true;
     }
 
     /// <summary>高级查询</summary>
@@ -1542,7 +1800,8 @@ public class EntityBuilder : ClassBuilder
         if (cs.Count > 0)
         {
             // 时间字段。无差别支持UpdateTime/CreateTime
-            var dcTime = cs.FirstOrDefault(e => e.DataType == typeof(DateTime));
+            var dcTime = cs.FirstOrDefault(e => e.DataScale.StartsWithIgnoreCase("time"));
+            dcTime ??= cs.FirstOrDefault(e => e.DataType == typeof(DateTime));
             dcTime ??= Table.GetColumns(["UpdateTime", "CreateTime"])?.FirstOrDefault();
             var dcSnow = cs.FirstOrDefault(e => e.PrimaryKey && !e.Identity && e.DataType == typeof(Int64));
 
@@ -1703,4 +1962,8 @@ public class EntityBuilder : ClassBuilder
     }
 
     #endregion 业务类
+
+    #region 辅助
+    private Boolean IsIntOrString(IDataColumn column) => column.DataType != null && (column.DataType.IsInt() || column.DataType == typeof(String));
+    #endregion
 }
