@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Net.Sockets;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
+
 using NewLife.Collections;
 using NewLife.Configuration;
 using NewLife.Data;
@@ -24,8 +25,7 @@ namespace NewLife.Caching;
 /// 
 /// 网络层Broken pipe异常，可以在Server设置多个一样的地址（逗号隔开），让Redis客户端在遇到网络错误时进行重试。
 /// </remarks>
-public class Redis : Cache, IConfigMapping, ILogFeature
-{
+public class Redis : Cache, IConfigMapping, ILogFeature {
     #region 属性
     /// <summary>服务器，带端口。例如127.0.0.1:6397，支持逗号分隔的多地址，网络异常时，自动切换到其它节点，60秒后切回来</summary>
     public String? Server { get; set; }
@@ -117,7 +117,7 @@ public class Redis : Cache, IConfigMapping, ILogFeature
     /// <param name="server"></param>
     /// <param name="password"></param>
     /// <param name="db"></param>
-    public Redis(String server, String password, Int32 db)
+    public Redis(String server, String password, Int32 db) : this()
     {
         // 有人多输入了一个空格，酿成大祸
         Server = server?.Trim();
@@ -130,7 +130,7 @@ public class Redis : Cache, IConfigMapping, ILogFeature
     /// <param name="username"></param>
     /// <param name="password"></param>
     /// <param name="db"></param>
-    public Redis(String server, String username, String password, Int32 db)
+    public Redis(String server, String username, String password, Int32 db) : this()
     {
         // 有人多输入了一个空格，酿成大祸
         Server = server?.Trim();
@@ -142,7 +142,7 @@ public class Redis : Cache, IConfigMapping, ILogFeature
     /// <summary>按照配置服务实例化Redis，用于NETCore依赖注入</summary>
     /// <param name="provider">服务提供者，将要解析IConfigProvider</param>
     /// <param name="name">缓存名称，也是配置中心key</param>
-    public Redis(IServiceProvider provider, String name)
+    public Redis(IServiceProvider provider, String name) : this()
     {
         Name = name;
         Tracer = provider.GetService<ITracer>();
@@ -155,7 +155,7 @@ public class Redis : Cache, IConfigMapping, ILogFeature
 
     /// <summary>实例化Redis，指定名称，支持从环境变量Redis_{Name}读取配置，或者逐个属性配置</summary>
     /// <param name="name"></param>
-    public Redis(String name)
+    public Redis(String name) : this()
     {
         if (name.IsNullOrEmpty()) throw new ArgumentNullException(nameof(name));
 
@@ -280,8 +280,7 @@ public class Redis : Cache, IConfigMapping, ILogFeature
     #endregion
 
     #region 客户端池
-    private class MyPool : ObjectPool<RedisClient>
-    {
+    private class MyPool : ObjectPool<RedisClient> {
         public Redis Instance { get; set; } = null!;
 
         public Func<RedisClient> Callback { get; set; } = null!;
