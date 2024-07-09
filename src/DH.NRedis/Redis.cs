@@ -107,7 +107,11 @@ public class Redis : Cache, IConfigMapping, ILogFeature
 
     #region 构造
     /// <summary>实例化</summary>
-    public Redis() : base() { }
+    public Redis() : base()
+    {
+        // 初始化Json序列化
+        JsonHost ??= RedisJsonEncoder.GetJsonHost();
+    }
 
     /// <summary>实例化Redis，指定服务器地址、密码、库</summary>
     /// <param name="server"></param>
@@ -664,6 +668,7 @@ public class Redis : Cache, IConfigMapping, ILogFeature
         rds.Password = Password;
 
         rds.Encoder = Encoder;
+        rds.JsonHost = JsonHost;
         rds.Timeout = Timeout;
         rds.Retry = Retry;
         rds.ShieldingTime = ShieldingTime;
