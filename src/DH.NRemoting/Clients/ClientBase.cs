@@ -136,6 +136,9 @@ public abstract class ClientBase : DisposeBase, IApiClient, ICommandClient, IEve
         StopTimer();
 
         Logined = false;
+
+        _timerLogin.TryDispose();
+        _timerLogin = null;
     }
     #endregion
 
@@ -362,6 +365,40 @@ public abstract class ClientBase : DisposeBase, IApiClient, ICommandClient, IEve
     #endregion
 
     #region 登录注销
+    private TimerX? _timerLogin;
+    /// <summary>打开连接，尝试登录服务端。在网络未就绪之前反复尝试</summary>
+    public virtual void Open()
+    {
+        _timerLogin = new TimerX(TryConnectServer, null, 0, 5_000) { Async = true };
+    }
+
+    private async Task TryConnectServer(Object state)
+    {
+        if (!NetworkInterface.GetIsNetworkAvailable())
+        {
+            WriteLog("网络不可达，延迟连接服务器");
+            return;
+        }
+
+        try
+        {
+            await Login();
+        }
+        catch (Exception ex)
+        {
+            // 登录报错后，加大定时间隔，输出简单日志
+            //_timer.Period = 30_000;
+            if (_timer != null && _timer.Period < 30_000) _timer.Period += 5_000;
+
+            Log?.Error(ex.Message);
+
+            return;
+        }
+
+        _timerLogin.TryDispose();
+        _timerLogin = null;
+    }
+
     /// <summary>登录。使用编码和密钥登录服务端，获取令牌用于后续接口调用</summary>
     /// <remarks>
     /// 支持编码和密钥下发（自动注册）、时间校准。
@@ -523,7 +560,7 @@ public abstract class ClientBase : DisposeBase, IApiClient, ICommandClient, IEve
         catch (Exception ex)
         {
             span?.SetError(ex, null);
-            XTrace.WriteException(ex);
+            Log?.Error(ex.ToString());
 
             return null;
         }
@@ -710,17 +747,19 @@ public abstract class ClientBase : DisposeBase, IApiClient, ICommandClient, IEve
         WriteLog("检查更新");
 
         // 清理旧版备份文件
-        var ug = new Upgrade { Log = XTrace.Log };
+        var ug = new Upgrade { Log = Log };
         ug.DeleteBackup(".");
 
         // 调用接口查询思否存在更新信息
         var info = await UpgradeAsync(channel, cancellationToken);
-        if (info != null && info.Version != _lastVersion)
-        {
-            // _lastVersion避免频繁更新同一个版本
-            WriteLog("发现更新：{0}", info.ToJson(true));
-            this.WriteInfoEvent("Upgrade", $"准备从[{_lastVersion}]更新到[{info.Version}]，开始下载 {info.Source}");
+        if (info == null || info.Version == _lastVersion) return info;
 
+        // _lastVersion避免频繁更新同一个版本
+        WriteLog("发现更新：{0}", info.ToJson(true));
+        this.WriteInfoEvent("Upgrade", $"准备从[{_lastVersion}]更新到[{info.Version}]，开始下载 {info.Source}");
+
+        try
+        {
             // 下载文件包
             ug.Url = BuildUrl(info.Source!);
             await ug.Download(cancellationToken);
@@ -760,6 +799,12 @@ public abstract class ClientBase : DisposeBase, IApiClient, ICommandClient, IEve
                 }
             }
         }
+        catch (Exception ex)
+        {
+            span?.SetError(ex, null);
+            //Log?.Error(ex.ToString());
+            throw;
+        }
 
         return info;
     }
@@ -775,7 +820,11 @@ public abstract class ClientBase : DisposeBase, IApiClient, ICommandClient, IEve
         if (name.IsNullOrEmpty()) return;
 
         // 重新拉起进程
-        var rs = upgrade.Run(name, $"-upgrade {Environment.CommandLine}");
+        var args = Environment.GetCommandLineArgs();
+        if (args == null || args.Length == 0) args = new String[1];
+        args[0] = "-upgrade";
+
+        var rs = upgrade.Run(name, args.Join(" "));
 
         if (rs)
         {
@@ -892,7 +941,7 @@ public abstract class ClientBase : DisposeBase, IApiClient, ICommandClient, IEve
             // 有效期判断前把UTC转为本地时间
             var now = GetNow();
             var expire = model.Expire.ToLocalTime();
-            XTrace.WriteLine("[{0}] Got Command: {1}", source, model.ToJson());
+            WriteLog("[{0}] Got Command: {1}", source, model.ToJson());
             if (model.Expire.Year < 2000 || model.Expire > now)
             {
                 // 延迟执行
