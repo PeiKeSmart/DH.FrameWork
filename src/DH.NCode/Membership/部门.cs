@@ -407,6 +407,19 @@ public partial class Department : IDepartment, IEntity<DepartmentModel>
 
         return FindAll(_.TenantId == tenantId & _.ParentID == parentId);
     }
+
+    /// <summary>根据代码查找</summary>
+    /// <param name="code">代码</param>
+    /// <returns>实体列表</returns>
+    public static IList<Department> FindAllByCode(String? code)
+    {
+        if (code.IsNullOrEmpty()) return [];
+
+        // 实体缓存
+        if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => e.Code.EqualIgnoreCase(code));
+
+        return FindAll(_.Code == code);
+    }
     #endregion
 
     #region 字段名
