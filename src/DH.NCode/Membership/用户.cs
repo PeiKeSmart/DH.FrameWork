@@ -480,6 +480,38 @@ public partial class User : IUser, IEntity<UserModel>
     #endregion
 
     #region 扩展查询
+    /// <summary>根据编号查找</summary>
+    /// <param name="id">编号</param>
+    /// <returns>实体对象</returns>
+    public static User? FindByID(Int32 id)
+    {
+        if (id < 0) return null;
+
+        // 实体缓存
+        if (Meta.Session.Count < 1000) return Meta.Cache.Find(e => e.ID == id);
+
+        // 单对象缓存
+        return Meta.SingleCache[id];
+
+        //return Find(_.ID == id);
+    }
+
+    /// <summary>根据名称查找</summary>
+    /// <param name="name">名称</param>
+    /// <returns>实体对象</returns>
+    public static User? FindByName(String name)
+    {
+        if (name == null) return null;
+
+        // 实体缓存
+        if (Meta.Session.Count < 1000) return Meta.Cache.Find(e => e.Name.EqualIgnoreCase(name));
+
+        // 单对象缓存
+        return Meta.SingleCache.GetItemWithSlaveKey(name) as User;
+
+        //return Find(_.Name == name);
+    }
+
     /// <summary>根据邮件查找</summary>
     /// <param name="mail">邮件</param>
     /// <returns>实体列表</returns>

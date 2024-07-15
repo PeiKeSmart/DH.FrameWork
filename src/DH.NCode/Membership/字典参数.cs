@@ -333,6 +333,16 @@ public partial class Parameter : IParameter, IEntity<ParameterModel>
     #endregion
 
     #region 扩展查询
+    /// <summary>根据编号查找</summary>
+    /// <param name="id">编号</param>
+    /// <returns>实体对象</returns>
+    public static Parameter? FindByID(Int32 id)
+    {
+        if (id < 0) return null;
+
+        return Find(_.ID == id);
+    }
+
     /// <summary>根据用户、类别、名称查找</summary>
     /// <param name="userId">用户</param>
     /// <param name="category">类别</param>

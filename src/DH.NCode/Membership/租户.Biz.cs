@@ -53,22 +53,6 @@ public partial class Tenant : Entity<Tenant>, ITenantSource
 
     #region 扩展查询
 
-    /// <summary>根据编号查找</summary>
-    /// <param name="id">编号</param>
-    /// <returns>实体对象</returns>
-    public static Tenant FindById(Int32 id)
-    {
-        if (id <= 0) return null;
-
-        // 实体缓存
-        if (Meta.Session.Count < 1000) return Meta.Cache.Find(e => e.Id == id);
-
-        // 单对象缓存
-        return Meta.SingleCache[id];
-
-        //return Find(_.Id == id);
-    }
-
     /// <summary>根据名称查找</summary>
     /// <param name="name">名称</param>
     /// <returns>实体列表</returns>
@@ -80,23 +64,10 @@ public partial class Tenant : Entity<Tenant>, ITenantSource
         return FindAll(_.Name == name);
     }
 
-    /// <summary>根据编码查找</summary>
-    /// <param name="code">编码</param>
-    /// <returns>实体对象</returns>
-    public static Tenant FindByCode(String code)
-    {
-        if (code.IsNullOrEmpty()) return null;
-
-        // 实体缓存
-        if (Meta.Session.Count < 1000) return Meta.Cache.Find(e => e.Code.EqualIgnoreCase(code));
-
-        return Find(_.Code == code);
-    }
-
     /// <summary>根据管理员编号查询</summary>
     /// <param name="managerId"></param>
     /// <returns></returns>
-    public static Tenant FindByManagerId(Int32 managerId)
+    public static Tenant? FindByManagerId(Int32 managerId)
     {
         if (managerId <= 0) return null;
 

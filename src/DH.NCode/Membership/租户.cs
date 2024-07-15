@@ -251,6 +251,22 @@ public partial class Tenant : ITenant, IEntity<TenantModel>
     #endregion
 
     #region 扩展查询
+    /// <summary>根据编号查找</summary>
+    /// <param name="id">编号</param>
+    /// <returns>实体对象</returns>
+    public static Tenant? FindById(Int32 id)
+    {
+        if (id < 0) return null;
+
+        // 实体缓存
+        if (Meta.Session.Count < 1000) return Meta.Cache.Find(e => e.Id == id);
+
+        // 单对象缓存
+        return Meta.SingleCache[id];
+
+        //return Find(_.Id == id);
+    }
+
     /// <summary>根据编码查找</summary>
     /// <param name="code">编码</param>
     /// <returns>实体对象</returns>

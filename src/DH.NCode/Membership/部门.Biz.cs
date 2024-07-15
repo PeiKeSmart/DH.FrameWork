@@ -154,22 +154,6 @@ public partial class Department : Entity<Department>, ITenantSource
     #endregion
 
     #region 扩展查询
-    /// <summary>根据编号查找</summary>
-    /// <param name="id">编号</param>
-    /// <returns>实体对象</returns>
-    public static Department FindByID(Int32 id)
-    {
-        if (id <= 0) return null;
-
-        // 实体缓存
-        if (Meta.Session.Count < 1000) return Meta.Cache.Find(e => e.ID == id);
-
-        // 单对象缓存
-        return Meta.SingleCache[id];
-
-        //return Find(_.ID == id);
-    }
-
     /// <summary>根据名称查找</summary>
     /// <param name="name">名称</param>
     /// <returns>实体列表</returns>
@@ -185,7 +169,7 @@ public partial class Department : Entity<Department>, ITenantSource
     /// <param name="name">名称</param>
     /// <param name="parentid">父级</param>
     /// <returns>实体对象</returns>
-    public static Department FindByNameAndParentID(String name, Int32 parentid)
+    public static Department? FindByNameAndParentID(String name, Int32 parentid)
     {
         // 实体缓存
         if (Meta.Session.Count < 1000) return Meta.Cache.Find(e => e.Name == name && e.ParentID == parentid);
@@ -196,7 +180,7 @@ public partial class Department : Entity<Department>, ITenantSource
     /// <summary>根据代码查找</summary>
     /// <param name="code">代码</param>
     /// <returns>实体对象</returns>
-    public static Department FindByCode(String code)
+    public static Department? FindByCode(String code)
     {
         if (code.IsNullOrEmpty()) return null;
 
@@ -217,19 +201,6 @@ public partial class Department : Entity<Department>, ITenantSource
         if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => e.ParentID == parentId && e.Name.EqualIgnoreCase(name));
 
         return FindAll(_.ParentID == parentId & _.Name == name);
-    }
-
-    /// <summary>根据代码查找</summary>
-    /// <param name="code">代码</param>
-    /// <returns>实体列表</returns>
-    public static IList<Department> FindAllByCode(String code)
-    {
-        if (code.IsNullOrEmpty()) return new List<Department>();
-
-        // 实体缓存
-        if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => e.Code.EqualIgnoreCase(code));
-
-        return FindAll(_.Code == code);
     }
 
     /// <summary>根据租户查找</summary>
