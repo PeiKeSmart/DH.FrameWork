@@ -513,6 +513,21 @@ public partial class SysOnlineTime : ISysOnlineTime, IEntity<ISysOnlineTime>
 
         //return Find(_.ID == id);
     }
+
+    /// <summary>根据用户编号、年查找</summary>
+    /// <param name="uId">用户编号</param>
+    /// <param name="year">年</param>
+    /// <returns>实体列表</returns>
+    public static IList<SysOnlineTime> FindAllByUIdAndYear(Int32 uId, Int32 year)
+    {
+        if (uId < 0) return [];
+        if (year < 0) return [];
+
+        // 实体缓存
+        if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => e.UId == uId && e.Year == year);
+
+        return FindAll(_.UId == uId & _.Year == year);
+    }
     #endregion
 
     #region 字段名

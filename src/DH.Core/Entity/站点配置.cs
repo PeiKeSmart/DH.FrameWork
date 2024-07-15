@@ -99,6 +99,18 @@ public partial class Setting : ISetting, IEntity<ISetting>
     #endregion
 
     #region 扩展查询
+    /// <summary>根据键名称查找</summary>
+    /// <param name="name">键名称</param>
+    /// <returns>实体列表</returns>
+    public static IList<Setting> FindAllByName(String name)
+    {
+        if (name.IsNullOrEmpty()) return [];
+
+        // 实体缓存
+        if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => e.Name.EqualIgnoreCase(name));
+
+        return FindAll(_.Name == name);
+    }
     #endregion
 
     #region 字段名

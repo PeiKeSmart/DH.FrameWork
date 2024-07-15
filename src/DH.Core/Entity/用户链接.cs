@@ -300,19 +300,6 @@ public partial class UserConnect : IUserConnect, IEntity<IUserConnect>
     #endregion
 
     #region 扩展查询
-    /// <summary>根据全局标识查找</summary>
-    /// <param name="unionId">全局标识</param>
-    /// <returns>实体列表</returns>
-    public static IList<UserConnect> FindAllByUnionID(String unionId)
-    {
-        if (unionId.IsNullOrEmpty()) return [];
-
-        // 实体缓存
-        if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => e.UnionID.EqualIgnoreCase(unionId));
-
-        return FindAll(_.UnionID == unionId);
-    }
-
     /// <summary>根据提供商查找</summary>
     /// <param name="provider">提供商</param>
     /// <returns>实体列表</returns>
@@ -324,6 +311,19 @@ public partial class UserConnect : IUserConnect, IEntity<IUserConnect>
         if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => e.Provider.EqualIgnoreCase(provider));
 
         return FindAll(_.Provider == provider);
+    }
+
+    /// <summary>根据全局标识查找</summary>
+    /// <param name="unionId">全局标识</param>
+    /// <returns>实体列表</returns>
+    public static IList<UserConnect> FindAllByUnionID(String unionId)
+    {
+        if (unionId.IsNullOrEmpty()) return [];
+
+        // 实体缓存
+        if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => e.UnionID.EqualIgnoreCase(unionId));
+
+        return FindAll(_.UnionID == unionId);
     }
     #endregion
 

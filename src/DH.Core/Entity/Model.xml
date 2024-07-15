@@ -355,6 +355,9 @@
         <Column Name="UpdateIP" DataType="String" Description="更新地址" Model="False" Category="扩展" />
         <Column Name="Remark" DataType="String" Length="500" Description="描述" Category="扩展" />
       </Columns>
+      <Indexes>
+        <Index Columns="Type,Name" Unique="True" />
+      </Indexes>
     </Table>
     <Table Name="OAuthConfig" Description="OAuth配置。需要连接的OAuth认证方">
       <Columns>
