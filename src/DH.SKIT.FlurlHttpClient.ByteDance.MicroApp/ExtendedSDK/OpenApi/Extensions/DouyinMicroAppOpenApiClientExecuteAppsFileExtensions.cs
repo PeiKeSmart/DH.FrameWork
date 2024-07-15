@@ -7,6 +7,8 @@ using Flurl.Http;
 
 namespace SKIT.FlurlHttpClient.ByteDance.MicroApp.ExtendedSDK.OpenApi
 {
+    using SKIT.FlurlHttpClient;
+
     public static class DouyinMicroAppOpenApiClientExecuteAppsFileExtensions
     {
         /// <summary>
@@ -29,13 +31,13 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp.ExtendedSDK.OpenApi
                 request.MaterialFileName = Guid.NewGuid().ToString("N").ToLower() + (request.MaterialType == 8 ? ".pdf" : ".jpg");
 
             if (request.MaterialFileContentType is null)
-                request.MaterialFileContentType = Utilities.FileNameToContentTypeMapper.GetContentTypeForMaterial(request.MaterialFileName) ?? (request.MaterialType == 8 ? "application/pdf" : "image/jpeg");
+                request.MaterialFileContentType = MimeTypes.GetMimeMapping(request.MaterialFileName);
 
             IFlurlRequest flurlReq = client
                 .CreateFlurlRequest(request, HttpMethod.Post, "apps", "v2", "file", "upload_material")
                 .WithHeader("access-token", request.AuthorizerAccessToken);
 
-            using var httpContent = Utilities.FileHttpContentBuilder.Build(fileName: request.MaterialFileName, fileBytes: request.MaterialFileBytes, fileContentType: request.MaterialFileContentType, formDataName: "material_file");
+            using var httpContent = Utilities.HttpContentBuilder.BuildWithFile(fileName: request.MaterialFileName, fileBytes: request.MaterialFileBytes, fileContentType: request.MaterialFileContentType, formDataName: "material_file");
             httpContent.Add(new ByteArrayContent(Encoding.UTF8.GetBytes(request.MaterialType.ToString())), "material_type");
 
             return await client.SendFlurlRequestAsync<Models.OpenAppsFileUploadMaterialV2Response>(flurlReq, httpContent: httpContent, cancellationToken: cancellationToken).ConfigureAwait(false);
