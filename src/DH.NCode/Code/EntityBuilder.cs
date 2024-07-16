@@ -1652,7 +1652,7 @@ public class EntityBuilder : ClassBuilder
                     WriteLine("if ({0} < 0) return null;", dc.CamelName());
                 else if (dc.DataType == typeof(String))
                 {
-                    if (nullable)
+                    if (nullable && !dc.Nullable)
                         WriteLine("if ({0} == null) return null;", dc.CamelName());
                     else
                         WriteLine("if ({0}.IsNullOrEmpty()) return null;", dc.CamelName());
@@ -1753,7 +1753,7 @@ public class EntityBuilder : ClassBuilder
                     WriteLine("if ({0} < 0) return [];", dc.CamelName(), ClassName);
                 else if (dc.DataType == typeof(String))
                 {
-                    if (Option.Nullable)
+                    if (Option.Nullable && !dc.Nullable)
                         WriteLine("if ({0} == null) return [];", dc.CamelName());
                     else
                         WriteLine("if ({0}.IsNullOrEmpty()) return [];", dc.CamelName(), ClassName);
@@ -1804,6 +1804,13 @@ public class EntityBuilder : ClassBuilder
 
             if (dc.DataType == typeof(Boolean))
                 type += "?";
+            else if (dc.DataType == typeof(String))
+            {
+                if (Option.Nullable && dc.Nullable)
+                {
+                    type += "?";
+                }
+            }
 
             ps[dc.CamelName()] = type;
 

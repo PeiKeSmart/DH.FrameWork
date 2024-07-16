@@ -333,52 +333,16 @@ public partial class Parameter : IParameter, IEntity<ParameterModel>
     #endregion
 
     #region 扩展查询
-    /// <summary>根据编号查找</summary>
-    /// <param name="id">编号</param>
-    /// <returns>实体对象</returns>
-    public static Parameter? FindByID(Int32 id)
-    {
-        if (id < 0) return null;
-
-        return Find(_.ID == id);
-    }
-
-    /// <summary>根据用户、类别、名称查找</summary>
-    /// <param name="userId">用户</param>
-    /// <param name="category">类别</param>
-    /// <param name="name">名称</param>
-    /// <returns>实体对象</returns>
-    public static Parameter? FindByUserIDAndCategoryAndName(Int32 userId, String? category, String name)
-    {
-        if (userId < 0) return null;
-        if (category.IsNullOrEmpty()) return null;
-        if (name == null) return null;
-
-        return Find(_.UserID == userId & _.Category == category & _.Name == name);
-    }
-
     /// <summary>根据用户、类别查找</summary>
     /// <param name="userId">用户</param>
     /// <param name="category">类别</param>
     /// <returns>实体列表</returns>
-    public static IList<Parameter> FindAllByUserIDAndCategory(Int32 userId, String? category)
+    public static IList<Parameter> FindAllByUserIDAndCategory(Int32 userId, String category)
     {
         if (userId < 0) return [];
-        if (category.IsNullOrEmpty()) return [];
+        if (category == null) return [];
 
         return FindAll(_.UserID == userId & _.Category == category);
-    }
-
-    /// <summary>根据类别、名称查找</summary>
-    /// <param name="category">类别</param>
-    /// <param name="name">名称</param>
-    /// <returns>实体列表</returns>
-    public static IList<Parameter> FindAllByCategoryAndName(String? category, String name)
-    {
-        if (category.IsNullOrEmpty()) return [];
-        if (name == null) return [];
-
-        return FindAll(_.Category == category & _.Name == name);
     }
     #endregion
 
