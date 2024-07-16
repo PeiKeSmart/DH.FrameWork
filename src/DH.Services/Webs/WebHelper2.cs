@@ -509,7 +509,7 @@ public static class WebHelper2 {
         }
 
         var hashSet = new HashSet<String>();
-        hashSet.Add(".js.map");
+        hashSet.Add(".map");
         if (hashSet.Contains(extension))
         {
             return true;
@@ -590,6 +590,6 @@ public static class WebHelper2 {
             return null;
         }
 
-        return path.Substring(index);
+        return path[index..];
     }
 }
