@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel;
+using System.Reflection;
+using System.Text.RegularExpressions;
 
 using DH.Extensions;
 using DH.Security;
@@ -385,6 +387,11 @@ public class DHSetting : Config<DHSetting>
     [Description("用户统计。是否统计用户访问，默认true")]
     [Category("系统功能")]
     public Boolean EnableUserStat { get; set; } = true;
+
+    /// <summary>版权。留空表示不显示版权信息</summary>
+    [Description("版权。留空表示不显示版权信息")]
+    [Category("界面配置")]
+    public String Copyright { get; set; }
     #endregion
 
     #region 方法
@@ -403,11 +410,57 @@ public class DHSetting : Config<DHSetting>
 
         if (JwtOptions.Secret.IsNullOrEmpty() || JwtOptions.Secret.Split(':').Length != 2) JwtOptions.Secret = $"HS256:{Rand.NextString(26)}";
 
+        // 取版权信息
+        if (Copyright.IsNullOrEmpty())
+        {
+            var asm = Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
+            if (asm != null)
+            {
+                var att = asm.GetCustomAttribute<AssemblyCopyrightAttribute>();
+                if (att != null)
+                {
+                    Copyright = att.Copyright;
+                }
+            }
+        }
+
+        // 版权信息中的年份替换为当前年份
+        if (!Copyright.IsNullOrEmpty() && Copyright.Contains('-'))
+        {
+            var reg = new Regex(@"(\d{4})-(\d{4})");
+            Copyright = reg.Replace(Copyright, math => $"{math.Groups[1]}-{{now:yyyy}}");
+            //for (var i = 2000; i <= DateTime.Today.Year; i++)
+            //{
+            //    Copyright = Copyright.Replace(i + "", "{now:yyyy}");
+            //}
+        }
+
         if (PaswordStrength.IsNullOrEmpty()) PaswordStrength = @"^(?=.*\d.*)(?=.*[a-z].*)(?=.*[A-Z].*)(?=.*[^(0-9a-zA-Z)].*).{8,32}$";
         if (MaxLoginError <= 0) MaxLoginError = 6;
         if (LoginForbiddenTime <= 0) LoginForbiddenTime = 300;
 
         base.OnLoaded();
+    }
+
+    /// <summary>获取版权信息。动态替换年份</summary>
+    /// <returns></returns>
+    public String GetCopyright()
+    {
+        var cr = Copyright;
+        if (cr.IsNullOrEmpty()) return null;
+
+        var p1 = cr.IndexOf("{now");
+        if (p1 < 0) return cr;
+
+        var format = "";
+        var p2 = cr.IndexOf('}', p1);
+        if (p2 > 0) format = cr.Substring(p1 + 1, p2 - p1 - 1).TrimStart("now").TrimStart(":");
+
+        var now = DateTime.Now;
+        if (format.IsNullOrEmpty())
+            return cr[..p1] + now.Year + cr[(p2 + 1)..];
+        else
+            return cr[..p1] + now.ToString(format) + cr[(p2 + 1)..];
     }
     #endregion
 }
