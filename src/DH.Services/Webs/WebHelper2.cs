@@ -1,4 +1,6 @@
-﻿using DH.AspNetCore.Webs;
+﻿using System.Net;
+
+using DH.AspNetCore.Webs;
 using DH.Core.Domain;
 using DH.Core.Http;
 using DH.Core.Infrastructure;
@@ -18,16 +20,13 @@ using NewLife;
 using NewLife.Collections;
 using NewLife.Serialization;
 
-using System.Net;
-
 using XCode;
 using XCode.Membership;
 
 namespace DH.Core.Webs;
 
 /// <summary>Web助手</summary>
-public static class WebHelper2
-{
+public static class WebHelper2 {
     private static readonly IHttpContextAccessor _httpContextAccessor;
     private static readonly IHostApplicationLifetime _hostApplicationLifetime;
     private static readonly IUrlHelperFactory _urlHelperFactory;
@@ -503,10 +502,24 @@ public static class WebHelper2
 
         string path = _httpContextAccessor.HttpContext.Request.Path;
 
+        var extension = GetExtension(path);
+        if (extension == null)
+        {
+            return false;
+        }
+
+        var hashSet = new HashSet<String>();
+        hashSet.Add(".js.map");
+        if (hashSet.Contains(extension))
+        {
+            return true;
+        }
+
         // 一些解决方法。 FileExtensionContentTypeProvider包含大多数静态文件扩展名。 所以我们可以使用它
         // 参考: https://github.com/aspnet/StaticFiles/blob/dev/src/Microsoft.AspNetCore.StaticFiles/FileExtensionContentTypeProvider.cs
         // 如果可以返回内容类型，则为静态文件
         var contentTypeProvider = new FileExtensionContentTypeProvider();
+
         return contentTypeProvider.TryGetContentType(path, out var _);
     }
 
@@ -558,5 +571,25 @@ public static class WebHelper2
             rawUrl = $"{request.PathBase}{request.Path}{request.QueryString}";
 
         return rawUrl;
+    }
+
+    private static String GetExtension(string path)
+    {
+        // Don't use Path.GetExtension as that may throw an exception if there are
+        // invalid characters in the path. Invalid characters should be handled
+        // by the FileProviders
+
+        if (string.IsNullOrWhiteSpace(path))
+        {
+            return null;
+        }
+
+        int index = path.LastIndexOf('.');
+        if (index < 0)
+        {
+            return null;
+        }
+
+        return path.Substring(index);
     }
 }
