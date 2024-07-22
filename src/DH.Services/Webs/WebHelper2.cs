@@ -510,6 +510,7 @@ public static class WebHelper2 {
 
         var hashSet = new HashSet<String>();
         hashSet.Add(".map");
+        hashSet.Add(".css");
         if (hashSet.Contains(extension))
         {
             return true;
