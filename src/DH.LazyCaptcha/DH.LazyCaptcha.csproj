@@ -75,7 +75,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="MathExpressions" Version="1.1.2" />
-		<PackageReference Include="SixLabors.ImageSharp.Drawing" Version="2.1.3" />
+		<PackageReference Include="SixLabors.ImageSharp.Drawing" Version="2.1.4" />
 	</ItemGroup>
 
 	<ItemGroup>
