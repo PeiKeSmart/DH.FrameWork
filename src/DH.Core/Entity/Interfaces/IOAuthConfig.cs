@@ -80,6 +80,9 @@ public partial interface IOAuthConfig
     /// <summary>抓取头像。是否抓取头像并保存到本地</summary>
     Boolean FetchAvatar { get; set; }
 
+    /// <summary>删除。是否已删除，可恢复</summary>
+    Boolean IsDeleted { get; set; }
+
     /// <summary>创建者</summary>
     Int32 CreateUserID { get; set; }
 

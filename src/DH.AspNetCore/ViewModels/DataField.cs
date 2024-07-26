@@ -1,12 +1,14 @@
-﻿using NewLife;
-using NewLife.Collections;
-
-using System.Collections;
+﻿using System.Collections;
 using System.ComponentModel;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 using System.Xml.Serialization;
+
+using DH.AspNetCore.MVC;
+
+using NewLife;
+using NewLife.Collections;
 
 using XCode;
 using XCode.Configuration;
@@ -263,6 +265,11 @@ public class DataField {
     /// <summary>是否附件列</summary>
     /// <returns></returns>
     public Boolean IsAttachment() => ItemType.EqualIgnoreCase("file", "image") || ItemType.StartsWithIgnoreCase("file-", "image-");
+
+    /// <summary>格式化数据用于显示</summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public virtual String FormatValue(Object value) => ViewHelper.FormatValue(!ItemType.IsNullOrEmpty() ? ItemType : Field?.Field?.DataScale, value, Description);
     #endregion
 
     #region 服务

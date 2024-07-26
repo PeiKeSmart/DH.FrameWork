@@ -65,6 +65,9 @@ public partial interface IApp
     /// <summary>最后请求</summary>
     DateTime LastAuth { get; set; }
 
+    /// <summary>删除。是否已删除，可恢复</summary>
+    Boolean IsDeleted { get; set; }
+
     /// <summary>创建者</summary>
     Int32 CreateUserID { get; set; }
 

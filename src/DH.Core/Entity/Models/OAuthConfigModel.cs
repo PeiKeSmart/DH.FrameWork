@@ -80,6 +80,9 @@ public partial class OAuthConfigModel
     /// <summary>抓取头像。是否抓取头像并保存到本地</summary>
     public Boolean FetchAvatar { get; set; }
 
+    /// <summary>删除。是否已删除，可恢复</summary>
+    public Boolean IsDeleted { get; set; }
+
     /// <summary>创建者</summary>
     public Int32 CreateUserID { get; set; }
 
@@ -130,6 +133,7 @@ public partial class OAuthConfigModel
         SecurityKey = model.SecurityKey;
         FieldMap = model.FieldMap;
         FetchAvatar = model.FetchAvatar;
+        IsDeleted = model.IsDeleted;
         CreateUserID = model.CreateUserID;
         CreateTime = model.CreateTime;
         CreateIP = model.CreateIP;

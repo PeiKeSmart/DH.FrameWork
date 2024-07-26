@@ -299,6 +299,7 @@
         <Column Name="Expired" DataType="DateTime" Description="过期时间。空表示永不过期" />
         <Column Name="Auths" DataType="Int32" Description="次数" />
         <Column Name="LastAuth" DataType="DateTime" Description="最后请求" />
+        <Column Name="IsDeleted" DataType="Boolean" Description="删除。是否已删除，可恢复" />
         <Column Name="CreateUserID" DataType="Int32" Description="创建者" Category="扩展" />
         <Column Name="CreateTime" DataType="DateTime" Description="创建时间" Category="扩展" />
         <Column Name="CreateIP" DataType="String" Description="创建地址" Category="扩展" />
@@ -384,6 +385,7 @@
         <Column Name="SecurityKey" DataType="String" Length="500" Description="安全密钥。公钥，用于RSA加密用户密码，在通信链路上保护用户密码安全，密钥前面可以增加keyName，形成keyName$keyValue，用于向服务端指示所使用的密钥标识，方便未来更换密钥。" />
         <Column Name="FieldMap" DataType="String" Length="500" Description="字段映射。SSO用户字段如何映射到OAuthClient内部属性" />
         <Column Name="FetchAvatar" DataType="Boolean" Description="抓取头像。是否抓取头像并保存到本地" />
+        <Column Name="IsDeleted" DataType="Boolean" Description="删除。是否已删除，可恢复" />
         <Column Name="CreateUserID" DataType="Int32" Description="创建者" Category="扩展" />
         <Column Name="CreateTime" DataType="DateTime" Description="创建时间" Category="扩展" />
         <Column Name="CreateIP" DataType="String" Description="创建地址" Category="扩展" />
@@ -437,7 +439,7 @@
         <Column Name="News" DataType="Int32" Description="新用户。今天注册新用户数" />
         <Column Name="NewsT7" DataType="Int32" Description="7天注册。7天内注册新用户数" />
         <Column Name="NewsT30" DataType="Int32" Description="30天注册。30天注册新用户数" />
-        <Column Name="OnlineTime" DataType="Int32" ItemType="TimeSpan" Description="在线时间。累计在线总时间，秒" />
+        <Column Name="OnlineTime" DataType="Int32" ItemType="TimeSpan:d'.'hh':'mm':'ss" Description="在线时间。累计在线总时间，秒" />
         <Column Name="CreateTime" DataType="DateTime" Nullable="False" Description="创建时间" Category="扩展" />
         <Column Name="UpdateTime" DataType="DateTime" Nullable="False" Description="更新时间" Category="扩展" />
         <Column Name="Remark" DataType="String" Length="1000" Description="详细信息" Category="扩展" />

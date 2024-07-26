@@ -65,6 +65,9 @@ public partial class AppModel
     /// <summary>最后请求</summary>
     public DateTime LastAuth { get; set; }
 
+    /// <summary>删除。是否已删除，可恢复</summary>
+    public Boolean IsDeleted { get; set; }
+
     /// <summary>创建者</summary>
     public Int32 CreateUserID { get; set; }
 
@@ -110,6 +113,7 @@ public partial class AppModel
         Expired = model.Expired;
         Auths = model.Auths;
         LastAuth = model.LastAuth;
+        IsDeleted = model.IsDeleted;
         CreateUserID = model.CreateUserID;
         CreateTime = model.CreateTime;
         CreateIP = model.CreateIP;

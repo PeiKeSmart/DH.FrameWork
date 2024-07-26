@@ -199,36 +199,45 @@ public partial class App : DHEntityBase<App> {
     public Boolean ValidSource(String ip)
     {
         if (ip.IsNullOrEmpty()) return true;
+        if (White.IsNullOrEmpty() && Black.IsNullOrEmpty()) return true;
 
-        // 匹配黑名单
-        var ps = Black.Split(",", ";");
-        if (ps != null && ps.Length > 0)
+        // 黑名单优先，黑名单里面有的，直接拒绝
+        var bs = (Black + "").Split(",", ";");
+        if (bs.Length > 0 && bs.Any(e => ip.IsMatch(ip))) return false;
+
+        // 白名单里面有的，直接通过
+        var ws = (White + "").Split(",", ";");
+        if (ws.Length > 0)
         {
-            if (ps.Any(e => ip.IsMatch(ip))) return false;
+            return ws.Any(e => ip.IsMatch(ip));
         }
 
-        // 匹配白名单
-        ps = White.Split(",", ";");
-        if (ps != null && ps.Length > 0)
-        {
-            if (ps.Any(e => ip.IsMatch(ip))) return true;
-
-            // 白名单存在，但匹配失败，则直接失败
-            return false;
-        }
-
+        // 未设置白名单，黑名单里面没有的，直接通过
         return true;
     }
 
-    /// <summary>验证应用密钥是否有效</summary>
-    /// <param name="appkey"></param>
-    /// <returns></returns>
-    public static App Valid(String appkey)
-    {
-        var app = FindBySecret(appkey);
-        if (app == null || !app.Enable) throw new XException("非法授权！");
+    ///// <summary>验证应用密钥是否有效</summary>
+    ///// <param name="appkey"></param>
+    ///// <returns></returns>
+    //public static App Valid(String appkey)
+    //{
+    //    var app = FindBySecret(appkey);
+    //    if (app == null || !app.Enable) throw new XException("非法授权！");
 
-        return app;
+    //    return app;
+    //}
+
+    /// <summary>写应用历史</summary>
+    /// <param name="action"></param>
+    /// <param name="success"></param>
+    /// <param name="remark"></param>
+    /// <param name="ip"></param>
+    /// <param name="clientId"></param>
+    public void WriteLog(String action, Boolean success, String remark, String ip, String clientId)
+    {
+        if (Id > 0) remark = $"[{this}]{remark}";
+        var log = LogProvider.Provider.CreateLog(GetType(), action, success, remark, 0, clientId, ip, Id);
+        log.SaveAsync();
     }
     #endregion
 }
