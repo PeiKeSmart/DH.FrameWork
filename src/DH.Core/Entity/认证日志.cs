@@ -186,6 +186,9 @@ public partial class AuthCheckLog : IAuthCheckLog, IEntity<IAuthCheckLog>
     #region 关联映射
     #endregion
 
+    #region 扩展查询
+    #endregion
+
     #region 字段名
     /// <summary>取得认证日志字段信息的快捷方式</summary>
     public partial class _

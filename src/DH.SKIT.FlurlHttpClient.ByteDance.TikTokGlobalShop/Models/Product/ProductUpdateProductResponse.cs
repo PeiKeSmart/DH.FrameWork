@@ -1,40 +1,46 @@
 namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop.Models
 {
     /// <summary>
-    /// <para>表示 [PUT] /products 接口的响应。</para>
+    /// <para>表示 [PUT] /product/{version}/products/{product_id} 接口的响应。</para>
     /// </summary>
     public class ProductUpdateProductResponse : TikTokShopResponse<ProductUpdateProductResponse.Types.Data>
     {
         public static class Types
         {
-            public class Data : ProductCreateProductResponse.Types.Data
+            public class Data
             {
-                public static new class Types
+                public static class Types
                 {
                     public class SKU : ProductCreateProductResponse.Types.Data.Types.SKU
                     {
-                        public static new class Types
-                        {
-                            public class SalesAttribute : ProductCreateProductResponse.Types.Data.Types.SKU.Types.SalesAttribute
-                            {
-                            }
-                        }
+                    }
 
-                        /// <summary>
-                        /// 获取或设置销售属性列表。
-                        /// </summary>
-                        [Newtonsoft.Json.JsonProperty("sales_attributes")]
-                        [System.Text.Json.Serialization.JsonPropertyName("sales_attributes")]
-                        public new Types.SalesAttribute[] SalesAttributeList { get; set; } = default!;
+                    public class Warning : ProductCreateProductResponse.Types.Data.Types.Warning
+                    {
                     }
                 }
+
+                /// <summary>
+                /// 获取或设置商品 ID。
+                /// </summary>
+                [Newtonsoft.Json.JsonProperty("product_id")]
+                [System.Text.Json.Serialization.JsonPropertyName("product_id")]
+                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.NumericalStringReadOnlyConverter))]
+                public string ProductId { get; set; } = default!;
 
                 /// <summary>
                 /// 获取或设置 SKU 列表。
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("skus")]
                 [System.Text.Json.Serialization.JsonPropertyName("skus")]
-                public new Types.SKU[] SKUList { get; set; } = default!;
+                public Types.SKU[] SKUList { get; set; } = default!;
+
+                /// <summary>
+                /// 获取或设置警告列表。
+                /// </summary>
+                [Newtonsoft.Json.JsonProperty("warnings")]
+                [System.Text.Json.Serialization.JsonPropertyName("warnings")]
+                public Types.Warning[]? WarningList { get; set; }
             }
         }
     }

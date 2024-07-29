@@ -14,7 +14,7 @@ namespace SKIT.FlurlHttpClient.Wechat.Api.Models
                     public class FinderScene
                     {
                         /// <summary>
-                        /// 获取或设置视频号唯一标识。
+                        /// 获取或设置视频号 ID。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("promoter_id")]
                         [System.Text.Json.Serialization.JsonPropertyName("promoter_id")]
@@ -55,7 +55,7 @@ namespace SKIT.FlurlHttpClient.Wechat.Api.Models
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("order_id")]
                 [System.Text.Json.Serialization.JsonPropertyName("order_id")]
-                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalStringReadOnlyConverter))]
+                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.NumericalStringReadOnlyConverter))]
                 public string OrderId { get; set; } = default!;
 
                 /// <summary>

@@ -4,7 +4,7 @@
 	<PropertyGroup>
 		<LangVersion>latest</LangVersion>
 		<OutputType>Library</OutputType>
-		<TargetFrameworks>net45;net461;netstandard2.0;netstandard2.1</TargetFrameworks>
+		<TargetFrameworks>net45;net461;netstandard2.0;netstandard2.1;net5.0;net6.0;net7.0;net8.0</TargetFrameworks>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<RootNamespace>DH.NRemoting</RootNamespace>
@@ -34,10 +34,10 @@
 		<Authors>$(Company)</Authors>
 		<PackageProjectUrl>https://www.haocoding.com/</PackageProjectUrl>
 		<PackageIcon>DH.png</PackageIcon>
-		<RepositoryUrl>https://gitee.com/chuangchu/DH.FrameWork</RepositoryUrl>
+		<RepositoryUrl>https://gitee.com/dengho/DH.FrameWork</RepositoryUrl>
 		<RepositoryType>Git</RepositoryType>
 		<PackageTags>湖北登灏科技有限公司;DH组件;DH;$(AssemblyName)</PackageTags>
-		<PackageReleaseNotes>DH框架的RPC远程过程调用，二进制封装，提供高吞吐低延迟的高性能RPC框架，参考NewLife.Remoting</PackageReleaseNotes>
+		<PackageReleaseNotes>DH框架的RPC远程过程调用，二进制封装，提供高吞吐低延迟的高性能RPC框架</PackageReleaseNotes>
 		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>
 		<EmbedUntrackedSources>true</EmbedUntrackedSources>
@@ -57,8 +57,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Compile Remove="IpHelper.cs" />
-	</ItemGroup>
+      <Compile Remove="Clients\HttpClientBase.cs" />
+      <Compile Remove="Clients\RpcClientBase.cs" />
+      <Compile Remove="IpHelper.cs" />
+      <Compile Remove="Models\TokenModel.cs" />
+    </ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\DH.NCore\DH.NCore.csproj" />

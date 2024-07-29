@@ -14,6 +14,9 @@ public partial interface IAppVersion
     /// <summary>编号</summary>
     Int32 Id { get; set; }
 
+    /// <summary>App类型。1为Android，2为IOS</summary>
+    Int32 AType { get; set; }
+
     /// <summary>版本号</summary>
     String Version { get; set; }
 
@@ -23,8 +26,14 @@ public partial interface IAppVersion
     /// <summary>下载地址</summary>
     String FilePath { get; set; }
 
-    /// <summary>第三方平台下载地址</summary>
+    /// <summary>国内第三方平台下载地址</summary>
     String CstFilepath { get; set; }
+
+    /// <summary>国外第三方平台下载地址</summary>
+    String ForeignCstFilepath { get; set; }
+
+    /// <summary>APP包名</summary>
+    String BoundId { get; set; }
 
     /// <summary>文件名称</summary>
     String FileName { get; set; }

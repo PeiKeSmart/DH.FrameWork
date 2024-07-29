@@ -93,41 +93,55 @@ abstract class DbBase : DisposeBase, IDatabase
     public virtual DatabaseType Type => DatabaseType.None;
 
     /// <summary>提供者工厂</summary>
-    private DbProviderFactory _providerFactory;
+    private DbProviderFactory? _providerFactory;
     /// <summary>数据库提供者工厂。支持外部修改</summary>
     public DbProviderFactory Factory
     {
-        get => _providerFactory ??= GetFactory(true);
+        get => _providerFactory ??= GetFactory(true)!;
         set => _providerFactory = value;
     }
 
     private static Dictionary<Type, DbProviderFactory> _factories = new();
-    protected DbProviderFactory GetFactory(Boolean create)
+    private Boolean _inited;
+    protected DbProviderFactory? GetFactory(Boolean create)
     {
-        var type = GetType();
-        if (_factories.TryGetValue(type, out var factory)) return factory;
-
-        if (!create) return null;
-
-        lock (_factories)
+        try
         {
-            if (_factories.TryGetValue(type, out factory)) return factory;
+            var type = GetType();
+            if (_factories.TryGetValue(type, out var factory)) return factory;
 
+            if (!create) return null;
+
+            // 如果已经初始化过，还没拿到工厂，那么没有必要创建第二次
+            if (_inited) return null;
+
+            // 先创建，再加锁加入集合。允许重复创建，避免死锁
             factory = CreateFactory();
-            if (factory != null) _factories.Add(type, factory);
+            if (factory == null) return null;
 
-            return factory;
+            lock (_factories)
+            {
+                if (_factories.TryGetValue(type, out var factory2)) return factory2;
+
+                if (factory != null) _factories.Add(type, factory);
+
+                return factory;
+            }
+        }
+        finally
+        {
+            _inited = true;
         }
     }
 
     /// <summary>创建工厂</summary>
     /// <returns></returns>
-    protected virtual DbProviderFactory CreateFactory() => null;
+    protected virtual DbProviderFactory? CreateFactory() => null;
 
     /// <summary>连接名</summary>
-    public String ConnName { get; set; }
+    public String ConnName { get; set; } = null!;
 
-    protected internal String _ConnectionString;
+    protected internal String _ConnectionString = null!;
     /// <summary>链接字符串</summary>
     public virtual String ConnectionString
     {
@@ -157,7 +171,7 @@ abstract class DbBase : DisposeBase, IDatabase
     }
 
     /// <summary>数据库提供者。用于选择驱动</summary>
-    public String Provider { get; set; }
+    public String? Provider { get; set; }
 
     protected void CheckConnStr()
     {
@@ -165,7 +179,7 @@ abstract class DbBase : DisposeBase, IDatabase
             throw new XCodeException("[{0}]未指定连接字符串！", ConnName);
     }
 
-    private String _newStr;
+    private String? _newStr;
     private String GetConnectionString()
     {
         if (_newStr != null) return _newStr;
@@ -223,12 +237,12 @@ abstract class DbBase : DisposeBase, IDatabase
     protected virtual void OnGetConnectionString(ConnectionStringBuilder builder) { }
 
     /// <summary>拥有者</summary>
-    public virtual String Owner { get; set; }
+    public virtual String? Owner { get; set; }
 
     /// <summary>数据库名</summary>
-    public String DatabaseName { get; set; }
+    public String? DatabaseName { get; set; }
 
-    internal protected String _ServerVersion;
+    internal protected String? _ServerVersion;
     /// <summary>数据库服务器版本</summary>
     public virtual String ServerVersion
     {
@@ -260,7 +274,7 @@ abstract class DbBase : DisposeBase, IDatabase
     public Int32 DataCache { get; set; }
 
     /// <summary>表前缀。所有在该连接上的表名都自动增加该前缀</summary>
-    public String TablePrefix { get; set; }
+    public String? TablePrefix { get; set; }
 
     /// <summary>反向工程表名、字段名大小写设置</summary>
     public NameFormats NameFormat { get; set; }
@@ -313,7 +327,7 @@ abstract class DbBase : DisposeBase, IDatabase
         var session = _store2.Value;
         if (session != null && !session.Disposed) return session;
 
-        session = OnCreateSession() as IAsyncDbSession;
+        session = (OnCreateSession() as IAsyncDbSession)!;
 
         if (session is DbSession ds)
         {
@@ -332,7 +346,7 @@ abstract class DbBase : DisposeBase, IDatabase
     protected abstract IDbSession OnCreateSession();
 
     /// <summary>唯一实例</summary>
-    private IMetaData _metadata;
+    private IMetaData? _metadata;
 
     /// <summary>创建元数据对象，唯一实例</summary>
     /// <returns></returns>
@@ -437,13 +451,13 @@ abstract class DbBase : DisposeBase, IDatabase
     /// <param name="strict"></param>
     /// <param name="ignoreError"></param>
     /// <returns></returns>
-    public static DbProviderFactory GetProviderFactory(String? name, String assemblyFile, String className, Boolean strict = false, Boolean ignoreError = false)
+    public static DbProviderFactory? GetProviderFactory(String? name, String assemblyFile, String className, Boolean strict = false, Boolean ignoreError = false)
     {
         try
         {
-            if(name.IsNullOrEmpty()) name = Path.GetFileNameWithoutExtension(assemblyFile);
+            if (name.IsNullOrEmpty()) name = Path.GetFileNameWithoutExtension(assemblyFile);
             var links = GetLinkNames(name, strict);
-            var type = PluginHelper.LoadPlugin(className, null, assemblyFile, links.Join(","));
+            var type = PluginHelper.LoadPlugin(className, null!, assemblyFile, links.Join(","));
 
             var factory = GetProviderFactory(type);
             if (factory != null) return factory;
@@ -474,7 +488,7 @@ abstract class DbBase : DisposeBase, IDatabase
                     XTrace.WriteException(ex);
                 }
 
-                type = PluginHelper.LoadPlugin(className, null, assemblyFile, links.Join(","));
+                type = PluginHelper.LoadPlugin(className, null!, assemblyFile, links.Join(","));
 
                 // 如果还没有，就写异常
                 if (!File.Exists(file)) throw new FileNotFoundException("缺少文件" + file + "！", file);
@@ -497,7 +511,7 @@ abstract class DbBase : DisposeBase, IDatabase
     /// </summary>
     /// <param name="type"></param>
     /// <returns></returns>
-    public static DbProviderFactory GetProviderFactory(Type type)
+    public static DbProviderFactory? GetProviderFactory(Type? type)
     {
         if (type == null) return null;
 
@@ -546,7 +560,7 @@ abstract class DbBase : DisposeBase, IDatabase
     /// <summary>检查是否以Order子句结尾，如果是，分割sql为前后两部分</summary>
     /// <param name="sql"></param>
     /// <returns></returns>
-    internal protected static String CheckOrderClause(ref String sql)
+    internal protected static String? CheckOrderClause(ref String sql)
     {
         if (!sql.ToLower().Contains("order")) return null;
 
@@ -589,9 +603,9 @@ abstract class DbBase : DisposeBase, IDatabase
     /// <summary>
     /// 保留字字符串，其实可以在首次使用时动态从Schema中加载
     /// </summary>
-    protected virtual String ReservedWordsStr => null;
+    protected virtual String ReservedWordsStr => "";
 
-    private Dictionary<String, Boolean> _ReservedWords = null;
+    private Dictionary<String, Boolean>? _ReservedWords = null;
     /// <summary>
     /// 保留字
     /// </summary>
@@ -626,7 +640,23 @@ abstract class DbBase : DisposeBase, IDatabase
     /// </remarks>
     /// <param name="dateTime">时间值</param>
     /// <returns></returns>
-    public virtual String FormatDateTime(DateTime dateTime) => "'" + dateTime.ToFullString() + "'";
+    public virtual String FormatDateTime(DateTime dateTime) => FormatDateTime(null!, dateTime);
+
+    /// <summary>格式化时间为SQL字符串</summary>
+    /// <remarks>
+    /// 优化DateTime转为全字符串，平均耗时从25.76ns降为15.07。
+    /// 调用非常频繁，每分钟都有数百万次调用。
+    /// </remarks>
+    /// <param name="column">字段</param>
+    /// <param name="dateTime">时间值</param>
+    /// <returns></returns>
+    public virtual String FormatDateTime(IDataColumn column, DateTime dateTime)
+    {
+        if (dateTime.Ticks % 10_000_000 == 0)
+            return $"'{dateTime:yyyy-MM-dd HH:mm:ss}'";
+        else
+            return $"'{dateTime:yyyy-MM-dd HH:mm:ss.fffffff}'";
+    }
 
     /// <summary>格式化关键字</summary>
     /// <param name="keyWord">表名</param>
@@ -665,7 +695,7 @@ abstract class DbBase : DisposeBase, IDatabase
     /// <returns></returns>
     public virtual String FormatName(IDataTable table, Boolean formatKeyword)
     {
-        if (table == null) return null;
+        //if (table == null) return null;
 
         var name = table.TableName;
 
@@ -701,7 +731,7 @@ abstract class DbBase : DisposeBase, IDatabase
     /// <returns></returns>
     public virtual String FormatName(IDataColumn column)
     {
-        if (column == null) return null;
+        //if (column == null) return null;
 
         var name = column.ColumnName;
 
@@ -761,7 +791,7 @@ abstract class DbBase : DisposeBase, IDatabase
     public virtual String FormatValue(IDataColumn column, Object? value)
     {
         var isNullable = true;
-        Type type = null;
+        Type? type = null;
         if (column != null)
         {
             type = column.DataType;
@@ -779,7 +809,7 @@ abstract class DbBase : DisposeBase, IDatabase
             //!!! 为SQL格式化数值时，如果字符串是Empty，将不再格式化为null
             //if (String.IsNullOrEmpty(value.ToString()) && isNullable) return "null";
 
-            return "'" + value.ToString().Trim('\0').Replace("'", "''") + "'";
+            return "'" + value.ToString().Replace('\0', ' ').Replace("'", "''") + "'";
         }
         else if (type == typeof(DateTime))
         {
@@ -790,7 +820,7 @@ abstract class DbBase : DisposeBase, IDatabase
 
             if (isNullable && (dt <= DateTime.MinValue || dt >= DateTime.MaxValue)) return "null";
 
-            return FormatDateTime(dt);
+            return FormatDateTime(column!, dt);
         }
         else if (type == typeof(Boolean))
         {
@@ -799,8 +829,7 @@ abstract class DbBase : DisposeBase, IDatabase
         }
         else if (type == typeof(Byte[]))
         {
-            var bts = (Byte[])value;
-            if (bts == null || bts.Length <= 0) return isNullable ? "null" : "0x0";
+            if (value is not Byte[] bts || bts.Length <= 0) return isNullable ? "null" : "0x0";
 
             return "0x" + BitConverter.ToString(bts).Replace("-", null);
         }
@@ -814,10 +843,10 @@ abstract class DbBase : DisposeBase, IDatabase
         if (value == null) return isNullable ? "null" : "";
 
         // 枚举
-        if (!type.IsInt() && type.IsEnum) type = typeof(Int32);
+        if (type != null && type.IsEnum) type = typeof(Int32);
 
         // 转为目标类型，比如枚举转为数字
-        value = value.ChangeType(type);
+        if (type != null) value = value.ChangeType(type);
         if (value == null) return isNullable ? "null" : "";
 
         return value.ToString();
@@ -841,6 +870,12 @@ abstract class DbBase : DisposeBase, IDatabase
 
         return String.Format(format, FormatName(column), value);
     }
+    /// <summary>(参数化)格式化模糊搜索的字符串。处理转义字符</summary>
+    /// <param name="column">字段</param>
+    /// <param name="format">格式化字符串</param>
+    /// <returns></returns>
+    public virtual String FormatLike(IDataColumn column, String format)
+        => String.Format(format, FormatName(column), FormatParameterName(column.ColumnName));
 
     /// <summary>格式化参数名</summary>
     /// <param name="name">名称</param>
@@ -865,7 +900,7 @@ abstract class DbBase : DisposeBase, IDatabase
     /// <param name="value">值</param>
     /// <param name="field">字段</param>
     /// <returns></returns>
-    public virtual IDataParameter CreateParameter(String name, Object? value, IDataColumn field) => CreateParameter(name, value, field?.DataType);
+    public virtual IDataParameter CreateParameter(String name, Object? value, IDataColumn? field) => CreateParameter(name, value, field?.DataType);
 
     /// <summary>创建参数</summary>
     /// <param name="name">名称</param>
@@ -896,6 +931,7 @@ abstract class DbBase : DisposeBase, IDatabase
 
                 if (value is not null and not IList) value = value.ChangeType(type);
             }
+            if (type == null) throw new ArgumentNullException(nameof(type));
 
             // 写入数据类型
             switch (type.GetTypeCode())
@@ -950,7 +986,7 @@ abstract class DbBase : DisposeBase, IDatabase
         }
         catch (Exception ex)
         {
-            throw new Exception($"创建字段{name}/{type.Name}的参数时出错", ex);
+            throw new Exception($"创建字段{name}/{type?.Name}的参数时出错", ex);
         }
 
         return dp;
@@ -959,7 +995,7 @@ abstract class DbBase : DisposeBase, IDatabase
     /// <summary>创建参数数组</summary>
     /// <param name="ps"></param>
     /// <returns></returns>
-    public virtual IDataParameter[] CreateParameters(IDictionary<String, Object>? ps) => ps?.Select(e => CreateParameter(e.Key, e.Value)).ToArray() ?? new IDataParameter[0];
+    public virtual IDataParameter[] CreateParameters(IDictionary<String, Object>? ps) => ps?.Select(e => CreateParameter(e.Key, e.Value)).ToArray() ?? [];
 
     /// <summary>根据对象成员创建参数数组</summary>
     /// <param name="model"></param>
@@ -978,6 +1014,21 @@ abstract class DbBase : DisposeBase, IDatabase
         }
 
         return list.ToArray();
+    }
+
+    /// <summary>生成批量删除SQL。部分数据库支持分批删除</summary>
+    /// <param name="tableName"></param>
+    /// <param name="where"></param>
+    /// <param name="batchSize"></param>
+    /// <returns>不支持分批删除时返回null</returns>
+    public virtual String? BuildDeleteSql(String tableName, String where, Int32 batchSize)
+    {
+        if (batchSize > 0) return null;
+
+        var sql = $"Delete From {FormatName(tableName)}";
+        if (!where.IsNullOrEmpty()) sql += " Where " + where;
+
+        return sql;
     }
 
     /// <summary>是否支持Schema。默认true</summary>

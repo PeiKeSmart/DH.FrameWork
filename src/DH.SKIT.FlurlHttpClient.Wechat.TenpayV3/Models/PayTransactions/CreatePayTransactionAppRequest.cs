@@ -21,7 +21,7 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Models
 
                 /// <summary>
                 /// 获取或设置币种。
-                /// <para>默认值：CNY</para>
+                /// <para>默认值："CNY"</para>
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("currency")]
                 [System.Text.Json.Serialization.JsonPropertyName("currency")]
@@ -104,7 +104,14 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Models
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("id")]
                         [System.Text.Json.Serialization.JsonPropertyName("id")]
-                        public string Id { get; set; } = string.Empty;
+                        public string? Id { get; set; }
+
+                        /// <summary>
+                        /// 获取或设置商家自定义编码。
+                        /// </summary>
+                        [Newtonsoft.Json.JsonProperty("out_id")]
+                        [System.Text.Json.Serialization.JsonPropertyName("out_id")]
+                        public string? OutId { get; set; }
 
                         /// <summary>
                         /// 获取或设置门店名称。
@@ -134,7 +141,7 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Models
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("payer_client_ip")]
                 [System.Text.Json.Serialization.JsonPropertyName("payer_client_ip")]
-                public string ClientIp { get; set; } = string.Empty;
+                public string? ClientIp { get; set; }
 
                 /// <summary>
                 /// 获取或设置商户端设备号。
@@ -142,6 +149,13 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Models
                 [Newtonsoft.Json.JsonProperty("device_id")]
                 [System.Text.Json.Serialization.JsonPropertyName("device_id")]
                 public string? DeviceId { get; set; }
+
+                /// <summary>
+                /// 获取或设置商户端设备 IP。
+                /// </summary>
+                [Newtonsoft.Json.JsonProperty("device_ip")]
+                [System.Text.Json.Serialization.JsonPropertyName("device_ip")]
+                public string? DeviceIp { get; set; }
 
                 /// <summary>
                 /// 获取或设置商户门店信息。
@@ -201,9 +215,9 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Models
         /// 获取或设置交易结束时间。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("time_expire")]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.RFC3339NullableDateTimeOffsetConverter))]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.Common.Rfc3339DateTimeOffsetConverter))]
         [System.Text.Json.Serialization.JsonPropertyName("time_expire")]
-        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.RFC3339NullableDateTimeOffsetConverter))]
+        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.Rfc3339DateTimeOffsetConverter))]
         public DateTimeOffset? ExpireTime { get; set; }
 
         /// <summary>
@@ -226,6 +240,13 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Models
         [Newtonsoft.Json.JsonProperty("goods_tag")]
         [System.Text.Json.Serialization.JsonPropertyName("goods_tag")]
         public string? GoodsTag { get; set; }
+
+        /// <summary>
+        /// 获取或设置是否支持开票。
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("support_fapiao")]
+        [System.Text.Json.Serialization.JsonPropertyName("support_fapiao")]
+        public bool? IsSupportFapiao { get; set; }
 
         /// <summary>
         /// 获取或设置金额信息。

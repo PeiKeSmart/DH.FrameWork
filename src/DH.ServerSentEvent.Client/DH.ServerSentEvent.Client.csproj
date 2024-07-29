@@ -33,7 +33,7 @@
     <Authors>$(Company)</Authors>
     <PackageProjectUrl>https://www.haocoding.com/</PackageProjectUrl>
     <PackageIcon>DH.png</PackageIcon>
-    <RepositoryUrl>https://gitee.com/chuangchu/DH.FrameWork</RepositoryUrl>
+    <RepositoryUrl>https://gitee.com/dengho/DH.FrameWork</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <PackageTags>湖北登灏科技有限公司;DH组件;DH;$(AssemblyName)</PackageTags>
     <PackageReleaseNotes>基于DH框架的SSE客户端支持库，适用于 .NET 的服务器发送事件 （SSE） 客户端实现。</PackageReleaseNotes>

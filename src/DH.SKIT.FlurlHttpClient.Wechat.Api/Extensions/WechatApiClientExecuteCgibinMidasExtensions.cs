@@ -15,25 +15,25 @@ namespace SKIT.FlurlHttpClient.Wechat.Api
         private static T PreprocessRequest<T>(WechatApiClient client, ref T request)
             where T : Models.CgibinMidasRequestBase, new()
         {
-            if (client == null) throw new ArgumentNullException(nameof(request));
-            if (request == null) throw new ArgumentNullException(nameof(request));
+            if (client is null) throw new ArgumentNullException(nameof(request));
+            if (request is null) throw new ArgumentNullException(nameof(request));
 
-            if (request.AppId == null)
+            if (request.AppId is null)
             {
                 request.AppId = client.Credentials.AppId;
             }
 
-            if (request.MidasOfferId == null)
+            if (request.MidasOfferId is null)
             {
                 request.MidasOfferId = client.Credentials.MidasOfferId;
             }
 
-            if (request.Timestamp == null)
+            if (request.Timestamp is null)
             {
                 request.Timestamp = DateTimeOffset.Now.ToLocalTime().ToUnixTimeSeconds();
             }
 
-            if (request.Signature == null)
+            if (request.Signature is null)
             {
                 IDictionary<string, string> paramMap = new SortedDictionary<string, string>(
                     new Dictionary<string, string>()
@@ -50,7 +50,7 @@ namespace SKIT.FlurlHttpClient.Wechat.Api
                     + $"&org_loc={request.GetRequestPath()}"
                     + $"&method={request.GetRequestMethod()}"
                     + $"&secret={client.Credentials.MidasAppKey}";
-                request.Signature = Utilities.HMACUtility.HashWithSHA256(client.Credentials.MidasAppKey ?? string.Empty, msgText).ToLower();
+                request.Signature = Utilities.HMACUtility.HashWithSHA256(client.Credentials.MidasAppKey ?? string.Empty, msgText).Value!.ToLower();
             }
 
             return request;
@@ -58,7 +58,10 @@ namespace SKIT.FlurlHttpClient.Wechat.Api
 
         /// <summary>
         /// <para>异步调用 [POST] /cgi-bin/midas/getbalance 接口。</para>
-        /// <para>REF: https://developers.weixin.qq.com/minigame/dev/api-backend/midas-payment/midas.getBalance.html </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developers.weixin.qq.com/minigame/dev/api-backend/midas-payment/midas.getBalance.html ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -72,15 +75,18 @@ namespace SKIT.FlurlHttpClient.Wechat.Api
             PreprocessRequest(client, ref request);
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "cgi-bin", "midas", "getbalance")
+                .CreateFlurlRequest(request, HttpMethod.Post, "cgi-bin", "midas", "getbalance")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendRequestWithJsonAsync<Models.CgibinMidasGetBalanceResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsJsonAsync<Models.CgibinMidasGetBalanceResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// <para>异步调用 [POST] /cgi-bin/midas/pay 接口。</para>
-        /// <para>REF: https://developers.weixin.qq.com/minigame/dev/api-backend/midas-payment/midas.pay.html </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developers.weixin.qq.com/minigame/dev/api-backend/midas-payment/midas.pay.html ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -94,15 +100,18 @@ namespace SKIT.FlurlHttpClient.Wechat.Api
             PreprocessRequest(client, ref request);
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "cgi-bin", "midas", "pay")
+                .CreateFlurlRequest(request, HttpMethod.Post, "cgi-bin", "midas", "pay")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendRequestWithJsonAsync<Models.CgibinMidasPayResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsJsonAsync<Models.CgibinMidasPayResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// <para>异步调用 [POST] /cgi-bin/midas/cancelpay 接口。</para>
-        /// <para>REF: https://developers.weixin.qq.com/minigame/dev/api-backend/midas-payment/midas.cancelPay.html </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developers.weixin.qq.com/minigame/dev/api-backend/midas-payment/midas.cancelPay.html ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -116,15 +125,18 @@ namespace SKIT.FlurlHttpClient.Wechat.Api
             PreprocessRequest(client, ref request);
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "cgi-bin", "midas", "cancelpay")
+                .CreateFlurlRequest(request, HttpMethod.Post, "cgi-bin", "midas", "cancelpay")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendRequestWithJsonAsync<Models.CgibinMidasCancelPayResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsJsonAsync<Models.CgibinMidasCancelPayResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// <para>异步调用 [POST] /cgi-bin/midas/present 接口。</para>
-        /// <para>REF: https://developers.weixin.qq.com/minigame/dev/api-backend/midas-payment/midas.present.html </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developers.weixin.qq.com/minigame/dev/api-backend/midas-payment/midas.present.html ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -138,16 +150,19 @@ namespace SKIT.FlurlHttpClient.Wechat.Api
             PreprocessRequest(client, ref request);
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "cgi-bin", "midas", "present")
+                .CreateFlurlRequest(request, HttpMethod.Post, "cgi-bin", "midas", "present")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendRequestWithJsonAsync<Models.CgibinMidasPresentResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsJsonAsync<Models.CgibinMidasPresentResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         #region Sandbox
         /// <summary>
         /// <para>异步调用 [POST] /cgi-bin/midas/sandbox/getbalance 接口。</para>
-        /// <para>REF: https://developers.weixin.qq.com/minigame/dev/api-backend/midas-payment/midas.getBalance.html </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developers.weixin.qq.com/minigame/dev/api-backend/midas-payment/midas.getBalance.html ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -161,15 +176,18 @@ namespace SKIT.FlurlHttpClient.Wechat.Api
             PreprocessRequest(client, ref request);
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "cgi-bin", "midas", "sandbox", "getbalance")
+                .CreateFlurlRequest(request, HttpMethod.Post, "cgi-bin", "midas", "sandbox", "getbalance")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendRequestWithJsonAsync<Models.CgibinMidasSandboxGetBalanceResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsJsonAsync<Models.CgibinMidasSandboxGetBalanceResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// <para>异步调用 [POST] /cgi-bin/midas/sandbox/pay 接口。</para>
-        /// <para>REF: https://developers.weixin.qq.com/minigame/dev/api-backend/midas-payment/midas.pay.html </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developers.weixin.qq.com/minigame/dev/api-backend/midas-payment/midas.pay.html ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -183,15 +201,18 @@ namespace SKIT.FlurlHttpClient.Wechat.Api
             PreprocessRequest(client, ref request);
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "cgi-bin", "midas", "sandbox", "pay")
+                .CreateFlurlRequest(request, HttpMethod.Post, "cgi-bin", "midas", "sandbox", "pay")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendRequestWithJsonAsync<Models.CgibinMidasSandboxPayResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsJsonAsync<Models.CgibinMidasSandboxPayResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// <para>异步调用 [POST] /cgi-bin/midas/sandbox/cancelpay 接口。</para>
-        /// <para>REF: https://developers.weixin.qq.com/minigame/dev/api-backend/midas-payment/midas.cancelPay.html </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developers.weixin.qq.com/minigame/dev/api-backend/midas-payment/midas.cancelPay.html ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -205,15 +226,18 @@ namespace SKIT.FlurlHttpClient.Wechat.Api
             PreprocessRequest(client, ref request);
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "cgi-bin", "midas", "sandbox", "cancelpay")
+                .CreateFlurlRequest(request, HttpMethod.Post, "cgi-bin", "midas", "sandbox", "cancelpay")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendRequestWithJsonAsync<Models.CgibinMidasSandboxCancelPayResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsJsonAsync<Models.CgibinMidasSandboxCancelPayResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// <para>异步调用 [POST] /cgi-bin/midas/sandbox/present 接口。</para>
-        /// <para>REF: https://developers.weixin.qq.com/minigame/dev/api-backend/midas-payment/midas.present.html </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developers.weixin.qq.com/minigame/dev/api-backend/midas-payment/midas.present.html ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -227,10 +251,10 @@ namespace SKIT.FlurlHttpClient.Wechat.Api
             PreprocessRequest(client, ref request);
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "cgi-bin", "midas", "sandbox", "present")
+                .CreateFlurlRequest(request, HttpMethod.Post, "cgi-bin", "midas", "sandbox", "present")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendRequestWithJsonAsync<Models.CgibinMidasSandboxPresentResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsJsonAsync<Models.CgibinMidasSandboxPresentResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
         #endregion
     }

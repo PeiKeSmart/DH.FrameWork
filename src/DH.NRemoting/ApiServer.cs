@@ -5,7 +5,7 @@ using NewLife.Log;
 using NewLife.Messaging;
 using NewLife.Model;
 using NewLife.Net;
-using NewLife.Reflection;
+using NewLife.Serialization;
 using NewLife.Threading;
 
 namespace NewLife.Remoting;
@@ -38,6 +38,9 @@ public class ApiServer : ApiHost, IServer
     /// </remarks>
     public Boolean ReuseAddress { get; set; }
 
+    ///// <summary>启用WebSocket。普通Tcp/Udp版服务端，默认支持Http请求，启用WebSocket后将不再支持Http请求，默认false</summary>
+    //public Boolean UseWebSocket { get; set; }
+
     /// <summary>是否使用Http状态。默认false，使用json包装响应码</summary>
     public Boolean UseHttpStatus { get; set; }
 
@@ -45,7 +48,7 @@ public class ApiServer : ApiHost, IServer
     public event EventHandler<ApiReceivedEventArgs>? Received;
 
     /// <summary>服务提供者。创建控制器实例时使用，可实现依赖注入。务必在注册控制器之前设置该属性</summary>
-    public IServiceProvider? ServiceProvider { get; set; } //= ObjectContainer.Provider;
+    public IServiceProvider? ServiceProvider { get; set; }
 
     /// <summary>处理统计</summary>
     public ICounter? StatProcess { get; set; }
@@ -144,7 +147,11 @@ public class ApiServer : ApiHost, IServer
 
         var server = new ApiNetServer
         {
+            Name = Name,
             Host = this,
+
+            Log = Log,
+            SessionLog = Log,
             Tracer = Tracer,
         };
         server.Init(new NetUri(NetType.Unknown, "*", Port), this);
@@ -161,12 +168,13 @@ public class ApiServer : ApiHost, IServer
     {
         if (Active) return;
 
-        Encoder ??= new JsonEncoder();
+        var json = ServiceProvider?.GetService<IJsonHost>() ?? JsonHelper.Default;
+        Encoder ??= new JsonEncoder { JsonHost = json };
         Handler ??= new ApiHandler { Host = this };
 
         Encoder.Log = EncoderLog;
 
-        Log.Info("启动{0}，服务器 {1}", GetType().Name, Server);
+        Log.Info("启动[{0}]", Name);
         Log.Info("编码：{0}", Encoder);
         Log.Info("处理：{0}", Handler);
 
@@ -314,7 +322,7 @@ public class ApiServer : ApiHost, IServer
     /// <summary>显示统计信息的周期。默认600秒，0表示不显示统计信息</summary>
     public Int32 StatPeriod { get; set; } = 600;
 
-    private void DoStat(Object state)
+    private void DoStat(Object? state)
     {
         var sb = Pool.StringBuilder.Get();
         var pf2 = StatProcess;

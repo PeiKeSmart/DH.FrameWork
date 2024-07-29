@@ -164,6 +164,9 @@ public partial class ExpPointsLog : IExpPointsLog, IEntity<IExpPointsLog>
     #region 关联映射
     #endregion
 
+    #region 扩展查询
+    #endregion
+
     #region 字段名
     /// <summary>取得会员经验日志表字段信息的快捷方式</summary>
     public partial class _

@@ -34,7 +34,7 @@
 		<Authors>$(Company)</Authors>
 		<PackageProjectUrl>https://www.haocoding.com/</PackageProjectUrl>
 		<PackageIcon>DH.png</PackageIcon>
-		<RepositoryUrl>https://gitee.com/chuangchu/DH.FrameWork</RepositoryUrl>
+		<RepositoryUrl>https://gitee.com/dengho/DH.FrameWork</RepositoryUrl>
 		<RepositoryType>Git</RepositoryType>
 		<PackageTags>湖北登灏科技有限公司;DH组件;DH;$(AssemblyName)</PackageTags>
 		<PackageReleaseNotes>用于DH框架的一个微信类。基于 Flurl.Http 的微信 API 客户端，支持公众平台（订阅号、服务号、小程序、小游戏、小商店）、开放平台等平台，支持基础服务、模板消息、订阅消息、客服消息、动态消息、菜单管理、素材管理、留言管理、用户管理、账号管理、草稿箱、发布能力、数据统计、微信门店、微信小店、智能接口、一物一码、微信发票、微信非税缴费、插件管理、附近的小程序、小程序码、小程序搜索、URL Scheme、URL Link、即时配送、物流助手、直播、生物认证、虚拟支付、开放数据、对局匹配、帧同步、内容安全、安全风控、第三方平台、服务平台等功能。</PackageReleaseNotes>
@@ -57,6 +57,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="BouncyCastle.Cryptography" Version="2.4.0" />
 		<ProjectReference Include="..\DH.SKIT.FlurlHttpClient.Common\DH.SKIT.FlurlHttpClient.Common.csproj" />
 	</ItemGroup>
 

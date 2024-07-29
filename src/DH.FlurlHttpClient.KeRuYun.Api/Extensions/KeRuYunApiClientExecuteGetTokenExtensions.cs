@@ -5,9 +5,6 @@ using Flurl.Http;
 
 using NewLife.Collections;
 
-using System;
-using System.Reflection;
-
 namespace DH.FlurlHttpClient.KeRuYun.Api.Extensions;
 
 public static class KeRuYunApiClientExecuteGetTokenExtensions
@@ -26,7 +23,7 @@ public static class KeRuYunApiClientExecuteGetTokenExtensions
         if (request is null) throw new ArgumentNullException(nameof(request));
 
         IFlurlRequest flurlReq = client
-            .CreateRequest(request, HttpMethod.Get, "open", "v1", "token", "get")
+            .CreateFlurlRequest(request, HttpMethod.Get, "open", "v1", "token", "get")
             ;
 
         IDictionary<string, string> queryDic = new Dictionary<string, string>();
@@ -46,6 +43,6 @@ public static class KeRuYunApiClientExecuteGetTokenExtensions
 
         flurlReq.SetQueryParams(queryDic);
 
-        return await client.SendRequestWithJsonAsync<Models.TokenGetResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+        return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.TokenGetResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
     }
 }

@@ -91,9 +91,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                 /// 获取或设置任务完成时间。
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("task_finish_time")]
-                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.RegularNullableDateTimeOffsetConverter))]
                 [System.Text.Json.Serialization.JsonPropertyName("task_finish_time")]
-                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.RegularNullableDateTimeOffsetConverter))]
                 public DateTimeOffset? TaskFinishTime { get; set; }
 
                 /// <summary>

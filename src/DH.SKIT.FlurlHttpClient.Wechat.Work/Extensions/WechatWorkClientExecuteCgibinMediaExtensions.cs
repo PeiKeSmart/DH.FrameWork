@@ -11,9 +11,12 @@ namespace SKIT.FlurlHttpClient.Wechat.Work
     {
         /// <summary>
         /// <para>异步调用 [POST] /cgi-bin/media/upload 接口。</para>
-        /// <para>REF: https://developer.work.weixin.qq.com/document/path/90253 </para>
-        /// <para>REF: https://developer.work.weixin.qq.com/document/path/90389 </para>
-        /// <para>REF: https://developer.work.weixin.qq.com/document/path/90871 </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developer.work.weixin.qq.com/document/path/90253 ]]> <br/>
+        /// <![CDATA[ https://developer.work.weixin.qq.com/document/path/90389 ]]> <br/>
+        /// <![CDATA[ https://developer.work.weixin.qq.com/document/path/90871 ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -28,7 +31,7 @@ namespace SKIT.FlurlHttpClient.Wechat.Work
             const string TYPE_VOICE = "voice";
             const string TYPE_VIDEO = "video";
 
-            if (request.FileName == null)
+            if (request.FileName is null)
             {
                 string ext = string.Empty;
                 if (TYPE_IMAGE.Equals(request.Type))
@@ -41,32 +44,26 @@ namespace SKIT.FlurlHttpClient.Wechat.Work
                 request.FileName = Guid.NewGuid().ToString("N").ToLower() + ext;
             }
 
-            if (request.FileContentType == null)
-            {
-                if (TYPE_IMAGE.Equals(request.Type))
-                    request.FileContentType = Utilities.FileNameToContentTypeMapper.GetContentTypeForImage(request.FileName!) ?? "image/png";
-                else if (TYPE_VOICE.Equals(request.Type))
-                    request.FileContentType = Utilities.FileNameToContentTypeMapper.GetContentTypeForVoice(request.FileName!) ?? "audio/mp3";
-                else if (TYPE_VIDEO.Equals(request.Type))
-                    request.FileContentType = Utilities.FileNameToContentTypeMapper.GetContentTypeForVideo(request.FileName!) ?? "video/mp4";
-                else
-                    request.FileContentType = "application/octet-stream";
-            }
+            if (request.FileContentType is null)
+                request.FileContentType = MimeTypes.GetMimeMapping(request.FileName!);
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "cgi-bin", "media", "upload")
+                .CreateFlurlRequest(request, HttpMethod.Post, "cgi-bin", "media", "upload")
                 .SetQueryParam("access_token", request.AccessToken)
                 .SetQueryParam("type", request.Type);
 
-            using var httpContent = Utilities.FileHttpContentBuilder.Build(fileName: request.FileName, fileBytes: request.FileBytes, fileContentType: request.FileContentType, formDataName: "media");
-            return await client.SendRequestAsync<Models.CgibinMediaUploadResponse>(flurlReq, httpContent: httpContent, cancellationToken: cancellationToken);
+            using var httpContent = Utilities.HttpContentBuilder.BuildWithFile(fileName: request.FileName, fileBytes: request.FileBytes, fileContentType: request.FileContentType, formDataName: "media");
+            return await client.SendFlurlRequestAsync<Models.CgibinMediaUploadResponse>(flurlReq, httpContent: httpContent, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// <para>异步调用 [POST] /cgi-bin/media/uploadimg 接口。</para>
-        /// <para>REF: https://developer.work.weixin.qq.com/document/path/90256 </para>
-        /// <para>REF: https://developer.work.weixin.qq.com/document/path/90392 </para>
-        /// <para>REF: https://developer.work.weixin.qq.com/document/path/90874 </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developer.work.weixin.qq.com/document/path/90256 ]]> <br/>
+        /// <![CDATA[ https://developer.work.weixin.qq.com/document/path/90392 ]]> <br/>
+        /// <![CDATA[ https://developer.work.weixin.qq.com/document/path/90874 ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -77,24 +74,27 @@ namespace SKIT.FlurlHttpClient.Wechat.Work
             if (client is null) throw new ArgumentNullException(nameof(client));
             if (request is null) throw new ArgumentNullException(nameof(request));
 
-            if (request.FileName == null)
+            if (request.FileName is null)
                 request.FileName = Guid.NewGuid().ToString("N").ToLower() + ".png";
 
-            if (request.FileContentType == null)
-                request.FileContentType = Utilities.FileNameToContentTypeMapper.GetContentTypeForImage(request.FileName!) ?? "image/png";
+            if (request.FileContentType is null)
+                request.FileContentType = MimeTypes.GetMimeMapping(request.FileName!);
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "cgi-bin", "media", "uploadimg")
+                .CreateFlurlRequest(request, HttpMethod.Post, "cgi-bin", "media", "uploadimg")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            using var httpContent = Utilities.FileHttpContentBuilder.Build(fileName: request.FileName, fileBytes: request.FileBytes, fileContentType: request.FileContentType, formDataName: "media");
-            return await client.SendRequestAsync<Models.CgibinMediaUploadImageResponse>(flurlReq, httpContent: httpContent, cancellationToken: cancellationToken);
+            using var httpContent = Utilities.HttpContentBuilder.BuildWithFile(fileName: request.FileName, fileBytes: request.FileBytes, fileContentType: request.FileContentType, formDataName: "media");
+            return await client.SendFlurlRequestAsync<Models.CgibinMediaUploadImageResponse>(flurlReq, httpContent: httpContent, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// <para>异步调用 [POST] /cgi-bin/media/upload_attachment 接口。</para>
-        /// <para>REF: https://developer.work.weixin.qq.com/document/path/95098 </para>
-        /// <para>REF: https://developer.work.weixin.qq.com/document/path/95178 </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developer.work.weixin.qq.com/document/path/95098 ]]> <br/>
+        /// <![CDATA[ https://developer.work.weixin.qq.com/document/path/95178 ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -109,7 +109,7 @@ namespace SKIT.FlurlHttpClient.Wechat.Work
             const string TYPE_VIDEO = "video";
             const string TYPE_FILE = "file";
 
-            if (request.FileName == null)
+            if (request.FileName is null)
             {
                 string ext = string.Empty;
                 if (TYPE_IMAGE.Equals(request.Type))
@@ -122,33 +122,27 @@ namespace SKIT.FlurlHttpClient.Wechat.Work
                 request.FileName = Guid.NewGuid().ToString("N").ToLower() + ext;
             }
 
-            if (request.FileContentType == null)
-            {
-                if (TYPE_IMAGE.Equals(request.Type))
-                    request.FileContentType = Utilities.FileNameToContentTypeMapper.GetContentTypeForImage(request.FileName!) ?? "image/png";
-                else if (TYPE_VIDEO.Equals(request.Type))
-                    request.FileContentType = Utilities.FileNameToContentTypeMapper.GetContentTypeForVideo(request.FileName!) ?? "video/mp4";
-                else if (TYPE_FILE.Equals(request.Type))
-                    request.FileContentType = Utilities.FileNameToContentTypeMapper.GetContentTypeForVoice(request.FileName!) ?? "text/plain";
-                else
-                    request.FileContentType = "application/octet-stream";
-            }
+            if (request.FileContentType is null)
+                request.FileContentType = MimeTypes.GetMimeMapping(request.FileName!);
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "cgi-bin", "media", "upload_attachment")
+                .CreateFlurlRequest(request, HttpMethod.Post, "cgi-bin", "media", "upload_attachment")
                 .SetQueryParam("access_token", request.AccessToken)
                 .SetQueryParam("media_type", request.Type)
                 .SetQueryParam("attachment_type", request.AttachmentType);
 
-            using var httpContent = Utilities.FileHttpContentBuilder.Build(fileName: request.FileName, fileBytes: request.FileBytes, fileContentType: request.FileContentType, formDataName: "media");
-            return await client.SendRequestAsync<Models.CgibinMediaUploadAttachmentResponse>(flurlReq, httpContent: httpContent, cancellationToken: cancellationToken);
+            using var httpContent = Utilities.HttpContentBuilder.BuildWithFile(fileName: request.FileName, fileBytes: request.FileBytes, fileContentType: request.FileContentType, formDataName: "media");
+            return await client.SendFlurlRequestAsync<Models.CgibinMediaUploadAttachmentResponse>(flurlReq, httpContent: httpContent, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// <para>异步调用 [GET] /cgi-bin/media/get 接口。</para>
-        /// <para>REF: https://developer.work.weixin.qq.com/document/path/90254 </para>
-        /// <para>REF: https://developer.work.weixin.qq.com/document/path/90390 </para>
-        /// <para>REF: https://developer.work.weixin.qq.com/document/path/90872 </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developer.work.weixin.qq.com/document/path/90254 ]]> <br/>
+        /// <![CDATA[ https://developer.work.weixin.qq.com/document/path/90390 ]]> <br/>
+        /// <![CDATA[ https://developer.work.weixin.qq.com/document/path/90872 ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -160,18 +154,21 @@ namespace SKIT.FlurlHttpClient.Wechat.Work
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Get, "cgi-bin", "media", "get")
+                .CreateFlurlRequest(request, HttpMethod.Get, "cgi-bin", "media", "get")
                 .SetQueryParam("access_token", request.AccessToken)
                 .SetQueryParam("media_id", request.MediaId);
 
-            return await client.SendRequestWithJsonAsync<Models.CgibinMediaGetResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsJsonAsync<Models.CgibinMediaGetResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// <para>异步调用 [GET] /cgi-bin/media/get/jssdk 接口。</para>
-        /// <para>REF: https://developer.work.weixin.qq.com/document/path/90255 </para>
-        /// <para>REF: https://developer.work.weixin.qq.com/document/path/90391 </para>
-        /// <para>REF: https://developer.work.weixin.qq.com/document/path/90873 </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developer.work.weixin.qq.com/document/path/90255 ]]> <br/>
+        /// <![CDATA[ https://developer.work.weixin.qq.com/document/path/90391 ]]> <br/>
+        /// <![CDATA[ https://developer.work.weixin.qq.com/document/path/90873 ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -183,16 +180,19 @@ namespace SKIT.FlurlHttpClient.Wechat.Work
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Get, "cgi-bin", "media", "get", "jssdk")
+                .CreateFlurlRequest(request, HttpMethod.Get, "cgi-bin", "media", "get", "jssdk")
                 .SetQueryParam("access_token", request.AccessToken)
                 .SetQueryParam("media_id", request.MediaId);
 
-            return await client.SendRequestWithJsonAsync<Models.CgibinMediaGetJssdkResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsJsonAsync<Models.CgibinMediaGetJssdkResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// <para>异步调用 [POST] /cgi-bin/media/upload_by_url 接口。</para>
-        /// <para>REF: https://developer.work.weixin.qq.com/document/path/96219 </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developer.work.weixin.qq.com/document/path/96219 ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -204,15 +204,18 @@ namespace SKIT.FlurlHttpClient.Wechat.Work
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "cgi-bin", "media", "upload_by_url")
+                .CreateFlurlRequest(request, HttpMethod.Post, "cgi-bin", "media", "upload_by_url")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendRequestWithJsonAsync<Models.CgibinMediaUploadByUrlResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsJsonAsync<Models.CgibinMediaUploadByUrlResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// <para>异步调用 [POST] /cgi-bin/media/get_upload_by_url_result 接口。</para>
-        /// <para>REF: https://developer.work.weixin.qq.com/document/path/96219 </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developer.work.weixin.qq.com/document/path/96219 ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -224,10 +227,10 @@ namespace SKIT.FlurlHttpClient.Wechat.Work
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "cgi-bin", "media", "get_upload_by_url_result")
+                .CreateFlurlRequest(request, HttpMethod.Post, "cgi-bin", "media", "get_upload_by_url_result")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendRequestWithJsonAsync<Models.CgibinMediaGetUploadByUrlResultResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsJsonAsync<Models.CgibinMediaGetUploadByUrlResultResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
     }
 }

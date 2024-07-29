@@ -249,7 +249,7 @@ public partial class Regions : DHEntityBase<Regions> {
                 {
                     var model = new RegionsTree();
                     model.id = item.Id;
-                    model.name = CountryLan.FindByCIdAndLId(item.Id, _workContext.WorkingLanguage.Id);
+                    model.name = CountryLan.FindNameByCIdAndLId(item.Id, _workContext.WorkingLanguage.Id);
                     model.pId = parentCode;
 
                     var listarea = FindAllByCIdAndLevel(item.Id, 0);

@@ -10,7 +10,10 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV2
     {
         /// <summary>
         /// <para>异步调用 [POST] /applyment/micro/modifyarchives 接口。</para>
-        /// <para>REF: https://pay.weixin.qq.com/wiki/doc/api/xiaowei.php?chapter=21_2 </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://pay.weixin.qq.com/wiki/doc/api/xiaowei.php?chapter=21_2 ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -22,14 +25,17 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV2
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "applyment", "micro", "modifyarchives");
+                .CreateFlurlRequest(request, HttpMethod.Post, "applyment", "micro", "modifyarchives");
 
-            return await client.SendRequestWithXmlAsync<Models.ModifyMicroMerchantArchivesResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsXmlAsync<Models.ModifyMicroMerchantArchivesResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// <para>异步调用 [POST] /applyment/micro/modifycontactinfo 接口。</para>
-        /// <para>REF: https://pay.weixin.qq.com/wiki/doc/api/xiaowei.php?chapter=21_4 </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://pay.weixin.qq.com/wiki/doc/api/xiaowei.php?chapter=21_4 ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -41,9 +47,9 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV2
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "applyment", "micro", "modifycontactinfo");
+                .CreateFlurlRequest(request, HttpMethod.Post, "applyment", "micro", "modifycontactinfo");
 
-            return await client.SendRequestWithXmlAsync<Models.ModifyMicroMerchantContactInfoResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsXmlAsync<Models.ModifyMicroMerchantContactInfoResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
     }
 }

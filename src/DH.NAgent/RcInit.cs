@@ -84,13 +84,7 @@ public class RcInit : DefaultHost
     /// <returns></returns>
     public override Boolean IsRunning(String serviceName)
     {
-        var file = $"{serviceName}.pid".GetFullPath();
-        if (!File.Exists(file)) return false;
-
-        var pid = File.ReadAllText(file).Trim().ToInt();
-        if (pid <= 0) return false;
-
-        var p = GetProcessById(pid);
+        var p = GetProcess(serviceName, out _);
 
         return p != null && !GetHasExited(p);
     }
@@ -262,14 +256,8 @@ public class RcInit : DefaultHost
         XTrace.WriteLine("{0}.Start {1}", Name, serviceName);
 
         // 判断服务是否已启动
-        var id = 0;
-        var pid = $"{serviceName}.pid".GetFullPath();
-        if (File.Exists(pid)) id = File.ReadAllText(pid).Trim().ToInt();
-        if (id > 0)
-        {
-            var p = GetProcessById(id);
-            if (p != null && !GetHasExited(p)) return false;
-        }
+        var p = GetProcess(serviceName, out _);
+        if (p != null && !GetHasExited(p)) return false;
 
         //var file = _path.CombinePath($"{serviceName}");
         var file = $"{serviceName}.sh".GetFullPath();
@@ -278,10 +266,6 @@ public class RcInit : DefaultHost
         //Process.Start("bash", file);
         //file.ShellExecute("start");
         Process.Start(new ProcessStartInfo("sh", $"{file} start") { UseShellExecute = true });
-
-        //// 用pid文件记录进程id，方便后面杀进程
-        //var pid = $"{serviceName}.pid".GetFullPath();
-        //File.WriteAllText(pid, p.ToString());
 
         return true;
     }
@@ -293,19 +277,13 @@ public class RcInit : DefaultHost
     {
         XTrace.WriteLine("{0}.Stop {1}", Name, serviceName);
 
-        var id = 0;
-        var pid = $"{serviceName}.pid".GetFullPath();
-        if (File.Exists(pid)) id = File.ReadAllText(pid).Trim().ToInt();
-        if (id <= 0) return false;
-
-        // 杀进程
-        var p = GetProcessById(id);
-        if (p == null || GetHasExited(p)) return false;
+        var p = GetProcess(serviceName, out var pid);
+        if (p == null) return false;
 
         try
         {
             // 发命令让服务自己退出
-            "kill".ShellExecute($"{id}");
+            "kill".ShellExecute($"{p.Id}");
 
             var n = 30;
             while (!p.HasExited && n-- > 0) Thread.Sleep(100);
@@ -333,30 +311,16 @@ public class RcInit : DefaultHost
         return true;
     }
 
-    static Process GetProcessById(Int32 processId)
+    private Process GetProcess(String serviceName, out String pid)
     {
-        try
-        {
-            return Process.GetProcessById(processId);
-        }
-        catch { }
+        var id = 0;
+        pid = $"{serviceName}.pid".GetFullPath();
+        if (File.Exists(pid)) id = File.ReadAllText(pid).Trim().ToInt();
+        if (id <= 0) return null;
 
-        return null;
-    }
+        var p = GetProcessById(id);
+        //if (p == null || GetHasExited(p)) return null;
 
-    static Boolean GetHasExited(Process process)
-    {
-        try
-        {
-            return process.HasExited;
-        }
-        catch (Win32Exception)
-        {
-            return true;
-        }
-        //catch
-        //{
-        //    return false;
-        //}
+        return p;
     }
 }

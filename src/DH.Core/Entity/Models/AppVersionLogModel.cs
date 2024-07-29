@@ -20,6 +20,9 @@ public partial class AppVersionLogModel
     /// <summary>版本号</summary>
     public String Version { get; set; }
 
+    /// <summary>APP包名</summary>
+    public String BoundId { get; set; }
+
     /// <summary>创建者</summary>
     public String CreateUser { get; set; }
 
@@ -41,6 +44,7 @@ public partial class AppVersionLogModel
         Id = model.Id;
         Os = model.Os;
         Version = model.Version;
+        BoundId = model.BoundId;
         CreateUser = model.CreateUser;
         CreateUserID = model.CreateUserID;
         CreateTime = model.CreateTime;

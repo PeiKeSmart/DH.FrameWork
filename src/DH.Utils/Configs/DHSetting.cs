@@ -1,11 +1,13 @@
-﻿using DH.Extensions;
+﻿using System.ComponentModel;
+using System.Reflection;
+using System.Text.RegularExpressions;
+
+using DH.Extensions;
 using DH.Security;
 
 using NewLife;
 using NewLife.Configuration;
 using NewLife.Security;
-
-using System.ComponentModel;
 
 using XCode.Configuration;
 
@@ -18,6 +20,7 @@ namespace DH;
 public class DHSetting : Config<DHSetting>
 {
     #region 静态
+    /// <summary>指向数据库参数字典表</summary>
     static DHSetting() => Provider = new DbConfigProvider { UserId = 0, Category = "DH" };
     #endregion
 
@@ -50,7 +53,7 @@ public class DHSetting : Config<DHSetting>
 
     /// <summary>系统初始化控制参数</summary>
     [Description("系统初始化控制参数,系统是否安装,true：已安装，false：未安装")]
-    public Boolean IsInstalled { get; set; }
+    public Boolean IsInstalled { get; set; } = false;
 
     /// <summary>上传目录。默认Uploads</summary>
     [Description("上传目录。默认Uploads")]
@@ -227,11 +230,6 @@ public class DHSetting : Config<DHSetting>
     [Category("通用")]
     public Int32 RobotError { get; set; }
 
-    /// <summary>数据保留时间。审计日期与OAuth日志，默认30天</summary>
-    [Description("数据保留时间。审计日期与OAuth日志，默认30天")]
-    [Category("通用")]
-    public Int32 DataRetention { get; set; } = 30;
-
     /// <summary>下拉选择框。使用Bootstrap，美观，但有呈现方面的性能损耗</summary>
     [Description("下拉选择框。使用Bootstrap，美观，但有呈现方面的性能损耗")]
     [Category("界面配置")]
@@ -334,6 +332,46 @@ public class DHSetting : Config<DHSetting>
     [Description("项目启动时间")]
     public DateTime StartTime { get; set; }
 
+    /// <summary>数据保留时间。审计日志与OAuth日志，默认30天</summary>
+    [Description("数据保留时间。审计日志与OAuth日志，默认30天")]
+    [Category("系统功能")]
+    public Int32 DataRetention { get; set; } = 30;
+
+    /// <summary>文件保留时间。备份文件保留时间，默认15天</summary>
+    [Description("文件保留时间。备份文件保留时间，默认15天")]
+    [Category("系统功能")]
+    public Int32 FileRetention { get; set; } = 15;
+
+    /// <summary>保留文件大小。小于该大小的文件将不会被删除，即使超过保留时间，单位K字节，默认1024K</summary>
+    [Description("保留文件大小。小于该大小的文件将不会被删除，即使超过保留时间，单位K字节，默认1024K")]
+    [Category("系统功能")]
+    public Int32 FileRetentionSize { get; set; } = 1024;
+
+    ///// <summary>强制使用SSL。强制访问https，使用http访问时跳转</summary>
+    //[Description("强制使用SSL。强制访问https，使用http访问时跳转")]
+    //[Category("通用")]
+    //public Boolean ForceSSL { get; set; }
+
+    /// <summary>强制跳转。指定目标schema和host，在GET访问发现不一致时强制跳转，host支持*。常用于强制跳转https，如https://*:8081</summary>
+    [Description("强制跳转。指定目标schema和host，在GET访问发现不一致时强制跳转，host支持*。常用于强制跳转https，如https://*:8081")]
+    [Category("通用")]
+    public String ForceRedirect { get; set; }
+
+    /// <summary>是否兼容单页应用</summary>
+    [Description("是否兼容单页应用")]
+    [Category("通用")]
+    public Boolean IsSpa { get; set; }
+
+    /// <summary>最大导出行数。页面允许导出的最大行数，默认10_000_000</summary>
+    [Description("最大导出行数。页面允许导出的最大行数，默认10_000_000")]
+    [Category("系统功能")]
+    public Int32 MaxExport { get; set; } = 10_000_000;
+
+    /// <summary>最大备份行数。页面允许备份的最大行数，默认10_000_000</summary>
+    [Description("最大备份行数。页面允许备份的最大行数，默认10_000_000")]
+    [Category("系统功能")]
+    public Int32 MaxBackup { get; set; } = 10_000_000;
+
     #region 系统功能
     /// <summary>多租户。是否支持多租户，租户模式禁止访问系统管理，平台管理模式禁止访问租户页面</summary>
     [Description("多租户。是否支持多租户，租户模式禁止访问系统管理，平台管理模式禁止访问租户页面")]
@@ -349,6 +387,11 @@ public class DHSetting : Config<DHSetting>
     [Description("用户统计。是否统计用户访问，默认true")]
     [Category("系统功能")]
     public Boolean EnableUserStat { get; set; } = true;
+
+    /// <summary>版权。留空表示不显示版权信息</summary>
+    [Description("版权。留空表示不显示版权信息")]
+    [Category("界面配置")]
+    public String Copyright { get; set; }
     #endregion
 
     #region 方法
@@ -367,11 +410,57 @@ public class DHSetting : Config<DHSetting>
 
         if (JwtOptions.Secret.IsNullOrEmpty() || JwtOptions.Secret.Split(':').Length != 2) JwtOptions.Secret = $"HS256:{Rand.NextString(26)}";
 
+        // 取版权信息
+        if (Copyright.IsNullOrEmpty())
+        {
+            var asm = Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
+            if (asm != null)
+            {
+                var att = asm.GetCustomAttribute<AssemblyCopyrightAttribute>();
+                if (att != null)
+                {
+                    Copyright = att.Copyright;
+                }
+            }
+        }
+
+        // 版权信息中的年份替换为当前年份
+        if (!Copyright.IsNullOrEmpty() && Copyright.Contains('-'))
+        {
+            var reg = new Regex(@"(\d{4})-(\d{4})");
+            Copyright = reg.Replace(Copyright, math => $"{math.Groups[1]}-{{now:yyyy}}");
+            //for (var i = 2000; i <= DateTime.Today.Year; i++)
+            //{
+            //    Copyright = Copyright.Replace(i + "", "{now:yyyy}");
+            //}
+        }
+
         if (PaswordStrength.IsNullOrEmpty()) PaswordStrength = @"^(?=.*\d.*)(?=.*[a-z].*)(?=.*[A-Z].*)(?=.*[^(0-9a-zA-Z)].*).{8,32}$";
         if (MaxLoginError <= 0) MaxLoginError = 6;
         if (LoginForbiddenTime <= 0) LoginForbiddenTime = 300;
 
         base.OnLoaded();
+    }
+
+    /// <summary>获取版权信息。动态替换年份</summary>
+    /// <returns></returns>
+    public String GetCopyright()
+    {
+        var cr = Copyright;
+        if (cr.IsNullOrEmpty()) return null;
+
+        var p1 = cr.IndexOf("{now");
+        if (p1 < 0) return cr;
+
+        var format = "";
+        var p2 = cr.IndexOf('}', p1);
+        if (p2 > 0) format = cr.Substring(p1 + 1, p2 - p1 - 1).TrimStart("now").TrimStart(":");
+
+        var now = DateTime.Now;
+        if (format.IsNullOrEmpty())
+            return cr[..p1] + now.Year + cr[(p2 + 1)..];
+        else
+            return cr[..p1] + now.ToString(format) + cr[(p2 + 1)..];
     }
     #endregion
 }

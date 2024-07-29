@@ -1,4 +1,4 @@
-﻿namespace SKIT.FlurlHttpClient.Wechat.Api.Models
+namespace SKIT.FlurlHttpClient.Wechat.Api.Models
 {
     /// <summary>
     /// <para>表示 [POST] /scan/product/v2/getinfo 接口的响应。</para>
@@ -129,7 +129,7 @@
                     {
                         /// <summary>
                         /// 获取或设置关联类型。
-                        /// <para>默认值：wxa</para>
+                        /// <para>默认值："wxa"</para>
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("link_type")]
                         [System.Text.Json.Serialization.JsonPropertyName("link_type")]
@@ -167,35 +167,34 @@
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("min_price")]
                         [System.Text.Json.Serialization.JsonPropertyName("min_price")]
-                        public double MinPrice { get; set; }
+                        public decimal MinPrice { get; set; }
 
                         /// <summary>
                         /// 获取或设置现价最高价（单位：元）。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("max_price")]
                         [System.Text.Json.Serialization.JsonPropertyName("max_price")]
-                        public double MaxPrice { get; set; }
+                        public decimal MaxPrice { get; set; }
 
                         /// <summary>
                         /// 获取或设置原价最低价（单位：元）。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("min_ori_price")]
                         [System.Text.Json.Serialization.JsonPropertyName("min_ori_price")]
-                        public double? MinOriginalPrice { get; set; }
+                        public decimal? MinOriginalPrice { get; set; }
 
                         /// <summary>
                         /// 获取或设置原价最高价（单位：元）。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("max_ori_price")]
                         [System.Text.Json.Serialization.JsonPropertyName("max_ori_price")]
-                        public double? MaxOriginalPrice { get; set; }
+                        public decimal? MaxOriginalPrice { get; set; }
                     }
 
                     public class Sale
                     {
                         /// <summary>
                         /// 获取或设置销售状态。
-                        /// <para>默认值：off</para>
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("sale_status")]
                         [System.Text.Json.Serialization.JsonPropertyName("sale_status")]

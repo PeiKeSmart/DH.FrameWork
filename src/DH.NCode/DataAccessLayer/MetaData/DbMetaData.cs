@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using System.Data.Common;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using NewLife;
 using NewLife.Data;
@@ -12,9 +13,9 @@ abstract partial class DbMetaData : DisposeBase, IMetaData
 {
     #region 属性
     /// <summary>数据库</summary>
-    public virtual IDatabase Database { get; set; }
+    public virtual IDatabase Database { get; set; } = null!;
 
-    private ICollection<String> _MetaDataCollections;
+    private ICollection<String>? _MetaDataCollections;
     /// <summary>所有元数据集合</summary>
     public ICollection<String> MetaDataCollections
     {
@@ -40,7 +41,7 @@ abstract partial class DbMetaData : DisposeBase, IMetaData
         }
     }
 
-    private ICollection<String> _ReservedWords;
+    private ICollection<String>? _ReservedWords;
     /// <summary>保留关键字</summary>
     public virtual ICollection<String> ReservedWords
     {
@@ -75,7 +76,7 @@ abstract partial class DbMetaData : DisposeBase, IMetaData
     /// <param name="collectionName">指定要返回的架构的名称。</param>
     /// <param name="restrictionValues">为请求的架构指定一组限制值。</param>
     /// <returns></returns>
-    public DataTable? GetSchema(String collectionName, String[]? restrictionValues)
+    public DataTable? GetSchema(String collectionName, String?[]? restrictionValues)
     {
         // 如果不是MetaDataCollections，并且MetaDataCollections中没有该集合，则返回空
         if (!collectionName.EqualIgnoreCase(DbMetaDataCollectionNames.MetaDataCollections))
@@ -93,7 +94,7 @@ abstract partial class DbMetaData : DisposeBase, IMetaData
     /// <param name="name">名称</param>
     /// <param name="value">数值</param>
     /// <returns></returns>
-    protected static Boolean TryGetDataRowValue<T>(DataRow dr, String name, out T value)
+    protected static Boolean TryGetDataRowValue<T>(DataRow dr, String name, out T? value)
     {
         value = default;
         if (dr == null || !dr.Table.Columns.Contains(name) || dr.IsNull(name)) return false;
@@ -148,11 +149,11 @@ abstract partial class DbMetaData : DisposeBase, IMetaData
     /// <param name="dr"></param>
     /// <param name="names">名称</param>
     /// <returns></returns>
-    protected static T GetDataRowValue<T>(DataRow dr, params String[] names)
+    protected static T? GetDataRowValue<T>(DataRow dr, params String[] names)
     {
         foreach (var item in names)
         {
-            if (TryGetDataRowValue(dr, item, out T value)) return value;
+            if (TryGetDataRowValue(dr, item, out T? value)) return value;
         }
 
         return default;
@@ -160,7 +161,7 @@ abstract partial class DbMetaData : DisposeBase, IMetaData
 
     protected static DbTable Select(DbTable ds, String name, Object value)
     {
-        var list = new List<Object[]>();
+        var list = new List<Object?[]>();
         var col = ds.GetColumn(name);
         if (col >= 0)
         {

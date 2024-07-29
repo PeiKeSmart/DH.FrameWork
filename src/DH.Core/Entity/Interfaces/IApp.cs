@@ -23,8 +23,11 @@ public partial interface IApp
     /// <summary>密钥。AppSecret</summary>
     String Secret { get; set; }
 
-    /// <summary>是否内部项目</summary>
-    Boolean IsInternal { get; set; }
+    /// <summary>类别</summary>
+    String Category { get; set; }
+
+    /// <summary>启用</summary>
+    Boolean Enable { get; set; }
 
     /// <summary>首页</summary>
     String HomePage { get; set; }
@@ -32,14 +35,11 @@ public partial interface IApp
     /// <summary>图标。附件路径</summary>
     String Logo { get; set; }
 
-    /// <summary>白名单</summary>
+    /// <summary>IP白名单。符合条件的来源IP才允许访问，支持*通配符，多个逗号隔开</summary>
     String White { get; set; }
 
-    /// <summary>黑名单。黑名单优先于白名单</summary>
+    /// <summary>IP黑名单。符合条件的来源IP禁止访问，支持*通配符，多个逗号隔开</summary>
     String Black { get; set; }
-
-    /// <summary>启用</summary>
-    Boolean Enable { get; set; }
 
     /// <summary>有效期。访问令牌AccessToken的有效期，单位秒，默认使用全局设置</summary>
     Int32 TokenExpire { get; set; }
@@ -64,6 +64,9 @@ public partial interface IApp
 
     /// <summary>最后请求</summary>
     DateTime LastAuth { get; set; }
+
+    /// <summary>删除。是否已删除，可恢复</summary>
+    Boolean IsDeleted { get; set; }
 
     /// <summary>创建者</summary>
     Int32 CreateUserID { get; set; }

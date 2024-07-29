@@ -19,14 +19,14 @@ public class DbTable : IEnumerable<DbRow>, ICloneable, IAccessor
 {
     #region 属性
     /// <summary>数据列</summary>
-    public String[]? Columns { get; set; }
+    public String[] Columns { get; set; } = [];
 
     /// <summary>数据列类型</summary>
     [XmlIgnore, IgnoreDataMember]
-    public Type[]? Types { get; set; }
+    public Type[] Types { get; set; } = [];
 
     /// <summary>数据行</summary>
-    public IList<Object?[]>? Rows { get; set; }
+    public IList<Object?[]> Rows { get; set; } = [];
 
     /// <summary>总行数</summary>
     public Int32 Total { get; set; }
@@ -538,6 +538,8 @@ public class DbTable : IEnumerable<DbRow>, ICloneable, IAccessor
                         writer.WriteValue(new DateTimeOffset(row[i].ChangeType<DateTime>()));
                     else if (ts[i] == typeof(DateTimeOffset))
                         writer.WriteValue(row[i].ChangeType<DateTimeOffset>());
+                    else if (row[i] is IFormattable ft)
+                        await writer.WriteStringAsync(ft + "");
                     else
                         await writer.WriteStringAsync(row[i] + "");
 
@@ -570,7 +572,8 @@ public class DbTable : IEnumerable<DbRow>, ICloneable, IAccessor
     public void LoadCsv(String file)
     {
         using var csv = new CsvFile(file, false);
-        Columns = csv.ReadLine();
+        var cs = csv.ReadLine();
+        if (cs != null) Columns = cs;
         Rows = csv.ReadAll();
     }
     #endregion
@@ -583,13 +586,13 @@ public class DbTable : IEnumerable<DbRow>, ICloneable, IAccessor
     {
         // 可用属性
         var pis = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
-        pis = pis.Where(e => e.PropertyType.GetTypeCode() != TypeCode.Object).ToArray();
+        pis = pis.Where(e => e.PropertyType.IsBaseType()).ToArray();
 
-        Rows = new List<Object?[]>();
+        Rows = [];
         foreach (var item in models)
         {
             // 头部
-            if (Columns == null)
+            if (Columns == null || Columns.Length == 0)
             {
                 Columns = pis.Select(e => SerialHelper.GetName(e)).ToArray();
                 Types = pis.Select(e => e.PropertyType).ToArray();
@@ -616,17 +619,28 @@ public class DbTable : IEnumerable<DbRow>, ICloneable, IAccessor
     /// <returns></returns>
     public IEnumerable<T> ReadModels<T>()
     {
+        foreach (var model in ReadModels(typeof(T)))
+        {
+            yield return (T)model;
+        }
+    }
+
+    /// <summary>数据表转模型列表。普通反射，便于DAL查询后转任意模型列表</summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
+    public IEnumerable<Object> ReadModels(Type type)
+    {
         var cs = Columns ?? throw new ArgumentNullException(nameof(Columns));
         var rows = Rows;
         if (rows == null) yield break;
 
         // 可用属性
-        var pis = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+        var pis = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
         var dic = pis.ToDictionary(e => SerialHelper.GetName(e), e => e, StringComparer.OrdinalIgnoreCase);
 
         foreach (var row in rows)
         {
-            var model = (T?)typeof(T).CreateInstance();
+            var model = type.CreateInstance();
             if (model == null) continue;
 
             for (var i = 0; i < row.Length; i++)

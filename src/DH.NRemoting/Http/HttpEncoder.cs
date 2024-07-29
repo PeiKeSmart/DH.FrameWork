@@ -13,6 +13,9 @@ namespace NewLife.Http;
 public class HttpEncoder : EncoderBase, IEncoder
 {
     #region 属性
+    /// <summary>Json主机。提供序列化能力</summary>
+    public IJsonHost JsonHost { get; set; } = JsonHelper.Default;
+
     /// <summary>是否使用Http状态。默认false，使用json包装响应码</summary>
     public Boolean UseHttpStatus { get; set; }
     #endregion
@@ -34,11 +37,9 @@ public class HttpEncoder : EncoderBase, IEncoder
 
         if (value == null) return null;
 
-        String json;
-        if (UseHttpStatus)
-            json = value.ToJson(false, false, false);
-        else
-            json = new { action, code, data = value }.ToJson(false, true, false);
+        var json = UseHttpStatus ?
+            JsonHost.Write(value, false, false, false) :
+            JsonHost.Write(new { action, code, data = value }, false, true, false);
         WriteLog("{0}=>{1}", action, json);
 
         return json.GetBytes();
@@ -49,7 +50,7 @@ public class HttpEncoder : EncoderBase, IEncoder
     /// <param name="data"></param>
     /// <param name="msg"></param>
     /// <returns></returns>
-    public virtual IDictionary<String, Object?>? DecodeParameters(String action, Packet? data, IMessage msg)
+    public virtual Object? DecodeParameters(String action, Packet? data, IMessage msg)
     {
         if (data == null || data.Total == 0) return null;
 
@@ -69,19 +70,24 @@ public class HttpEncoder : EncoderBase, IEncoder
 
         if (ctype.Contains("application/json"))
         {
-            var rs = new Dictionary<String, Object?>(StringComparer.OrdinalIgnoreCase);
-            var dic = JsonParser.Decode(str);
-            if (dic != null)
-            {
-                foreach (var item in dic)
-                {
-                    if (item.Value is String str2)
-                        rs[item.Key] = HttpUtility.UrlDecode(str2);
-                    else
-                        rs[item.Key] = item.Value;
-                }
-            }
+            // 返回类型可能是列表而不是字典
+#if NET40
+            var obj = new JsonParser(str).Decode();
+#else
+            var obj = JsonHost.Parse(str);
+#endif
 
+            if (obj is not IDictionary<String, Object?> dic)
+                return obj;
+
+            var rs = new Dictionary<String, Object?>(StringComparer.OrdinalIgnoreCase);
+            foreach (var item in dic)
+            {
+                if (item.Value is String str2)
+                    rs[item.Key] = HttpUtility.UrlDecode(str2);
+                else
+                    rs[item.Key] = item.Value;
+            }
             return rs;
         }
         else
@@ -104,20 +110,32 @@ public class HttpEncoder : EncoderBase, IEncoder
     /// <returns></returns>
     public virtual Object? DecodeResult(String action, Packet data, IMessage msg, Type returnType)
     {
-        var json = data.ToStr();
+        var json = data?.ToStr();
         WriteLog("{0}<={1}", action, json);
 
         // 支持基础类型
         if (returnType != null && returnType.GetTypeCode() != TypeCode.Object) return json.ChangeType(returnType);
 
-        return new JsonParser(json).Decode();
+        if (json.IsNullOrEmpty()) return null;
+        if (returnType == null || returnType == typeof(String)) return json;
+
+        // 返回类型可能是列表而不是字典
+#if NET40
+        var rs = new JsonParser(json).Decode();
+#else
+        var rs = JsonHost.Parse(json);
+#endif
+        if (rs == null) return null;
+        if (returnType == typeof(Object)) return rs;
+
+        return Convert(rs, returnType);
     }
 
     /// <summary>转换为目标类型</summary>
     /// <param name="obj"></param>
     /// <param name="targetType"></param>
     /// <returns></returns>
-    public virtual Object? Convert(Object obj, Type targetType) => JsonHelper.Default.Convert(obj, targetType);
+    public virtual Object? Convert(Object obj, Type targetType) => JsonHost.Convert(obj, targetType);
 
     #region 编码/解码
     /// <summary>创建请求</summary>
@@ -251,12 +269,12 @@ public class HttpEncoder : EncoderBase, IEncoder
             p = url.IndexOf('?');
             if (p > 0)
             {
-                message.Action = url[1..p];
-                message.Data = url[(p + 1)..].GetBytes();
+                message.Action = url.Substring(1, p - 1);
+                message.Data = url.Substring(p + 1).GetBytes();
             }
             else
             {
-                message.Action = url[1..];
+                message.Action = url.Substring(1);
                 message.Data = http.Payload;
             }
         }
@@ -272,7 +290,7 @@ public class HttpEncoder : EncoderBase, IEncoder
                 message.Action = uri.AbsolutePath;
                 message.Data = http.Payload;
             }
-            if (message.Action.Length > 1) message.Action = message.Action[1..];
+            if (message.Action.Length > 1) message.Action = message.Action.Substring(1);
         }
 
         return message;

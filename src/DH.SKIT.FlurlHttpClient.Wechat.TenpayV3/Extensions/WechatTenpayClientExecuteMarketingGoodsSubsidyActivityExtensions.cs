@@ -12,7 +12,10 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3
         #region RetailStore/Representative
         /// <summary>
         /// <para>异步调用 [POST] /marketing/goods-subsidy-activity/retail-store-act/{activity_id}/representative 接口。</para>
-        /// <para>REF: https://pay.weixin.qq.com/docs/partner/apis/retail-store/retail-stores/add-representative.html </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://pay.weixin.qq.com/docs/partner/apis/retail-store/retail-stores/add-representative.html ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -24,14 +27,17 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "marketing", "goods-subsidy-activity", "retail-store-act", request.ActivityId, "representative");
+                .CreateFlurlRequest(request, HttpMethod.Post, "marketing", "goods-subsidy-activity", "retail-store-act", request.ActivityId, "representative");
 
-            return await client.SendRequestWithJsonAsync<Models.AddMarketingGoodsSubsidyActivityRetailStoreRepresentativeResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsJsonAsync<Models.AddMarketingGoodsSubsidyActivityRetailStoreRepresentativeResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// <para>异步调用 [GET] /marketing/goods-subsidy-activity/retail-store-act/{activity_id}/representatives 接口。</para>
-        /// <para>REF: https://pay.weixin.qq.com/docs/partner/apis/retail-store/retail-store-act/list-representative.html </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://pay.weixin.qq.com/docs/partner/apis/retail-store/retail-store-act/list-representative.html ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -43,16 +49,19 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Get, "marketing", "goods-subsidy-activity", "retail-store-act", request.ActivityId, "representatives")
+                .CreateFlurlRequest(request, HttpMethod.Get, "marketing", "goods-subsidy-activity", "retail-store-act", request.ActivityId, "representatives")
                 .SetQueryParam("offset", request.Offset)
                 .SetQueryParam("limit", request.Limit);
 
-            return await client.SendRequestWithJsonAsync<Models.QueryMarketingGoodsSubsidyActivityRetailStoreRepresentativesResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsJsonAsync<Models.QueryMarketingGoodsSubsidyActivityRetailStoreRepresentativesResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// <para>异步调用 [DELETE] /marketing/goods-subsidy-activity/retail-store-act/{activity_id}/representative 接口。</para>
-        /// <para>REF: https://pay.weixin.qq.com/docs/partner/apis/retail-store/retail-store-act/delete-representative.html </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://pay.weixin.qq.com/docs/partner/apis/retail-store/retail-store-act/delete-representative.html ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -64,16 +73,19 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Delete, "marketing", "goods-subsidy-activity", "retail-store-act", request.ActivityId, "representative");
+                .CreateFlurlRequest(request, HttpMethod.Delete, "marketing", "goods-subsidy-activity", "retail-store-act", request.ActivityId, "representative");
 
-            return await client.SendRequestWithJsonAsync<Models.DeleteMarketingGoodsSubsidyActivityRetailStoreRepresentativeResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsJsonAsync<Models.DeleteMarketingGoodsSubsidyActivityRetailStoreRepresentativeResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
         #endregion
 
         #region RetailStore/Material
         /// <summary>
         /// <para>异步调用 [POST] /marketing/goods-subsidy-activity/retail-store-act/{brand_id}/materials 接口。</para>
-        /// <para>REF: https://pay.weixin.qq.com/docs/partner/apis/retail-store/retail-store-act/create-materials.html </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://pay.weixin.qq.com/docs/partner/apis/retail-store/retail-store-act/create-materials.html ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -85,16 +97,19 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "marketing", "goods-subsidy-activity", "retail-store-act", request.BrandId, "materials");
+                .CreateFlurlRequest(request, HttpMethod.Post, "marketing", "goods-subsidy-activity", "retail-store-act", request.BrandId, "materials");
 
-            return await client.SendRequestWithJsonAsync<Models.CreateMarketingGoodsSubsidyActivityRetailStoreMaterialResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsJsonAsync<Models.CreateMarketingGoodsSubsidyActivityRetailStoreMaterialResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
         #endregion
 
         #region RetailStore/Store
         /// <summary>
         /// <para>异步调用 [GET] /marketing/goods-subsidy-activity/retail-store-act/{brand_id}/stores 接口。</para>
-        /// <para>REF: https://pay.weixin.qq.com/docs/partner/apis/retail-store/retail-store-act/list-store.html </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://pay.weixin.qq.com/docs/partner/apis/retail-store/retail-store-act/list-store.html ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -106,16 +121,19 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Get, "marketing", "goods-subsidy-activity", "retail-store-act", request.BrandId, "stores")
+                .CreateFlurlRequest(request, HttpMethod.Get, "marketing", "goods-subsidy-activity", "retail-store-act", request.BrandId, "stores")
                 .SetQueryParam("offset", request.Offset)
                 .SetQueryParam("limit", request.Limit);
 
-            return await client.SendRequestWithJsonAsync<Models.QueryMarketingGoodsSubsidyActivityRetailStoresResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsJsonAsync<Models.QueryMarketingGoodsSubsidyActivityRetailStoresResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// <para>异步调用 [GET] /marketing/goods-subsidy-activity/retail-store-act/{brand_id}/stores/{store_code} 接口。</para>
-        /// <para>REF: https://pay.weixin.qq.com/docs/partner/apis/retail-store/retail-store-act/list-store.html </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://pay.weixin.qq.com/docs/partner/apis/retail-store/retail-store-act/list-store.html ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -127,14 +145,17 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Get, "marketing", "goods-subsidy-activity", "retail-store-act", request.BrandId, "stores", request.StoreCode);
+                .CreateFlurlRequest(request, HttpMethod.Get, "marketing", "goods-subsidy-activity", "retail-store-act", request.BrandId, "stores", request.StoreCode);
 
-            return await client.SendRequestWithJsonAsync<Models.GetMarketingGoodsSubsidyActivityRetailStoreByStoreCodeResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsJsonAsync<Models.GetMarketingGoodsSubsidyActivityRetailStoreByStoreCodeResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// <para>异步调用 [POST] /marketing/goods-subsidy-activity/retail-store-act/{brand_id}/stores 接口。</para>
-        /// <para>REF: https://pay.weixin.qq.com/docs/partner/apis/retail-store/retail-store-act/add-stores.html </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://pay.weixin.qq.com/docs/partner/apis/retail-store/retail-store-act/add-stores.html ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -146,14 +167,17 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "marketing", "goods-subsidy-activity", "retail-store-act", request.BrandId, "stores");
+                .CreateFlurlRequest(request, HttpMethod.Post, "marketing", "goods-subsidy-activity", "retail-store-act", request.BrandId, "stores");
 
-            return await client.SendRequestWithJsonAsync<Models.AddMarketingGoodsSubsidyActivityRetailStoreResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsJsonAsync<Models.AddMarketingGoodsSubsidyActivityRetailStoreResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// <para>异步调用 [DELETE] /marketing/goods-subsidy-activity/retail-store-act/{brand_id}/stores 接口。</para>
-        /// <para>REF: https://pay.weixin.qq.com/docs/partner/apis/retail-store/retail-store-act/delete-stores.html </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://pay.weixin.qq.com/docs/partner/apis/retail-store/retail-store-act/delete-stores.html ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -165,9 +189,9 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Delete, "marketing", "goods-subsidy-activity", "retail-store-act", request.BrandId, "stores");
+                .CreateFlurlRequest(request, HttpMethod.Delete, "marketing", "goods-subsidy-activity", "retail-store-act", request.BrandId, "stores");
 
-            return await client.SendRequestWithJsonAsync<Models.DeleteMarketingGoodsSubsidyActivityRetailStoreResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsJsonAsync<Models.DeleteMarketingGoodsSubsidyActivityRetailStoreResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
         #endregion
         #endregion

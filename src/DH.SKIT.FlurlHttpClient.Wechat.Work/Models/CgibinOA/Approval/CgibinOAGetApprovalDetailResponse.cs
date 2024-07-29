@@ -1,4 +1,4 @@
-﻿namespace SKIT.FlurlHttpClient.Wechat.Work.Models
+namespace SKIT.FlurlHttpClient.Wechat.Work.Models
 {
     /// <summary>
     /// <para>表示 [POST] /cgi-bin/oa/getapprovaldetail 接口的响应。</para>
@@ -77,7 +77,7 @@
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("sptime")]
                                 [System.Text.Json.Serialization.JsonPropertyName("sptime")]
-                                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.TextualNullableLongConverter))]
+                                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.TextualNumberConverter))]
                                 public long? ApproveTimestamp { get; set; }
 
                                 /// <summary>
@@ -92,7 +92,7 @@
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("media_id")]
                                 [System.Text.Json.Serialization.JsonPropertyName("media_id")]
-                                public string[]? SpeechMediaIdList { get; set; }
+                                public string[]? AttachmentMediaIdList { get; set; }
                             }
                         }
 
@@ -172,14 +172,14 @@
                                         /// </summary>
                                         [Newtonsoft.Json.JsonProperty("members")]
                                         [System.Text.Json.Serialization.JsonPropertyName("members")]
-                                        public ContactControlValueForUser[]? ContactMembers { get; set; }
+                                        public ContactControlValueAsUser[]? ContactMembers { get; set; }
 
                                         /// <summary>
                                         /// 获取或设置 Contact 控件部门值。
                                         /// </summary>
                                         [Newtonsoft.Json.JsonProperty("departments")]
                                         [System.Text.Json.Serialization.JsonPropertyName("departments")]
-                                        public ContactControlValueForDepartment[]? ContactDepartments { get; set; }
+                                        public ContactControlValueAsDepartment[]? ContactDepartments { get; set; }
 
                                         /// <summary>
                                         /// 获取或设置 File 控件值。
@@ -243,10 +243,38 @@
                                         [Newtonsoft.Json.JsonProperty("punch_correction")]
                                         [System.Text.Json.Serialization.JsonPropertyName("punch_correction")]
                                         public CheckinControlValue? Checkin { get; set; }
+
+                                        /// <summary>
+                                        /// 获取或设置 BankAccount 控件值。
+                                        /// </summary>
+                                        [Newtonsoft.Json.JsonProperty("bank_account")]
+                                        [System.Text.Json.Serialization.JsonPropertyName("bank_account")]
+                                        public BankAccountControlValue? BankAccount { get; set; }
                                     }
 
                                     public class DateControlValue
                                     {
+                                        public static class Types
+                                        {
+                                            public class Timezone
+                                            {
+                                                /// <summary>
+                                                /// 获取或设置时区偏移量。
+                                                /// </summary>
+                                                [Newtonsoft.Json.JsonProperty("zone_offset")]
+                                                [System.Text.Json.Serialization.JsonPropertyName("zone_offset")]
+                                                [System.Text.Json.Serialization.JsonNumberHandling(System.Text.Json.Serialization.JsonNumberHandling.AllowReadingFromString)]
+                                                public int Offset { get; set; }
+
+                                                /// <summary>
+                                                /// 获取或设置时区描述。
+                                                /// </summary>
+                                                [Newtonsoft.Json.JsonProperty("zone_desc")]
+                                                [System.Text.Json.Serialization.JsonPropertyName("zone_desc")]
+                                                public string Description { get; set; } = default!;
+                                            }
+                                        }
+
                                         /// <summary>
                                         /// 获取或设置时间展示类型。
                                         /// </summary>
@@ -259,8 +287,15 @@
                                         /// </summary>
                                         [Newtonsoft.Json.JsonProperty("s_timestamp")]
                                         [System.Text.Json.Serialization.JsonPropertyName("s_timestamp")]
-                                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.TextualNullableLongConverter))]
+                                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.TextualNumberConverter))]
                                         public long? Timestamp { get; set; }
+
+                                        /// <summary>
+                                        /// 获取或设置时区信息。
+                                        /// </summary>
+                                        [Newtonsoft.Json.JsonProperty("timezone_info")]
+                                        [System.Text.Json.Serialization.JsonPropertyName("timezone_info")]
+                                        public Types.Timezone? Timezone { get; set; }
                                     }
 
                                     public class SelectorControlValue
@@ -300,7 +335,7 @@
                                         public Types.Option[] OptionList { get; set; } = default!;
                                     }
 
-                                    public class ContactControlValueForUser
+                                    public class ContactControlValueAsUser
                                     {
                                         /// <summary>
                                         /// 获取或设置成员账号。
@@ -317,7 +352,7 @@
                                         public string? Name { get; set; }
                                     }
 
-                                    public class ContactControlValueForDepartment
+                                    public class ContactControlValueAsDepartment
                                     {
                                         /// <summary>
                                         /// 获取或设置部门 ID。
@@ -471,14 +506,14 @@
                                         /// </summary>
                                         [Newtonsoft.Json.JsonProperty("longitude")]
                                         [System.Text.Json.Serialization.JsonPropertyName("longitude")]
-                                        public double Longitude { get; set; }
+                                        public decimal Longitude { get; set; }
 
                                         /// <summary>
                                         /// 获取或设置纬度。
                                         /// </summary>
                                         [Newtonsoft.Json.JsonProperty("latitude")]
                                         [System.Text.Json.Serialization.JsonPropertyName("latitude")]
-                                        public double Latitude { get; set; }
+                                        public decimal Latitude { get; set; }
 
                                         /// <summary>
                                         /// 获取或设置地点标题。
@@ -499,7 +534,7 @@
                                         /// </summary>
                                         [Newtonsoft.Json.JsonProperty("time")]
                                         [System.Text.Json.Serialization.JsonPropertyName("time")]
-                                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.TextualNullableLongConverter))]
+                                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.TextualNumberConverter))]
                                         public long? Timestamp { get; set; }
                                     }
 
@@ -553,6 +588,13 @@
 
                                     public class DateRangeControlValue
                                     {
+                                        public static class Types
+                                        {
+                                            public class Timezone : DateControlValue.Types.Timezone
+                                            {
+                                            }
+                                        }
+
                                         /// <summary>
                                         /// 获取或设置时间展示类型。
                                         /// </summary>
@@ -580,6 +622,13 @@
                                         [Newtonsoft.Json.JsonProperty("new_duration")]
                                         [System.Text.Json.Serialization.JsonPropertyName("new_duration")]
                                         public int Duration { get; set; }
+
+                                        /// <summary>
+                                        /// 获取或设置时区信息。
+                                        /// </summary>
+                                        [Newtonsoft.Json.JsonProperty("timezone_info")]
+                                        [System.Text.Json.Serialization.JsonPropertyName("timezone_info")]
+                                        public Types.Timezone? Timezone { get; set; }
                                     }
 
                                     public class CheckinControlValue
@@ -592,12 +641,127 @@
                                         public string State { get; set; } = default!;
 
                                         /// <summary>
+                                        /// 获取或设置版本标识。
+                                        /// </summary>
+                                        [Newtonsoft.Json.JsonProperty("version")]
+                                        [System.Text.Json.Serialization.JsonPropertyName("version")]
+                                        public int? Version { get; set; }
+
+                                        /// <summary>
                                         /// 获取或设置补卡时间戳。
                                         /// </summary>
                                         [Newtonsoft.Json.JsonProperty("time")]
                                         [System.Text.Json.Serialization.JsonPropertyName("time")]
-                                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.TextualNullableLongConverter))]
+                                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.TextualNumberConverter))]
                                         public long? Timestamp { get; set; }
+
+                                        /// <summary>
+                                        /// 获取或设置补卡日期时间戳。
+                                        /// </summary>
+                                        [Newtonsoft.Json.JsonProperty("daymonthyear")]
+                                        [System.Text.Json.Serialization.JsonPropertyName("daymonthyear")]
+                                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.TextualNumberConverter))]
+                                        public long? DateTimestamp { get; set; }
+                                    }
+
+                                    public class BankAccountControlValue
+                                    {
+                                        public static class Types
+                                        {
+                                            public class Bank
+                                            {
+                                                /// <summary>
+                                                /// 获取或设置银行名称。
+                                                /// </summary>
+                                                [Newtonsoft.Json.JsonProperty("bank_alias")]
+                                                [System.Text.Json.Serialization.JsonPropertyName("bank_alias")]
+                                                public string? BankAlias { get; set; }
+
+                                                /// <summary>
+                                                /// 获取或设置银行代码。
+                                                /// </summary>
+                                                [Newtonsoft.Json.JsonProperty("bank_alias_code")]
+                                                [System.Text.Json.Serialization.JsonPropertyName("bank_alias_code")]
+                                                public string? BankAliasCode { get; set; }
+
+                                                /// <summary>
+                                                /// 获取或设置银行支行联行号。
+                                                /// </summary>
+                                                [Newtonsoft.Json.JsonProperty("bank_branch_id")]
+                                                [System.Text.Json.Serialization.JsonPropertyName("bank_branch_id")]
+                                                public string? BankBranchId { get; set; }
+
+                                                /// <summary>
+                                                /// 获取或设置银行支行。
+                                                /// </summary>
+                                                [Newtonsoft.Json.JsonProperty("bank_branch_name")]
+                                                [System.Text.Json.Serialization.JsonPropertyName("bank_branch_name")]
+                                                public string? BankBranchName { get; set; }
+
+                                                /// <summary>
+                                                /// 获取或设置省份。
+                                                /// </summary>
+                                                [Newtonsoft.Json.JsonProperty("province")]
+                                                [System.Text.Json.Serialization.JsonPropertyName("province")]
+                                                public string? Province { get; set; }
+
+                                                /// <summary>
+                                                /// 获取或设置省份代码。
+                                                /// </summary>
+                                                [Newtonsoft.Json.JsonProperty("province_code")]
+                                                [System.Text.Json.Serialization.JsonPropertyName("province_code")]
+                                                public int? ProvinceCode { get; set; }
+
+                                                /// <summary>
+                                                /// 获取或设置城市。
+                                                /// </summary>
+                                                [Newtonsoft.Json.JsonProperty("city")]
+                                                [System.Text.Json.Serialization.JsonPropertyName("city")]
+                                                public string? City { get; set; }
+
+                                                /// <summary>
+                                                /// 获取或设置城市代码。
+                                                /// </summary>
+                                                [Newtonsoft.Json.JsonProperty("city_code")]
+                                                [System.Text.Json.Serialization.JsonPropertyName("city_code")]
+                                                public int? CityCode { get; set; }
+                                            }
+                                        }
+
+                                        /// <summary>
+                                        /// 获取或设置账户类型。
+                                        /// </summary>
+                                        [Newtonsoft.Json.JsonProperty("account_type")]
+                                        [System.Text.Json.Serialization.JsonPropertyName("account_type")]
+                                        public int AccountType { get; set; }
+
+                                        /// <summary>
+                                        /// 获取或设置账户名。
+                                        /// </summary>
+                                        [Newtonsoft.Json.JsonProperty("account_name")]
+                                        [System.Text.Json.Serialization.JsonPropertyName("account_name")]
+                                        public string AccountName { get; set; } = default!;
+
+                                        /// <summary>
+                                        /// 获取或设置账号。
+                                        /// </summary>
+                                        [Newtonsoft.Json.JsonProperty("account_number")]
+                                        [System.Text.Json.Serialization.JsonPropertyName("account_number")]
+                                        public string AccountNumber { get; set; } = default!;
+
+                                        /// <summary>
+                                        /// 获取或设置备注。
+                                        /// </summary>
+                                        [Newtonsoft.Json.JsonProperty("remark")]
+                                        [System.Text.Json.Serialization.JsonPropertyName("remark")]
+                                        public string Remark { get; set; } = default!;
+
+                                        /// <summary>
+                                        /// 获取或设置银行信息。
+                                        /// </summary>
+                                        [Newtonsoft.Json.JsonProperty("bank")]
+                                        [System.Text.Json.Serialization.JsonPropertyName("bank")]
+                                        public Types.Bank Bank { get; set; } = default!;
                                     }
                                 }
 
@@ -659,7 +823,7 @@
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("commentid")]
                         [System.Text.Json.Serialization.JsonPropertyName("commentid")]
-                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalStringConverter))]
+                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.NumericalStringConverter))]
                         public string CommentId { get; set; } = default!;
 
                         /// <summary>

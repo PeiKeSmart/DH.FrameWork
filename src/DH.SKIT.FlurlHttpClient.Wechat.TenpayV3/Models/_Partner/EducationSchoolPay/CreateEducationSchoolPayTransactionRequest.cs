@@ -9,7 +9,7 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Models
     {
         public static class Types
         {
-            public class Amount : CreateEducationPAPPayTransactionRequest.Types.Amount
+            public class Amount : CreateEducationPAPayTransactionRequest.Types.Amount
             {
             }
 
@@ -19,9 +19,9 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Models
                 /// 获取或设置消费时间。
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("start_time")]
-                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.RFC3339DateTimeOffsetConverter))]
+                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.Common.Rfc3339DateTimeOffsetConverter))]
                 [System.Text.Json.Serialization.JsonPropertyName("start_time")]
-                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.RFC3339DateTimeOffsetConverter))]
+                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.Rfc3339DateTimeOffsetConverter))]
                 public DateTimeOffset StartTime { get; set; }
 
                 /// <summary>
@@ -39,7 +39,7 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Models
                 public string SceneType { get; set; } = string.Empty;
             }
 
-            public class Device : CreateEducationPAPPayTransactionRequest.Types.Device
+            public class Device : CreateEducationPAPayTransactionRequest.Types.Device
             {
             }
 
@@ -77,11 +77,11 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Models
         public string ContractId { get; set; } = string.Empty;
 
         /// <summary>
-        /// 获取或设置商户用户账号。
+        /// 获取或设置商户用户账号标识。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("user_id")]
         [System.Text.Json.Serialization.JsonPropertyName("user_id")]
-        public string UserDisplayId { get; set; } = string.Empty;
+        public string OutUserId { get; set; } = string.Empty;
 
         /// <summary>
         /// 获取或设置商户订单号。
@@ -123,7 +123,7 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Models
         /// </summary>
         [Newtonsoft.Json.JsonProperty("scene_info")]
         [System.Text.Json.Serialization.JsonPropertyName("scene_info")]
-        public Types.Scene Scene { get; set; } = new Types.Scene();
+        public Types.Scene? Scene { get; set; }
 
         /// <summary>
         /// 获取或设置设备信息。

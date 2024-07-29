@@ -20,10 +20,10 @@ public class DbPackage
     /// <summary>
     /// 数据库连接
     /// </summary>
-    public DAL Dal { get; set; }
+    public DAL Dal { get; set; } = null!;
 
     /// <summary>数据页事件</summary>
-    public event EventHandler<PageEventArgs> OnPage;
+    public event EventHandler<PageEventArgs>? OnPage;
 
     /// <summary>批大小。用于批量操作数据，默认5000</summary>
     public Int32 BatchSize { get; set; }
@@ -40,16 +40,25 @@ public class DbPackage
     /// <summary>数据保存模式。默认Insert</summary>
     public SaveModes Mode { get; set; } = SaveModes.Insert;
 
+    /// <summary>数据抽取器的创建回调，支持外部自定义</summary>
+    public Func<IDataTable, IExtracter<DbTable>>? CreateExtracterCallback { get; set; }
+
     /// <summary>写文件Actor的创建回调，支持外部自定义</summary>
     public Func<WriteFileActor>? WriteFileCallback { get; set; }
 
     /// <summary>写数据库Actor的创建回调，支持外部自定义</summary>
     public Func<WriteDbActor>? WriteDbCallback { get; set; }
 
-    /// <summary>
-    /// 性能追踪器
-    /// </summary>
+    /// <summary>性能追踪器</summary>
     public ITracer? Tracer { get; set; } = DAL.GlobalTracer;
+    #endregion
+
+    #region 构造
+    /// <summary>实例化数据包</summary>
+    public DbPackage()
+    {
+        CreateExtracterCallback = GetExtracter;
+    }
     #endregion
 
     #region 备份
@@ -76,7 +85,7 @@ public class DbPackage
         var sb = new SelectBuilder { Table = tableName };
         var connName = Dal.ConnName;
 
-        var extracer = GetExtracter(table);
+        var extracer = CreateExtracterCallback?.Invoke(table) ?? GetExtracter(table);
 
         // 总行数
         writeFile.Total = Dal.SelectCount(sb);
@@ -93,7 +102,7 @@ public class DbPackage
         {
             foreach (var dt in extracer.Fetch())
             {
-                var row = extracer.Row;
+                var row = extracer.TotalCount;
                 var count = dt.Rows.Count;
                 WriteLog("备份[{0}/{1}]数据 {2:n0} + {3:n0}", table, connName, row, count);
                 if (count == 0) break;
@@ -109,6 +118,7 @@ public class DbPackage
                 OnProcess(table, row, dt, writeFile);
 
                 total += count;
+                if (span != null) span.Value = total;
             }
 
             // 通知写入完成
@@ -153,7 +163,7 @@ public class DbPackage
     /// <summary>获取数据抽取器。自增/数字主键->时间索引->主键分页->索引分页->默认分页</summary>
     /// <param name="table"></param>
     /// <returns></returns>
-    protected virtual IExtracter<DbTable> GetExtracter(IDataTable table)
+    public virtual IExtracter<DbTable> GetExtracter(IDataTable table)
     {
         var tableName = Dal.Db.FormatName(table);
 
@@ -161,16 +171,26 @@ public class DbPackage
         var id = table.Columns.FirstOrDefault(e => e.Identity);
         if (id == null)
         {
-            var pks = table.Columns.Where(e => e.PrimaryKey).ToList();
-            if (pks.Count == 1 && pks[0].DataType.IsInt()) id = pks[0];
+            var pks = table.PrimaryKeys;
+            if (pks.Length >= 1 && pks[0].DataType.IsInt()) id = pks[0];
         }
         if (id != null)
             return new IdExtracter(Dal, tableName, id);
 
         // 时间索引抽取
-        var time = table.Indexes.FirstOrDefault(e => table.GetColumn(e.Columns[0]).DataType == typeof(DateTime));
+        IDataColumn? time = null;
+        foreach (var dx in table.Indexes)
+        {
+            var column = table.GetColumn(dx.Columns[0]);
+            if (column != null && column.DataType == typeof(DateTime))
+            {
+                time = column;
+                break;
+            }
+        }
+        //var time = table.Indexes.FirstOrDefault(e => table.GetColumn(e.Columns[0])?.DataType == typeof(DateTime));
         if (time != null)
-            return new TimeExtracter(Dal, tableName, table.GetColumn(time.Columns[0]));
+            return new TimeExtracter(Dal, tableName, time);
 
         // 主键分页功能
         var pk = table.Columns.FirstOrDefault(e => e.PrimaryKey);
@@ -188,7 +208,7 @@ public class DbPackage
 
         // 默认第一个字段
         var dc = table.Columns.FirstOrDefault();
-        return dc != null ? new PagingExtracter(Dal, tableName, dc.ColumnName) : (IExtracter<DbTable>)new PagingExtracter(Dal, tableName);
+        return new PagingExtracter(Dal, tableName, dc?.ColumnName);
     }
 
     /// <summary>备份单表数据到文件</summary>
@@ -270,6 +290,7 @@ public class DbPackage
                         Backup(item, ms);
 
                         count++;
+                        if (span != null) span.Value = count;
                     }
                     catch (Exception ex)
                     {
@@ -344,8 +365,7 @@ public class DbPackage
 
             var row = 0;
             var pageSize = BatchSize;
-            if (pageSize <= 0) pageSize = Dal.Db.BatchSize;
-            if (pageSize <= 0) pageSize = XCodeSetting.Current.BatchSize;
+            if (pageSize <= 0) pageSize = Dal.GetBatchSize();
             while (true)
             {
                 //修复总行数是pageSize的倍数无法退出循环的情况
@@ -363,6 +383,8 @@ public class DbPackage
 
                 // 下一页
                 total += rs.Count;
+                if (span != null) span.Value = total;
+
                 if (rs.Count < pageSize) break;
                 row += pageSize;
             }
@@ -443,13 +465,15 @@ public class DbPackage
                 tables = DAL.Import(ms.ToStr()).ToArray();
             }
         }
+        if (tables == null) throw new ArgumentNullException(nameof(tables));
 
-        WriteLog("恢复[{0}]从文件 {1}。数据表：{2}", Dal.ConnName, file2, tables?.Join(",", e => e.Name));
+        WriteLog("恢复[{0}]从文件 {1}。数据表：{2}", Dal.ConnName, file2, tables.Join(",", e => e.Name));
 
         if (setSchema) Dal.SetTables(tables);
 
         try
         {
+            var count = 0;
             foreach (var item in tables)
             {
                 var entry = zip.GetEntry(item.Name + ".table");
@@ -460,6 +484,9 @@ public class DbPackage
                         using var ms = entry.Open();
                         using var bs = new BufferedStream(ms);
                         Restore(bs, item);
+
+                        count++;
+                        if (span != null) span.Value = count;
                     }
                     catch (Exception ex)
                     {
@@ -503,7 +530,7 @@ public class DbPackage
         writeDb.Dal = dal;
         writeDb.TracerParent = span;
 
-        var extracer = GetExtracter(table);
+        var extracer = CreateExtracterCallback?.Invoke(table) ?? GetExtracter(table);
 
         // 临时关闭日志
         var old = Dal.Db.ShowSQL;
@@ -518,7 +545,7 @@ public class DbPackage
 
             foreach (var dt in extracer.Fetch())
             {
-                var row = extracer.Row;
+                var row = extracer.TotalCount;
                 var count = dt.Rows.Count;
                 WriteLog("同步[{0}/{1}]数据 {2:n0} + {3:n0}", table.Name, Dal.ConnName, row, count);
 
@@ -532,6 +559,7 @@ public class DbPackage
                 OnProcess(table, row, dt, writeDb);
 
                 total += count;
+                if (span != null) span.Value = total;
             }
 
             // 通知写入完成
@@ -577,11 +605,15 @@ public class DbPackage
 
         try
         {
+            var count = 0;
             foreach (var item in tables)
             {
                 try
                 {
                     dic[item.Name] = Sync(item, connName, false);
+
+                    count++;
+                    if (span != null) span.Value = count;
                 }
                 catch (Exception ex)
                 {
@@ -609,7 +641,7 @@ public class DbPackage
         /// <summary>
         /// 数据流
         /// </summary>
-        public Stream Stream { get; set; }
+        public Stream Stream { get; set; } = null!;
 
         /// <summary>
         /// 总数
@@ -619,17 +651,17 @@ public class DbPackage
         /// <summary>
         /// 日志
         /// </summary>
-        public ILog Log { get; set; }
+        public ILog? Log { get; set; }
 
-        private Binary _Binary;
+        private Binary _Binary = null!;
         private Boolean _writeHeader;
-        private String[] _columns;
+        private String[] _columns = null!;
 
         /// <summary>
         /// 开始
         /// </summary>
         /// <returns></returns>
-        public override Task Start()
+        public override Task? Start()
         {
             // 二进制读写器
             _Binary = new Binary
@@ -649,9 +681,10 @@ public class DbPackage
         /// <returns></returns>
         protected override async Task ReceiveAsync(ActorContext context, CancellationToken cancellationToken)
         {
-            var dt = context.Message as DbTable;
+            if (context.Message is not DbTable dt) return;
+
             var bn = _Binary;
-            Int32[] fields = null;
+            Int32[]? fields = null;
 
             //using var span = Tracer?.NewSpan($"db:WriteStream", (Stream as FileStream)?.Name);
 
@@ -700,17 +733,19 @@ public class DbPackage
     public class WriteDbActor : Actor
     {
         /// <summary>父级对象</summary>
-        public DbPackage Host { get; set; }
+        public DbPackage Host { get; set; } = null!;
+
         /// <summary>
         /// 目标数据库
         /// </summary>
-        public DAL Dal { get; set; }
+        public DAL Dal { get; set; } = null!;
+
         /// <summary>
         /// 数据表
         /// </summary>
-        public IDataTable Table { get; set; }
+        public IDataTable Table { get; set; } = null!;
 
-        private IDataColumn[] _Columns;
+        private IDataColumn[] _Columns = null!;
 
         /// <summary>
         /// 接收消息，批量插入

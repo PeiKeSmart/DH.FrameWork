@@ -5,6 +5,7 @@ using System.Text;
 using NewLife;
 using NewLife.Collections;
 using NewLife.Data;
+using NewLife.Log;
 using NewLife.Web;
 using XCode.TDengine;
 
@@ -107,9 +108,16 @@ class TDengine : RemoteDb
     /// 优化DateTime转为全字符串，平均耗时从25.76ns降为15.07。
     /// 调用非常频繁，每分钟都有数百万次调用。
     /// </remarks>
+    /// <param name="column">字段</param>
     /// <param name="dateTime">时间值</param>
     /// <returns></returns>
-    public override String FormatDateTime(DateTime dateTime) => $"'{dateTime:yyyy-MM-dd HH:mm:ss.fff}'";
+    public override String FormatDateTime(IDataColumn column, DateTime dateTime)
+    {
+        if (dateTime.Ticks % 10_000_000 == 0)
+            return $"'{dateTime:yyyy-MM-dd HH:mm:ss}'";
+        else
+            return $"'{dateTime:yyyy-MM-dd HH:mm:ss.fffffff}'";
+    }
 
     /// <summary>长文本长度</summary>
     public override Int32 LongTextLength => 4000;
@@ -186,8 +194,9 @@ internal class TDengineSession : RemoteDbSession
         var db = Database as DbBase;
 
         // 字段列表
-        if (columns == null) columns = table.Columns.ToArray();
+        columns ??= table.Columns.ToArray();
         BuildInsert(sb, db, action, table, columns);
+        DefaultSpan.Current?.AppendTag(sb.ToString());
 
         // 值列表
         sb.Append(" Values");
@@ -363,7 +372,7 @@ class TDengineMetaData : RemoteDbMetaData
         return dt != null && dt.Rows != null && dt.Rows.Any(e => e[0] as String == databaseName);
     }
 
-    public override String CreateDatabaseSQL(String dbname, String file) => $"Create Database If Not Exists {Database.FormatName(dbname)}";
+    public override String CreateDatabaseSQL(String dbname, String? file) => $"Create Database If Not Exists {Database.FormatName(dbname)}";
     //public override String CreateDatabaseSQL(String dbname, String file) => $"Create Database If Not Exists {Database.FormatName(dbname)} KEEP 365 DAYS 10 BLOCKS 6 UPDATE 1;";
 
     public override String DropDatabaseSQL(String dbname) => $"Drop Database If Exists {Database.FormatName(dbname)}";
@@ -395,7 +404,7 @@ class TDengineMetaData : RemoteDbMetaData
         // 返回String.Empty表示已经在别的SQL中处理
         String.Empty;
 
-    public override String AlterColumnSQL(IDataColumn field, IDataColumn oldfield) => $"Alter Table {FormatName(field.Table)} Modify Column {FieldClause(field, false)}";
+    public override String AlterColumnSQL(IDataColumn field, IDataColumn? oldfield) => $"Alter Table {FormatName(field.Table)} Modify Column {FieldClause(field, false)}";
 
     public override String AddColumnDescriptionSQL(IDataColumn field) =>
         // 返回String.Empty表示已经在别的SQL中处理

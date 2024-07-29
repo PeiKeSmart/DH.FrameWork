@@ -1,7 +1,12 @@
-namespace SKIT.FlurlHttpClient.Constants
+namespace SKIT.FlurlHttpClient
 {
+    /// <summary>
+    /// SKIT.FlurlHttpClient 常量集之 HTTP 标头。
+    /// </summary>
     public static class HttpHeaders
     {
+        public const string Allow = "Allow";
+
         public const string Accept = "Accept";
 
         public const string AcceptCharset = "Accept-Charset";
@@ -28,11 +33,15 @@ namespace SKIT.FlurlHttpClient.Constants
 
         public const string AccessControlRequestHeaders = "Access-Control-Request-Headers";
 
+        public const string Age = "Age";
+
         public const string Authorization = "Authorization";
 
         public const string CacheControl = "Cache-Control";
 
         public const string Connection = "Connection";
+
+        public const string ContentDisposition = "Content-Disposition";
 
         public const string ContentEncoding = "Content-Encoding";
 
@@ -41,6 +50,8 @@ namespace SKIT.FlurlHttpClient.Constants
         public const string ContentLength = "Content-Length";
 
         public const string ContentLocation = "Content-Location";
+
+        public const string ContentMD5 = "Content-MD5";
 
         public const string ContentRange = "Content-Range";
 
@@ -55,6 +66,8 @@ namespace SKIT.FlurlHttpClient.Constants
         public const string Date = "Date";
 
         public const string ETag = "ETag";
+
+        public const string Expect = "Expect";
 
         public const string Expires = "Expires";
 
@@ -75,6 +88,8 @@ namespace SKIT.FlurlHttpClient.Constants
         public const string LastModified = "Last-Modified";
 
         public const string Location = "Location";
+
+        public const string MaxForwards = "Max-Forwards";
 
         public const string Origin = "Origin";
 
@@ -106,6 +121,8 @@ namespace SKIT.FlurlHttpClient.Constants
 
         public const string TransferEncoding = "Transfer-Encoding";
 
+        public const string Upgrade = "Upgrade";
+
         public const string UserAgent = "User-Agent";
 
         public const string VariantVary = "Variant-Vary";
@@ -113,5 +130,9 @@ namespace SKIT.FlurlHttpClient.Constants
         public const string Vary = "Vary";
 
         public const string Via = "Via";
+
+        public const string Warning = "Warning";
+
+        public const string WWWAuthenticate = "WWW-Authenticate";
     }
 }

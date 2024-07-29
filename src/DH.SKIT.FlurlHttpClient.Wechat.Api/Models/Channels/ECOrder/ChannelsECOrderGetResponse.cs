@@ -1,4 +1,4 @@
-﻿namespace SKIT.FlurlHttpClient.Wechat.Api.Models
+namespace SKIT.FlurlHttpClient.Wechat.Api.Models
 {
     /// <summary>
     /// <para>表示 [POST] /channels/ec/order/get 接口的响应。</para>
@@ -21,6 +21,83 @@
                                 {
                                     public class Attribute : ChannelsECProductGetResponse.Types.Product.Types.Attribute
                                     {
+                                    }
+
+                                    public class ExtraService
+                                    {
+                                        /// <summary>
+                                        /// 获取或设置是否支持七天无理由退货。
+                                        /// </summary>
+                                        [Newtonsoft.Json.JsonProperty("seven_day_return")]
+                                        [System.Text.Json.Serialization.JsonPropertyName("seven_day_return")]
+                                        public int SevenDayReturn { get; set; }
+
+                                        /// <summary>
+                                        /// 获取或设置是否支持运费险。
+                                        /// </summary>
+                                        [Newtonsoft.Json.JsonProperty("freight_insurance")]
+                                        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.Common.NumericalBooleanConverter))]
+                                        [System.Text.Json.Serialization.JsonPropertyName("freight_insurance")]
+                                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.NumericalBooleanConverter))]
+                                        public bool IsFreightInsuranceSupported { get; set; }
+                                    }
+
+                                    public class SKUDeliver
+                                    {
+                                        /// <summary>
+                                        /// 获取或设置商品发货类型。
+                                        /// </summary>
+                                        [Newtonsoft.Json.JsonProperty("stock_type")]
+                                        [System.Text.Json.Serialization.JsonPropertyName("stock_type")]
+                                        public int StockType { get; set; }
+
+                                        /// <summary>
+                                        /// 获取或设置预计发货时间戳。
+                                        /// </summary>
+                                        [Newtonsoft.Json.JsonProperty("predict_delivery_time")]
+                                        [System.Text.Json.Serialization.JsonPropertyName("predict_delivery_time")]
+                                        public long? PredictDeliveryTimestamp { get; set; }
+                                    }
+
+                                    public class OrderProductCoupon
+                                    {
+                                        /// <summary>
+                                        /// 获取或设置用户优惠券 ID。
+                                        /// </summary>
+                                        [Newtonsoft.Json.JsonProperty("user_coupon_id")]
+                                        [System.Text.Json.Serialization.JsonPropertyName("user_coupon_id")]
+                                        public string? UserCouponId { get; set; }
+                                    }
+
+                                    public class Voucher
+                                    {
+                                        /// <summary>
+                                        /// 获取或设置团购优惠券码。
+                                        /// </summary>
+                                        [Newtonsoft.Json.JsonProperty("voucher_code")]
+                                        [System.Text.Json.Serialization.JsonPropertyName("voucher_code")]
+                                        public string VoucherCode { get; set; } = default!;
+
+                                        /// <summary>
+                                        /// 获取或设置团购优惠券类型。
+                                        /// </summary>
+                                        [Newtonsoft.Json.JsonProperty("voucher_type")]
+                                        [System.Text.Json.Serialization.JsonPropertyName("voucher_type")]
+                                        public int VoucherType { get; set; }
+
+                                        /// <summary>
+                                        /// 获取或设置团购优惠券价格（单位：分）。
+                                        /// </summary>
+                                        [Newtonsoft.Json.JsonProperty("voucher_buy_amount")]
+                                        [System.Text.Json.Serialization.JsonPropertyName("voucher_buy_amount")]
+                                        public int VoucherBuyAmount { get; set; }
+
+                                        /// <summary>
+                                        /// 获取或设置次卡序号标识。
+                                        /// </summary>
+                                        [Newtonsoft.Json.JsonProperty("time_index")]
+                                        [System.Text.Json.Serialization.JsonPropertyName("time_index")]
+                                        public int? TimeIndex { get; set; }
                                     }
                                 }
 
@@ -46,6 +123,13 @@
                                 [Newtonsoft.Json.JsonProperty("sku_cnt")]
                                 [System.Text.Json.Serialization.JsonPropertyName("sku_cnt")]
                                 public int Count { get; set; }
+
+                                /// <summary>
+                                /// 获取或设置商品编码。
+                                /// </summary>
+                                [Newtonsoft.Json.JsonProperty("sku_code")]
+                                [System.Text.Json.Serialization.JsonPropertyName("sku_code")]
+                                public string? SKUCode { get; set; }
 
                                 /// <summary>
                                 /// 获取或设置正在售后流程中的商品数量。
@@ -97,11 +181,102 @@
                                 public int? RealPrice { get; set; }
 
                                 /// <summary>
+                                /// 获取或设置优惠后 SKU 总价（单位：分）。
+                                /// </summary>
+                                [Newtonsoft.Json.JsonProperty("estimate_price")]
+                                [System.Text.Json.Serialization.JsonPropertyName("estimate_price")]
+                                public int? EstimatePrice { get; set; }
+
+                                /// <summary>
+                                /// 获取或设置是否修改过价格。
+                                /// </summary>
+                                [Newtonsoft.Json.JsonProperty("is_change_price")]
+                                [System.Text.Json.Serialization.JsonPropertyName("is_change_price")]
+                                public bool? IsChangePrice { get; set; }
+
+                                /// <summary>
+                                /// 获取或设置改价后 SKU 总价（单位：分）。
+                                /// </summary>
+                                [Newtonsoft.Json.JsonProperty("change_price")]
+                                [System.Text.Json.Serialization.JsonPropertyName("change_price")]
+                                public int? ChangePrice { get; set; }
+
+                                /// <summary>
+                                /// 获取或设置是否使用了会员积分抵扣。
+                                /// </summary>
+                                [Newtonsoft.Json.JsonProperty("use_deduction")]
+                                [System.Text.Json.Serialization.JsonPropertyName("use_deduction")]
+                                public bool? IsUseDeduction { get; set; }
+
+                                /// <summary>
+                                /// 获取或设置会员积分抵扣金额（单位：分）。
+                                /// </summary>
+                                [Newtonsoft.Json.JsonProperty("deduction_price")]
+                                [System.Text.Json.Serialization.JsonPropertyName("deduction_price")]
+                                public int? DeductionPrice { get; set; }
+
+                                /// <summary>
+                                /// 获取或设置商家自定义商品 ID。
+                                /// </summary>
+                                [Newtonsoft.Json.JsonProperty("out_product_id")]
+                                [System.Text.Json.Serialization.JsonPropertyName("out_product_id")]
+                                public string? OutProductId { get; set; }
+
+                                /// <summary>
+                                /// 获取或设置商家自定义 SKU ID。
+                                /// </summary>
+                                [Newtonsoft.Json.JsonProperty("out_sku_id")]
+                                [System.Text.Json.Serialization.JsonPropertyName("out_sku_id")]
+                                public string? OutSKUId { get; set; }
+
+                                /// <summary>
+                                /// 获取或设置外部仓库 ID。
+                                /// </summary>
+                                [Newtonsoft.Json.JsonProperty("out_warehouse_id")]
+                                [System.Text.Json.Serialization.JsonPropertyName("out_warehouse_id")]
+                                public string? OutWarehouseId { get; set; }
+
+                                /// <summary>
                                 /// 获取或设置商品属性列表。
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("sku_attrs")]
                                 [System.Text.Json.Serialization.JsonPropertyName("sku_attrs")]
                                 public Types.Attribute[]? AttributeList { get; set; }
+
+                                /// <summary>
+                                /// 获取或设置商品发货信息。
+                                /// </summary>
+                                [Newtonsoft.Json.JsonProperty("sku_deliver_info")]
+                                [System.Text.Json.Serialization.JsonPropertyName("sku_deliver_info")]
+                                public Types.SKUDeliver? SKUDeliver { get; set; }
+
+                                /// <summary>
+                                /// 获取或设置额外的服务信息。
+                                /// </summary>
+                                [Newtonsoft.Json.JsonProperty("extra_service")]
+                                [System.Text.Json.Serialization.JsonPropertyName("extra_service")]
+                                public Types.ExtraService? ExtraService { get; set; }
+
+                                /// <summary>
+                                /// 获取或设置商品优惠券信息。
+                                /// </summary>
+                                [Newtonsoft.Json.JsonProperty("order_product_coupon_info_list")]
+                                [System.Text.Json.Serialization.JsonPropertyName("order_product_coupon_info_list")]
+                                public Types.OrderProductCoupon[]? OrderProductCouponList { get; set; }
+
+                                /// <summary>
+                                /// 获取或设置商品发货截止日期时间戳。
+                                /// </summary>
+                                [Newtonsoft.Json.JsonProperty("delivery_deadline")]
+                                [System.Text.Json.Serialization.JsonPropertyName("delivery_deadline")]
+                                public long? DeliveryDeadlineTimestamp { get; set; }
+
+                                /// <summary>
+                                /// 获取或设置团购优惠列表。
+                                /// </summary>
+                                [Newtonsoft.Json.JsonProperty("voucher_list")]
+                                [System.Text.Json.Serialization.JsonPropertyName("voucher_list")]
+                                public Types.Voucher[]? VoucherList { get; set; }
                             }
 
                             public class Payment
@@ -133,6 +308,13 @@
                                 [Newtonsoft.Json.JsonProperty("pay_time")]
                                 [System.Text.Json.Serialization.JsonPropertyName("pay_time")]
                                 public long? PayTimestamp { get; set; }
+
+                                /// <summary>
+                                /// 获取或设置支付方式。
+                                /// </summary>
+                                [Newtonsoft.Json.JsonProperty("payment_method")]
+                                [System.Text.Json.Serialization.JsonPropertyName("payment_method")]
+                                public int? PaymentMethod { get; set; }
                             }
 
                             public class Amount
@@ -206,6 +388,20 @@
                                 [Newtonsoft.Json.JsonProperty("is_change_freight")]
                                 [System.Text.Json.Serialization.JsonPropertyName("is_change_freight")]
                                 public bool? IsFreightChanged { get; set; }
+
+                                /// <summary>
+                                /// 获取或设置是否使用了会员积分抵扣。
+                                /// </summary>
+                                [Newtonsoft.Json.JsonProperty("use_deduction")]
+                                [System.Text.Json.Serialization.JsonPropertyName("use_deduction")]
+                                public bool? IsUseDeduction { get; set; }
+
+                                /// <summary>
+                                /// 获取或设置会员积分抵扣金额（单位：分）。
+                                /// </summary>
+                                [Newtonsoft.Json.JsonProperty("deduction_price")]
+                                [System.Text.Json.Serialization.JsonPropertyName("deduction_price")]
+                                public int? DeductionPrice { get; set; }
                             }
 
                             public class Delivery
@@ -281,12 +477,69 @@
 
                                     public class Address : ChannelsECMerchantAddressGetResponse.Types.AddressDetail.Types.Address
                                     {
+                                        public static class Types
+                                        {
+                                            public class TeleNumberExtendedInfo
+                                            {
+                                                /// <summary>
+                                                /// 获取或设置脱敏手机号。
+                                                /// </summary>
+                                                [Newtonsoft.Json.JsonProperty("real_tel_number")]
+                                                [System.Text.Json.Serialization.JsonPropertyName("real_tel_number")]
+                                                public string? RealTeleNumber { get; set; }
+
+                                                /// <summary>
+                                                /// 获取或设置虚拟号码。
+                                                /// </summary>
+                                                [Newtonsoft.Json.JsonProperty("virtual_tel_number")]
+                                                [System.Text.Json.Serialization.JsonPropertyName("virtual_tel_number")]
+                                                public string? VirtualTeleNumber { get; set; }
+
+                                                /// <summary>
+                                                /// 获取或设置主动兑换的虚拟号码过期时间戳。
+                                                /// </summary>
+                                                [Newtonsoft.Json.JsonProperty("virtual_tel_expire_time")]
+                                                [System.Text.Json.Serialization.JsonPropertyName("virtual_tel_expire_time")]
+                                                public long? VirtualTeleNumberExpireTimestamp { get; set; }
+
+                                                /// <summary>
+                                                /// 获取或设置主动兑换虚拟号码次数。
+                                                /// </summary>
+                                                [Newtonsoft.Json.JsonProperty("get_virtual_tel_cnt")]
+                                                [System.Text.Json.Serialization.JsonPropertyName("get_virtual_tel_cnt")]
+                                                public int? GetVirtualTeleNumberCount { get; set; }
+                                            }
+                                        }
+
                                         /// <summary>
-                                        /// 获取或设置虚拟发货订单电话号码。
+                                        /// 获取或设置当前店铺下一个唯一的用户收货地址标识。
+                                        /// </summary>
+                                        [Newtonsoft.Json.JsonProperty("hash_code")]
+                                        [System.Text.Json.Serialization.JsonPropertyName("hash_code")]
+                                        public string? HashCode { get; set; }
+
+                                        /// <summary>
+                                        /// 获取或设置虚拟号码。
                                         /// </summary>
                                         [Newtonsoft.Json.JsonProperty("virtual_order_tel_number")]
                                         [System.Text.Json.Serialization.JsonPropertyName("virtual_order_tel_number")]
-                                        public string? VirtualOrderTeleNumber { get; set; }
+                                        public string? VirtualTeleNumber { get; set; }
+
+                                        /// <summary>
+                                        /// 获取或设置是否使用虚拟号码。
+                                        /// </summary>
+                                        [Newtonsoft.Json.JsonProperty("use_tel_number")]
+                                        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.Common.NumericalBooleanConverter))]
+                                        [System.Text.Json.Serialization.JsonPropertyName("use_tel_number")]
+                                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.NumericalBooleanConverter))]
+                                        public bool? IsVirtualTeleNumber { get; set; }
+
+                                        /// <summary>
+                                        /// 获取或设置额外的联系方式信息。
+                                        /// </summary>
+                                        [Newtonsoft.Json.JsonProperty("tel_number_ext_info")]
+                                        [System.Text.Json.Serialization.JsonPropertyName("tel_number_ext_info")]
+                                        public Types.TeleNumberExtendedInfo? TeleNumberExtendedInfo { get; set; }
                                     }
                                 }
 
@@ -305,6 +558,13 @@
                                 public Types.Address? Address { get; set; }
 
                                 /// <summary>
+                                /// 获取或设置用户下单后申请修改的地址信息。
+                                /// </summary>
+                                [Newtonsoft.Json.JsonProperty("address_under_review")]
+                                [System.Text.Json.Serialization.JsonPropertyName("address_under_review")]
+                                public Types.Address? AddressUnderReview { get; set; }
+
+                                /// <summary>
                                 /// 获取或设置发货商品信息。
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("delivery_product_info")]
@@ -318,6 +578,21 @@
                                 [System.Text.Json.Serialization.JsonPropertyName("ship_done_time")]
                                 [System.Text.Json.Serialization.JsonNumberHandling(System.Text.Json.Serialization.JsonNumberHandling.AllowReadingFromString)]
                                 public long? ShippingDoneTimestamp { get; set; }
+
+                                /// <summary>
+                                /// 获取或设置修改地址申请时间戳。
+                                /// </summary>
+                                [Newtonsoft.Json.JsonProperty("address_apply_time")]
+                                [System.Text.Json.Serialization.JsonPropertyName("address_apply_time")]
+                                [System.Text.Json.Serialization.JsonNumberHandling(System.Text.Json.Serialization.JsonNumberHandling.AllowReadingFromString)]
+                                public long? AddressApplyTimestamp { get; set; }
+
+                                /// <summary>
+                                /// 获取或设置电子面单代发订单密文。
+                                /// </summary>
+                                [Newtonsoft.Json.JsonProperty("ewaybill_order_code")]
+                                [System.Text.Json.Serialization.JsonPropertyName("ewaybill_order_code")]
+                                public string? EWaybillOrderCode { get; set; }
                             }
 
                             public class Coupon
@@ -345,6 +620,145 @@
                                 [Newtonsoft.Json.JsonProperty("merchant_notes")]
                                 [System.Text.Json.Serialization.JsonPropertyName("merchant_notes")]
                                 public string? MerchantNotes { get; set; }
+
+                                /// <summary>
+                                /// 获取或设置确认收货时间戳。
+                                /// </summary>
+                                [Newtonsoft.Json.JsonProperty("confirm_receipt_time")]
+                                [System.Text.Json.Serialization.JsonPropertyName("confirm_receipt_time")]
+                                public long? ConfirmReceiptTimestamp { get; set; }
+
+                                /// <summary>
+                                /// 获取或设置视频号 ID。
+                                /// </summary>
+                                [Newtonsoft.Json.JsonProperty("finder_id")]
+                                [System.Text.Json.Serialization.JsonPropertyName("finder_id")]
+                                public string? FinderId { get; set; }
+
+                                /// <summary>
+                                /// 获取或设置直播 ID。
+                                /// </summary>
+                                [Newtonsoft.Json.JsonProperty("live_id")]
+                                [System.Text.Json.Serialization.JsonPropertyName("live_id")]
+                                public string? LiveId { get; set; }
+
+                                /// <summary>
+                                /// 获取或设置单场景。
+                                /// </summary>
+                                [Newtonsoft.Json.JsonProperty("order_scene")]
+                                [System.Text.Json.Serialization.JsonPropertyName("order_scene")]
+                                public int? OrderScene { get; set; }
+                            }
+
+                            public class Settlement
+                            {
+                                /// <summary>
+                                /// 获取或设置预计技术服务费（单位：分）。
+                                /// </summary>
+                                [Newtonsoft.Json.JsonProperty("predict_commission_fee")]
+                                [System.Text.Json.Serialization.JsonPropertyName("predict_commission_fee")]
+                                public int PredictCommissionFee { get; set; }
+
+                                /// <summary>
+                                /// 获取或设置实际技术服务费（单位：分）。
+                                /// </summary>
+                                [Newtonsoft.Json.JsonProperty("commission_fee")]
+                                [System.Text.Json.Serialization.JsonPropertyName("commission_fee")]
+                                public int? CommissionFee { get; set; }
+
+                                /// <summary>
+                                /// 获取或设置预计人气卡返佣金额（单位：分）。
+                                /// </summary>
+                                [Newtonsoft.Json.JsonProperty("predict_wecoin_commission")]
+                                [System.Text.Json.Serialization.JsonPropertyName("predict_wecoin_commission")]
+                                public int? PredictWecoinCommission { get; set; }
+
+                                /// <summary>
+                                /// 获取或设置实际人气卡返佣金额（单位：分）。
+                                /// </summary>
+                                [Newtonsoft.Json.JsonProperty("wecoin_commission")]
+                                [System.Text.Json.Serialization.JsonPropertyName("wecoin_commission")]
+                                public int? WecoinCommission { get; set; }
+
+                                /// <summary>
+                                /// 获取或设置结算时间戳。
+                                /// </summary>
+                                [Newtonsoft.Json.JsonProperty("settle_time")]
+                                [System.Text.Json.Serialization.JsonPropertyName("settle_time")]
+                                public long? SettleTimestamp { get; set; }
+                            }
+
+                            public class Sharer
+                            {
+                                /// <summary>
+                                /// 获取或设置分享员的 OpenId。
+                                /// </summary>
+                                [Newtonsoft.Json.JsonProperty("sharer_openid")]
+                                [System.Text.Json.Serialization.JsonPropertyName("sharer_openid")]
+                                public string SharerOpenId { get; set; } = default!;
+
+                                /// <summary>
+                                /// 获取或设置分享员的 UnionId。
+                                /// </summary>
+                                [Newtonsoft.Json.JsonProperty("sharer_unionid")]
+                                [System.Text.Json.Serialization.JsonPropertyName("sharer_unionid")]
+                                public string? SharerUnionId { get; set; }
+
+                                /// <summary>
+                                /// 获取或设置分享员类型。
+                                /// </summary>
+                                [Newtonsoft.Json.JsonProperty("sharer_type")]
+                                [System.Text.Json.Serialization.JsonPropertyName("sharer_type")]
+                                public int SharerType { get; set; }
+
+                                /// <summary>
+                                /// 获取或设置分享场景。
+                                /// </summary>
+                                [Newtonsoft.Json.JsonProperty("share_scene")]
+                                [System.Text.Json.Serialization.JsonPropertyName("share_scene")]
+                                public int ShareScene { get; set; }
+
+                                /// <summary>
+                                /// 获取或设置解析完成度。
+                                /// </summary>
+                                [Newtonsoft.Json.JsonProperty("handling_progress")]
+                                [System.Text.Json.Serialization.JsonPropertyName("handling_progress")]
+                                public int HandlingProgress { get; set; }
+                            }
+
+                            public class SKUSharer : Sharer
+                            {
+                                /// <summary>
+                                /// 获取或设置 SKU ID。
+                                /// </summary>
+                                [Newtonsoft.Json.JsonProperty("sku_id")]
+                                [System.Text.Json.Serialization.JsonPropertyName("sku_id")]
+                                [System.Text.Json.Serialization.JsonNumberHandling(System.Text.Json.Serialization.JsonNumberHandling.AllowReadingFromString)]
+                                public long SKUId { get; set; }
+
+                                /// <summary>
+                                /// 获取或设置是否来自企微分享。
+                                /// </summary>
+                                [Newtonsoft.Json.JsonProperty("from_wecom")]
+                                [System.Text.Json.Serialization.JsonPropertyName("from_wecom")]
+                                public bool IsFromWecom { get; set; }
+                            }
+
+                            public class AgentFinder
+                            {
+                                /// <summary>
+                                /// 获取或设置授权视频号 ID。
+                                /// </summary>
+                                [Newtonsoft.Json.JsonProperty("agent_finder_id")]
+                                [System.Text.Json.Serialization.JsonPropertyName("agent_finder_id")]
+                                public string AgentFinderId { get; set; } = default!;
+
+                                /// <summary>
+                                /// 获取或设置授权视频号昵称。
+                                /// </summary>
+                                [Newtonsoft.Json.JsonProperty("agent_finder_nickname")]
+                                [System.Text.Json.Serialization.JsonPropertyName("agent_finder_nickname")]
+                                public bool AgentFinderNickname { get; set; }
                             }
                         }
 
@@ -389,6 +803,34 @@
                         [Newtonsoft.Json.JsonProperty("ext_info")]
                         [System.Text.Json.Serialization.JsonPropertyName("ext_info")]
                         public Types.Extra? Extra { get; set; }
+
+                        /// <summary>
+                        /// 获取或设置结算信息。
+                        /// </summary>
+                        [Newtonsoft.Json.JsonProperty("settle_info")]
+                        [System.Text.Json.Serialization.JsonPropertyName("settle_info")]
+                        public Types.Settlement? Settlement { get; set; }
+
+                        /// <summary>
+                        /// 获取或设置分享员信息。
+                        /// </summary>
+                        [Newtonsoft.Json.JsonProperty("sharer_info")]
+                        [System.Text.Json.Serialization.JsonPropertyName("sharer_info")]
+                        public Types.Sharer? Sharer { get; set; }
+
+                        /// <summary>
+                        /// 获取或设置 SKU 分享员信息。
+                        /// </summary>
+                        [Newtonsoft.Json.JsonProperty("sku_sharer_infos")]
+                        [System.Text.Json.Serialization.JsonPropertyName("sku_sharer_infos")]
+                        public Types.SKUSharer[]? SKUSharerList { get; set; }
+
+                        /// <summary>
+                        /// 获取或设置授权账号信息。
+                        /// </summary>
+                        [Newtonsoft.Json.JsonProperty("agent_info")]
+                        [System.Text.Json.Serialization.JsonPropertyName("agent_info")]
+                        public Types.AgentFinder? AgentFinder { get; set; }
                     }
 
                     public class AftersaleDetail
@@ -402,7 +844,7 @@
                                 /// </summary>
                                 [Newtonsoft.Json.JsonProperty("aftersale_order_id")]
                                 [System.Text.Json.Serialization.JsonPropertyName("aftersale_order_id")]
-                                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalStringReadOnlyConverter))]
+                                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.NumericalStringReadOnlyConverter))]
                                 public string AftersaleOrderId { get; set; } = default!;
 
                                 /// <summary>
@@ -435,7 +877,7 @@
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("order_id")]
                 [System.Text.Json.Serialization.JsonPropertyName("order_id")]
-                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalStringReadOnlyConverter))]
+                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.NumericalStringReadOnlyConverter))]
                 public string OrderId { get; set; } = default!;
 
                 /// <summary>
@@ -465,6 +907,13 @@
                 [Newtonsoft.Json.JsonProperty("openid")]
                 [System.Text.Json.Serialization.JsonPropertyName("openid")]
                 public string OpenId { get; set; } = default!;
+
+                /// <summary>
+                /// 获取或设置下单用户 UnionId。
+                /// </summary>
+                [Newtonsoft.Json.JsonProperty("unionid")]
+                [System.Text.Json.Serialization.JsonPropertyName("unionid")]
+                public string? UnionId { get; set; }
 
                 /// <summary>
                 /// 获取或设置更新时间戳。

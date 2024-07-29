@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Web;
 using NewLife.Data;
+using NewLife.Map.Models;
 using NewLife.Serialization;
 
 namespace NewLife.Map;
@@ -16,6 +17,7 @@ public class AMap : Map, IMap
     /// <summary>高德地图</summary>
     public AMap()
     {
+        Server = "http://restapi.amap.com";
         //AppKey = "" +
         //    // 六条
         //    "2aada76e462af71e1b67ba1df22d0fa4," +
@@ -41,7 +43,7 @@ public class AMap : Map, IMap
     /// <param name="url">目标Url</param>
     /// <param name="result">结果字段</param>
     /// <returns></returns>
-    protected override async Task<T> InvokeAsync<T>(String url, String result)
+    protected override async Task<T> InvokeAsync<T>(String url, String? result)
     {
         var dic = await base.InvokeAsync<IDictionary<String, Object>>(url, result);
         if (dic == null || dic.Count == 0) return default;
@@ -52,7 +54,7 @@ public class AMap : Map, IMap
             var msg = dic["info"] + "";
 
             // 删除无效密钥
-            if (IsValidKey(msg)) RemoveKey(LastKey, DateTime.Now.AddHours(1));
+            if (!LastKey.IsNullOrEmpty() && IsValidKey(msg)) RemoveKey(LastKey, DateTime.Now.AddHours(1));
 
             return !ThrowException ? default : throw new Exception(msg);
         }
@@ -63,13 +65,13 @@ public class AMap : Map, IMap
     }
     #endregion
 
-    #region 地址编码
+    #region 地理编码
     /// <summary>查询地址的经纬度坐标</summary>
     /// <param name="address"></param>
     /// <param name="city"></param>
     /// <param name="coordtype"></param>
     /// <returns></returns>
-    protected async Task<IDictionary<String, Object>> GetGeocoderAsync(String address, String city = null, String coordtype = null)
+    protected async Task<IDictionary<String, Object>?> GetGeocoderAsync(String address, String? city = null, String? coordtype = null)
     {
         if (address.IsNullOrEmpty()) throw new ArgumentNullException(nameof(address));
 
@@ -89,21 +91,16 @@ public class AMap : Map, IMap
     /// <param name="coordtype"></param>
     /// <param name="formatAddress">是否格式化地址。高德地图默认已经格式化地址</param>
     /// <returns></returns>
-    public async Task<GeoAddress> GetGeoAsync(String address, String city = null, String coordtype = null, Boolean formatAddress = false)
+    public async Task<GeoAddress?> GetGeoAsync(String address, String? city = null, String? coordtype = null, Boolean formatAddress = false)
     {
         var rs = await GetGeocoderAsync(address, city);
         if (rs == null || rs.Count == 0) return null;
 
-        var gp = new GeoPoint();
-
-        var ds = (rs["location"] + "").Split(',');
-        if (ds != null && ds.Length >= 2)
+        var geo = new GeoAddress
         {
-            gp.Longitude = ds[0].ToDouble();
-            gp.Latitude = ds[1].ToDouble();
-        }
+            Location = new(rs["location"] as String)
+        };
 
-        var geo = new GeoAddress();
         var reader = new JsonReader();
         reader.ToObject(rs, null, geo);
 
@@ -112,11 +109,9 @@ public class AMap : Map, IMap
         if (rs["township"] is IList<Object> ts && ts.Count > 0) geo.Township = ts[0] + "";
         if (rs["number"] is IList<Object> ns && ns.Count > 0) geo.StreetNumber = ns[0] + "";
 
-        geo.Location = gp;
-
         if (formatAddress)
         {
-            var geo2 = await GetReverseGeoAsync(gp, "wcj02");
+            var geo2 = await GetReverseGeoAsync(geo.Location, "wcj02");
             if (geo2 != null)
             {
                 geo = geo2;
@@ -126,8 +121,10 @@ public class AMap : Map, IMap
 
         {
             var addr = rs["formatted_address"] + "";
-            if (!addr.IsNullOrEmpty()) geo.Address = addr;
+            if (!addr.IsNullOrEmpty() && (geo.Address.IsNullOrEmpty() || geo.Address.Length < addr.Length))
+                geo.Address = addr;
         }
+
         // 替换竖线
         TrimAddress(geo);
 
@@ -141,7 +138,7 @@ public class AMap : Map, IMap
     }
     #endregion
 
-    #region 逆地址编码
+    #region 逆地理编码
     /// <summary>根据坐标获取地址</summary>
     /// <remarks>
     /// http://lbs.amap.com/api/webservice/guide/api/georegeo/#regeo
@@ -149,7 +146,7 @@ public class AMap : Map, IMap
     /// <param name="point"></param>
     /// <param name="coordtype"></param>
     /// <returns></returns>
-    protected async Task<IDictionary<String, Object>> GetReverseGeocoderAsync(GeoPoint point, String coordtype)
+    protected async Task<IDictionary<String, Object>> GetReverseGeocoderAsync(GeoPoint point, String? coordtype)
     {
         if (point.Longitude < 0.1 || point.Latitude < 0.1) throw new ArgumentNullException(nameof(point));
 
@@ -162,24 +159,25 @@ public class AMap : Map, IMap
     /// <param name="point"></param>
     /// <param name="coordtype">坐标系</param>
     /// <returns></returns>
-    public async Task<GeoAddress> GetReverseGeoAsync(GeoPoint point, String coordtype)
+    public async Task<GeoAddress?> GetReverseGeoAsync(GeoPoint point, String? coordtype)
     {
         var rs = await GetReverseGeocoderAsync(point, coordtype);
         if (rs == null || rs.Count == 0) return null;
 
         var geo = new GeoAddress
         {
-            Address = rs["formatted_address"] + ""
-        };
-        geo.Location = new GeoPoint
-        {
-            Longitude = point.Longitude,
-            Latitude = point.Latitude
+            Address = rs["formatted_address"] + "",
+            Location = point
         };
         if (rs["addressComponent"] is IDictionary<String, Object> component)
         {
             var reader = new JsonReader();
             reader.ToObject(component, null, geo);
+
+            if (component.TryGetValue("city", out var obj) && obj is not String)
+                geo.City = null;
+            if (component.TryGetValue("streetNumber", out obj) && obj is not String)
+                geo.StreetNumber = null;
 
             geo.Code = component["adcode"].ToInt();
 
@@ -198,6 +196,14 @@ public class AMap : Map, IMap
             {
                 geo.Street = sn["street"] + "";
                 geo.StreetNumber = sn["number"] + "";
+
+                if (geo.Title.IsNullOrEmpty())
+                {
+                    if (!sn.TryGetValue("direction", out var direction)) direction = "";
+                    if (sn.TryGetValue("distance", out var distance)) distance = Math.Round(distance.ToDouble(), 0) + "米";
+
+                    geo.Title = $"{geo.Province}{geo.City}{geo.District}{geo.Township}{geo.Street}{geo.StreetNumber}{direction}{distance}";
+                }
             }
         }
 
@@ -230,7 +236,7 @@ public class AMap : Map, IMap
     /// <param name="coordtype"></param>
     /// <param name="type">路径计算的方式和方法</param>
     /// <returns></returns>
-    public async Task<Driving> GetDistanceAsync(GeoPoint origin, GeoPoint destination, String coordtype, Int32 type = 1)
+    public async Task<Driving?> GetDistanceAsync(GeoPoint origin, GeoPoint destination, String? coordtype, Int32 type = 1)
     {
         if (origin == null || origin.Longitude < 1 && origin.Latitude < 1) throw new ArgumentNullException(nameof(origin));
         if (destination == null || destination.Longitude < 1 && destination.Latitude < 1) throw new ArgumentNullException(nameof(destination));
@@ -272,9 +278,9 @@ public class AMap : Map, IMap
         var url = $"http://restapi.amap.com/v3/config/district?keywords={keywords}&subdistrict={subdistrict}&filter={code}&extensions=base&output=json";
 
         var list = await InvokeAsync<IList<Object>>(url, "districts");
-        if (list == null || list.Count == 0) return null;
+        if (list == null || list.Count == 0) return [];
 
-        if (list.FirstOrDefault() is not IDictionary<String, Object> geo) return null;
+        if (list.FirstOrDefault() is not IDictionary<String, Object> geo) return [];
 
         var addrs = GetArea(geo, 0);
 
@@ -283,7 +289,7 @@ public class AMap : Map, IMap
 
     private IList<GeoArea> GetArea(IDictionary<String, Object> geo, Int32 parentCode)
     {
-        if (geo == null || geo.Count == 0) return null;
+        if (geo == null || geo.Count == 0) return [];
 
         var addrs = new List<GeoArea>();
 
@@ -311,7 +317,7 @@ public class AMap : Map, IMap
     #endregion
 
     #region 密钥管理
-    private readonly String[] _KeyWords = new[] { "TOO_FREQUENT", "LIMIT", "NOMATCH", "RECYCLED" };
+    private readonly String[] _KeyWords = ["TOO_FREQUENT", "LIMIT", "NOMATCH", "RECYCLED"];
     /// <summary>是否无效Key。可能禁用或超出限制</summary>
     /// <param name="result"></param>
     /// <returns></returns>

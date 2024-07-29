@@ -9,6 +9,7 @@ using System.Web.Script.Serialization;
 using System.Xml.Serialization;
 using NewLife.Collections;
 using NewLife.Data;
+using NewLife.Reflection;
 using NewLife.Remoting;
 using NewLife.Serialization;
 
@@ -31,6 +32,9 @@ public interface ISpan : IDisposable
 
     /// <summary>结束时间。Unix毫秒</summary>
     Int64 EndTime { get; set; }
+
+    /// <summary>用户数值。记录数字型标量，如每次数据库操作行数，星尘平台汇总统计</summary>
+    Int64 Value { get; set; }
 
     /// <summary>数据标签。记录一些附加数据</summary>
     String? Tag { get; set; }
@@ -73,6 +77,9 @@ public class DefaultSpan : ISpan
 
     /// <summary>结束时间。Unix毫秒</summary>
     public Int64 EndTime { get; set; }
+
+    /// <summary>用户数值。记录数字型标量，如每次数据库操作行数，星尘平台汇总统计</summary>
+    public Int64 Value { get; set; }
 
     /// <summary>数据标签。记录一些附加数据</summary>
     public String? Tag { get; set; }
@@ -264,6 +271,8 @@ public class DefaultSpan : ISpan
                 Tag = pk.ToStr(null, 0, len);
             else
                 Tag = pk.ToHex(len / 2);
+
+            if (Value == 0) Value = pk.Total;
         }
         else
             Tag = tag.ToJson().Cut(len);
@@ -304,22 +313,22 @@ public static class SpanExtension
         return request;
     }
 
-    ///// <summary>把片段信息附加到http请求头上</summary>
-    ///// <param name="span">片段</param>
-    ///// <param name="headers">http请求头</param>
-    ///// <returns></returns>
-    //public static HttpRequestHeaders Attach(this ISpan span, HttpRequestHeaders headers)
-    //{
-    //    if (span == null || headers == null) return headers;
+    /// <summary>把片段信息附加到http请求头上</summary>
+    /// <param name="span">片段</param>
+    /// <param name="headers">http请求头</param>
+    /// <returns></returns>
+    public static IDictionary<String, String> Attach(this ISpan span, IDictionary<String, String> headers)
+    {
+        //if (span == null || headers == null) return headers;
 
-    //    // 注入参数名
-    //    var name = GetAttachParameter(span);
-    //    if (name.IsNullOrEmpty()) return headers;
+        // 注入参数名
+        var name = GetAttachParameter(span);
+        if (name.IsNullOrEmpty()) return headers;
 
-    //    if (!headers.Contains(name)) headers.Add(name, span.ToString());
+        if (!headers.ContainsKey(name)) headers.Add(name, span.ToString()!);
 
-    //    return headers;
-    //}
+        return headers;
+    }
 
     /// <summary>把片段信息附加到http请求头上</summary>
     /// <param name="span">片段</param>
@@ -350,7 +359,7 @@ public static class SpanExtension
 
         var type = args.GetType();
         if (type.IsArray || type.IsValueType || type == typeof(String)) return args;
-        if (Type.GetTypeCode(type) != TypeCode.Object) return args;
+        if (type.IsBaseType()) return args;
 
         // 注入参数名
         var name = GetAttachParameter(span);
@@ -463,7 +472,20 @@ public static class SpanExtension
     {
         if (span == null || tag == null) return;
 
-        if (span is DefaultSpan ds && ds.TraceFlag > 0)
+        AppendTag(span, tag, -1);
+    }
+
+    /// <summary>附加Tag信息在原Tag信息后面</summary>
+    /// <param name="span">片段</param>
+    /// <param name="tag">Tag信息</param>
+    /// <param name="value">可累加的数值标量</param>
+    public static void AppendTag(this ISpan span, Object tag, Int64 value)
+    {
+        if (span == null) return;
+
+        if (value >= 0) span.Value = value;
+
+        if (tag != null && span is DefaultSpan ds && ds.TraceFlag > 0)
         {
             var maxLength = ds.Builder?.Tracer?.MaxTagLength ?? 1024;
             if (span.Tag.IsNullOrEmpty())
@@ -485,15 +507,17 @@ public static class SpanExtension
         // 正常响应，部分作为Tag信息
         if (response.StatusCode == HttpStatusCode.OK)
         {
+            var content = response.Content;
+            var len = content.Headers?.ContentLength ?? 0;
+            if (span.Value == 0) span.Value = len;
+
             if (span is DefaultSpan ds && ds.TraceFlag > 0)
             {
                 var maxLength = ds.Builder?.Tracer?.MaxTagLength ?? 1024;
                 if (span.Tag.IsNullOrEmpty() || span.Tag.Length < maxLength)
                 {
                     // 判断类型和长度
-                    var content = response.Content;
                     var mediaType = content.Headers?.ContentType?.MediaType;
-                    var len = content.Headers?.ContentLength ?? 0;
                     if (len >= 0 && len < 1024 * 8 && mediaType.EndsWithIgnoreCase("json", "xml", "text", "html"))
                     {
                         var result = content.ReadAsStringAsync().ConfigureAwait(false).GetAwaiter().GetResult();

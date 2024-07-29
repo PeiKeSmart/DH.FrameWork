@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace SKIT.FlurlHttpClient.Wechat.Api.Models
 {
@@ -11,26 +11,39 @@ namespace SKIT.FlurlHttpClient.Wechat.Api.Models
         {
             public class Category
             {
+                public static class Types
+                {
+                    public class Brand
+                    {
+                        /// <summary>
+                        /// 获取或设置品牌 ID。
+                        /// </summary>
+                        [Newtonsoft.Json.JsonProperty("brand_id")]
+                        [System.Text.Json.Serialization.JsonPropertyName("brand_id")]
+                        public long BrandId { get; set; }
+                    }
+                }
+
                 /// <summary>
                 /// 获取或设置一级类目 ID。
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("level1")]
                 [System.Text.Json.Serialization.JsonPropertyName("level1")]
-                public int FirstCategoryId { get; set; }
+                public long FirstCategoryId { get; set; }
 
                 /// <summary>
                 /// 获取或设置二级类目 ID。
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("level2")]
                 [System.Text.Json.Serialization.JsonPropertyName("level2")]
-                public int SecondCategoryId { get; set; }
+                public long SecondCategoryId { get; set; }
 
                 /// <summary>
                 /// 获取或设置三级类目 ID。
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("level3")]
                 [System.Text.Json.Serialization.JsonPropertyName("level3")]
-                public int ThirdCategoryId { get; set; }
+                public long ThirdCategoryId { get; set; }
 
                 /// <summary>
                 /// 获取或设置资质材料图片 MediaId 列表。
@@ -38,6 +51,13 @@ namespace SKIT.FlurlHttpClient.Wechat.Api.Models
                 [Newtonsoft.Json.JsonProperty("certificate")]
                 [System.Text.Json.Serialization.JsonPropertyName("certificate")]
                 public IList<string>? CertificateMediaIdList { get; set; }
+
+                /// <summary>
+                /// 获取或设置品牌列表。
+                /// </summary>
+                [Newtonsoft.Json.JsonProperty("brand_list")]
+                [System.Text.Json.Serialization.JsonPropertyName("brand_list")]
+                public IList<Types.Brand>? BrandList { get; set; }
             }
         }
 

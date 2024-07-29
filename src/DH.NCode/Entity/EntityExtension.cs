@@ -148,18 +148,16 @@ public static class EntityExtension
                 DefaultSpan.Current?.AppendTag("ShardPolicy");
 
                 // 提前计算分表，按库表名分组
-                var table = fact.Table;
                 var dic = list.GroupBy(e =>
                 {
-                    var sd = fact.ShardPolicy.Shard(e);
-                    return fact.GetSession(sd.ConnName ?? table.ConnName, sd.TableName ?? table.TableName);
+                    var shard = fact.ShardPolicy.Shard(e);
+                    return fact.GetSession(shard?.ConnName ?? session2.ConnName, shard?.TableName ?? session2.TableName);
                 });
                 // 按库表分组执行批量插入
                 var rs = 0;
                 foreach (var item in dic)
                 {
-                    var ss = item.Key;
-                    rs += BatchInsert(item.ToList(), option: null, ss);
+                    rs += BatchInsert(item.ToList(), option: null, item.Key);
                 }
                 return rs;
             }
@@ -270,7 +268,7 @@ public static class EntityExtension
     {
         // 没有其它唯一索引，且主键为空时，走批量插入
         var rs = 0;
-        if (!session.Table.Indexes.Any(di => di.Unique))
+        if (!session.DataTable.Indexes.Any(di => di.Unique))
         {
             var inserts = new List<T>();
             var updates = new List<T>();
@@ -474,6 +472,7 @@ public static class EntityExtension
             var id = columns.FirstOrDefault(e => e.Identity);
             if (id != null)
             {
+                // 如果自增列数据为0，则提出自增列，让数据库填充自增值
                 if (entity[id.Name].ToLong() == 0) columns = columns.Where(e => !e.Identity).ToArray();
             }
 
@@ -496,21 +495,24 @@ public static class EntityExtension
         session.InitData();
 
         var dal = session.Dal;
-        //dal.CheckDatabase();
-        //var tableName = dal.Db.FormatTableName(session.TableName);
+        if (option.BatchSize <= 0) option.BatchSize = dal.GetBatchSize();
 
+        var total = list.Count();
         var tracer = dal.Tracer ?? DAL.GlobalTracer;
-        using var span = tracer?.NewSpan($"db:{dal.ConnName}:BatchInsert:{fact.Table.TableName}");
+        using var span = tracer?.NewSpan($"db:{dal.ConnName}:BatchInsert:{fact.Table.TableName}", $"{session.TableName}[{total}]", total);
         try
         {
-            if (span != null && list is ICollection collection) span.Tag = $"{session.TableName}[{collection.Count}]";
-
-            var rs = dal.Session.Insert(session.Table, option.Columns, list.Cast<IModel>());
-
-            // 清除脏数据，避免重复提交保存
-            foreach (var item in list)
+            var rs = 0;
+            for (var i = 0; i < total; i += option.BatchSize)
             {
-                item.Dirtys.Clear();
+                var tmp = list.Skip(i).Take(option.BatchSize).ToList();
+                rs += dal.Session.Insert(session.DataTable, option.Columns, tmp.Cast<IModel>());
+
+                // 清除脏数据，避免重复提交保存
+                foreach (var item in tmp)
+                {
+                    item.Dirtys.Clear();
+                }
             }
 
             return rs;
@@ -562,6 +564,7 @@ public static class EntityExtension
             var id = columns.FirstOrDefault(e => e.Identity);
             if (id != null)
             {
+                // 如果自增列数据为0，则提出自增列，让数据库填充自增值
                 if (entity[id.Name].ToLong() == 0) columns = columns.Where(e => !e.Identity).ToArray();
             }
 
@@ -571,6 +574,7 @@ public static class EntityExtension
                 var dirtys = GetDirtyColumns(fact, list.Cast<IEntity>());
                 columns = columns.Where(e => dirtys.Contains(e.Name)).ToArray();
             }
+
             option.Columns = columns;
         }
 
@@ -578,20 +582,24 @@ public static class EntityExtension
         session.InitData();
 
         var dal = session.Dal;
-        //dal.CheckDatabase();
+        if (option.BatchSize <= 0) option.BatchSize = dal.GetBatchSize();
 
+        var total = list.Count();
         var tracer = dal.Tracer ?? DAL.GlobalTracer;
-        using var span = tracer?.NewSpan($"db:{dal.ConnName}:InsertIgnore:{fact.Table.TableName}");
+        using var span = tracer?.NewSpan($"db:{dal.ConnName}:InsertIgnore:{fact.Table.TableName}", $"{session.TableName}[{total}]", total);
         try
         {
-            if (span != null && list is ICollection collection) span.Tag = $"{session.TableName}[{collection.Count}]";
-
-            var rs = dal.Session.InsertIgnore(session.Table, option.Columns, list.Cast<IModel>());
-
-            // 清除脏数据，避免重复提交保存
-            foreach (var item in list)
+            var rs = 0;
+            for (var i = 0; i < total; i += option.BatchSize)
             {
-                item.Dirtys.Clear();
+                var tmp = list.Skip(i).Take(option.BatchSize).ToList();
+                rs += dal.Session.InsertIgnore(session.DataTable, option.Columns, list.Cast<IModel>());
+
+                // 清除脏数据，避免重复提交保存
+                foreach (var item in tmp)
+                {
+                    item.Dirtys.Clear();
+                }
             }
 
             return rs;
@@ -643,6 +651,7 @@ public static class EntityExtension
             var id = columns.FirstOrDefault(e => e.Identity);
             if (id != null)
             {
+                // 如果自增列数据为0，则提出自增列，让数据库填充自增值
                 if (entity[id.Name].ToLong() == 0) columns = columns.Where(e => !e.Identity).ToArray();
             }
 
@@ -660,20 +669,24 @@ public static class EntityExtension
         session.InitData();
 
         var dal = session.Dal;
-        //dal.CheckDatabase();
+        if (option.BatchSize <= 0) option.BatchSize = dal.GetBatchSize();
 
+        var total = list.Count();
         var tracer = dal.Tracer ?? DAL.GlobalTracer;
-        using var span = tracer?.NewSpan($"db:{dal.ConnName}:BatchReplace:{fact.Table.TableName}");
+        using var span = tracer?.NewSpan($"db:{dal.ConnName}:BatchReplace:{fact.Table.TableName}", $"{session.TableName}[{total}]", total);
         try
         {
-            if (span != null && list is ICollection collection) span.Tag = $"{session.TableName}[{collection.Count}]";
-
-            var rs = dal.Session.Replace(session.Table, option.Columns, list.Cast<IModel>());
-
-            // 清除脏数据，避免重复提交保存
-            foreach (var item in list)
+            var rs = 0;
+            for (var i = 0; i < total; i += option.BatchSize)
             {
-                item.Dirtys.Clear();
+                var tmp = list.Skip(i).Take(option.BatchSize).ToList();
+                rs += dal.Session.Replace(session.DataTable, option.Columns, list.Cast<IModel>());
+
+                // 清除脏数据，避免重复提交保存
+                foreach (var item in tmp)
+                {
+                    item.Dirtys.Clear();
+                }
             }
 
             return rs;
@@ -732,7 +745,7 @@ public static class EntityExtension
             // 创建时间等字段不参与Update
             dirtys = dirtys.Where(e => !e.StartsWithIgnoreCase("Create")).ToArray();
 
-            if (dirtys.Length > 0) option.UpdateColumns = dirtys;
+            if (dirtys.Count > 0) option.UpdateColumns = dirtys;
         }
         var updateColumns = option.UpdateColumns;
         var addColumns = option.AddColumns ??= fact.AdditionalFields;
@@ -743,21 +756,24 @@ public static class EntityExtension
         session.InitData();
 
         var dal = session.Dal;
-        //dal.CheckDatabase();
-        //var tableName = dal.Db.FormatTableName(session.TableName);
+        if (option.BatchSize <= 0) option.BatchSize = dal.GetBatchSize();
 
+        var total = list.Count();
         var tracer = dal.Tracer ?? DAL.GlobalTracer;
-        using var span = tracer?.NewSpan($"db:{dal.ConnName}:BatchUpdate:{fact.Table.TableName}");
+        using var span = tracer?.NewSpan($"db:{dal.ConnName}:BatchUpdate:{fact.Table.TableName}", $"{session.TableName}[{total}]", total);
         try
         {
-            if (span != null && list is ICollection collection) span.Tag = $"{session.TableName}[{collection.Count}]";
-
-            var rs = dal.Session.Update(session.Table, option.Columns, updateColumns, addColumns, list.Cast<IModel>());
-
-            // 清除脏数据，避免重复提交保存
-            foreach (var item in list)
+            var rs = 0;
+            for (var i = 0; i < total; i += option.BatchSize)
             {
-                item.Dirtys.Clear();
+                var tmp = list.Skip(i).Take(option.BatchSize).ToList();
+                rs += dal.Session.Update(session.DataTable, option.Columns, updateColumns, addColumns, list.Cast<IModel>());
+
+                // 清除脏数据，避免重复提交保存
+                foreach (var item in tmp)
+                {
+                    item.Dirtys.Clear();
+                }
             }
 
             return rs;
@@ -871,7 +887,7 @@ public static class EntityExtension
             // 创建时间等字段不参与Update
             dirtys = dirtys.Where(e => !e.StartsWithIgnoreCase("Create")).ToArray();
 
-            if (dirtys.Length > 0) option.UpdateColumns = dirtys;
+            if (dirtys.Count > 0) option.UpdateColumns = dirtys;
         }
         var updateColumns = option.UpdateColumns;
         var addColumns = option.AddColumns ??= fact.AdditionalFields;
@@ -881,22 +897,24 @@ public static class EntityExtension
         session.InitData();
 
         var dal = session.Dal;
-        //dal.CheckDatabase();
-        //var tableName = dal.Db.FormatTableName(session.TableName);
+        if (option.BatchSize <= 0) option.BatchSize = dal.GetBatchSize();
 
-        //XTrace.WriteLine("columns={0}", columns.Join(",", e => e.ColumnName));
+        var total = list.Count();
         var tracer = dal.Tracer ?? DAL.GlobalTracer;
-        using var span = tracer?.NewSpan($"db:{dal.ConnName}:BatchUpsert:{fact.Table.TableName}");
+        using var span = tracer?.NewSpan($"db:{dal.ConnName}:BatchUpsert:{fact.Table.TableName}", $"{session.TableName}[{total}]", total);
         try
         {
-            if (span != null && list is ICollection collection) span.Tag = $"{session.TableName}[{collection.Count}]";
-
-            var rs = dal.Session.Upsert(session.Table, option.Columns, updateColumns, addColumns, list.Cast<IModel>());
-
-            // 清除脏数据，避免重复提交保存
-            foreach (var item in list)
+            var rs = 0;
+            for (var i = 0; i < total; i += option.BatchSize)
             {
-                item.Dirtys.Clear();
+                var tmp = list.Skip(i).Take(option.BatchSize).ToList();
+                rs += dal.Session.Upsert(session.DataTable, option.Columns, updateColumns, addColumns, list.Cast<IModel>());
+
+                // 清除脏数据，避免重复提交保存
+                foreach (var item in tmp)
+                {
+                    item.Dirtys.Clear();
+                }
             }
 
             return rs;
@@ -954,7 +972,7 @@ public static class EntityExtension
             //    columns = columns.Where(e => dirtys.Contains(e.Name)).ToArray();
             if (!option.FullInsert && !fact.FullInsert)
             {
-                var dirtys = GetDirtyColumns(fact, new[] { entity });
+                var dirtys = GetDirtyColumns(fact, [entity]);
                 columns = columns.Where(e => e.PrimaryKey || dirtys.Contains(e.Name)).ToArray();
             }
             option.Columns = columns;
@@ -975,7 +993,7 @@ public static class EntityExtension
         {
             if (span != null) span.Tag = $"{session.TableName}[{entity}]";
 
-            return dal.Session.Upsert(session.Table, option.Columns, option.UpdateColumns, option.AddColumns, new[] { entity as IModel });
+            return dal.Session.Upsert(session.DataTable, option.Columns, option.UpdateColumns, option.AddColumns, [entity as IModel]);
         }
         catch (Exception ex)
         {
@@ -988,23 +1006,46 @@ public static class EntityExtension
     /// <param name="fact"></param>
     /// <param name="list"></param>
     /// <returns></returns>
-    private static String[] GetDirtyColumns(IEntityFactory fact, IEnumerable<IEntity> list)
+    private static IList<String> GetDirtyColumns(IEntityFactory fact, IEnumerable<IEntity> list)
     {
+        // 任意实体来自数据库，则全部都是目标字段。因为有可能是从数据库查询出来的实体，然后批量插入
+        if (list.Any(e => e.IsFromDatabase)) return fact.Fields.Select(e => e.Name).ToList();
+
+        // 构建集合，已经标记为脏数据的字段不再搜索，减少循环次数
+        var fields = fact.Fields.ToList();
+        var columns = new List<String>();
+
+        // 非空非字符串字段，都是目标字段
+        foreach (var fi in fields)
+        {
+            // 非空字符串和时间日期类型不参与插入，因为数据库会自动填充默认值。这一点跟单体插入不同。
+            if (!fi.IsNullable && fi.Type != typeof(String) && fi.Type != typeof(DateTime))
+            {
+                columns.Add(fi.Name);
+            }
+        }
+        fields.RemoveAll(e => columns.Contains(e.Name));
+        if (fields.Count == 0) return columns;
+
         // 获取所有带有脏数据的字段
-        var ns = new List<String>();
         foreach (var entity in list)
         {
-            foreach (var fi in fact.Fields)
+            var tmps = new List<String>();
+            foreach (var fi in fields)
             {
-                // 来自数据库或脏数据，或者非空非string
-                if (entity.IsFromDatabase || entity.Dirtys[fi.Name] || (!fi.IsNullable && fi.Type != typeof(String) && fi.Type != typeof(DateTime)))
-                {
-                    if (!ns.Contains(fi.Name)) ns.Add(fi.Name);
-                }
+                // 脏数据
+                if (entity.Dirtys[fi.Name]) tmps.Add(fi.Name);
+            }
+
+            if (tmps.Count > 0)
+            {
+                columns.AddRange(tmps);
+                fields.RemoveAll(e => tmps.Contains(e.Name));
+                if (fields.Count == 0) break;
             }
         }
 
-        return ns.ToArray();
+        return columns;
     }
     #endregion
 

@@ -72,9 +72,6 @@ public class ClassBuilder
             //option.DisplayName = atts["DisplayName"];
             //option.BaseClass = atts["BaseClass"];
 
-            //if (atts.TryGetValue("ExtendOnData", out var str) && !str.IsNullOrEmpty())
-            //    option.ExtendOnData = str.ToBoolean();
-
             //if (atts.TryGetValue("ChineseFileName", out str) && !str.IsNullOrEmpty())
             //    option.ChineseFileName = str.ToBoolean();
             //if (atts.TryGetValue("CreateCustomBizFile", out str) && !str.IsNullOrEmpty())
@@ -522,7 +519,7 @@ public class ClassBuilder
     }
 
     /// <summary>清空，重新生成</summary>
-    public void Clear()
+    public virtual void Clear()
     {
         _Indent = null;
 

@@ -46,6 +46,14 @@ public partial class AppVersionLog : IAppVersionLog, IEntity<IAppVersionLog>
     [BindColumn("Version", "版本号", "")]
     public String Version { get => _Version; set { if (OnPropertyChanging("Version", value)) { _Version = value; OnPropertyChanged("Version"); } } }
 
+    private String _BoundId;
+    /// <summary>APP包名</summary>
+    [DisplayName("APP包名")]
+    [Description("APP包名")]
+    [DataObjectField(false, false, true, 100)]
+    [BindColumn("BoundId", "APP包名", "")]
+    public String BoundId { get => _BoundId; set { if (OnPropertyChanging("BoundId", value)) { _BoundId = value; OnPropertyChanged("BoundId"); } } }
+
     private String _CreateUser;
     /// <summary>创建者</summary>
     [DisplayName("创建者")]
@@ -87,6 +95,7 @@ public partial class AppVersionLog : IAppVersionLog, IEntity<IAppVersionLog>
         Id = model.Id;
         Os = model.Os;
         Version = model.Version;
+        BoundId = model.BoundId;
         CreateUser = model.CreateUser;
         CreateUserID = model.CreateUserID;
         CreateTime = model.CreateTime;
@@ -105,6 +114,7 @@ public partial class AppVersionLog : IAppVersionLog, IEntity<IAppVersionLog>
             "Id" => _Id,
             "Os" => _Os,
             "Version" => _Version,
+            "BoundId" => _BoundId,
             "CreateUser" => _CreateUser,
             "CreateUserID" => _CreateUserID,
             "CreateTime" => _CreateTime,
@@ -118,6 +128,7 @@ public partial class AppVersionLog : IAppVersionLog, IEntity<IAppVersionLog>
                 case "Id": _Id = value.ToInt(); break;
                 case "Os": _Os = Convert.ToString(value); break;
                 case "Version": _Version = Convert.ToString(value); break;
+                case "BoundId": _BoundId = Convert.ToString(value); break;
                 case "CreateUser": _CreateUser = Convert.ToString(value); break;
                 case "CreateUserID": _CreateUserID = value.ToInt(); break;
                 case "CreateTime": _CreateTime = value.ToDateTime(); break;
@@ -129,6 +140,9 @@ public partial class AppVersionLog : IAppVersionLog, IEntity<IAppVersionLog>
     #endregion
 
     #region 关联映射
+    #endregion
+
+    #region 扩展查询
     #endregion
 
     #region 字段名
@@ -143,6 +157,9 @@ public partial class AppVersionLog : IAppVersionLog, IEntity<IAppVersionLog>
 
         /// <summary>版本号</summary>
         public static readonly Field Version = FindByName("Version");
+
+        /// <summary>APP包名</summary>
+        public static readonly Field BoundId = FindByName("BoundId");
 
         /// <summary>创建者</summary>
         public static readonly Field CreateUser = FindByName("CreateUser");
@@ -170,6 +187,9 @@ public partial class AppVersionLog : IAppVersionLog, IEntity<IAppVersionLog>
 
         /// <summary>版本号</summary>
         public const String Version = "Version";
+
+        /// <summary>APP包名</summary>
+        public const String BoundId = "BoundId";
 
         /// <summary>创建者</summary>
         public const String CreateUser = "CreateUser";

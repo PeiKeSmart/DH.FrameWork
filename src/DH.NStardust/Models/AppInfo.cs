@@ -2,12 +2,12 @@
 using System.Diagnostics;
 using System.Net.NetworkInformation;
 using NewLife;
-using NewLife.Caching;
+using NewLife.Remoting.Models;
 
 namespace Stardust.Models;
 
 /// <summary>进程信息</summary>
-public class AppInfo
+public class AppInfo : IPingRequest, ICloneable
 {
     #region 属性
     /// <summary>进程标识</summary>
@@ -91,8 +91,7 @@ public class AppInfo
         try
         {
             Id = process.Id;
-            Name = process.ProcessName;
-            if (Name == "dotnet" || "*/dotnet".IsMatch(Name)) Name = GetProcessName(process);
+            Name = process.GetProcessName2();
             //StartTime = process.StartTime;
             //ProcessorTime = (Int64)process.TotalProcessorTime.TotalMilliseconds;
 
@@ -189,73 +188,8 @@ public class AppInfo
 
     /// <summary>克隆数据</summary>
     /// <returns></returns>
-    public AppInfo Clone()
-    {
-        //var inf = new AppInfo
-        //{
-        //    Id = Id,
-        //    Name = Name,
-        //    Version = Version,
+    public AppInfo Clone() => (base.MemberwiseClone() as AppInfo)!;
 
-        //    CommandLine = CommandLine,
-        //    UserName = UserName,
-        //    MachineName = MachineName,
-        //    IP = IP,
-        //    StartTime = StartTime,
-
-        //    ProcessorTime = ProcessorTime,
-        //    CpuUsage = CpuUsage,
-        //    WorkingSet = WorkingSet,
-        //    Threads = Threads,
-        //    Handles = Handles,
-        //    Connections = Connections,
-        //    GCPause = GCPause,
-        //    FullGC = FullGC,
-        //};
-        var inf = (base.MemberwiseClone() as AppInfo)!;
-
-        return inf;
-    }
-
-    private static ICache _cache = new MemoryCache();
-    /// <summary>获取进程名。dotnet/java进程取文件名</summary>
-    /// <param name="process"></param>
-    /// <returns></returns>
-    public static String GetProcessName(Process process)
-    {
-        // 缓存，避免频繁执行
-        var key = process.Id + "";
-        if (_cache.TryGetValue<String>(key, out var value)) return value + "";
-
-        var name = process.ProcessName;
-
-        if (Runtime.Linux)
-        {
-            try
-            {
-                var lines = File.ReadAllText($"/proc/{process.Id}/cmdline").Trim('\0', ' ').Split('\0');
-                if (lines.Length > 1) name = Path.GetFileNameWithoutExtension(lines[1]);
-            }
-            catch { }
-        }
-        else if (Runtime.Windows)
-        {
-            try
-            {
-                var dic = MachineInfo.ReadWmic("process where processId=" + process.Id, "commandline");
-                if (dic.TryGetValue("commandline", out var str) && !str.IsNullOrEmpty())
-                {
-                    var ss = str.Split(' ').Select(e => e.Trim('\"')).ToArray();
-                    str = ss.FirstOrDefault(e => e.EndsWithIgnoreCase(".dll"));
-                    if (!str.IsNullOrEmpty()) name = Path.GetFileNameWithoutExtension(str);
-                }
-            }
-            catch { }
-        }
-
-        _cache.Set(key, name, 600);
-
-        return name;
-    }
+    Object ICloneable.Clone() => Clone();
     #endregion
 }

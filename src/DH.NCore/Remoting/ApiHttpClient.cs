@@ -6,6 +6,8 @@ using NewLife.Data;
 using NewLife.Http;
 using NewLife.Log;
 using NewLife.Model;
+using NewLife.Reflection;
+using NewLife.Serialization;
 
 namespace NewLife.Remoting;
 
@@ -38,6 +40,12 @@ public class ApiHttpClient : DisposeBase, IApiClient, IConfigMapping, ILogFeatur
     /// <summary>默认用户浏览器UserAgent。默认为空，可取值HttpHelper.DefaultUserAgent</summary>
     public String? DefaultUserAgent { get; set; }
 
+    /// <summary>Json序列化主机</summary>
+    public IJsonHost? JsonHost { get; set; }
+
+    /// <summary>服务提供者。创建控制器实例时使用，可实现依赖注入。务必在注册控制器之前设置该属性</summary>
+    public IServiceProvider? ServiceProvider { get; set; }
+
     /// <summary>创建请求时触发</summary>
     public event EventHandler<HttpRequestEventArgs>? OnRequest;
 
@@ -66,10 +74,13 @@ public class ApiHttpClient : DisposeBase, IApiClient, IConfigMapping, ILogFeatur
     public ITracer? Tracer { get; set; }
 
     /// <summary>服务列表。用于负载均衡和故障转移</summary>
-    public IList<Service> Services { get; set; } = new List<Service>();
+    public IList<Service> Services { get; set; } = [];
 
     /// <summary>当前服务</summary>
     protected Service? _currentService;
+
+    /// <summary>正在使用的服务点。最后一次调用成功的服务点，可获取其地址以及状态信息</summary>
+    public Service? Current { get; private set; }
     #endregion
 
     #region 构造
@@ -230,7 +241,8 @@ public class ApiHttpClient : DisposeBase, IApiClient, IConfigMapping, ILogFeatur
             {
                 var msg = await SendAsync(request, cancellationToken);
 
-                return await ApiHelper.ProcessResponse<TResult>(msg, CodeName, DataName);
+                var jsonHost = JsonHost ?? ServiceProvider?.GetService<IJsonHost>() ?? JsonHelper.Default;
+                return await ApiHelper.ProcessResponse<TResult>(msg, CodeName, DataName, jsonHost);
             }
             catch (Exception ex)
             {
@@ -275,13 +287,20 @@ public class ApiHttpClient : DisposeBase, IApiClient, IConfigMapping, ILogFeatur
     /// <param name="args">参数</param>
     /// <param name="cancellationToken">取消通知</param>
     /// <returns></returns>
-    public async Task<TResult?> InvokeAsync<TResult>(String action, Object? args, CancellationToken cancellationToken) => await InvokeAsync<TResult>(args == null ? HttpMethod.Get : HttpMethod.Post, action, args, null, cancellationToken);
+    public async Task<TResult?> InvokeAsync<TResult>(String action, Object? args, CancellationToken cancellationToken)
+    {
+        var method = HttpMethod.Post;
+        if (args == null || args.GetType().IsBaseType() || action.StartsWithIgnoreCase("Get") || action.ToLower().Contains("/get"))
+            method = HttpMethod.Get;
+
+        return await InvokeAsync<TResult>(method, action, args, null, cancellationToken);
+    }
 
     /// <summary>同步调用，阻塞等待</summary>
     /// <param name="action">服务操作</param>
     /// <param name="args">参数</param>
     /// <returns></returns>
-    public TResult? Invoke<TResult>(String action, Object? args) => InvokeAsync<TResult>(args == null ? HttpMethod.Get : HttpMethod.Post, action, args).ConfigureAwait(false).GetAwaiter().GetResult();
+    public TResult? Invoke<TResult>(String action, Object? args) => InvokeAsync<TResult>(action, args, CancellationToken.None).ConfigureAwait(false).GetAwaiter().GetResult();
     #endregion
 
     #region 构造请求
@@ -293,7 +312,8 @@ public class ApiHttpClient : DisposeBase, IApiClient, IConfigMapping, ILogFeatur
     /// <returns></returns>
     protected virtual HttpRequestMessage BuildRequest(HttpMethod method, String action, Object? args, Type returnType)
     {
-        var request = ApiHelper.BuildRequest(method, action, args);
+        var jsonHost = JsonHost ?? ServiceProvider?.GetService<IJsonHost>() ?? JsonHelper.Default;
+        var request = ApiHelper.BuildRequest(method, action, args, jsonHost);
 
         // 指定返回类型
         if (returnType == typeof(Byte[]) || returnType == typeof(Packet))
@@ -351,7 +371,12 @@ public class ApiHttpClient : DisposeBase, IApiClient, IConfigMapping, ILogFeatur
                 service.CreateTime = DateTime.Now;
             }
 
-            return await SendOnServiceAsync(request, service, client, cancellationToken);
+            var rs = await SendOnServiceAsync(request, service, client, cancellationToken);
+
+            // 调用成果，当前服务点可用
+            Current = service;
+
+            return rs;
         }
         catch (Exception ex)
         {

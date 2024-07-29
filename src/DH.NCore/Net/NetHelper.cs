@@ -277,7 +277,7 @@ public static class NetHelper
         foreach (var item in NetworkInterface.GetAllNetworkInterfaces())
         {
             if (item.OperationalStatus != OperationalStatus.Up) continue;
-            if (item.NetworkInterfaceType == NetworkInterfaceType.Loopback) continue;
+            if (item.NetworkInterfaceType is NetworkInterfaceType.Loopback or NetworkInterfaceType.Tunnel or NetworkInterfaceType.Unknown) continue;
 
             var ip = item.GetIPProperties();
             if (ip != null) yield return ip;
@@ -323,7 +323,9 @@ public static class NetHelper
     {
         var list = new List<IPAddress>();
         foreach (var item in GetActiveInterfaces())
+        {
             if (item != null && item.DnsAddresses.Count > 0)
+            {
                 foreach (var elm in item.DnsAddresses)
                 {
                     if (list.Contains(elm)) continue;
@@ -331,6 +333,8 @@ public static class NetHelper
 
                     yield return elm;
                 }
+            }
+        }
     }
 
     /// <summary>获取可用的网关地址</summary>
@@ -339,7 +343,9 @@ public static class NetHelper
     {
         var list = new List<IPAddress>();
         foreach (var item in GetActiveInterfaces())
+        {
             if (item != null && item.GatewayAddresses.Count > 0)
+            {
                 foreach (var elm in item.GatewayAddresses)
                 {
                     if (list.Contains(elm.Address)) continue;
@@ -347,6 +353,8 @@ public static class NetHelper
 
                     yield return elm.Address;
                 }
+            }
+        }
     }
 
     /// <summary>获取可用的IP地址</summary>
@@ -356,10 +364,8 @@ public static class NetHelper
         var dic = new Dictionary<UnicastIPAddressInformation, Int32>();
         foreach (var item in NetworkInterface.GetAllNetworkInterfaces())
         {
-            if (item.OperationalStatus != OperationalStatus.Up)
-                continue;
-            if (item.NetworkInterfaceType == NetworkInterfaceType.Loopback)
-                continue;
+            if (item.OperationalStatus != OperationalStatus.Up) continue;
+            if (item.NetworkInterfaceType is NetworkInterfaceType.Loopback or NetworkInterfaceType.Tunnel or NetworkInterfaceType.Unknown) continue;
 
             var ipp = item.GetIPProperties();
             if (ipp != null && ipp.UnicastAddresses.Count > 0)
@@ -375,8 +381,29 @@ public static class NetHelper
                 gw = ipp.GatewayAddresses.Count;
 #endif
 
+                // 引入权重因子，优先返回网关所在网卡的地址，优先IPv4，IPv6优先公网单播地址
                 foreach (var elm in ipp.UnicastAddresses)
                 {
+                    var factor = gw * 10 + 5;
+                    var addr = elm.Address;
+                    if (addr.IsIPv4())
+                    {
+                        factor++;
+                        if (addr.GetAddressBytes()[0] == 169) factor--;
+                    }
+                    else
+                    {
+
+                        if (addr.IsIPv4MappedToIPv6) continue;
+                        if (addr.IsIPv6LinkLocal) factor--;
+                        if (addr.IsIPv6Multicast) continue;
+                        if (addr.IsIPv6SiteLocal) continue;
+                        //if (addr.IsIPv6Teredo) continue;
+#if NET6_0_OR_GREATER
+                        if (addr.IsIPv6UniqueLocal) factor -= 2;
+#endif
+                    }
+
 #if NET5_0_OR_GREATER
                     try
                     {
@@ -387,7 +414,7 @@ public static class NetHelper
                     catch { }
 #endif
 
-                    dic.Add(elm, gw);
+                    dic.Add(elm, factor);
                 }
             }
         }
@@ -421,7 +448,9 @@ public static class NetHelper
     {
         var list = new List<IPAddress>();
         foreach (var item in GetActiveInterfaces())
+        {
             if (item != null && item.MulticastAddresses.Count > 0)
+            {
                 foreach (var elm in item.MulticastAddresses)
                 {
                     if (list.Contains(elm.Address)) continue;
@@ -429,19 +458,19 @@ public static class NetHelper
 
                     yield return elm.Address;
                 }
+            }
+        }
     }
 
     private static readonly String[] _Excludes = ["Loopback", "VMware", "VBox", "Virtual", "Teredo", "Microsoft", "VPN", "VNIC", "IEEE"];
-    /// <summary>获取所有物理网卡MAC地址</summary>
+    /// <summary>获取所有物理网卡MAC地址。包括未启用网卡，剔除本地和隧道</summary>
     /// <returns></returns>
     public static IEnumerable<Byte[]> GetMacs()
     {
         foreach (var item in NetworkInterface.GetAllNetworkInterfaces())
         {
             // 只要物理网卡
-            if (item.NetworkInterfaceType is NetworkInterfaceType.Loopback or
-                NetworkInterfaceType.Tunnel or
-                NetworkInterfaceType.Unknown) continue;
+            if (item.NetworkInterfaceType is NetworkInterfaceType.Loopback or NetworkInterfaceType.Tunnel or NetworkInterfaceType.Unknown) continue;
             if (_Excludes.Any(e => item.Description.Contains(e))) continue;
             if (Runtime.Windows && item.Speed < 1_000_000) continue;
 
@@ -488,7 +517,7 @@ public static class NetHelper
         return null;
     }
 
-    /// <summary>获取本地第一个IPv4地址</summary>
+    /// <summary>获取本地第一个IPv4地址。一般是网关所在网卡的IP地址</summary>
     /// <returns></returns>
     public static IPAddress? MyIP() => GetIPsWithCache().FirstOrDefault(ip => ip.IsIPv4() && !IPAddress.IsLoopback(ip) && ip.GetAddressBytes()[0] != 169);
 
@@ -547,11 +576,39 @@ public static class NetHelper
         // 考虑到IPv6是16字节，不确定SendARP是否支持IPv6
         var len = 16;
         var buf = new Byte[16];
-        var rs = SendARP(ip.GetAddressBytes().ToUInt32(), 0, buf, ref len);
-        if (rs != 0 || len <= 0) return null;
 
-        if (len != buf.Length) buf = buf.ReadBytes(0, len);
-        return buf;
+        if (Runtime.Windows)
+        {
+            var rs = SendARP(ip.GetAddressBytes().ToUInt32(), 0, buf, ref len);
+            if (rs != 0 || len <= 0) return null;
+            if (len != buf.Length) buf = buf.ReadBytes(0, len);            
+        }
+        else
+        {
+            var networkInterfaces = NetworkInterface.GetAllNetworkInterfaces();
+            foreach (var item in networkInterfaces)
+            {
+                if (_Excludes.Any(e => item.Description.Contains(e))) continue;
+                if (Runtime.Windows && item.Speed < 1_000_000) continue;
+
+                var ips = item.GetIPProperties();
+                var addrs = ips.UnicastAddresses
+                    .Where(e => e.Address.AddressFamily == AddressFamily.InterNetwork)
+                    .Select(e => e.Address)
+                    .ToArray();
+                if (addrs.All(e => IPAddress.IsLoopback(e))) continue;
+
+                foreach (var ipInfo in ips.UnicastAddresses)
+                {
+                    if (!ipInfo.Address.Equals(ip)) continue;
+                    buf = item.GetPhysicalAddress()?.GetAddressBytes();
+                }
+
+                if (buf != null && buf.Length == 6) return buf;
+            }            
+        }
+        
+        return buf;        
     }
     #endregion
 
@@ -623,9 +680,23 @@ public static class NetHelper
                 NetType.Tcp => new TcpSession { Remote = remote },
                 NetType.Udp => new UdpServer { Remote = remote },
                 NetType.Http => new TcpSession { Remote = remote, SslProtocol = remote.Port == 443 ? SslProtocols.Tls12 : SslProtocols.None },
-                NetType.WebSocket => new TcpSession { Remote = remote, SslProtocol = remote.Port == 443 ? SslProtocols.Tls12 : SslProtocols.None },
+                NetType.WebSocket => new WebSocketClient { Remote = remote, SslProtocol = remote.Port == 443 ? SslProtocols.Tls12 : SslProtocols.None },
                 _ => throw new NotSupportedException($"The {remote.Type} protocol is not supported"),
             };
+    }
+
+    /// <summary>根据Uri创建客户端，主要支持Http/WebSocket</summary>
+    /// <param name="uri"></param>
+    /// <returns></returns>
+    /// <exception cref="NotSupportedException"></exception>
+    public static ISocketClient CreateRemote(this Uri uri)
+    {
+        return uri.Scheme switch
+        {
+            "wss" => new WebSocketClient(uri) { SslProtocol = SslProtocols.Tls12 },
+            "ws" => new WebSocketClient(uri),
+            _ => throw new NotSupportedException($"The {uri.Scheme} protocol is not supported"),
+        };
     }
 
     internal static Socket CreateTcp(Boolean ipv4 = true) => new(ipv4 ? AddressFamily.InterNetwork : AddressFamily.InterNetworkV6, SocketType.Stream, ProtocolType.Tcp);

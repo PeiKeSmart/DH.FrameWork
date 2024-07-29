@@ -20,11 +20,6 @@ public class TracerMiddleware
     /// <summary>跟踪器</summary>
     public static ITracer? Tracer { get; set; }
 
-    /// <summary>支持作为标签数据的内容类型</summary>
-    public static String[] TagTypes { get; set; } = new[] {
-        "text/plain", "text/xml", "application/json", "application/xml", "application/x-www-form-urlencoded"
-    };
-
     /// <summary>实例化</summary>
     /// <param name="next"></param>
     public TracerMiddleware(RequestDelegate next) => _next = next ?? throw new ArgumentNullException(nameof(next));
@@ -47,6 +42,7 @@ public class TracerMiddleware
                 span = Tracer.NewSpan(action);
                 span.Tag = $"{ctx.GetUserHost()} {req.Method} {req.GetRawUrl()}";
                 span.Detach(req.Headers);
+                span.Value = req.ContentLength ?? 0;
                 if (span is DefaultSpan ds && ds.TraceFlag > 0)
                 {
                     var flag = false;
@@ -80,17 +76,19 @@ public class TracerMiddleware
             }
         }
 
-        // 自动记录用户访问主机地址
-        SaveServiceAddress(ctx);
-
         try
         {
             await _next.Invoke(ctx);
 
+            // 自动记录用户访问主机地址
+            SaveServiceAddress(ctx);
+
             // 根据状态码识别异常
             if (span != null)
             {
-                var code = ctx.Response.StatusCode;
+                var res = ctx.Response;
+                span.Value += res.ContentLength ?? 0;
+                var code = res.StatusCode;
                 if (code == 400 || code > 404)
                     span.SetError(new HttpRequestException($"Http Error {code} {(HttpStatusCode)code}"), null);
                 else if (code == 200)
@@ -98,7 +96,6 @@ public class TracerMiddleware
                     if (span is DefaultSpan ds && ds.TraceFlag > 0 && (span.Tag == null || span.Tag.Length < 500))
                     {
                         var flag = false;
-                        var res = ctx.Response;
                         if (res.ContentLength != null &&
                             res.ContentLength < 1024 * 8 &&
                             res.Body.CanSeek &&
@@ -150,17 +147,20 @@ public class TracerMiddleware
         }
     }
 
+    /// <summary>支持作为标签数据的内容类型</summary>
+    public static String[] TagTypes { get; set; } = [
+        "text/plain", "text/xml", "application/json", "application/xml", "application/x-www-form-urlencoded"
+    ];
+
     /// <summary>忽略的头部</summary>
-    public static String[] ExcludeHeaders { get; set; } = new[] {
-        "traceparent", "Authorization", "Cookie"
-    };
+    public static String[] ExcludeHeaders { get; set; } = ["traceparent", "Authorization", "Cookie"];
 
     /// <summary>忽略的后缀</summary>
-    public static String[] ExcludeSuffixes { get; set; } = new[] {
+    public static String[] ExcludeSuffixes { get; set; } = [
         ".html", ".htm", ".js", ".css", ".map", ".png", ".jpg", ".gif", ".ico",  // 脚本样式图片
         ".woff", ".woff2", ".svg", ".ttf", ".otf", ".eot"   // 字体
-    };
-    private static readonly String[] CubeActions = new[] { "index", "detail", "add", "edit", "delete", "deleteSelect", "deleteAll", "ExportCsv", "Info", "SetEnable", "EnableSelect", "DisableSelect", "DeleteSelect" };
+    ];
+    private static readonly String[] CubeActions = ["index", "detail", "add", "edit", "delete", "deleteSelect", "deleteAll", "ExportCsv", "Info", "SetEnable", "EnableSelect", "DisableSelect", "DeleteSelect"];
 
     private static String? GetAction(HttpContext ctx)
     {
@@ -186,32 +186,24 @@ public class TracerMiddleware
         var uri = ctx.Request.GetRawUrl();
         if (uri == null) return;
 
+        // 排除本机地址
+        var host = uri.Authority;
+        var p = host.LastIndexOf(':');
+        if (p >= 0) host = host[..p];
+        if (host.EqualIgnoreCase("127.0.0.1", "localhost", "[::1]")) return;
+
         var baseAddress = $"{uri.Scheme}://{uri.Authority}";
 
         var set = NewLife.Setting.Current;
-        if (set.ServiceAddress.IsNullOrEmpty())
+        var ss = set.ServiceAddress?.Split(",").ToList() ?? [];
+        if (!ss.Contains(baseAddress))
         {
-            set.ServiceAddress = baseAddress;
+            // 过滤掉本机地址
+            ss = ss.Where(e => !e.EqualIgnoreCase("127.0.0.1", "localhost", "[::1]")).ToList();
+
+            ss.Insert(0, baseAddress);
+            set.ServiceAddress = ss.Take(3).Join(",");
             set.Save();
-        }
-        else if (uri.Host.StartsWithIgnoreCase("127.", "localhost:"))
-        {
-            var ss = set.ServiceAddress.Split(",");
-            if (!ss.Contains(baseAddress))
-            {
-                set.ServiceAddress = set.ServiceAddress + "," + baseAddress;
-                set.Save();
-            }
-        }
-        else
-        {
-            var ss = set.ServiceAddress.Split(",").Where(e => !e.Contains("://127.") && !e.Contains("://localhost:")).ToList();
-            if (!ss.Contains(baseAddress))
-            {
-                ss.Add(baseAddress);
-                set.ServiceAddress = ss.Join(",");
-                set.Save();
-            }
         }
     }
 }

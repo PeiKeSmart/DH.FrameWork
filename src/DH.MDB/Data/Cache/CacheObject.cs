@@ -2,7 +2,7 @@
 
 using System.Collections;
 
-namespace DH.Data;
+namespace DH;
 
 /// <summary>
 /// 缓存对象，常驻内存，同时以json格式存储在磁盘中

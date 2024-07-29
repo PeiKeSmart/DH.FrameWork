@@ -10,7 +10,10 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV2
     {
         /// <summary>
         /// <para>异步调用 [POST] /cgi-bin/mch/customs/customdeclareorder 接口。</para>
-        /// <para>REF: https://pay.weixin.qq.com/wiki/doc/api/external/declarecustom.php?chapter=18_1 </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://pay.weixin.qq.com/wiki/doc/api/external/declarecustom.php?chapter=18_1 ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -22,14 +25,17 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV2
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "cgi-bin", "mch", "customs", "customdeclareorder");
+                .CreateFlurlRequest(request, HttpMethod.Post, "cgi-bin", "mch", "customs", "customdeclareorder");
 
-            return await client.SendRequestWithXmlAsync<Models.CreateMerchantCustomsCustomDeclarationResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsXmlAsync<Models.CreateMerchantCustomsCustomDeclarationResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// <para>异步调用 [POST] /cgi-bin/mch/customs/customdeclarequery 接口。</para>
-        /// <para>REF: https://pay.weixin.qq.com/wiki/doc/api/external/declarecustom.php?chapter=18_2 </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://pay.weixin.qq.com/wiki/doc/api/external/declarecustom.php?chapter=18_2 ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -41,14 +47,17 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV2
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "cgi-bin", "mch", "customs", "customdeclarequery");
+                .CreateFlurlRequest(request, HttpMethod.Post, "cgi-bin", "mch", "customs", "customdeclarequery");
 
-            return await client.SendRequestWithXmlAsync<Models.QueryMerchantCustomsCustomDeclarationResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsXmlAsync<Models.QueryMerchantCustomsCustomDeclarationResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// <para>异步调用 [POST] /cgi-bin/mch/newcustoms/customdeclareredeclare 接口。</para>
-        /// <para>REF: https://pay.weixin.qq.com/wiki/doc/api/external/declarecustom.php?chapter=18_4 </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://pay.weixin.qq.com/wiki/doc/api/external/declarecustom.php?chapter=18_4 ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -60,9 +69,9 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV2
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "cgi-bin", "mch", "newcustoms", "customdeclareredeclare");
+                .CreateFlurlRequest(request, HttpMethod.Post, "cgi-bin", "mch", "newcustoms", "customdeclareredeclare");
 
-            return await client.SendRequestWithXmlAsync<Models.RedeclareMerchantCustomsCustomDeclarationResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsXmlAsync<Models.RedeclareMerchantCustomsCustomDeclarationResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
     }
 }

@@ -14,6 +14,9 @@ public partial class AppVersionModel
     /// <summary>编号</summary>
     public Int32 Id { get; set; }
 
+    /// <summary>App类型。1为Android，2为IOS</summary>
+    public Int32 AType { get; set; }
+
     /// <summary>版本号</summary>
     public String Version { get; set; }
 
@@ -23,8 +26,14 @@ public partial class AppVersionModel
     /// <summary>下载地址</summary>
     public String FilePath { get; set; }
 
-    /// <summary>第三方平台下载地址</summary>
+    /// <summary>国内第三方平台下载地址</summary>
     public String CstFilepath { get; set; }
+
+    /// <summary>国外第三方平台下载地址</summary>
+    public String ForeignCstFilepath { get; set; }
+
+    /// <summary>APP包名</summary>
+    public String BoundId { get; set; }
 
     /// <summary>文件名称</summary>
     public String FileName { get; set; }
@@ -66,10 +75,13 @@ public partial class AppVersionModel
     public void Copy(IAppVersion model)
     {
         Id = model.Id;
+        AType = model.AType;
         Version = model.Version;
         Content = model.Content;
         FilePath = model.FilePath;
         CstFilepath = model.CstFilepath;
+        ForeignCstFilepath = model.ForeignCstFilepath;
+        BoundId = model.BoundId;
         FileName = model.FileName;
         IsQiangZhi = model.IsQiangZhi;
         Size = model.Size;

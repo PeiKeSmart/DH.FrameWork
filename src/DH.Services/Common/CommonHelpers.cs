@@ -60,7 +60,7 @@ public static class CommonHelpers
         var systemCheckCode = DH.Webs.HttpContext.Current.Session.GetString("ybbcode");
         if (systemCheckCode.IsNullOrEmpty())
         {
-            result.msg = GetResource("验证码过期");
+            result.msg = GetResource("图片验证码过期");
             result.code = -1;
             return result;
         }
@@ -69,7 +69,7 @@ public static class CommonHelpers
         {
             // 生成随机验证码，强制使验证码过期（一交提交必须更改验证码）
             DH.Webs.HttpContext.Current.Session.SetString("ybbcode", Guid.NewGuid().ToString());
-            result.msg = GetResource("验证码错误");
+            result.msg = GetResource("图片验证码错误");
             result.code = -1;
             return result;
         }

@@ -51,7 +51,6 @@
         /// 获取或设置物流公司 ID。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("send_logistics_id")]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.TextualNullableIntegerConverter))]
         [System.Text.Json.Serialization.JsonPropertyName("send_logistics_id")]
         [System.Text.Json.Serialization.JsonNumberHandling(System.Text.Json.Serialization.JsonNumberHandling.AllowReadingFromString | System.Text.Json.Serialization.JsonNumberHandling.WriteAsString)]
         public int? SendLogisticsCompanyId { get; set; }
@@ -74,9 +73,7 @@
         /// 获取或设置是否自发货。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("is_shipping_self")]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.NumericalBooleanConverter))]
         [System.Text.Json.Serialization.JsonPropertyName("is_shipping_self")]
-        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalBooleanConverter))]
         public bool IsShippingSelf { get; set; }
 
         /// <summary>

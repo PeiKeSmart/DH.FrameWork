@@ -1,10 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
+<Project Sdk="Microsoft.NET.Sdk.Web" ToolsVersion="Current">
 	<Import Project="../../version.props" />
 
 	<PropertyGroup>
 		<LangVersion>latest</LangVersion>
 		<OutputType>Library</OutputType>
-		<TargetFrameworks>net45;net461;netstandard2.0;netstandard2.1</TargetFrameworks>
+		<TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<RootNamespace>NewLife.EasyIO</RootNamespace>
 		<AssemblyName>DH.NEasyIO</AssemblyName>
@@ -33,7 +33,7 @@
 		<Authors>$(Company)</Authors>
 		<PackageProjectUrl>https://www.haocoding.com/</PackageProjectUrl>
 		<PackageIcon>DH.png</PackageIcon>
-		<RepositoryUrl>https://gitee.com/chuangchu/DH.FrameWork</RepositoryUrl>
+		<RepositoryUrl>https://gitee.com/dengho/DH.FrameWork</RepositoryUrl>
 		<RepositoryType>Git</RepositoryType>
 		<PackageTags>湖北登灏科技有限公司;DH组件;DH;$(AssemblyName)</PackageTags>
 		<PackageReleaseNotes>DH框架的简易文件存储库，EasyIO简单文件存储，支持分布式系统中文件集中存储</PackageReleaseNotes>
@@ -56,11 +56,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\DH.NCore\DH.NCore.csproj" />
+		<Compile Remove="EasyClient.cs" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='net45' or '$(TargetFramework)'=='net461'">
-		<Reference Include="System.Net.Http" />
+	<ItemGroup>
+		<ProjectReference Include="..\DH.NCore\DH.NCore.csproj" />
+		<ProjectReference Include="..\DH.NStardust.Extensions\DH.NStardust.Extensions.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

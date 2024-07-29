@@ -93,9 +93,9 @@ public abstract partial class EntityBase : IEntity, IModel, IExtend, ICloneable
     public Boolean SetItem(String name, Object? value)
     {
         var fact = GetType().AsFactory();
-        FieldItem fi = fact.Table.FindByName(name);
+        var fi = fact.Table.FindByName(name);
         // 确保数据类型一致
-        if (fi != null) value = value.ChangeType(fi.Type);
+        if (fi is not null) value = value.ChangeType(fi.Type);
 
         var b = OnPropertyChanging(name, value);
         if (b)
@@ -124,66 +124,59 @@ public abstract partial class EntityBase : IEntity, IModel, IExtend, ICloneable
     /// <returns></returns>
     internal protected abstract IEntity CloneEntityInternal(Boolean setDirty = true);
 
-    /// <summary>复制来自指定实体的成员，可以是不同类型的实体，只复制共有的基本字段，影响脏数据</summary>
-    /// <param name="entity">来源实体对象</param>
-    /// <param name="setDirty">是否设置脏数据</param>
-    /// <returns>实际复制成员数</returns>
-    [Obsolete("=>CopyFrom(IModel model, Boolean setDirty)")]
-    public virtual Int32 CopyFrom(IEntity entity, Boolean setDirty = true) => CopyFrom((IModel)entity, setDirty);
-
     /// <summary>复制来自指定模型的成员，可以是不同类型</summary>
     /// <param name="model">来源实体对象</param>
     /// <param name="setDirty">是否设置脏数据</param>
     /// <returns>实际复制成员数</returns>
-    public virtual Int32 CopyFrom(IModel model, Boolean setDirty)
+    public virtual Int32 CopyFrom(IModel model, Boolean setDirty = true)
     {
         if (model == this) return 0;
 
-        IEntity src = this;
+        IEntity dest = this;
 
         var n = 0;
-        if (model is IEntity entity)
+        var destNames = dest.GetType().AsFactory().FieldNames;
+        if (model is IEntity source)
         {
-            var nsSrc = src.GetType().AsFactory().FieldNames;
-            var nsDes = entity.GetType().AsFactory().FieldNames;
-            if (nsDes == null || nsDes.Count <= 0) return 0;
+            var srcNames = source.GetType().AsFactory().FieldNames;
+            if (srcNames == null || srcNames.Count <= 0) return 0;
 
-            foreach (var item in nsDes)
+            foreach (var item in srcNames)
             {
-                if (nsSrc.Contains(item))
+                if (destNames.Contains(item))
                 {
                     if (setDirty)
-                        src.SetItem(item, entity[item]);
+                        dest.SetItem(item, source[item]);
                     else
-                        src[item] = entity[item];
+                        dest[item] = source[item];
                 }
                 else
                 {
                     // 如果没有该字段，则写入到扩展属性里面去
-                    if (setDirty) Dirtys.Add(item, src[item]);
-                    src[item] = entity[item];
+                    if (setDirty) Dirtys.Add(item, dest[item]);
+                    dest[item] = source[item];
                 }
 
                 n++;
             }
             // 赋值扩展数据
             //entity.Extends.CopyTo(src.Extends);
-            if (entity is EntityBase entity2 && entity2._Items != null && entity2._Items.Count > 0)
+            if (source is EntityBase source2 && source2._Items != null && source2._Items.Count > 0)
             {
-                foreach (var item in entity2._Items)
+                foreach (var item in source2._Items)
                 {
-                    src[item.Key] = item.Value;
+                    dest[item.Key] = item.Value;
                 }
             }
         }
         else
         {
-            foreach (var item in src.GetType().AsFactory().FieldNames)
+            foreach (var item in destNames)
             {
                 if (setDirty)
-                    src.SetItem(item, model[item]);
+                    dest.SetItem(item, model[item]);
                 else
-                    src[item] = model[item];
+                    dest[item] = model[item];
 
                 n++;
             }
@@ -195,7 +188,7 @@ public abstract partial class EntityBase : IEntity, IModel, IExtend, ICloneable
 
     #region 脏数据
     [NonSerialized]
-    private DirtyCollection _Dirtys;
+    private DirtyCollection? _Dirtys;
     /// <summary>脏属性。存储哪些属性的数据被修改过了。</summary>
     [XmlIgnore, ScriptIgnore, IgnoreDataMember]
     protected DirtyCollection Dirtys => _Dirtys ??= new DirtyCollection();
@@ -247,7 +240,7 @@ public abstract partial class EntityBase : IEntity, IModel, IExtend, ICloneable
 
     #region 累加
     [NonSerialized]
-    private IEntityAddition _Addition;
+    private IEntityAddition? _Addition;
     /// <summary>累加</summary>
     [XmlIgnore, ScriptIgnore, IgnoreDataMember]
     IEntityAddition IEntity.Addition => _Addition ??= new EntityAddition(this);

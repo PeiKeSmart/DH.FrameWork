@@ -2,8 +2,14 @@
 using NewLife.Data;
 using NewLife.Log;
 using NewLife.Messaging;
+using NewLife.Model;
 using NewLife.Net;
+using NewLife.Remoting.Http;
+using NewLife.Serialization;
 using NewLife.Threading;
+#if !NET40
+using TaskEx = System.Threading.Tasks.Task;
+#endif
 
 namespace NewLife.Remoting;
 
@@ -23,6 +29,9 @@ public class ApiClient : ApiHost, IApiClient
     /// <summary>服务端地址集合。负载均衡</summary>
     public String[]? Servers { get; set; }
 
+    /// <summary>本地地址。在本地有多个IP时，可以指定使用哪一个IP地址</summary>
+    public NetUri? Local { get; set; }
+
     /// <summary>客户端连接集群</summary>
     public ICluster<String, ISocketClient>? Cluster { get; set; }
 
@@ -37,6 +46,12 @@ public class ApiClient : ApiHost, IApiClient
 
     /// <summary>收到请求或响应时</summary>
     public event EventHandler<ApiReceivedEventArgs>? Received;
+
+    /// <summary>Json序列化主机</summary>
+    public IJsonHost? JsonHost { get; set; }
+
+    /// <summary>服务提供者。创建控制器实例时使用，可实现依赖注入。务必在注册控制器之前设置该属性</summary>
+    public IServiceProvider? ServiceProvider { get; set; }
 
     /// <summary>调用统计</summary>
     public ICounter? StatInvoke { get; set; }
@@ -81,7 +96,8 @@ public class ApiClient : ApiHost, IApiClient
             var ss = Servers;
             if (ss == null || ss.Length == 0) throw new ArgumentNullException(nameof(Servers), "未指定服务端地址");
 
-            Encoder ??= new JsonEncoder();
+            JsonHost ??= ServiceProvider?.GetService<IJsonHost>() ?? JsonHelper.Default;
+            Encoder ??= new JsonEncoder { JsonHost = JsonHost };
 
             // 集群
             Cluster = InitCluster();
@@ -117,13 +133,13 @@ public class ApiClient : ApiHost, IApiClient
     {
         var cluster = Cluster;
         cluster ??= UsePool ?
-                new ClientPoolCluster { Log = Log } :
-                new ClientSingleCluster { Log = Log };
+                new ClientPoolCluster<ISocketClient> { Log = Log } :
+                new ClientSingleCluster<ISocketClient> { Log = Log };
 
-        if (cluster is ClientSingleCluster sc && sc.OnCreate == null) sc.OnCreate = OnCreate;
-        if (cluster is ClientPoolCluster pc && pc.OnCreate == null) pc.OnCreate = OnCreate;
+        if (cluster is ClientSingleCluster<ISocketClient> sc && sc.OnCreate == null) sc.OnCreate = OnCreate;
+        if (cluster is ClientPoolCluster<ISocketClient> pc && pc.OnCreate == null) pc.OnCreate = OnCreate;
 
-        cluster.GetItems ??= () => Servers ?? new String[0];
+        cluster.GetItems ??= () => Servers ?? [];
         cluster.Open();
 
         return cluster;
@@ -156,7 +172,7 @@ public class ApiClient : ApiHost, IApiClient
         catch (ApiException ex)
         {
             // 这个连接没有鉴权，重新登录后再次调用
-            if (ex.Code == 401)
+            if (ex.Code == ApiCode.Unauthorized)
             {
                 //await Cluster.InvokeAsync(client => OnLoginAsync(client, true)).ConfigureAwait(false);
                 await OnLoginAsync(client, true).ConfigureAwait(false);
@@ -181,7 +197,7 @@ public class ApiClient : ApiHost, IApiClient
     /// <param name="action">服务操作</param>
     /// <param name="args">参数</param>
     /// <returns></returns>
-    public virtual TResult? Invoke<TResult>(String action, Object? args = null) => Task.Run(() => InvokeAsync<TResult>(action, args)).Result;
+    public virtual TResult? Invoke<TResult>(String action, Object? args = null) => TaskEx.Run(() => InvokeAsync<TResult>(action, args)).Result;
 
     /// <summary>单向发送。同步调用，不等待返回</summary>
     /// <param name="action">服务操作</param>
@@ -280,7 +296,7 @@ public class ApiClient : ApiHost, IApiClient
         var message = enc.Decode(rs) ?? throw new InvalidOperationException();
 
         // 是否成功
-        if (message.Code is not 0 and not 200)
+        if (message.Code is not ApiCode.Ok and not ApiCode.Ok200)
             throw new ApiException(message.Code, message.Data?.ToStr().Trim('\"') ?? "") { Source = invoker + "/" + action };
 
         if (message.Data == null) return default;
@@ -292,7 +308,8 @@ public class ApiClient : ApiHost, IApiClient
         if (resultType == typeof(Object)) return (TResult)result;
 
         // 返回
-        return (TResult?)enc.Convert(result, resultType);
+        //return (TResult?)enc.Convert(result, resultType);
+        return (TResult?)result;
     }
 
     /// <summary>单向调用，不等待返回</summary>
@@ -346,7 +363,7 @@ public class ApiClient : ApiHost, IApiClient
     /// <param name="e"></param>
     protected virtual void OnReceive(IMessage message, ApiReceivedEventArgs e) => Received?.Invoke(this, e);
 
-    private void Client_Received(Object sender, ReceivedEventArgs e)
+    private void Client_Received(Object? sender, ReceivedEventArgs e)
     {
         LastActive = DateTime.Now;
 
@@ -374,11 +391,11 @@ public class ApiClient : ApiHost, IApiClient
     /// <summary>连接后自动登录</summary>
     /// <param name="client">客户端</param>
     /// <param name="force">强制登录</param>
-    protected virtual Task<Object> OnLoginAsync(ISocketClient client, Boolean force) => Task.FromResult<Object>(0);
+    protected virtual Task<Object?> OnLoginAsync(ISocketClient client, Boolean force) => TaskEx.FromResult<Object?>(null);
 
     /// <summary>登录</summary>
     /// <returns></returns>
-    public virtual async Task<Object> LoginAsync()
+    public virtual async Task<Object?> LoginAsync()
     {
         if (Cluster == null) throw new ArgumentNullException(nameof(Cluster));
 
@@ -391,15 +408,30 @@ public class ApiClient : ApiHost, IApiClient
     /// <param name="svr"></param>
     protected virtual ISocketClient OnCreate(String svr)
     {
-        var client = new NetUri(svr).CreateRemote();
+        var uri = new NetUri(svr);
+        var client = uri.Type == NetType.WebSocket ?
+            new Uri(svr).CreateRemote() :
+            uri.CreateRemote();
+
+        if (uri.Type == NetType.WebSocket && client.Pipeline is Pipeline pipe)
+        {
+            pipe.Handlers.Clear();
+            client.Add<WebSocketClientCodec>();
+        }
+
         // 网络层采用消息层超时
         client.Timeout = Timeout;
-        client.Tracer = Tracer;
+        client.Tracer = (Log != null && Log.Level <= LogLevel.Debug || SocketLog != null && SocketLog.Level <= LogLevel.Debug) ? Tracer : null;
+        client.Log = SocketLog!;
+
+        if (Local != null) client.Local = Local;
 
         client.Add(GetMessageCodec());
 
         client.Opened += (s, e) => OnNewSession((s as ISocketClient)!);
         client.Received += Client_Received;
+
+        client.Open();
 
         return client;
     }
@@ -424,5 +456,10 @@ public class ApiClient : ApiHost, IApiClient
 
         WriteLog(msg);
     }
+    #endregion
+
+    #region 日志
+    /// <summary>Socket层日志</summary>
+    public ILog SocketLog { get; set; } = Logger.Null;
     #endregion
 }

@@ -37,8 +37,14 @@ public class FullRedis : Redis
     #endregion
 
     #region 属性
-    /// <summary>自动检测集群节点。默认true</summary>
-    public Boolean AutoDetect { get; set; } = true;
+    /// <summary>键前缀</summary>
+    public String? Prefix { get; set; }
+
+    /// <summary>自动检测集群节点。默认false</summary>
+    /// <remarks>
+    /// 公有云Redis一般放在代理背后，主从架构，如果开启自动检测，将会自动识别主从，导致得到无法连接的内网主从库地址。
+    /// </remarks>
+    public Boolean AutoDetect { get; set; }
 
     /// <summary>模式</summary>
     public String? Mode { get; private set; }
@@ -61,17 +67,18 @@ public class FullRedis : Redis
     /// <param name="options"></param>
     public FullRedis(RedisOptions options)
     {
-        Name = options.InstanceName;
+        if (!options.InstanceName.IsNullOrEmpty())
+            Name = options.InstanceName;
+
+        Server = options.Server;
+        Password = options.Password;
+        Db = options.Db;
+        if (options.Timeout > 0)
+            Timeout = options.Timeout;
+        Prefix = options.Prefix;
 
         if (!options.Configuration.IsNullOrEmpty())
             Init(options.Configuration);
-        else
-        {
-            Server = options.Server;
-            Password = options.Password;
-            Db = options.Db;
-            Timeout = options.Timeout;
-        }
     }
 
     /// <summary>按照配置服务实例化Redis，用于NETCore依赖注入</summary>
@@ -112,14 +119,13 @@ public class FullRedis : Redis
 
         if (config.IsNullOrEmpty()) return;
 
-        var dic =
-            config.Contains(',') && !config.Contains(';') ?
-            config.SplitAsDictionary("=", ",", true) :
-            config.SplitAsDictionary("=", ";", true);
+        var dic = ParseConfig(config);
         if (dic.Count > 0)
         {
-            if (dic.TryGetValue("ThrowOnFailure", out var str))
-                ThrowOnFailure = str.ToBoolean();
+            if (dic.TryGetValue("Prefix", out var str))
+                Prefix = str;
+            if (dic.TryGetValue("AutoDetect", out str))
+                AutoDetect = str.ToBoolean();
         }
 
         _configOld = config;
@@ -128,7 +134,8 @@ public class FullRedis : Redis
 
     #region 方法
     private Boolean _initCluster;
-    private void InitCluster()
+    /// <summary>初始化集群</summary>
+    public void InitCluster()
     {
         if (_initCluster) return;
         lock (this)
@@ -148,39 +155,44 @@ public class FullRedis : Redis
                 {
                     Cluster = null;
                 }
-                // 集群模式初始化节点
-                else if (mode == "cluster")
+                else
                 {
-                    var cluster = new RedisCluster(this);
-                    cluster.StartMonitor();
-                    Cluster = cluster;
-                }
-                else if (mode.EqualIgnoreCase("sentinel"))
-                {
-                    var cluster = new RedisSentinel(this) { SetHostServer = true };
-                    cluster.StartMonitor();
-                    Cluster = cluster;
-                }
-                else if (mode.EqualIgnoreCase("standalone") && (connected_slaves.ToInt() > 0 || role == "slave"))
-                {
-                    var cluster = new RedisReplication(this) { SetHostServer = true };
-                    cluster.StartMonitor();
-                    Cluster = cluster;
-                }
-                // 特别支持kvrocks（底层RockDB）
-                else if (mode.IsNullOrEmpty() && role.EqualIgnoreCase("master", "slave"))
-                {
-                    try
+                    WriteLog("Init[{0}]：mode={1}, role={2}", Name, mode, role);
+
+                    // 集群模式初始化节点
+                    if (mode == "cluster")
                     {
                         var cluster = new RedisCluster(this);
                         cluster.StartMonitor();
                         Cluster = cluster;
                     }
-                    catch
+                    else if (mode.EqualIgnoreCase("sentinel"))
+                    {
+                        var cluster = new RedisSentinel(this) { SetHostServer = true };
+                        cluster.StartMonitor();
+                        Cluster = cluster;
+                    }
+                    else if (mode.EqualIgnoreCase("standalone") && (connected_slaves.ToInt() > 0 || role == "slave"))
                     {
                         var cluster = new RedisReplication(this) { SetHostServer = true };
                         cluster.StartMonitor();
                         Cluster = cluster;
+                    }
+                    // 特别支持kvrocks（底层RockDB）
+                    else if (mode.IsNullOrEmpty() && role.EqualIgnoreCase("master", "slave"))
+                    {
+                        try
+                        {
+                            var cluster = new RedisCluster(this);
+                            cluster.StartMonitor();
+                            Cluster = cluster;
+                        }
+                        catch
+                        {
+                            var cluster = new RedisReplication(this) { SetHostServer = true };
+                            cluster.StartMonitor();
+                            Cluster = cluster;
+                        }
                     }
                 }
             }
@@ -203,6 +215,11 @@ public class FullRedis : Redis
         });
     }
 
+    /// <summary>获取经前缀处理后的键名</summary>
+    /// <param name="key"></param>
+    /// <returns></returns>
+    public String GetKey(String key) => !Prefix.IsNullOrEmpty() ? key.EnsureStart(Prefix) : key;
+
     /// <summary>重载执行，支持集群</summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="key">用于选择集群节点的key</param>
@@ -212,6 +229,8 @@ public class FullRedis : Redis
     public override T Execute<T>(String key, Func<RedisClient, String, T> func, Boolean write = false)
     {
         InitCluster();
+
+        key = GetKey(key);
 
         // 如果不支持集群，直接返回
         if (Cluster == null) return base.Execute(key, func, write);
@@ -254,6 +273,7 @@ public class FullRedis : Redis
 
                 return rs;
             }
+            //catch (RedisException) { throw; }
             catch (Exception ex)
             {
                 if (++i >= Retry) throw;
@@ -286,9 +306,11 @@ public class FullRedis : Redis
     /// <returns></returns>
     public virtual T[] Execute<T>(String[] keys, Func<RedisClient, String[], T> func, Boolean write)
     {
-        if (keys == null || keys.Length == 0) return new T[0];
+        if (keys == null || keys.Length == 0) return [];
 
         InitCluster();
+
+        keys = keys.Select(GetKey).ToArray();
 
         // 如果不支持集群，或者只有一个key，直接执行
         if (Cluster == null || keys.Length == 1) return [Execute(keys.FirstOrDefault(), (rds, k) => func(rds, keys), write)];
@@ -318,7 +340,7 @@ public class FullRedis : Redis
         {
             if (nodes.TryGetValue(item.Key, out var node))
             {
-                rs.Add(ExecuteOnNode([.. item.Value], func, write, Cluster, node));
+                rs.Add(ExecuteOnNode<T, String[]>([.. item.Value], func, write, Cluster, node));
             }
         }
 
@@ -366,6 +388,8 @@ public class FullRedis : Redis
     {
         InitCluster();
 
+        key = GetKey(key);
+
         // 如果不支持集群，直接返回
         if (Cluster == null) return await base.ExecuteAsync<T>(key, func, write);
 
@@ -391,6 +415,7 @@ public class FullRedis : Redis
 
                 return rs;
             }
+            //catch (RedisException) { throw; }
             catch (Exception ex)
             {
                 if (++i >= Retry) throw;
@@ -415,15 +440,32 @@ public class FullRedis : Redis
     }
     #endregion
 
+    #region 子库
+    /// <summary>为同一服务器创建不同Db的子级库</summary>
+    /// <param name="db"></param>
+    /// <returns></returns>
+    public override Redis CreateSub(Int32 db)
+    {
+        var rds = (base.CreateSub(db) as FullRedis)!;
+        rds.AutoDetect = AutoDetect;
+        rds.Prefix = Prefix;
+
+        return rds;
+    }
+    #endregion
+
     #region 基础操作
     /// <summary>批量移除缓存项</summary>
     /// <param name="keys">键集合</param>
     public override Int32 Remove(params String[] keys)
     {
         if (keys == null || keys.Length == 0) return 0;
+
+        keys = keys.Select(GetKey).ToArray();
         if (keys.Length == 1) return base.Remove(keys[0]);
 
         InitCluster();
+
         if (Cluster != null)
         {
             return Execute(keys, (rds, ks) => rds.Execute<Int32>("DEL", ks), true).Sum();
@@ -445,6 +487,8 @@ public class FullRedis : Redis
         if (keys == null || !keys.Any()) return new Dictionary<String, T>();
 
         var keys2 = keys.ToArray();
+
+        keys2 = keys2.Select(GetKey).ToArray();
         if (keys2.Length == 1 || Cluster == null) return base.GetAll<T>(keys2);
 
         //Execute(keys.FirstOrDefault(), (rds, k) => rds.GetAll<T>(keys));
@@ -485,8 +529,9 @@ public class FullRedis : Redis
             return;
         }
 
+        var keys = values.Keys.Select(GetKey).ToArray();
         //Execute(values.FirstOrDefault().Key, (rds, k) => rds.SetAll(values), true);
-        var rs = Execute([.. values.Keys], (rds, ks) => rds.SetAll(ks.ToDictionary(e => e, e => values[e])), true);
+        var rs = Execute(keys, (rds, ks) => rds.SetAll(ks.ToDictionary(e => e, e => values[e])), true);
 
         // 使用管道批量设置过期时间
         if (expire > 0)
@@ -496,9 +541,9 @@ public class FullRedis : Redis
             StartPipeline();
             try
             {
-                foreach (var item in values)
+                foreach (var item in keys)
                 {
-                    SetExpire(item.Key, ts);
+                    SetExpire(item, ts);
                 }
             }
             finally
@@ -599,6 +644,7 @@ public class FullRedis : Redis
     public virtual Boolean Rename(String key, String newKey, Boolean overwrite = true)
     {
         var cmd = overwrite ? "RENAME" : "RENAMENX";
+        newKey = GetKey(newKey);
 
         var rs = Execute(key, (r, k) => r.Execute<String>(cmd, k, newKey), true);
         if (rs.IsNullOrEmpty()) return false;
@@ -619,15 +665,9 @@ public class FullRedis : Redis
         InitCluster();
 
         if (Cluster != null)
-        {
-            var nodes = Cluster.RedisNodes;
-            var result = nodes.SelectMany(x => Scan(x));
-            return result;
-        }
+            return Cluster.Nodes.SelectMany(x => Scan(x));
         else
-        {
             return Scan();
-        }
 
         IEnumerable<String> Scan(IRedisNode? node = null)
         {
@@ -635,7 +675,7 @@ public class FullRedis : Redis
             while (count > 0)
             {
                 var p = model.Position;
-                var rs = Execute(r => r.Execute<Object[]>("SCAN", p, "MATCH", model.Pattern + "", "COUNT", count), node);
+                var rs = Execute(r => r.Execute<Object[]>("SCAN", p, "MATCH", GetKey(model.Pattern + ""), "COUNT", count), node);
                 if (rs == null || rs.Length != 2) break;
 
                 model.Position = (rs[0] as Packet)?.ToStr().ToInt() ?? 0;
@@ -660,6 +700,31 @@ public class FullRedis : Redis
     public virtual IEnumerable<String> Search(String pattern, Int32 count) => Search(new SearchModel { Pattern = pattern, Count = count });
     #endregion
 
+    #region 事务
+
+    /// <summary>申请分布式锁</summary>
+    /// <param name="key">要锁定的key</param>
+    /// <param name="msTimeout">锁等待时间，单位毫秒</param>
+    /// <returns></returns>
+    public override IDisposable? AcquireLock(String key, Int32 msTimeout)
+    {
+        key = GetKey(key);
+        return base.AcquireLock(key, msTimeout);
+    }
+
+    /// <summary>申请分布式锁</summary>
+    /// <param name="key">要锁定的key</param>
+    /// <param name="msTimeout">锁等待时间，申请加锁时如果遇到冲突则等待的最大时间，单位毫秒</param>
+    /// <param name="msExpire">锁过期时间，超过该时间如果没有主动释放则自动释放锁，必须整数秒，单位毫秒</param>
+    /// <param name="throwOnFailure">失败时是否抛出异常，如果不抛出异常，可通过返回null得知申请锁失败</param>
+    /// <returns></returns>
+    public override IDisposable? AcquireLock(String key, Int32 msTimeout, Int32 msExpire, Boolean throwOnFailure)
+    {
+        key = GetKey(key);
+        return base.AcquireLock(key, msTimeout, msExpire, throwOnFailure);
+    }
+    #endregion
+
     #region 常用原生命令
     /// <summary>获取指定键的数据结构类型，如stream</summary>
     /// <param name="key"></param>
@@ -673,6 +738,8 @@ public class FullRedis : Redis
     /// <returns></returns>
     public virtual Int32 RPUSH<T>(String key, params T[] values)
     {
+        // 这里提前打包参数，需要处理key前缀。其它普通情况由Execute处理
+        key = GetKey(key);
         var args = new List<Object>
         {
             key
@@ -691,6 +758,8 @@ public class FullRedis : Redis
     /// <returns></returns>
     public virtual Int32 LPUSH<T>(String key, params T[] values)
     {
+        // 这里提前打包参数，需要处理key前缀。其它普通情况由Execute处理
+        key = GetKey(key);
         var args = new List<Object>
         {
             key
@@ -714,7 +783,7 @@ public class FullRedis : Redis
     /// <param name="source">源列表名称</param>
     /// <param name="destination">元素后写入的新列表名称</param>
     /// <returns></returns>
-    public virtual T? RPOPLPUSH<T>(String source, String destination) => Execute(source, (rc, k) => rc.Execute<T>("RPOPLPUSH", k, destination), true);
+    public virtual T? RPOPLPUSH<T>(String source, String destination) => Execute(source, (rc, k) => rc.Execute<T>("RPOPLPUSH", k, GetKey(destination)), true);
 
     /// <summary>
     /// 从列表中弹出一个值，将弹出的元素插入到另外一个列表中并返回它； 如果列表没有元素会阻塞列表直到等待超时或发现可弹出元素为止。
@@ -725,7 +794,7 @@ public class FullRedis : Redis
     /// <param name="destination">元素后写入的新列表名称</param>
     /// <param name="secTimeout">设置的阻塞时长，单位为秒。设置前请确认该值不能超过FullRedis.Timeout 否则会出现异常</param>
     /// <returns></returns>
-    public virtual T? BRPOPLPUSH<T>(String source, String destination, Int32 secTimeout) => Execute(source, (rc, k) => rc.Execute<T>("BRPOPLPUSH", k, destination, secTimeout), true);
+    public virtual T? BRPOPLPUSH<T>(String source, String destination, Int32 secTimeout) => Execute(source, (rc, k) => rc.Execute<T>("BRPOPLPUSH", k, GetKey(destination), secTimeout), true);
 
     /// <summary>从列表头部弹出一个元素</summary>
     /// <typeparam name="T"></typeparam>
@@ -747,15 +816,18 @@ public class FullRedis : Redis
         var sb = new StringBuilder();
         foreach (var item in keys)
         {
+            var key = GetKey(item);
             if (sb.Length <= 0)
-                sb.Append($"{item}");
+                sb.Append($"{key}");
             else
-                sb.Append($" {item}");
+                sb.Append($" {key}");
         }
         var rs = Execute(keys[0], (rc, k) => rc.Execute<String[]>("BRPOP", sb.ToString(), secTimeout), true);
         if (rs == null || rs.Length != 2) return null;
 
-        return new Tuple<String, T?>(rs[0], rs[1].ToJsonEntity<T>());
+        if (typeof(T) == typeof(String)) return new Tuple<String, T?>(rs[0], (T)(Object)rs[1]);
+
+        return new Tuple<String, T?>(rs[0], (T?)JsonHost.Read(rs[1], typeof(T)));
     }
 
     /// <summary>从列表末尾弹出一个元素，阻塞</summary>
@@ -783,15 +855,18 @@ public class FullRedis : Redis
         var sb = new StringBuilder();
         foreach (var item in keys)
         {
+            var key = GetKey(item);
             if (sb.Length <= 0)
-                sb.Append($"{item}");
+                sb.Append($"{key}");
             else
-                sb.Append($" {item}");
+                sb.Append($" {key}");
         }
         var rs = Execute(keys[0], (rc, k) => rc.Execute<String[]>("BLPOP", sb.ToString(), secTimeout), true);
         if (rs == null || rs.Length != 2) return null;
 
-        return new Tuple<String, T?>(rs[0], rs[1].ToJsonEntity<T>()); //.ChangeType<T>());
+        if (typeof(T) == typeof(String)) return new Tuple<String, T?>(rs[0], (T)(Object)rs[1]);
+
+        return new Tuple<String, T?>(rs[0], (T?)JsonHost.Read(rs[1], typeof(T)));
     }
 
     /// <summary>从列表头部弹出一个元素，阻塞</summary>
@@ -801,7 +876,7 @@ public class FullRedis : Redis
     /// <returns></returns>
     public virtual T? BLPOP<T>(String key, Int32 secTimeout = 0)
     {
-        var rs = BLPOP<T>(new[] { key }, secTimeout);
+        var rs = BLPOP<T>([key], secTimeout);
         return rs == null ? default : rs.Item2;
     }
 
@@ -812,6 +887,7 @@ public class FullRedis : Redis
     /// <returns></returns>
     public virtual Int32 SADD<T>(String key, params T[] members)
     {
+        key = GetKey(key);
         var args = new List<Object>
         {
             key
@@ -830,6 +906,7 @@ public class FullRedis : Redis
     /// <returns></returns>
     public virtual Int32 SREM<T>(String key, params T[] members)
     {
+        key = GetKey(key);
         var args = new List<Object>
         {
             key

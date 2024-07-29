@@ -1,5 +1,6 @@
 ﻿using System.Security.Cryptography;
 using NewLife;
+using NewLife.Common;
 using NewLife.Configuration;
 using NewLife.Data;
 using NewLife.Log;
@@ -31,16 +32,28 @@ public class DbConfigProvider : ConfigProvider
     #region 方法
     /// <summary>初始化提供者，如有必要，此时加载缓存文件</summary>
     /// <param name="value"></param>
-    public override void Init(String value)
+    public override void Init(String? value)
     {
         // 只有全局配置支持本地缓存
         if (UserId != 0) return;
 
         // 本地缓存。兼容旧版配置文件
         var name = Category;
-        var file = $"Config/dbConfig_{name}.json".GetFullPath();
-        var old = $"Config/{name}.config".GetFullPath();
-        if (!File.Exists(file)) file = old;
+        var path = Path.GetTempPath().CombinePath(SysConfig.Current.Name);
+        var file = path.CombinePath($"dbConfig_{name}.json").GetFullPath();
+        var old = $"Config/dbConfig_{name}.json".GetFullPath();
+        if (!File.Exists(file) && File.Exists(old))
+        {
+            try
+            {
+                File.Move(old, file);
+            }
+            catch
+            {
+                file = old;
+            }
+        }
+
         if ((Root == null || Root.Childs == null || Root.Childs.Count == 0) && CacheLevel > ConfigCacheLevel.NoCache && File.Exists(file))
         {
             XTrace.WriteLine("[{0}/{1}]加载缓存配置：{2}", Category, UserId, file);
@@ -57,7 +70,7 @@ public class DbConfigProvider : ConfigProvider
             var dic = txt.StartsWith("{") && txt.EndsWith("}") ?
                 JsonParser.Decode(txt) :
                 XmlParser.Decode(txt);
-            Root = Build(dic);
+            if (dic != null) Root = Build(dic);
 
             // 如果位于分布式环境中，使用较短间隔，否则使用较长间隔
             if (Period == 15)
@@ -182,7 +195,8 @@ public class DbConfigProvider : ConfigProvider
         if (CacheLevel > ConfigCacheLevel.NoCache)
         {
             var name = Category;
-            var file = $"Config/dbConfig_{name}.json".GetFullPath();
+            var path = Path.GetTempPath().CombinePath(SysConfig.Current.Name);
+            var file = path.CombinePath($"dbConfig_{name}.json").GetFullPath();
             var txt = configs.ToJson(true);
 
             // 加密存储
@@ -205,7 +219,7 @@ public class DbConfigProvider : ConfigProvider
         return true;
     }
 
-    void Save(IList<Parameter> list, IConfigSection root, String prefix)
+    void Save(IList<Parameter> list, IConfigSection root, String? prefix)
     {
         if (root == null || root.Childs == null) return;
 
@@ -253,7 +267,7 @@ public class DbConfigProvider : ConfigProvider
 
     #region 定时
     /// <summary>定时器</summary>
-    protected TimerX _timer;
+    protected TimerX? _timer;
     private void InitTimer()
     {
         if (_timer != null) return;
@@ -276,7 +290,7 @@ public class DbConfigProvider : ConfigProvider
         var dic = GetAll();
         if (dic == null) return;
 
-        var changed = new Dictionary<String, Object>();
+        var changed = new Dictionary<String, Object?>();
         if (_cache != null)
         {
             foreach (var item in dic)

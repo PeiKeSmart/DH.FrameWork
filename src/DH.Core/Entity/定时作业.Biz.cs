@@ -1,9 +1,16 @@
 using NewLife;
 using NewLife.Data;
+using NewLife.Log;
+using NewLife.Reflection;
+using NewLife.Serialization;
 
 using System.Reflection;
+using System.Runtime.Serialization;
+using System.Web.Script.Serialization;
+using System.Xml.Serialization;
 
 using XCode;
+using XCode.Membership;
 
 namespace DH.Entity;
 
@@ -47,6 +54,10 @@ public partial class CronJob : DHEntityBase<CronJob> {
     #endregion
 
     #region 扩展属性
+    /// <summary>用户</summary>
+    [XmlIgnore, ScriptIgnore, IgnoreDataMember]
+    //[ScriptIgnore]
+    public User UpdateUser => Extends.Get(nameof(User), k => User.FindByID(UpdateUserID));
     #endregion
 
     #region 扩展查询
@@ -110,23 +121,25 @@ public partial class CronJob : DHEntityBase<CronJob> {
     /// <returns></returns>
     public static CronJob Add(String name, MethodInfo method, String cron, Boolean enable = true)
     {
-        if (method == null) throw new ArgumentOutOfRangeException(nameof(method), "定时作业执行方法必须是带有单个String参数的静态方法。");
+        if (method == null || !method.IsStatic) throw new ArgumentOutOfRangeException(nameof(method), "定时作业执行方法必须是带有单个String参数的静态方法。");
 
         if (name.IsNullOrEmpty()) name = method.Name;
         var job = FindByName(name);
-        if (job != null) return job;
 
-        job = new CronJob
+        job ??= new CronJob
         {
             Name = name,
-            DisplayName = method.GetDisplayName(),
-            Method = $"{method.DeclaringType.FullName}.{method.Name}",
             Cron = cron,
             Enable = enable,
+            EnableLog = true,
             Remark = method.GetDescription(),
         };
 
-        job.Insert();
+        job.DisplayName = method.GetDisplayName();
+        job.Method = $"{method.DeclaringType.FullName}.{method.Name}";
+        if (job.Remark.IsNullOrEmpty()) job.Remark = method.GetDescription();
+
+        job.Save();
 
         return job;
     }
@@ -146,5 +159,58 @@ public partial class CronJob : DHEntityBase<CronJob> {
     ///// <param name="enable"></param>
     ///// <returns></returns>
     //public static CronJob Add(String name, Action<CronJob> action, String cron, Boolean enable = true) => Add(name, action.Method, cron, enable);
+
+    /// <summary>获取参数对象。通过类型反射得到泛型参数</summary>
+    /// <returns></returns>
+    public Object GetArgument()
+    {
+        var type = Method.GetTypeEx();
+        if (type == null) return null;
+
+        // 约定基类的泛型参数作为参数
+        var paramType = type.BaseType?.GetGenericArguments().FirstOrDefault();
+        if (paramType == null) return null;
+
+        if (Argument.IsNullOrEmpty()) return paramType.CreateInstance();
+
+        try
+        {
+            return JsonHelper.ToJsonEntity(Argument, paramType);
+        }
+        catch
+        {
+            return paramType.CreateInstance();
+        }
+    }
+
+    /// <summary>写日志</summary>
+    /// <param name="action"></param>
+    /// <param name="success"></param>
+    /// <param name="remark"></param>
+    public void WriteLog(String action, Boolean success, String remark)
+    {
+        var job = this;
+        if (job != null && !job.EnableLog) return;
+
+        if (action.IsNullOrEmpty()) action = Name;
+
+        var log = LogProvider.Provider.CreateLog("JobService", action, success, remark);
+        if (job != null) log.LinkID = job.Id;
+        log.TraceId = DefaultSpan.Current?.TraceId;
+
+        log.SaveAsync();
+    }
+
+    /// <summary>
+    /// 根据ID集合删除数据
+    /// </summary>
+    /// <param name="Ids">ID集合</param>
+    public static void DelByIds(String Ids)
+    {
+        //var list = FindByIds(Ids);
+        //if (list.Delete() > 0)
+        if (Delete(_.Id.In(Ids.Trim(','))) > 0)
+            Meta.Cache.Clear("");
+    }
     #endregion
 }

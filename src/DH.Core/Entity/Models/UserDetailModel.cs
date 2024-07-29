@@ -27,7 +27,7 @@ public partial class UserDetailModel
     public Int32 TenantId { get; set; }
 
     /// <summary>用户类型。类型自定义</summary>
-    public Int16 UType { get; set; }
+    public UserKinds UType { get; set; }
 
     /// <summary>会员前台权限</summary>
     public String RoleExIds { get; set; }

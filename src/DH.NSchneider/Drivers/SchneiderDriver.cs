@@ -1,8 +1,7 @@
-﻿using NewLife.IoT;
+﻿using System.ComponentModel;
+using NewLife.IoT;
 using NewLife.IoT.Drivers;
 using NewLife.Log;
-
-using System.ComponentModel;
 
 namespace NewLife.Schneider.Drivers;
 
@@ -15,11 +14,11 @@ public class SchneiderDriver : ModbusTcpDriver, ILogFeature, ITracerFeature
 {
     /// <summary>建立连接，打开驱动</summary>
     /// <param name="device"></param>
-    /// <param name="parameters"></param>
+    /// <param name="parameter"></param>
     /// <returns></returns>
-    public override INode Open(IDevice device, IDriverParameter parameters)
+    public override INode Open(IDevice device, IDriverParameter parameter)
     {
-        var modbusNode = base.Open(device, parameters);
+        var modbusNode = base.Open(device, parameter);
         if (modbusNode is ModbusNode node && Modbus != null)
         {
             Modbus.Open();

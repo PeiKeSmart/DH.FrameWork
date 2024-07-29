@@ -219,6 +219,8 @@ public partial class Entity<TEntity> : EntityBase, IAccessor where TEntity : Ent
         {
             if (!Valid(isnew ? DataMethod.Insert : DataMethod.Update)) return -1;
 
+            if (Meta.InShard) return this.Upsert(null, null, null, Meta.Session);
+
             // 自动分库分表
             using var split = Meta.CreateShard((this as TEntity)!);
             return this.Upsert(null, null, null, Meta.Session);
@@ -265,9 +267,12 @@ public partial class Entity<TEntity> : EntityBase, IAccessor where TEntity : Ent
         {
             if (!Valid(isnew ? DataMethod.Insert : DataMethod.Update)) return false;
         }
+        if (!HasDirty) return false;
+
+        if (Meta.InShard) return Meta.Session.Queue.Add(this, msDelay);
+
         // 自动分库分表，影响后面的Meta.Session
         using var split = Meta.CreateShard((this as TEntity)!);
-        if (!HasDirty) return false;
 
         return Meta.Session.Queue.Add(this, msDelay);
     }
@@ -320,6 +325,9 @@ public partial class Entity<TEntity> : EntityBase, IAccessor where TEntity : Ent
     /// <returns></returns>
     protected virtual Task<Int32> OnDeleteAsync() => Meta.Session.DeleteAsync(this);
 
+#if NETCOREAPP
+    [StackTraceHidden]
+#endif
     private TResult DoAction<TResult>(Func<TResult> func, DataMethod method)
     {
         if (Meta.Table.DataTable.InsertOnly)
@@ -342,6 +350,8 @@ public partial class Entity<TEntity> : EntityBase, IAccessor where TEntity : Ent
         }
 
         AutoFillSnowIdPrimaryKey();
+
+        if (Meta.InShard) return func();
 
         // 自动分库分表
         using var split = Meta.CreateShard((this as TEntity)!);
@@ -400,7 +410,16 @@ public partial class Entity<TEntity> : EntityBase, IAccessor where TEntity : Ent
             if (fi.Type == typeof(String) && fi.Length > 0)
             {
                 if (this[fi.Name] is String str && str.Length > fi.Length && Dirtys[fi.Name])
-                    throw new ArgumentOutOfRangeException(fi.Name, $"{fi.DisplayName}长度限制{fi.Length}字符");
+                {
+                    // 优先使用主字段，不足时使用主键
+                    var uk = Meta.Master;
+                    if (uk == null || this[uk.Name] is String str2 && str2.Length > 50) uk = Meta.Unique;
+
+                    if (uk != null)
+                        throw new ArgumentOutOfRangeException(fi.Name, $"[{fi.Name}/{fi.DisplayName}]长度限制{fi.Length}字符[{uk.Name}={this[uk.Name]}]");
+                    else
+                        throw new ArgumentOutOfRangeException(fi.Name, $"[{fi.Name}/{fi.DisplayName}]长度限制{fi.Length}字符");
+                }
             }
         }
 
@@ -489,6 +508,8 @@ public partial class Entity<TEntity> : EntityBase, IAccessor where TEntity : Ent
         }
 
         var field = Meta.Unique;
+        if (field == null) return false;
+
         var val = this[field.Name];
         var cache = Meta.Session.Cache;
         if (!cache.Using)
@@ -555,47 +576,9 @@ public partial class Entity<TEntity> : EntityBase, IAccessor where TEntity : Ent
     /// <summary>根据属性列表以及对应的值列表，查找单个实体</summary>
     /// <param name="names">属性名称集合</param>
     /// <param name="values">属性值集合</param>
-    /// <returns></returns>
-    public static TEntity? Find(String[] names, Object[] values)
-    {
-        if (names == null || names.Length == 0) throw new ArgumentNullException(nameof(names));
-        if (values == null || values.Length == 0) throw new ArgumentNullException(nameof(values));
-
-        var exp = new WhereExpression();
-        // 判断自增和主键
-        if (names.Length == 1)
-        {
-            var field = Meta.Table.FindByName(names[0]);
-            if ((field as FieldItem) != null && (field.IsIdentity || field.PrimaryKey))
-            {
-                // 唯一键为自增且参数小于等于0时，返回空
-                if (Helper.IsNullKey(values[0], field.Type)) return null;
-
-                exp &= field == values[0];
-                return FindUnique(exp);
-            }
-        }
-
-        for (var i = 0; i < names.Length; i++)
-        {
-            var fi = Meta.Table.FindByName(names[i]);
-            if (ReferenceEquals(fi, null)) throw new ArgumentOutOfRangeException(nameof(names), $"{names[i]} not found");
-
-            exp &= fi == values[i];
-        }
-
-        // 判断唯一索引，唯一索引也不需要分页
-        var di = Meta.Table.DataTable.GetIndex(names);
-        if (di != null && di.Unique) return FindUnique(exp);
-
-        return Find(exp);
-    }
-    /// <summary>根据属性列表以及对应的值列表，查找单个实体</summary>
-    /// <param name="names">属性名称集合</param>
-    /// <param name="values">属性值集合</param>
     /// <param name="selects">查询列，默认null表示所有字段</param>
     /// <returns></returns>
-    public static TEntity? Find(String[] names, Object[] values, String selects)
+    public static TEntity? Find(String[] names, Object[] values, String? selects = null)
     {
         if (names == null || names.Length == 0) throw new ArgumentNullException(nameof(names));
         if (values == null || values.Length == 0) throw new ArgumentNullException(nameof(values));
@@ -636,51 +619,9 @@ public partial class Entity<TEntity> : EntityBase, IAccessor where TEntity : Ent
     /// <remarks>
     /// </remarks>
     /// <param name="where">查询条件</param>
-    /// <returns></returns>
-    private static TEntity? FindUnique(Expression where)
-    {
-        var session = Meta.Session;
-        var db = session.Dal.Db;
-        var ps = db.UseParameter ? new Dictionary<String, Object>() : null;
-        var wh = where?.GetString(db, ps);
-
-        var builder = new SelectBuilder
-        {
-            Table = session.FormatedTableName,
-            // 谨记：某些项目中可能在where中使用了GroupBy，在分页时可能报错
-            Where = wh
-
-        };
-
-        // 使用默认选择列
-        if (builder.Column.IsNullOrEmpty()) builder.Column = Meta.Factory.Selects;
-
-        // 提取参数
-        builder = FixParam(builder, ps);
-
-        var list = LoadData(session.Query(builder, 0, 0));
-        //var list = session.Query(builder, 0, 0, LoadData);
-        if (list == null || list.Count <= 0) return null;
-
-        // 如果正在使用单对象缓存，则批量进入
-        LoadSingleCache(list);
-
-        if (list.Count > 1 && DAL.Debug)
-        {
-            DAL.WriteLog("调用FindUnique(\"{0}\")不合理，只有返回唯一记录的查询条件才允许调用！", wh);
-        }
-        return list[0];
-    }
-
-    /// <summary>根据条件查找唯一的单个实体</summary>
-    /// 根据条件查找唯一的单个实体，因为是唯一的，所以不需要分页和排序。
-    /// 如果不确定是否唯一，一定不要调用该方法，否则会返回大量的数据。
-    /// <remarks>
-    /// </remarks>
-    /// <param name="where">查询条件</param>
     /// <param name="selects">查询列，默认null表示所有字段</param>
     /// <returns></returns>
-    private static TEntity? FindUnique(Expression where, String selects)
+    private static TEntity? FindUnique(Expression where, String? selects = null)
     {
         var session = Meta.Session;
         var db = session.Dal.Db;
@@ -728,22 +669,13 @@ public partial class Entity<TEntity> : EntityBase, IAccessor where TEntity : Ent
     /// <summary>根据条件查找单个实体</summary>
     /// <param name="where">查询条件</param>
     /// <returns></returns>
-    public static TEntity? Find(Expression where)
-    {
-        var max = 1;
-
-        // 优待主键查询
-        if (where is FieldExpression fe && fe.Field != null && fe.Field.PrimaryKey) max = 0;
-
-        var list = FindAll(where, null, null, 0, max);
-        return list.Count <= 0 ? null : list[0];
-    }
+    public static TEntity? Find(Expression where) => Find(where, null);
 
     /// <summary>根据条件查找单个实体</summary>
     /// <param name="where">查询条件</param>
     /// <param name="selects">查询列，默认null表示所有字段</param>
     /// <returns></returns>
-    public static TEntity? Find(Expression where, String selects)
+    public static TEntity? Find(Expression where, String? selects)
     {
         var max = 1;
 
@@ -758,28 +690,35 @@ public partial class Entity<TEntity> : EntityBase, IAccessor where TEntity : Ent
     /// <param name="key">唯一主键的值</param>
     /// <param name="selects">查询列，默认null表示所有字段</param>
     /// <returns></returns>
-    public static TEntity? FindByKey(Object key, String selects)
+    public static TEntity? FindByKey(Object key, String? selects)
     {
         var field = Meta.Unique ?? throw new ArgumentNullException(nameof(Meta.Unique), "FindByKey方法要求" + typeof(TEntity).FullName + "有唯一主键！");
+
+        // 查询时可能传入IModel，为了分表查询，主要解决分表字段不是主键的场景
+        var model = key as IModel;
+        if (model != null) key = model[field.Name]!;
 
         // 唯一键为自增且参数小于等于0时，返回空
         if (Helper.IsNullKey(key, field.Type)) return null;
 
-        return Find(field.Name, key, selects);
+        if (Meta.InShard) return Find(field.Name, key);
+
+        // 自动分库分表
+        if (model == null)
+        {
+            model = new TEntity();
+            model[field.Name] = key;
+        }
+        using var split = Meta.CreateShard(model);
+
+        // 此外，一律返回 查找值，即使可能是空。而绝不能在找不到数据的情况下给它返回空，因为可能是找不到数据而已，而返回新实例会导致前端以为这里是新增数据
+        return Find(field.Name, key);
     }
 
     /// <summary>根据主键查找单个实体</summary>
     /// <param name="key">唯一主键的值</param>
     /// <returns></returns>
-    public static TEntity? FindByKey(Object key)
-    {
-        var field = Meta.Unique ?? throw new ArgumentNullException(nameof(Meta.Unique), "FindByKey方法要求" + typeof(TEntity).FullName + "有唯一主键！");
-
-        // 唯一键为自增且参数小于等于0时，返回空
-        if (Helper.IsNullKey(key, field.Type)) return null;
-
-        return Find(field.Name, key);
-    }
+    public static TEntity? FindByKey(Object key) => FindByKey(key, null);
 
     /// <summary>根据主键查询一个实体对象用于表单编辑</summary>
     /// <param name="key">唯一主键的值</param>
@@ -787,6 +726,10 @@ public partial class Entity<TEntity> : EntityBase, IAccessor where TEntity : Ent
     public static TEntity? FindByKeyForEdit(Object key)
     {
         var field = Meta.Unique ?? throw new ArgumentNullException("Meta.Unique", "FindByKeyForEdit方法要求该表有唯一主键！");
+
+        // 查询时可能传入IModel，为了分表查询，主要解决分表字段不是主键的场景
+        var model = key as IModel;
+        if (model != null) key = model[field.Name]!;
 
         // 参数为空时，返回新实例
         if (key == null) return Meta.Factory.Create(true) as TEntity;
@@ -801,13 +744,24 @@ public partial class Entity<TEntity> : EntityBase, IAccessor where TEntity : Ent
             return Meta.Factory.Create(true) as TEntity;
         }
 
-        // 自动分库分表
-        var keyEntity = new TEntity();
-        keyEntity[field.Name] = key;
-        using var split = Meta.CreateShard(keyEntity);
+        TEntity? entity = null;
+        if (Meta.InShard)
+        {
+            entity = Find(field.Name, key);
+        }
+        else
+        {
+            // 自动分库分表
+            if (model == null)
+            {
+                model = new TEntity();
+                model[field.Name] = key;
+            }
+            using var split = Meta.CreateShard(model);
 
-        // 此外，一律返回 查找值，即使可能是空。而绝不能在找不到数据的情况下给它返回空，因为可能是找不到数据而已，而返回新实例会导致前端以为这里是新增数据
-        var entity = Find(field.Name, key);
+            // 此外，一律返回 查找值，即使可能是空。而绝不能在找不到数据的情况下给它返回空，因为可能是找不到数据而已，而返回新实例会导致前端以为这里是新增数据
+            entity = Find(field.Name, key);
+        }
 
         // 判断实体
         if (entity == null)
@@ -995,8 +949,8 @@ public partial class Entity<TEntity> : EntityBase, IAccessor where TEntity : Ent
         #endregion
 
         // 自动分表
-        var shards = Meta.ShardPolicy?.Shards(where);
-        if (shards == null)
+        var shards = Meta.InShard || where == null ? null : Meta.ShardPolicy?.Shards(where);
+        if (shards == null || shards.Length == 0)
         {
             var builder = CreateBuilder(where, order, selects);
             var list2 = LoadData(session.Query(builder, startRowIndex, maximumRows));
@@ -1008,8 +962,8 @@ public partial class Entity<TEntity> : EntityBase, IAccessor where TEntity : Ent
         }
         else
         {
-            var dt = Meta.Table;
-            using var span = DAL.GlobalTracer?.NewSpan($"db:{dt.ConnName}:{dt.TableName}:AutoShard", "自动分页查询");
+            var ss = Meta.Session;
+            using var span = DAL.GlobalTracer?.NewSpan($"db:{ss.ConnName}:{ss.TableName}:AutoShard", "自动分页查询", shards.Length);
 
             // 先生成查询语句
             var builder = CreateBuilder(where, order, selects);
@@ -1060,7 +1014,7 @@ public partial class Entity<TEntity> : EntityBase, IAccessor where TEntity : Ent
             }
 
 #if DEBUG
-            if (span != null) XTrace.WriteLine(span.Tag);
+            if (span?.Tag != null) XTrace.WriteLine(span.Tag);
 #endif
 
             return rs;
@@ -1074,10 +1028,10 @@ public partial class Entity<TEntity> : EntityBase, IAccessor where TEntity : Ent
     static ShardModel[] FixOrder(ShardModel[] shards, String? order)
     {
         // 根据分页字段排序分页表
+        var sfield = Meta.ShardPolicy?.Field;
         var ds = order?.Split(",");
-        if (ds != null)
+        if (ds != null && sfield != null)
         {
-            var sfield = Meta.ShardPolicy.Field;
             foreach (var item in ds)
             {
                 var ss = item.Split(' ');
@@ -1318,8 +1272,8 @@ public partial class Entity<TEntity> : EntityBase, IAccessor where TEntity : Ent
         #endregion
 
         // 自动分表
-        var shards = Meta.ShardPolicy?.Shards(where);
-        if (shards == null)
+        var shards = Meta.InShard || where == null ? null : Meta.ShardPolicy?.Shards(where);
+        if (shards == null || shards.Length == 0)
         {
             var builder = CreateBuilder(where, order, selects);
             var list2 = LoadData(await session.QueryAsync(builder, startRowIndex, maximumRows));
@@ -1361,7 +1315,7 @@ public partial class Entity<TEntity> : EntityBase, IAccessor where TEntity : Ent
 
                 // 避免最后一张表没有查询到相关数据还继续进行查询，减少不必要查询
                 var skipCount = 0;
-                if (i < shards.Length) skipCount = (Int32)(await session.QueryCountAsync(builder));
+                if (i < shards.Length) skipCount = (Int32)await session.QueryCountAsync(builder);
 
                 max -= list2.Count;
                 // 后边表索引记录数应该是减去前张表查询出来的记录总数，有可能负数
@@ -1466,8 +1420,8 @@ public partial class Entity<TEntity> : EntityBase, IAccessor where TEntity : Ent
         if (!builder.GroupBy.IsNullOrEmpty()) builder.Column = selects;
 
         // 自动分表
-        var shards = Meta.ShardPolicy?.Shards(where);
-        if (shards == null) return await session.QueryCountAsync(builder);
+        var shards = Meta.InShard || where == null ? null : Meta.ShardPolicy?.Shards(where);
+        if (shards == null || shards.Length == 0) return await session.QueryCountAsync(builder);
 
         var rs = 0L;
         foreach (var shard in shards)
@@ -1548,10 +1502,10 @@ public partial class Entity<TEntity> : EntityBase, IAccessor where TEntity : Ent
         if (!builder.GroupBy.IsNullOrEmpty()) builder.Column = selects;
 
         // 自动分表
-        var shards = Meta.ShardPolicy?.Shards(where);
-        if (shards == null) return session.QueryCount(builder);
+        var shards = Meta.InShard || where == null ? null : Meta.ShardPolicy?.Shards(where);
+        if (shards == null || shards.Length == 0) return session.QueryCount(builder);
 
-        var rs = 0;
+        var rs = 0L;
         foreach (var shard in shards)
         {
             var connName = shard.ConnName ?? session.ConnName;
@@ -1589,7 +1543,7 @@ public partial class Entity<TEntity> : EntityBase, IAccessor where TEntity : Ent
     /// <returns></returns>
     public static SelectBuilder FindSQLWithKey(String? where = null)
     {
-        var uk = Meta.Unique.Field;
+        var uk = Meta.Unique?.Field;
         if (uk == null) throw new XCodeException("实体类缺少唯一主键字段，无法生成SQL语句！");
 
         var columnName = Meta.Session.Dal.Db.FormatName(uk);
@@ -1619,26 +1573,29 @@ public partial class Entity<TEntity> : EntityBase, IAccessor where TEntity : Ent
     /// <param name="key">关键字</param>
     /// <param name="page">分页排序参数，同时返回满足条件的总记录数</param>
     /// <returns></returns>
-    public static IList<TEntity> Search(DateTime start, DateTime end, String key, PageParameter page)
-    {
-        var df = Meta.Factory.Default as TEntity;
-        return FindAll(df!.SearchWhere(start, end, key, page), page);
-    }
+    public static IList<TEntity> Search(DateTime start, DateTime end, String key, PageParameter page) => FindAll(SearchWhere(start, end, key), page);
 
     /// <summary>构造高级查询条件</summary>
     /// <param name="start">开始时间</param>
     /// <param name="end">结束时间</param>
     /// <param name="key">关键字</param>
-    /// <param name="page">分页排序参数，同时返回满足条件的总记录数</param>
     /// <returns></returns>
-    protected virtual WhereExpression SearchWhere(DateTime start, DateTime end, String key, PageParameter page)
+    protected static WhereExpression SearchWhere(DateTime start, DateTime end, String key)
     {
         var exp = SearchWhereByKeys(key);
 
         if (start > DateTime.MinValue || end > DateTime.MinValue)
         {
             var fi = Meta.Factory.MasterTime;
-            if (fi != null) exp &= fi.Between(start, end);
+            if (fi != null)
+            {
+                if (fi.Type == typeof(Int64) && !fi.IsIdentity)
+                    exp &= fi.Between(start, end, Meta.Factory.Snow);
+                else if (start == end)
+                    exp &= fi.Equal(start);
+                else
+                    exp &= fi.Between(start, end);
+            }
         }
 
         return exp;
@@ -1955,7 +1912,7 @@ public partial class Entity<TEntity> : EntityBase, IAccessor where TEntity : Ent
     /// <returns></returns>
     public virtual TEntity CloneEntity(Boolean setDirty = false)
     {
-        var obj = Meta.Factory.Create() as TEntity;
+        var obj = (Meta.Factory.Create() as TEntity)!;
         foreach (var fi in Meta.Fields)
         {
             if (setDirty)
@@ -1995,7 +1952,7 @@ public partial class Entity<TEntity> : EntityBase, IAccessor where TEntity : Ent
         var dis = table.Indexes;
         if (dis != null && dis.Count > 0)
         {
-            IDataIndex di = null;
+            IDataIndex? di = null;
             foreach (var item in dis)
             {
                 if (!item.Unique) continue;
@@ -2052,8 +2009,13 @@ public partial class Entity<TEntity> : EntityBase, IAccessor where TEntity : Ent
     public Int32 ResetDirty()
     {
         var key = Meta.Unique ?? throw new InvalidOperationException("要求有唯一主键");
+        var k = this[key.Name];
+        if (k == null) return 0;
+
+        var entity = FindByKey(k);
+        if (entity == null) return 0;
+
         var rs = 0;
-        var entity = FindByKey(this[key.Name]);
         foreach (var item in Meta.Fields)
         {
             var change = !CheckEqual(this[item.Name], entity[item.Name]);
@@ -2069,7 +2031,8 @@ public partial class Entity<TEntity> : EntityBase, IAccessor where TEntity : Ent
     #endregion
 
     #region 高并发
-    /// <summary>获取 或 新增 对象，带缓存查询，常用于统计等高并发更新的情况，一般配合SaveAsync</summary>
+    /// <summary>获取 或 新增 对象，带缓存查询，常用于统计等高并发新增或更新的场景</summary>
+    /// <remarks>常规操作是插入数据前检查是否已存在，但可能存在并行冲突问题，GetOrAdd能很好解决该问题</remarks>
     /// <typeparam name="TKey"></typeparam>
     /// <param name="key">业务主键，如果是多字段混合索引，则建立一个模型类</param>
     /// <param name="find">查找函数</param>
@@ -2117,13 +2080,14 @@ public partial class Entity<TEntity> : EntityBase, IAccessor where TEntity : Ent
         }
     }
 
-    /// <summary>获取 或 新增 对象，不带缓存查询，常用于统计等高并发更新的情况，一般配合SaveAsync</summary>
+    /// <summary>获取 或 新增 对象，不带缓存查询，常用于统计等高并发新增或更新的场景</summary>
+    /// <remarks>常规操作是插入数据前检查是否已存在，但可能存在并行冲突问题，GetOrAdd能很好解决该问题</remarks>
     /// <typeparam name="TKey"></typeparam>
     /// <param name="key">业务主键，如果是多字段混合索引，则建立一个模型类</param>
     /// <param name="find">查找函数</param>
     /// <param name="create">创建对象</param>
     /// <returns></returns>
-    public static TEntity GetOrAdd<TKey>(TKey key, Func<TKey, TEntity> find, Func<TKey, TEntity> create)
+    public static TEntity GetOrAdd<TKey>(TKey key, Func<TKey, TEntity?> find, Func<TKey, TEntity> create)
     {
         //if (key == null) return null;
         //if (find == null) throw new ArgumentNullException(nameof(find));
@@ -2164,6 +2128,25 @@ public partial class Entity<TEntity> : EntityBase, IAccessor where TEntity : Ent
 
             return entity;
         }
+    }
+
+    /// <summary>获取 或 新增 对象，根据业务主键查询，常用于统计等高并发新增或更新的场景</summary>
+    /// <remarks>常规操作是插入数据前检查是否已存在，但可能存在并行冲突问题，GetOrAdd能很好解决该问题</remarks>
+    /// <typeparam name="TKey"></typeparam>
+    /// <param name="field">主键名</param>
+    /// <param name="key">业务主键，如果是多字段混合索引，则建立一个模型类</param>
+    /// <returns></returns>
+    public static TEntity GetOrAdd<TKey>(String field, TKey key)
+    {
+        if (field.IsNullOrEmpty()) field = Meta.Unique?.Name ?? throw new ArgumentNullException(nameof(field));
+        var f = Meta.Table.FindByName(field) ?? throw new ArgumentNullException(nameof(field));
+
+        return GetOrAdd(key, k => Find(f.Equal(k)), k =>
+        {
+            var v = new TEntity();
+            v.SetItem(f.Name, k);
+            return v;
+        });
     }
     #endregion
 }

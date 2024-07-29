@@ -34,7 +34,7 @@
     <Authors>$(Company)</Authors>
     <PackageProjectUrl>https://www.haocoding.com/</PackageProjectUrl>
     <PackageIcon>DH.png</PackageIcon>
-    <RepositoryUrl>https://gitee.com/chuangchu/DH.FrameWork</RepositoryUrl>
+    <RepositoryUrl>https://gitee.com/dengho/DH.FrameWork</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <PackageTags>湖北登灏科技有限公司;DH组件;DH;$(AssemblyName)</PackageTags>
     <PackageReleaseNotes>支持.NET7.0；增加客户端连接本地代理</PackageReleaseNotes>
@@ -61,15 +61,25 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Models\CommandEventArgs.cs" />
+    <Compile Remove="Models\CommandInModel.cs" />
+    <Compile Remove="Models\CommandModel.cs" />
+    <Compile Remove="Models\CommandReplyModel.cs" />
+    <Compile Remove="Models\CommandStatus.cs" />
+    <Compile Remove="Models\EventModel.cs" />
     <Compile Remove="Models\TokenModel.cs" />
+    <Compile Remove="Models\UpgradeInfo.cs" />
     <Compile Remove="Monitors\AspNetCoreDiagnosticListener.cs" />
+    <Compile Remove="Monitors\GrpcDiagnosticListener.cs" />
     <Compile Remove="Monitors\MyBuilder.cs" />
     <Compile Remove="Monitors\MySpan.cs" />
     <Compile Remove="Monitors\MyTraceModel.cs" />
     <Compile Remove="Registry\RegistryClient.cs" />
     <Compile Remove="RpcClient.cs" />
     <Compile Remove="RpcServer.cs" />
-    <Compile Remove="Web\TracerModule.cs" />
+    <Compile Remove="Services\CacheService.cs" />
+	<Compile Remove="Services\ICommandClient.cs" />
+    <Compile Remove="Services\IEventProvider.cs" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)'=='net45' or '$(TargetFramework)'=='net461'">

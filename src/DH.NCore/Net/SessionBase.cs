@@ -60,7 +60,6 @@ public abstract class SessionBase : DisposeBase, ISocketClient, ITransport, ILog
     public SessionBase()
     {
         Name = GetType().Name;
-        LogPrefix = Name.TrimEnd("Server", "Session", "Client") + ".";
 
         BufferSize = SocketSetting.Current.BufferSize;
         LogDataLength = SocketSetting.Current.LogDataLength;
@@ -118,10 +117,19 @@ public abstract class SessionBase : DisposeBase, ISocketClient, ITransport, ILog
                     Client.ReceiveTimeout = timeout;
                 }
 
-                // Tcp需要初始化管道
-                if (Local.IsTcp) Pipeline?.Open(CreateContext(this));
-
                 Active = true;
+
+                if (Pipeline is Pipeline pipe && pipe.Handlers.Count > 0)
+                {
+                    WriteLog("初始化管道：");
+                    foreach (var handler in pipe.Handlers)
+                    {
+                        WriteLog("    {0}", handler);
+                    }
+                }
+
+                // 初始化管道
+                Pipeline?.Open(CreateContext(this));
 
                 ReceiveAsync();
 
@@ -186,7 +194,35 @@ public abstract class SessionBase : DisposeBase, ISocketClient, ITransport, ILog
     /// <returns></returns>
     protected abstract Boolean OnClose(String reason);
 
-    Boolean ITransport.Close() => Close("传输口关闭");
+    Boolean ITransport.Close() => Close("TransportClose");
+
+    /// <summary>检查连接是否已关闭，并返回关闭原因，主要检测FIN/RST</summary>
+    /// <returns></returns>
+    protected String? CheckClosed()
+    {
+        var sock = Client;
+        if (sock == null || !sock.Connected) return "Disconnected";
+
+        if (sock.Poll(10, SelectMode.SelectRead))
+        {
+            try
+            {
+                var buffer = new Byte[1];
+                if (sock.Receive(buffer, SocketFlags.Peek) == 0)
+                {
+                    // 收到FIN标记
+                    return "Finish";
+                }
+            }
+            catch (SocketException ex)
+            when (ex.SocketErrorCode == SocketError.ConnectionReset)
+            {
+                return "ConnectionReset";
+            }
+        }
+
+        return null;
+    }
 
     /// <summary>打开后触发。</summary>
     public event EventHandler? Opened;
@@ -237,6 +273,38 @@ public abstract class SessionBase : DisposeBase, ISocketClient, ITransport, ILog
         {
             var buf = new Byte[BufferSize];
             var size = Client.Receive(buf);
+            if (span != null) span.Value = size;
+
+            return new Packet(buf, 0, size);
+        }
+        catch (Exception ex)
+        {
+            span?.SetError(ex, null);
+            throw;
+        }
+    }
+
+    /// <summary>异步接收数据</summary>
+    /// <returns></returns>
+    public virtual async Task<Packet?> ReceiveAsync(CancellationToken cancellationToken = default)
+    {
+        if (Disposed) throw new ObjectDisposedException(GetType().Name);
+
+        if (!Open() || Client == null) return null;
+
+        using var span = Tracer?.NewSpan($"net:{Name}:ReceiveAsync", BufferSize + "");
+        try
+        {
+            var buf = new Byte[BufferSize];
+#if NETFRAMEWORK || NETSTANDARD2_0
+            var ar = Client.BeginReceive(buf, 0, buf.Length, SocketFlags.None, null, Client);
+            var size = ar.IsCompleted ?
+                Client.EndReceive(ar) :
+                await Task.Factory.FromAsync(ar, Client.EndReceive);
+#else
+            var size = await Client.ReceiveAsync(new ArraySegment<Byte>(buf), SocketFlags.None, cancellationToken);
+#endif
+            if (span != null) span.Value = size;
 
             return new Packet(buf, 0, size);
         }
@@ -265,12 +333,12 @@ public abstract class SessionBase : DisposeBase, ISocketClient, ITransport, ILog
         // 按照最大并发创建异步委托
         for (var i = count; i < max; i++)
         {
-            if (Interlocked.Increment(ref _RecvCount) > max)
+            count = Interlocked.Increment(ref _RecvCount);
+            if (count > max)
             {
                 Interlocked.Decrement(ref _RecvCount);
                 return false;
             }
-            count = _RecvCount;
 
             // 加大接收缓冲区，规避SocketError.MessageSize问题
             var buf = new Byte[BufferSize];
@@ -344,8 +412,10 @@ public abstract class SessionBase : DisposeBase, ISocketClient, ITransport, ILog
         // 同步返回0数据包，断开连接
         if (!rs && se.BytesTransferred == 0 && se.SocketError == SocketError.Success)
         {
-            Close("EmptyData");
+            var reason = CheckClosed() ?? "EmptyData";
+            Close(reason);
             Dispose();
+
             return false;
         }
 
@@ -420,7 +490,7 @@ public abstract class SessionBase : DisposeBase, ISocketClient, ITransport, ILog
 
                     // 同步执行，直接使用数据，不需要拷贝
                     // 直接在IO线程调用业务逻辑
-                    ProcessReceive(pk, ep);
+                    ProcessReceive(pk, se.ReceiveMessageFromPacketInfo.Address, ep);
                 }
             }
 
@@ -448,27 +518,28 @@ public abstract class SessionBase : DisposeBase, ISocketClient, ITransport, ILog
     }
 
     /// <summary>接收预处理，粘包拆包</summary>
-    /// <param name="pk"></param>
-    /// <param name="remote"></param>
-    private void ProcessReceive(Packet pk, IPEndPoint remote)
+    /// <param name="pk">数据包</param>
+    /// <param name="local">接收数据的本地地址</param>
+    /// <param name="remote">远程地址</param>
+    private void ProcessReceive(Packet pk, IPAddress local, IPEndPoint remote)
     {
         // 打断上下文调用链，这里必须是起点
         DefaultSpan.Current = null;
 
-        using var span = Tracer?.NewSpan($"net:{Name}:ProcessReceive", pk.Total + "");
+        using var span = Tracer?.NewSpan($"net:{Name}:ProcessReceive", pk.Total + "", pk.Total);
         try
         {
             LastTime = DateTime.Now;
 
             // 预处理，得到将要处理该数据包的会话
-            var ss = OnPreReceive(pk, remote);
+            var ss = OnPreReceive(pk, local, remote);
             if (ss == null) return;
 
             if (LogReceive && Log != null && Log.Enable) WriteLog("Recv [{0}]: {1}", pk.Total, pk.ToHex(LogDataLength));
 
             if (Local.IsTcp) remote = Remote.EndPoint;
 
-            var e = new ReceivedEventArgs { Packet = pk, Remote = remote };
+            var e = new ReceivedEventArgs { Packet = pk, Local = local, Remote = remote };
 
             // 不管Tcp/Udp，都在这使用管道
             var pp = Pipeline;
@@ -492,9 +563,10 @@ public abstract class SessionBase : DisposeBase, ISocketClient, ITransport, ILog
 
     /// <summary>预处理</summary>
     /// <param name="pk">数据包</param>
+    /// <param name="local">接收数据的本地地址</param>
     /// <param name="remote">远程地址</param>
     /// <returns>将要处理该数据包的会话</returns>
-    protected internal abstract ISocketSession? OnPreReceive(Packet pk, IPEndPoint remote);
+    protected internal abstract ISocketSession? OnPreReceive(Packet pk, IPAddress local, IPEndPoint remote);
 
     /// <summary>处理收到的数据。默认匹配同步接收委托</summary>
     /// <param name="e">接收事件参数</param>
@@ -551,11 +623,13 @@ public abstract class SessionBase : DisposeBase, ISocketClient, ITransport, ILog
     /// <returns></returns>
     public virtual Int32 SendMessage(Object message)
     {
+        if (Pipeline == null) throw new ArgumentNullException(nameof(Pipeline), "No pipes are set");
+
         using var span = Tracer?.NewSpan($"net:{Name}:SendMessage", message);
         try
         {
             var ctx = CreateContext(this);
-            return (Int32)(Pipeline?.Write(ctx, message) ?? 0);
+            return (Int32)(Pipeline.Write(ctx, message) ?? 0);
         }
         catch (Exception ex)
         {
@@ -569,6 +643,8 @@ public abstract class SessionBase : DisposeBase, ISocketClient, ITransport, ILog
     /// <returns></returns>
     public virtual async Task<Object> SendMessageAsync(Object message)
     {
+        if (Pipeline == null) throw new ArgumentNullException(nameof(Pipeline), "No pipes are set");
+
         using var span = Tracer?.NewSpan($"net:{Name}:SendMessageAsync", message);
         try
         {
@@ -577,7 +653,7 @@ public abstract class SessionBase : DisposeBase, ISocketClient, ITransport, ILog
             ctx["TaskSource"] = source;
             ctx["Span"] = span;
 
-            var rs = (Int32)(Pipeline?.Write(ctx, message) ?? 0);
+            var rs = (Int32)(Pipeline.Write(ctx, message) ?? 0);
 #if NET45
             if (rs < 0) return Task.FromResult(0);
 #else
@@ -602,6 +678,8 @@ public abstract class SessionBase : DisposeBase, ISocketClient, ITransport, ILog
     /// <returns></returns>
     public virtual async Task<Object> SendMessageAsync(Object message, CancellationToken cancellationToken)
     {
+        if (Pipeline == null) throw new ArgumentNullException(nameof(Pipeline), "No pipes are set");
+
         using var span = Tracer?.NewSpan($"net:{Name}:SendMessageAsync", message);
         try
         {
@@ -610,7 +688,7 @@ public abstract class SessionBase : DisposeBase, ISocketClient, ITransport, ILog
             ctx["TaskSource"] = source;
             ctx["Span"] = span;
 
-            var rs = (Int32)(Pipeline?.Write(ctx, message) ?? 0);
+            var rs = (Int32)(Pipeline.Write(ctx, message) ?? 0);
 #if NET45
             if (rs < 0) return Task.FromResult(0);
 #else
@@ -682,7 +760,7 @@ public abstract class SessionBase : DisposeBase, ISocketClient, ITransport, ILog
     #region 日志
 
     /// <summary>日志前缀</summary>
-    public virtual String LogPrefix { get; set; }
+    public virtual String? LogPrefix { get; set; }
 
     /// <summary>日志对象。禁止设为空对象</summary>
     public ILog Log { get; set; } = Logger.Null;
@@ -701,7 +779,8 @@ public abstract class SessionBase : DisposeBase, ISocketClient, ITransport, ILog
     /// <param name="args"></param>
     public void WriteLog(String format, params Object?[] args)
     {
-        if (Log != null && Log.Enable) Log.Info(LogPrefix + format, args);
+        LogPrefix ??= Name.TrimEnd("Server", "Session", "Client");
+        if (Log != null && Log.Enable) Log.Info($"[{LogPrefix}]{format}", args);
     }
 
     #endregion 日志

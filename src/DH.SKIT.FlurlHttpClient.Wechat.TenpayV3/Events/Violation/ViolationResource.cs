@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Events
 {
@@ -6,6 +6,10 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Events
     /// <para>表示 VIOLATION.PUNISH 通知的数据。</para>
     /// <para>表示 VIOLATION.INTERCEPT 通知的数据。</para>
     /// <para>表示 VIOLATION.APPEAL 通知的数据。</para>
+    /// <para>
+    /// REF: <br/>
+    /// <![CDATA[ https://pay.weixin.qq.com/docs/partner/apis/violation-notice/violation-notifications/disposal-record-notice.html ]]>
+    /// </para>
     /// </summary>
     public class ViolationResource : WechatTenpayEvent.Types.IDecryptedResource
     {
@@ -41,9 +45,9 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Events
         /// 获取或设置处罚时间。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("punish_time")]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.RFC3339DateTimeOffsetConverter))]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.Common.Rfc3339DateTimeOffsetConverter))]
         [System.Text.Json.Serialization.JsonPropertyName("punish_time")]
-        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.RFC3339DateTimeOffsetConverter))]
+        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.Rfc3339DateTimeOffsetConverter))]
         public DateTimeOffset PunishTime { get; set; }
 
         /// <summary>

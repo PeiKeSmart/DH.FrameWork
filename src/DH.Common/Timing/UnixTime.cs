@@ -37,11 +37,15 @@ public static class UnixTime
     /// <summary>
     /// 转换为DateTime对象
     /// </summary>
-    /// <param name="timestamp">时间戳。毫秒</param>
+    /// <param name="timestamp">时间戳。</param>
+    /// <param name="isContainMillisecond">是否包含毫秒</param>
     /// <returns></returns>
-    public static DateTime ToDateTime(long timestamp)
+    public static DateTime ToDateTime(long timestamp, bool isContainMillisecond = true)
     {
-        return EpochTime.AddMilliseconds(timestamp).ToLocalTime();
+        if (isContainMillisecond)
+            return EpochTime.AddMilliseconds(timestamp).ToLocalTime();
+
+        return EpochTime.AddSeconds(timestamp).ToLocalTime();
     }
 
     /// <summary>

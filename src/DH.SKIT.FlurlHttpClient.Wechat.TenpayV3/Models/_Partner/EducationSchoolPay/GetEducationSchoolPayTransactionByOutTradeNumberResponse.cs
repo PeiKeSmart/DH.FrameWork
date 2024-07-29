@@ -9,25 +9,19 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Models
     {
         public static class Types
         {
-            public class Payer : GetEducationPAPPayTransactionByOutTradeNumberResponse.Types.Payer
-            {
-                /// <summary>
-                /// 获取或设置用户在子商户下唯一标识。
-                /// </summary>
-                [Newtonsoft.Json.JsonProperty("sub_openid")]
-                [System.Text.Json.Serialization.JsonPropertyName("sub_openid")]
-                public string? SubOpenId { get; set; }
-            }
-
-            public class Amount : GetEducationPAPPayTransactionByOutTradeNumberResponse.Types.Amount
+            public class Payer : GetEducationPAPayTransactionByOutTradeNumberResponse.Types.Payer
             {
             }
 
-            public class Device : GetEducationPAPPayTransactionByOutTradeNumberResponse.Types.Device
+            public class Amount : GetEducationPAPayTransactionByOutTradeNumberResponse.Types.Amount
             {
             }
 
-            public class Promotion : GetEducationPAPPayTransactionByOutTradeNumberResponse.Types.Promotion
+            public class Device : GetEducationPAPayTransactionByOutTradeNumberResponse.Types.Device
+            {
+            }
+
+            public class Promotion : GetEducationPAPayTransactionByOutTradeNumberResponse.Types.Promotion
             {
             }
         }
@@ -113,9 +107,9 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Models
         /// 获取或设置支付完成时间。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("success_time")]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.RFC3339NullableDateTimeOffsetConverter))]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.Common.Rfc3339DateTimeOffsetConverter))]
         [System.Text.Json.Serialization.JsonPropertyName("success_time")]
-        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.RFC3339NullableDateTimeOffsetConverter))]
+        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.Rfc3339DateTimeOffsetConverter))]
         public DateTimeOffset? SuccessTime { get; set; }
 
         /// <summary>

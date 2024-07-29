@@ -50,7 +50,7 @@ namespace XCode
             if (Field == null || Format.IsNullOrWhiteSpace()) return;
 
             // 部分场景外部未能传入数据库，此时内部尽力获取
-            if (db == null) db = Field?.Factory.Session.Dal.Db;
+            db ??= Field?.Factory?.Session.Dal.Db ?? throw new ArgumentNullException(nameof(db));
 
             var columnName = db.FormatName(Field.Field);
 
@@ -84,8 +84,8 @@ namespace XCode
 
                 // 数值留给字典
                 ps[name] = Value.ChangeType(type);
-
-                builder.AppendFormat(Format, columnName, db.FormatParameterName(name));
+                var line = db.FormatLike(Field.Field, Format);
+                builder.Append(line);
             }
             else
             {

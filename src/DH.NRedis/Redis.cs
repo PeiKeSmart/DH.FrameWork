@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Net.Sockets;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
+
 using NewLife.Collections;
 using NewLife.Configuration;
 using NewLife.Data;
@@ -11,6 +12,7 @@ using NewLife.Model;
 using NewLife.Net;
 using NewLife.Reflection;
 using NewLife.Security;
+using NewLife.Serialization;
 
 namespace NewLife.Caching;
 
@@ -23,8 +25,7 @@ namespace NewLife.Caching;
 /// 
 /// 网络层Broken pipe异常，可以在Server设置多个一样的地址（逗号隔开），让Redis客户端在遇到网络错误时进行重试。
 /// </remarks>
-public class Redis : Cache, IConfigMapping, ILogFeature
-{
+public class Redis : Cache, IConfigMapping, ILogFeature {
     #region 属性
     /// <summary>服务器，带端口。例如127.0.0.1:6397，支持逗号分隔的多地址，网络异常时，自动切换到其它节点，60秒后切回来</summary>
     public String? Server { get; set; }
@@ -56,6 +57,9 @@ public class Redis : Cache, IConfigMapping, ILogFeature
     /// <summary>编码器。决定对象存储在redis中的格式，默认json</summary>
     public IPacketEncoder Encoder { get; set; } = new RedisJsonEncoder();
 
+    /// <summary>Json序列化主机</summary>
+    public IJsonHost JsonHost { get; set; } = null!;
+
     /// <summary>SSL协议。决定是否启用SSL连接，默认None不启用</summary>
     public SslProtocols SslProtocol { get; set; } = SslProtocols.None;
 
@@ -78,17 +82,42 @@ public class Redis : Cache, IConfigMapping, ILogFeature
     private IDictionary<String, String>? _Info;
     /// <summary>服务器信息</summary>
     public IDictionary<String, String> Info => _Info ??= GetInfo();
+
+    private Version? _Version;
+    /// <summary>Redis版本。可用于判断某些指令是否可用</summary>
+    public Version Version
+    {
+        get
+        {
+            if (_Version == null)
+            {
+                var inf = Info;
+                if (inf != null && inf.TryGetValue("redis_version", out var ver))
+                {
+                    if (!ver.IsNullOrEmpty() && Version.TryParse(ver, out var version))
+                        _Version = version;
+                }
+                _Version ??= new Version();
+            }
+
+            return _Version;
+        }
+    }
     #endregion
 
     #region 构造
     /// <summary>实例化</summary>
-    public Redis() : base() { }
+    public Redis() : base()
+    {
+        // 初始化Json序列化
+        JsonHost ??= RedisJsonEncoder.GetJsonHost();
+    }
 
     /// <summary>实例化Redis，指定服务器地址、密码、库</summary>
     /// <param name="server"></param>
     /// <param name="password"></param>
     /// <param name="db"></param>
-    public Redis(String server, String password, Int32 db)
+    public Redis(String server, String password, Int32 db) : this()
     {
         // 有人多输入了一个空格，酿成大祸
         Server = server?.Trim();
@@ -101,7 +130,7 @@ public class Redis : Cache, IConfigMapping, ILogFeature
     /// <param name="username"></param>
     /// <param name="password"></param>
     /// <param name="db"></param>
-    public Redis(String server, String username, String password, Int32 db)
+    public Redis(String server, String username, String password, Int32 db) : this()
     {
         // 有人多输入了一个空格，酿成大祸
         Server = server?.Trim();
@@ -113,7 +142,7 @@ public class Redis : Cache, IConfigMapping, ILogFeature
     /// <summary>按照配置服务实例化Redis，用于NETCore依赖注入</summary>
     /// <param name="provider">服务提供者，将要解析IConfigProvider</param>
     /// <param name="name">缓存名称，也是配置中心key</param>
-    public Redis(IServiceProvider provider, String name)
+    public Redis(IServiceProvider provider, String name) : this()
     {
         Name = name;
         Tracer = provider.GetService<ITracer>();
@@ -126,7 +155,7 @@ public class Redis : Cache, IConfigMapping, ILogFeature
 
     /// <summary>实例化Redis，指定名称，支持从环境变量Redis_{Name}读取配置，或者逐个属性配置</summary>
     /// <param name="name"></param>
-    public Redis(String name)
+    public Redis(String name) : this()
     {
         if (name.IsNullOrEmpty()) throw new ArgumentNullException(nameof(name));
 
@@ -180,10 +209,8 @@ public class Redis : Cache, IConfigMapping, ILogFeature
         var pk = ProtectedKey.Instance;
         if (pk != null && pk.Secret != null) connStr = pk.Unprotect(connStr);
 
-        var dic =
-            connStr.Contains(',') && !connStr.Contains(';') ?
-            connStr.SplitAsDictionary("=", ",", true) :
-            connStr.SplitAsDictionary("=", ";", true);
+        // 默认分号分割，旧版逗号分隔。可能只有一个server=后续多个含逗号的地址
+        var dic = ParseConfig(connStr);
         if (dic.Count > 0)
         {
             Server = dic["Server"]?.Trim();
@@ -225,6 +252,25 @@ public class Redis : Cache, IConfigMapping, ILogFeature
         }
 
         _configOld = config;
+
+        // 初始化Json序列化
+        JsonHost ??= RedisJsonEncoder.GetJsonHost();
+        if (Encoder is RedisJsonEncoder encoder)
+            encoder.JsonHost = JsonHost;
+    }
+
+    /// <summary>分析配置连接字符串</summary>
+    /// <param name="connStr"></param>
+    /// <returns></returns>
+    protected IDictionary<String, String> ParseConfig(String connStr)
+    {
+        // 默认分号分割，旧版逗号分隔。可能只有一个server=后续多个含逗号的地址
+        var dic =
+            connStr.Contains(';') || connStr.Split('=').Length <= 2 ?
+            connStr.SplitAsDictionary("=", ";", true) :
+            connStr.SplitAsDictionary("=", ",", true);
+
+        return dic;
     }
 
     void IConfigMapping.MapConfig(IConfigProvider provider, IConfigSection section)
@@ -234,8 +280,7 @@ public class Redis : Cache, IConfigMapping, ILogFeature
     #endregion
 
     #region 客户端池
-    private class MyPool : ObjectPool<RedisClient>
-    {
+    private class MyPool : ObjectPool<RedisClient> {
         public Redis Instance { get; set; } = null!;
 
         public Func<RedisClient> Callback { get; set; } = null!;
@@ -368,7 +413,9 @@ public class Redis : Cache, IConfigMapping, ILogFeature
 
         return pool;
     }
+    #endregion
 
+    #region 方法
     /// <summary>执行命令，经过管道。FullRedis中还会考虑Cluster分流</summary>
     /// <typeparam name="TResult">返回类型</typeparam>
     /// <param name="key">命令key，用于选择集群节点</param>
@@ -409,13 +456,57 @@ public class Redis : Cache, IConfigMapping, ILogFeature
         do
         {
             // 每次重试都需要重新从池里借出连接
-            var pool = Pool;
-            var client = pool.Get();
+            var client = Pool.Get();
             try
             {
                 client.Reset();
                 return func(client, key);
             }
+            catch (RedisException) { throw; }
+            catch (Exception ex)
+            {
+                if (++i >= Retry) throw;
+
+                // 销毁连接
+                client.TryDispose();
+
+                // 网络异常时，自动切换到其它节点
+                if (ex is SocketException or IOException && _servers != null && i < _servers.Length)
+                    _idxServer++;
+                else
+                    Thread.Sleep(delay *= 2);
+            }
+            finally
+            {
+                Pool.Put(client);
+
+                Counter?.StopCount(sw);
+            }
+        } while (true);
+    }
+
+    /// <summary>直接执行命令，不考虑集群读写</summary>
+    /// <typeparam name="TResult">返回类型</typeparam>
+    /// <param name="func">回调函数</param>
+    /// <returns></returns>
+    public virtual TResult Execute<TResult>(Func<RedisClient, TResult> func)
+    {
+        // 统计性能
+        var sw = Counter?.StartCount();
+
+        var i = 0;
+        var delay = 500;
+        do
+        {
+            // 每次重试都需要重新从池里借出连接
+            var pool = Pool;
+            var client = pool.Get();
+            try
+            {
+                client.Reset();
+                return func(client);
+            }
+            catch (RedisException) { throw; }
             catch (Exception ex)
             {
                 if (++i >= Retry) throw;
@@ -436,36 +527,6 @@ public class Redis : Cache, IConfigMapping, ILogFeature
                 Counter?.StopCount(sw);
             }
         } while (true);
-    }
-
-    /// <summary>直接执行命令，不考虑集群读写</summary>
-    /// <typeparam name="TResult">返回类型</typeparam>
-    /// <param name="func">回调函数</param>
-    /// <returns></returns>
-    public virtual TResult Execute<TResult>(Func<RedisClient, TResult> func)
-    {
-        // 每次重试都需要重新从池里借出连接
-        var pool = Pool;
-        var client = pool.Get();
-        try
-        {
-            client.Reset();
-            return func(client);
-        }
-        catch (Exception ex)
-        {
-            if (ex is SocketException or IOException)
-            {
-                // 销毁连接
-                client.TryDispose();
-            }
-
-            throw;
-        }
-        finally
-        {
-            pool.Put(client);
-        }
     }
 
     /// <summary>异步执行命令，经过管道。FullRedis中还会考虑Cluster分流</summary>
@@ -514,6 +575,7 @@ public class Redis : Cache, IConfigMapping, ILogFeature
                 client.Reset();
                 return await func(client, key);
             }
+            catch (RedisException) { throw; }
             catch (Exception ex)
             {
                 if (++i >= Retry) throw;
@@ -605,8 +667,20 @@ public class Redis : Cache, IConfigMapping, ILogFeature
         rds.Password = Password;
 
         rds.Encoder = Encoder;
+        rds.JsonHost = JsonHost;
         rds.Timeout = Timeout;
         rds.Retry = Retry;
+        rds.ShieldingTime = ShieldingTime;
+        rds.FullPipeline = FullPipeline;
+        rds.AutoPipeline = AutoPipeline;
+        rds.SslProtocol = SslProtocol;
+        rds.Certificate = Certificate;
+        rds.ThrowOnFailure = ThrowOnFailure;
+        rds.MaxMessageSize = MaxMessageSize;
+
+        rds._Info = _Info;
+        rds._Version = _Version;
+
         rds.Tracer = Tracer;
         rds.Log = Log;
 
@@ -625,7 +699,7 @@ public class Redis : Cache, IConfigMapping, ILogFeature
         {
             if (Count > 10000) throw new InvalidOperationException("数量过大时，禁止获取所有键，请使用FullRedis.Search");
 
-            return Execute(rds => rds.Execute<String[]>("KEYS", "*")) ?? new String[0];
+            return Execute(rds => rds.Execute<String[]>("KEYS", "*")) ?? [];
         }
     }
 
@@ -777,6 +851,7 @@ public class Redis : Cache, IConfigMapping, ILogFeature
     #endregion
 
     #region 高级操作
+    private static Version _v2612 = new("2.6.12");
     /// <summary>添加，已存在时不更新</summary>
     /// <typeparam name="T">值类型</typeparam>
     /// <param name="key">键</param>
@@ -796,7 +871,7 @@ public class Redis : Cache, IConfigMapping, ILogFeature
         //{
         //    return Execute(key, rds => rds.Execute<Int32>("SETNX", key, value, expire), true) > 0;
         //}
-        if (inf != null && inf.TryGetValue("redis_version", out var ver) && ver.CompareTo("2.6.12") >= 0)
+        if (Version >= _v2612)
         {
             //!!! 重构Redis.Add实现，早期的SETNX支持设置过期时间，后来不支持了，并且连资料都找不到了，改用2.6.12新版 SET key value EX expire NX
             var result = Execute(key, (rds, k) => rds.Execute<String>("SET", k, value, "EX", expire, "NX"), true);

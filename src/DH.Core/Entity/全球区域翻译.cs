@@ -142,6 +142,21 @@ public partial class RegionsLan : IRegionsLan, IEntity<IRegionsLan>
     #region 关联映射
     #endregion
 
+    #region 扩展查询
+    /// <summary>根据关联区域Id查找</summary>
+    /// <param name="rId">关联区域Id</param>
+    /// <returns>实体列表</returns>
+    public static IList<RegionsLan> FindAllByRId(Int32 rId)
+    {
+        if (rId < 0) return [];
+
+        // 实体缓存
+        if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => e.RId == rId);
+
+        return FindAll(_.RId == rId);
+    }
+    #endregion
+
     #region 字段名
     /// <summary>取得全球区域翻译字段信息的快捷方式</summary>
     public partial class _

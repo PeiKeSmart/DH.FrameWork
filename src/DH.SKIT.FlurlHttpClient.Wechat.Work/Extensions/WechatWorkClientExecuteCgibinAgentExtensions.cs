@@ -11,9 +11,12 @@ namespace SKIT.FlurlHttpClient.Wechat.Work
     {
         /// <summary>
         /// <para>异步调用 [GET] /cgi-bin/agent/get 接口。</para>
-        /// <para>REF: https://developer.work.weixin.qq.com/document/path/90227 </para>
-        /// <para>REF: https://developer.work.weixin.qq.com/document/path/90363 </para>
-        /// <para>REF: https://developer.work.weixin.qq.com/document/path/90845 </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developer.work.weixin.qq.com/document/path/90227 ]]> <br/>
+        /// <![CDATA[ https://developer.work.weixin.qq.com/document/path/90363 ]]> <br/>
+        /// <![CDATA[ https://developer.work.weixin.qq.com/document/path/90845 ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -24,22 +27,25 @@ namespace SKIT.FlurlHttpClient.Wechat.Work
             if (client is null) throw new ArgumentNullException(nameof(client));
             if (request is null) throw new ArgumentNullException(nameof(request));
 
-            if (request.AgentId == null)
+            if (request.AgentId is null)
                 request.AgentId = client.Credentials.AgentId;
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Get, "cgi-bin", "agent", "get")
+                .CreateFlurlRequest(request, HttpMethod.Get, "cgi-bin", "agent", "get")
                 .SetQueryParam("access_token", request.AccessToken)
                 .SetQueryParam("agentid", request.AgentId);
 
-            return await client.SendRequestWithJsonAsync<Models.CgibinAgentGetResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsJsonAsync<Models.CgibinAgentGetResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// <para>异步调用 [GET] /cgi-bin/agent/list 接口。</para>
-        /// <para>REF: https://developer.work.weixin.qq.com/document/path/90227 </para>
-        /// <para>REF: https://developer.work.weixin.qq.com/document/path/90363 </para>
-        /// <para>REF: https://developer.work.weixin.qq.com/document/path/90845 </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developer.work.weixin.qq.com/document/path/90227 ]]> <br/>
+        /// <![CDATA[ https://developer.work.weixin.qq.com/document/path/90363 ]]> <br/>
+        /// <![CDATA[ https://developer.work.weixin.qq.com/document/path/90845 ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -51,15 +57,18 @@ namespace SKIT.FlurlHttpClient.Wechat.Work
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Get, "cgi-bin", "agent", "list")
+                .CreateFlurlRequest(request, HttpMethod.Get, "cgi-bin", "agent", "list")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendRequestWithJsonAsync<Models.CgibinAgentListResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsJsonAsync<Models.CgibinAgentListResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// <para>异步调用 [POST] /cgi-bin/agent/set 接口。</para>
-        /// <para>REF: https://developer.work.weixin.qq.com/document/path/90228 </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developer.work.weixin.qq.com/document/path/90228 ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -70,20 +79,23 @@ namespace SKIT.FlurlHttpClient.Wechat.Work
             if (client is null) throw new ArgumentNullException(nameof(client));
             if (request is null) throw new ArgumentNullException(nameof(request));
 
-            if (request.AgentId == null)
+            if (request.AgentId is null)
                 request.AgentId = client.Credentials.AgentId;
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "cgi-bin", "agent", "set")
+                .CreateFlurlRequest(request, HttpMethod.Post, "cgi-bin", "agent", "set")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendRequestWithJsonAsync<Models.CgibinAgentSetResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsJsonAsync<Models.CgibinAgentSetResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// <para>异步调用 [POST] /cgi-bin/agent/set_scope 接口。</para>
-        /// <para>REF: https://developer.work.weixin.qq.com/document/path/90583 </para>
-        /// <para>REF: https://developer.work.weixin.qq.com/document/path/90807 </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developer.work.weixin.qq.com/document/path/90583 ]]> <br/>
+        /// <![CDATA[ https://developer.work.weixin.qq.com/document/path/90807 ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -94,19 +106,22 @@ namespace SKIT.FlurlHttpClient.Wechat.Work
             if (client is null) throw new ArgumentNullException(nameof(client));
             if (request is null) throw new ArgumentNullException(nameof(request));
 
-            if (request.AgentId == null)
+            if (request.AgentId is null)
                 request.AgentId = client.Credentials.AgentId;
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "cgi-bin", "agent", "set_scope")
+                .CreateFlurlRequest(request, HttpMethod.Post, "cgi-bin", "agent", "set_scope")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendRequestWithJsonAsync<Models.CgibinAgentSetScopeResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsJsonAsync<Models.CgibinAgentSetScopeResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// <para>异步调用 [POST] /cgi-bin/agent/migrate_to_customized_app 接口。</para>
-        /// <para>REF: https://developer.work.weixin.qq.com/document/path/96072 </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developer.work.weixin.qq.com/document/path/96072 ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -118,15 +133,18 @@ namespace SKIT.FlurlHttpClient.Wechat.Work
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "cgi-bin", "agent", "migrate_to_customized_app")
+                .CreateFlurlRequest(request, HttpMethod.Post, "cgi-bin", "agent", "migrate_to_customized_app")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendRequestWithJsonAsync<Models.CgibinAgentMigrateToCustomizedAppResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsJsonAsync<Models.CgibinAgentMigrateToCustomizedAppResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// <para>异步调用 [POST] /cgi-bin/agent/get_permissions 接口。</para>
-        /// <para>REF: https://developer.work.weixin.qq.com/document/path/99052 </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developer.work.weixin.qq.com/document/path/99052 ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -138,17 +156,20 @@ namespace SKIT.FlurlHttpClient.Wechat.Work
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "cgi-bin", "agent", "get_permissions")
+                .CreateFlurlRequest(request, HttpMethod.Post, "cgi-bin", "agent", "get_permissions")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendRequestWithJsonAsync<Models.CgibinAgentGetPermissionsResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsJsonAsync<Models.CgibinAgentGetPermissionsResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         #region Workbench
         /// <summary>
         /// <para>异步调用 [POST] /cgi-bin/agent/set_workbench_template 接口。</para>
-        /// <para>REF: https://developer.work.weixin.qq.com/document/path/92535 </para>
-        /// <para>REF: https://developer.work.weixin.qq.com/document/path/94620 </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developer.work.weixin.qq.com/document/path/92535 ]]> <br/>
+        /// <![CDATA[ https://developer.work.weixin.qq.com/document/path/94620 ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -159,20 +180,23 @@ namespace SKIT.FlurlHttpClient.Wechat.Work
             if (client is null) throw new ArgumentNullException(nameof(client));
             if (request is null) throw new ArgumentNullException(nameof(request));
 
-            if (request.AgentId == null)
+            if (request.AgentId is null)
                 request.AgentId = client.Credentials.AgentId;
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "cgi-bin", "agent", "set_workbench_template")
+                .CreateFlurlRequest(request, HttpMethod.Post, "cgi-bin", "agent", "set_workbench_template")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendRequestWithJsonAsync<Models.CgibinAgentSetWorkbenchTemplateResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsJsonAsync<Models.CgibinAgentSetWorkbenchTemplateResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// <para>异步调用 [POST] /cgi-bin/agent/get_workbench_template 接口。</para>
-        /// <para>REF: https://developer.work.weixin.qq.com/document/path/92535 </para>
-        /// <para>REF: https://developer.work.weixin.qq.com/document/path/94620 </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developer.work.weixin.qq.com/document/path/92535 ]]> <br/>
+        /// <![CDATA[ https://developer.work.weixin.qq.com/document/path/94620 ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -183,20 +207,23 @@ namespace SKIT.FlurlHttpClient.Wechat.Work
             if (client is null) throw new ArgumentNullException(nameof(client));
             if (request is null) throw new ArgumentNullException(nameof(request));
 
-            if (request.AgentId == null)
+            if (request.AgentId is null)
                 request.AgentId = client.Credentials.AgentId;
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "cgi-bin", "agent", "get_workbench_template")
+                .CreateFlurlRequest(request, HttpMethod.Post, "cgi-bin", "agent", "get_workbench_template")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendRequestWithJsonAsync<Models.CgibinAgentGetWorkbenchTemplateResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsJsonAsync<Models.CgibinAgentGetWorkbenchTemplateResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// <para>异步调用 [POST] /cgi-bin/agent/set_workbench_data 接口。</para>
-        /// <para>REF: https://developer.work.weixin.qq.com/document/path/92535 </para>
-        /// <para>REF: https://developer.work.weixin.qq.com/document/path/94620 </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developer.work.weixin.qq.com/document/path/92535 ]]> <br/>
+        /// <![CDATA[ https://developer.work.weixin.qq.com/document/path/94620 ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -207,14 +234,14 @@ namespace SKIT.FlurlHttpClient.Wechat.Work
             if (client is null) throw new ArgumentNullException(nameof(client));
             if (request is null) throw new ArgumentNullException(nameof(request));
 
-            if (request.AgentId == null)
+            if (request.AgentId is null)
                 request.AgentId = client.Credentials.AgentId;
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "cgi-bin", "agent", "set_workbench_data")
+                .CreateFlurlRequest(request, HttpMethod.Post, "cgi-bin", "agent", "set_workbench_data")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendRequestWithJsonAsync<Models.CgibinAgentSetWorkbenchDataResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsJsonAsync<Models.CgibinAgentSetWorkbenchDataResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
         #endregion
     }

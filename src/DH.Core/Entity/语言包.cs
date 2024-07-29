@@ -42,7 +42,7 @@ public partial class LocaleStringResource : ILocaleStringResource, IEntity<ILoca
     /// <summary>资源值</summary>
     [DisplayName("资源值")]
     [Description("资源值")]
-    [DataObjectField(false, false, true, 2048)]
+    [DataObjectField(false, false, true, 4096)]
     [BindColumn("LanValue", "资源值", "")]
     public String LanValue { get => _LanValue; set { if (OnPropertyChanging("LanValue", value)) { _LanValue = value; OnPropertyChanged("LanValue"); } } }
 
@@ -184,6 +184,21 @@ public partial class LocaleStringResource : ILocaleStringResource, IEntity<ILoca
     #endregion
 
     #region 关联映射
+    #endregion
+
+    #region 扩展查询
+    /// <summary>根据资源名称查找</summary>
+    /// <param name="lanKey">资源名称</param>
+    /// <returns>实体列表</returns>
+    public static IList<LocaleStringResource> FindAllByLanKey(String lanKey)
+    {
+        if (lanKey.IsNullOrEmpty()) return [];
+
+        // 实体缓存
+        if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => e.LanKey.EqualIgnoreCase(lanKey));
+
+        return FindAll(_.LanKey == lanKey);
+    }
     #endregion
 
     #region 字段名

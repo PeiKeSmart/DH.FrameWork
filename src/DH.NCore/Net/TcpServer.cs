@@ -65,11 +65,17 @@ public class TcpServer : DisposeBase, ISocketServer, ILogFeature
     /// </remarks>
     public IPipeline? Pipeline { get; set; }
 
-    /// <summary>SSL协议。默认None，服务端Default，客户端不启用</summary>
+    /// <summary>SSL协议。默认None</summary>
     public SslProtocols SslProtocol { get; set; } = SslProtocols.None;
 
-    /// <summary>SSL证书。服务端使用</summary>
-    /// <remarks>var cert = new X509Certificate2("file", "pass");</remarks>
+    /// <summary>X509证书。用于SSL连接时验证证书指纹，可以直接加载pem证书文件，未指定时不验证证书</summary>
+    /// <remarks>
+    /// 可以使用pfx证书文件，也可以使用pem证书文件。
+    /// 服务端必须指定证书。
+    /// </remarks>
+    /// <example>
+    /// var cert = new X509Certificate2("file", "pass");
+    /// </example>
     public X509Certificate? Certificate { get; set; }
 
     /// <summary>APM性能追踪器</summary>
@@ -123,9 +129,17 @@ public class TcpServer : DisposeBase, ISocketServer, ILogFeature
             //if (Server == null) Server = new TcpListener(Local.EndPoint);
             if (sock == null) Client = sock = NetHelper.CreateTcp(Local.Address.IsIPv4());
 
-            // 地址重用，主要应用于网络服务器重启交替。前一个进程关闭时，端口在短时间内处于TIME_WAIT，导致新进程无法监听。
-            // 启用地址重用后，即使旧进程未退出，新进程也可以监听，但只有旧进程退出后，新进程才能接受对该端口的连接请求
-            if (ReuseAddress) sock.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+            try
+            {
+                // 地址重用，主要应用于网络服务器重启交替。前一个进程关闭时，端口在短时间内处于TIME_WAIT，导致新进程无法监听。
+                // 启用地址重用后，即使旧进程未退出，新进程也可以监听，但只有旧进程退出后，新进程才能接受对该端口的连接请求
+                if (ReuseAddress) sock.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+            }
+            catch (Exception ex)
+            {
+                // 有些平台不支持地址重用，比如旧版A2上的Ubuntu16，但是云服务器的Linux都支持
+                XTrace.WriteLine(ex.Message);
+            }
 
             WriteLog("Start {0}", this);
 
@@ -318,7 +332,7 @@ public class TcpServer : DisposeBase, ISocketServer, ILogFeature
             NoDelay = NoDelay,
             KeepAliveInterval = KeepAliveInterval,
             Pipeline = Pipeline,
-            DisconnectWhenEmptyData = false,
+            //DisconnectWhenEmptyData = false,
 
             Log = Log,
             LogSend = LogSend,

@@ -197,10 +197,6 @@ internal class SqlServer : RemoteDb
 
             return builder.Clone().Top(maximumRows);
         }
-
-        // 修复无主键分页报错的情况
-        if (builder.Key.IsNullOrEmpty() && builder.OrderBy.IsNullOrEmpty()) throw new XCodeException("分页算法要求指定排序列！" + builder.ToString());
-
         // Sql2012，非首页
         if (IsSQL2012 && !builder.OrderBy.IsNullOrEmpty())
         {
@@ -208,11 +204,14 @@ internal class SqlServer : RemoteDb
             builder.Limit = $"offset {startRowIndex} rows fetch next {maximumRows} rows only";
             return builder;
         }
+        // 修复无主键分页报错的情况
+        if (builder.Key.IsNullOrEmpty() && builder.OrderBy.IsNullOrEmpty()) throw new XCodeException("分页算法要求指定排序列！" + builder.ToString());
 
         // 如果包含分组，则必须作为子查询
         var builder1 = builder.CloneWithGroupBy("XCode_T0", true);
         // *替换为{builder.Column}，否则会出现查询字段不一致的问题
-        builder1.Column = $"{builder.Column}, row_number() over(Order By {builder.OrderBy ?? builder.Key}) as rowNumber";
+        var column = string.IsNullOrEmpty(builder.Column) ? "*" : builder.Column;
+        builder1.Column = $"{column}, row_number() over(Order By {builder.OrderBy ?? builder.Key}) as rowNumber";
 
         var builder2 = builder1.AsChild("XCode_T1", true);
         // 结果列处理
@@ -393,9 +392,23 @@ internal class SqlServer : RemoteDb
     public override Int32 LongTextLength => 4000;
 
     /// <summary>格式化时间为SQL字符串</summary>
+    /// <param name="column">字段</param>
     /// <param name="dateTime">时间值</param>
     /// <returns></returns>
-    public override String FormatDateTime(DateTime dateTime) => "{ts'" + dateTime.ToFullString() + "'}";
+    public override String FormatDateTime(IDataColumn column, DateTime dateTime)
+    {
+        if (dateTime.Ticks % 10_000_000 == 0)
+        {
+            if (dateTime.Hour == 0 && dateTime.Minute == 0 && dateTime.Second == 0)
+                return $"'{dateTime:yyyy-MM-dd}'";
+            else
+                return $"{{ts'{dateTime:yyyy-MM-dd HH:mm:ss}'}}";
+        }
+        else if (column != null && column.RawType.EqualIgnoreCase("datetime2"))
+            return $"'{dateTime:yyyy-MM-dd HH:mm:ss.fffffff}'";
+        else
+            return $"{{ts'{dateTime:yyyy-MM-dd HH:mm:ss.fff}'}}";
+    }
 
     /// <summary>格式化名称，如果是关键字，则格式化后返回，否则原样返回</summary>
     /// <param name="name">名称</param>
@@ -458,13 +471,13 @@ internal class SqlServer : RemoteDb
 
             if (isNullable && (dt <= DateTime.MinValue || dt >= DateTime.MaxValue)) return "null";
 
-            return FormatDateTime(dt);
+            return FormatDateTime(field!, dt);
         }
 
         return base.FormatValue(field, value);
     }
 
-    private static readonly Char[] _likeKeys = new[] { '[', ']', '%', '_' };
+    private static readonly Char[] _likeKeys = ['[', ']', '%', '_'];
     /// <summary>格式化模糊搜索的字符串。处理转义字符</summary>
     /// <param name="column">字段</param>
     /// <param name="format">格式化字符串</param>
@@ -487,6 +500,21 @@ internal class SqlServer : RemoteDb
             value = value
                  .Replace("_", "[_]");
         return base.FormatLike(column, format, value);
+    }
+
+    /// <summary>生成批量删除SQL。部分数据库支持分批删除</summary>
+    /// <param name="tableName"></param>
+    /// <param name="where"></param>
+    /// <param name="batchSize"></param>
+    /// <returns>不支持分批删除时返回null</returns>
+    public override String? BuildDeleteSql(String tableName, String where, Int32 batchSize)
+    {
+        if (batchSize <= 0) return base.BuildDeleteSql(tableName, where, 0);
+
+        var sql = $"Delete Top ({batchSize}) From {FormatName(tableName)}";
+        if (!where.IsNullOrEmpty()) sql += " Where " + where;
+
+        return sql;
     }
     #endregion
 }
@@ -580,6 +608,7 @@ internal class SqlServerSession : RemoteDbSession
         var ps = new HashSet<String>();
         var sql = GetInsertSql(table, columns, ps);
         var dpsList = GetParametersList(columns, ps, list);
+        DefaultSpan.Current?.AppendTag(sql);
 
         return BatchExecute(sql, dpsList);
     }
@@ -634,6 +663,7 @@ internal class SqlServerSession : RemoteDbSession
         sb.AppendLine(";");
         sb.AppendLine("END;");
         var sql = sb.Put(true);
+        DefaultSpan.Current?.AppendTag(sql);
 
         var dpsList = GetParametersList(columns, ps, list, true);
         return BatchExecute(sql, dpsList);
@@ -724,8 +754,8 @@ internal class SqlServerSession : RemoteDbSession
             }
             finally
             {
-                //if (conn != null) Database.Pool.Put(conn);
-                EndTrace(OnCreateCommand(sql, CommandType.Text));
+                var cmd = OnCreateCommand(sql, CommandType.Text);
+                EndTrace(cmd);
             }
         });
     }
@@ -763,6 +793,15 @@ internal class SqlServerSession : RemoteDbSession
                 {
                     var dt = val.ToDateTime();
                     if (dt.Year < 1970) val = new DateTime(1970, 1, 1);
+                }
+                //byte[]类型查询时候参数化异常
+                else if (dc.DataType == typeof(Byte[]))
+                {
+                    val ??= new Byte[0];
+                }
+                if (dc.DataType == typeof(Guid))
+                {
+                    val ??= Guid.Empty;
                 }
 
                 // 逐列创建参数对象
@@ -967,17 +1006,56 @@ internal class SqlServerMetaData : RemoteDbMetaData
         var rows = dt.Select($"(TABLE_TYPE='BASE TABLE' Or TABLE_TYPE='VIEW') AND TABLE_NAME<>'Sysdiagrams'");
         foreach (var dr in rows)
         {
-            list.Add(GetDataRowValue<String>(dr, _.TalbeName));
+            var tn = GetDataRowValue<String>(dr, _.TalbeName);
+            if (!tn.IsNullOrEmpty()) list.Add(tn);
         }
 
         return list;
     }
 
-    private DataTable AllFields = null;
-    private DataTable AllIndexes = null;
+    public override String FieldClause(IDataTable table, Int32 index, Boolean onlyDefine)
+    {
+        var sb = new StringBuilder();
+        var field = table.Columns[index];
+        // 字段名
+        sb.AppendFormat("{0} ", FormatName(field));
+
+        String? typeName = null;
+        // 如果还是原来的数据库类型，则直接使用
+        //if (Database.DbType == field.Table.DbType) typeName = field.RawType;
+        // 每种数据库的自增差异太大，理应由各自处理，而不采用原始值
+        if (Database.Type == field.Table.DbType && !field.Identity) typeName = field.RawType;
+
+        if (typeName.IsNullOrEmpty()) typeName = GetFieldType(field);
+
+        sb.Append(typeName);
+
+        // 增加长度
+        if (field.DataType == typeof(String) && !typeName.IsNullOrEmpty() && !typeName.Contains("(") && !typeName.Contains("text"))
+        {
+            if (field.Length > 0)
+                sb.AppendFormat("({0})", field.Length);
+            else
+                sb.Append("(max)");
+        }
+        // 约束
+        sb.Append(GetFieldConstraints(field, onlyDefine));
+
+        return sb.ToString();
+    }
+
+    private DataTable? AllFields = null;
+    private DataTable? AllIndexes = null;
 
     protected override void FixField(IDataColumn field, DataRow dr)
     {
+        //修复sqlserver同步到sqlserver建表长度为1的bug
+        var rawType = field.RawType?.ToLower();
+        if (rawType == "nvarchar" || rawType == "varchar" || rawType == "char" || rawType == "binary")
+            field.RawType += "(" + field.Length + ")";
+        if (rawType == "varbinary" && field.Length == -1)
+            field.RawType = "varbinary(max)";
+
         base.FixField(field, dr);
 
         var rows = AllFields?.Select("表名='" + field.Table.TableName + "' And 字段名='" + field.ColumnName + "'", null);
@@ -994,21 +1072,20 @@ internal class SqlServerMetaData : RemoteDbMetaData
         }
     }
 
-    protected override List<IDataIndex> GetIndexes(IDataTable table, DataTable _indexes, DataTable _indexColumns)
+    protected override List<IDataIndex> GetIndexes(IDataTable table, DataTable? indexes, DataTable? indexColumns)
     {
-        var list = base.GetIndexes(table, _indexes, _indexColumns);
-        if (list != null && list.Count > 0)
+        var list = base.GetIndexes(table, indexes, indexColumns);
+
+        foreach (var item in list)
         {
-            foreach (var item in list)
+            var drs = AllIndexes?.Select("name='" + item.Name + "'");
+            if (drs != null && drs.Length > 0)
             {
-                var drs = AllIndexes?.Select("name='" + item.Name + "'");
-                if (drs != null && drs.Length > 0)
-                {
-                    item.Unique = GetDataRowValue<Boolean>(drs[0], "is_unique");
-                    item.PrimaryKey = GetDataRowValue<Boolean>(drs[0], "is_primary_key");
-                }
+                item.Unique = GetDataRowValue<Boolean>(drs[0], "is_unique");
+                item.PrimaryKey = GetDataRowValue<Boolean>(drs[0], "is_primary_key");
             }
         }
+
         return list;
     }
 
@@ -1027,7 +1104,7 @@ internal class SqlServerMetaData : RemoteDbMetaData
 
     public override String FieldClause(IDataColumn field, Boolean onlyDefine)
     {
-        if (!String.IsNullOrEmpty(field.RawType) && field.RawType.Contains("char(-1)"))
+        if (!field.RawType.IsNullOrEmpty() && field.RawType.Contains("char(-1)"))
         {
             //if (IsSQL2005)
             field.RawType = field.RawType.Replace("char(-1)", "char(MAX)");
@@ -1076,6 +1153,15 @@ internal class SqlServerMetaData : RemoteDbMetaData
     //    if (field.DataType == typeof(String) && pi == "-1" && IsSQL2005) return "MAX";
     //    return pi;
     //}
+
+    protected override String? GetFieldType(IDataColumn field)
+    {
+        //mysql 转sqlserver
+        if (field.RawType?.ToLower() == "longblob")
+            return "varbinary(max)";
+
+        return base.GetFieldType(field);
+    }
     #endregion
 
     #region 取得字段信息的SQL模版
@@ -1146,10 +1232,10 @@ internal class SqlServerMetaData : RemoteDbMetaData
     #endregion
 
     #region 数据定义
-    public override Object SetSchema(DDLSchema schema, params Object[] values)
+    public override Object? SetSchema(DDLSchema schema, params Object?[]? values)
     {
+        if (Database is DbBase db)
         {
-            var db = Database as DbBase;
             var tracer = db.Tracer;
             if (schema is not DDLSchema.BackupDatabase and not DDLSchema.RestoreDatabase) tracer = null;
             using var span = tracer?.NewSpan($"db:{db.ConnName}:SetSchema:{schema}", values);
@@ -1186,7 +1272,7 @@ internal class SqlServerMetaData : RemoteDbMetaData
 
     public override String CreateDatabaseSQL(String dbname, String file)
     {
-        var dp = (Database as SqlServer).DataPath;
+        var dp = (Database as SqlServer)!.DataPath;
 
         if (String.IsNullOrEmpty(file))
         {
@@ -1271,7 +1357,7 @@ internal class SqlServerMetaData : RemoteDbMetaData
     /// <param name="dbname"></param>
     /// <param name="bakfile"></param>
     /// <param name="compressed"></param>
-    public override String Backup(String dbname, String bakfile, Boolean compressed)
+    public override String Backup(String dbname, String? bakfile, Boolean compressed)
     {
 
         var name = dbname;
@@ -1439,7 +1525,7 @@ internal class SqlServerMetaData : RemoteDbMetaData
 
     public override String AddColumnSQL(IDataColumn field) => $"Alter Table {FormatName(field.Table)} Add {FieldClause(field, true)}";
 
-    public override String AlterColumnSQL(IDataColumn field, IDataColumn oldfield)
+    public override String AlterColumnSQL(IDataColumn field, IDataColumn? oldfield)
     {
         // 创建为自增，重建表
         if (field.Identity && !oldfield.Identity)

@@ -57,6 +57,10 @@ public class XCodeSetting : Config<XCodeSetting>
     [Description("批大小。用于批量操作数据，抽取、删除、备份、恢复，默认5000")]
     public Int32 BatchSize { get; set; } = 5_000;
 
+    /// <summary>批操作间隙。用于批量删除数据时的暂停间隙，单位毫秒，默认100</summary>
+    [Description("批操作间隙。用于批量删除数据时的暂停间隙，单位毫秒，默认100")]
+    public Int32 BatchInterval { get; set; } = 100;
+
     /// <summary>命令超时。查询执行超时时间，默认0秒不限制</summary>
     [Description("命令超时。查询执行超时时间，默认0秒不限制")]
     public Int32 CommandTimeout { get; set; }
@@ -64,26 +68,6 @@ public class XCodeSetting : Config<XCodeSetting>
     /// <summary>失败重试。执行命令超时后的重试次数，默认0不重试</summary>
     [Description("失败重试。执行命令超时后的重试次数，默认0不重试")]
     public Int32 RetryOnFailure { get; set; }
-
-    /// <summary>数据层缓存。根据sql做缓存，默认0秒</summary>
-    [Description("数据层缓存。根据sql做缓存，默认0秒")]
-    public Int32 DataCacheExpire { get; set; }
-
-    /// <summary>实体缓存过期。整表缓存实体列表，默认10秒</summary>
-    [Description("实体缓存过期。整表缓存实体列表，默认10秒")]
-    public Int32 EntityCacheExpire { get; set; } = 10;
-
-    /// <summary>单对象缓存过期。按主键缓存实体，默认10秒</summary>
-    [Description("单对象缓存过期。按主键缓存实体，默认10秒")]
-    public Int32 SingleCacheExpire { get; set; } = 10;
-
-    /// <summary>扩展属性过期。扩展属性Extends缓存，默认10秒</summary>
-    [Description("扩展属性过期。扩展属性Extends缓存，默认10秒")]
-    public Int32 ExtendExpire { get; set; } = 10;
-
-    /// <summary>字段缓存过期。缓存表中分类型字段的分组数据，默认3600秒</summary>
-    [Description("字段缓存过期。缓存表中分类型字段的分组数据，默认3600秒")]
-    public Int32 FieldCacheExpire { get; set; } = 3600;
 
     /// <summary>反向工程。Off 关闭；ReadOnly 只读不执行；On 打开，仅新建；Full 完全，修改删除</summary>
     [Description("反向工程。Off 关闭；ReadOnly 只读不执行；On 打开，仅新建；Full 完全，修改删除")]
@@ -93,9 +77,45 @@ public class XCodeSetting : Config<XCodeSetting>
     [Description("表名称、字段名大小写格式。Default 根据模型生成;Upper 全大写;Lower 全小写;Underline下划线")]
     public NameFormats NameFormat { get; set; } = NameFormats.Default;
 
-    /// <summary>快速统计最小数据量</summary>
-    [Description("快速统计最小数据量。默认1000万，在对数据表进行无条件 count 时，先进行快速统计。如果快速统计的结果大于该值，则使用快速统计的结果。反之则进行 count(*) 操作获取精确统计。")]
-    public int FastCountMin { get; set; } = 10_000_000;
+    /// <summary>全表查行数下限。在获取数据表行数时，先根据索引表进行快速统计。如果快速统计的结果大于该值，则使用快速统计的结果。反之则进行 count(*) 操作获取精确统计。默认1000万</summary>
+    [Description("全表查行数下限。在获取数据表行数时，先根据索引表进行快速统计。如果快速统计的结果大于该值，则使用快速统计的结果。反之则进行 count(*) 操作获取精确统计。调小该值可避免大表页面首次访问太慢，调大该值可获得精确行数。默认1000万")]
+    public Int32 FullCountFloor { get; set; } = 10_000_000;
+
+    /// <summary>模型目录。从该目录加载连接名指定的模型文件，替代实体类模型，按需配置修改实体类所映射的表名字段名</summary>
+    [Description("模型目录。从该目录加载连接名指定的模型文件，替代实体类模型，按需配置修改实体类所映射的表名字段名")]
+    public String ModelPath { get; set; } = "Models";
+    #endregion
+
+    #region 缓存
+    /// <summary>数据层缓存。根据sql做缓存，默认0秒</summary>
+    [Category("缓存")]
+    [Description("数据层缓存。根据sql做缓存，默认0秒")]
+    public Int32 DataCacheExpire { get; set; }
+
+    /// <summary>实体缓存过期。整表缓存实体列表，默认10秒</summary>
+    [Category("缓存")]
+    [Description("实体缓存过期。整表缓存实体列表，默认10秒")]
+    public Int32 EntityCacheExpire { get; set; } = 10;
+
+    /// <summary>单对象缓存过期。按主键缓存实体，默认10秒</summary>
+    [Category("缓存")]
+    [Description("单对象缓存过期。按主键缓存实体，默认10秒")]
+    public Int32 SingleCacheExpire { get; set; } = 10;
+
+    /// <summary>扩展属性过期。扩展属性Extends缓存，默认10秒</summary>
+    [Category("缓存")]
+    [Description("扩展属性过期。扩展属性Extends缓存，默认10秒")]
+    public Int32 ExtendExpire { get; set; } = 10;
+
+    /// <summary>字段缓存过期。缓存表中分类型字段的分组数据，默认3600秒</summary>
+    [Category("缓存")]
+    [Description("字段缓存过期。缓存表中分类型字段的分组数据，默认3600秒")]
+    public Int32 FieldCacheExpire { get; set; } = 3600;
+
+    /// <summary>缓存统计周期。在日志中定期输出各个缓存的统计数据，用于分析性能问题，单位秒，0表示不输出，默认3600秒</summary>
+    [Category("缓存")]
+    [Description("缓存统计周期。在日志中定期输出各个缓存的统计数据，用于分析性能问题，单位秒，0表示不输出，默认3600秒")]
+    public Int32 CacheStatPeriod { get; set; } = 3600;
     #endregion
 
     #region 方法

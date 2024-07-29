@@ -87,6 +87,27 @@ namespace SKIT.FlurlHttpClient.Wechat.Work.Models
                 [Newtonsoft.Json.JsonProperty("file_info")]
                 [System.Text.Json.Serialization.JsonPropertyName("file_info")]
                 public string? FileInfo { get; set; }
+
+                /// <summary>
+                /// 获取或设置申请人姓名。
+                /// </summary>
+                [Newtonsoft.Json.JsonProperty("applicant_name")]
+                [System.Text.Json.Serialization.JsonPropertyName("applicant_name")]
+                public string? ApplicantName { get; set; }
+
+                /// <summary>
+                /// 获取或设置设备类型。
+                /// </summary>
+                [Newtonsoft.Json.JsonProperty("device_type")]
+                [System.Text.Json.Serialization.JsonPropertyName("device_type")]
+                public int? DeviceType { get; set; }
+
+                /// <summary>
+                /// 获取或设置设备编码。
+                /// </summary>
+                [Newtonsoft.Json.JsonProperty("device_code")]
+                [System.Text.Json.Serialization.JsonPropertyName("device_code")]
+                public string? DeviceCode { get; set; }
             }
         }
 

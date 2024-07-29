@@ -21,6 +21,7 @@ using XCode;
 using XCode.Cache;
 using XCode.Configuration;
 using XCode.DataAccessLayer;
+using XCode.Exceptions;
 using XCode.Membership;
 using XCode.Shards;
 
@@ -135,6 +136,26 @@ public partial class OAuthLog : DHEntityBase<OAuthLog> {
     /// <summary>删除指定日期之前的数据</summary>
     /// <param name="date"></param>
     /// <returns></returns>
-    public static Int32 DeleteBefore(DateTime date) => Delete(_.Id < Meta.Factory.Snow.GetId(date) & _.UserId == 0);
+    public static Int32 DeleteBefore(DateTime date)
+    {
+        // SQLite下日志表较大时，删除可能报错，可以查询出来逐个删除
+        var where = _.Id < Meta.Factory.Snow.GetId(date) & _.UserId == 0;
+        try
+        {
+            return Delete(where);
+        }
+        catch (XSqlException)
+        {
+            var rs = 0;
+            for (var i = 0; i < 100; i++)
+            {
+                var list = FindAll(where, null, null, 0, 10000);
+                if (list.Count == 0) break;
+
+                rs += list.Delete();
+            }
+            return rs;
+        }
+    }
     #endregion
 }

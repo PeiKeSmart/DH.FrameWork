@@ -2,7 +2,7 @@ using System;
 
 namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Settings
 {
-    public class Credentials
+    public sealed class Credentials
     {
         /// <summary>
         /// 初始化客户端时 <see cref="WechatTenpayClientOptions.MerchantId"/> 的副本。
@@ -31,7 +31,7 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Settings
 
         internal Credentials(WechatTenpayClientOptions options)
         {
-            if (options == null) throw new ArgumentNullException(nameof(options));
+            if (options is null) throw new ArgumentNullException(nameof(options));
 
             MerchantId = options.MerchantId;
             MerchantV3Secret = options.MerchantV3Secret;

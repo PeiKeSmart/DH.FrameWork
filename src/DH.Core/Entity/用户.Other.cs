@@ -1,9 +1,9 @@
-﻿using DH.Models;
+﻿using System.Text.Json;
+
+using DH.Models;
 
 using NewLife;
 using NewLife.Data;
-
-using System.Text.Json;
 
 using XCode;
 using XCode.Membership;
@@ -113,7 +113,7 @@ public partial class UserE : User {
         }
         if (!key.IsNullOrWhiteSpace())
         {
-            exp &= _.Code.StartsWith(key) | _.Name.StartsWith(key) | _.DisplayName.StartsWith(key) | _.Mobile.StartsWith(key) | _.Mail.StartsWith(key);
+            exp &= _.Code.Contains(key) | _.Name.Contains(key) | _.DisplayName.Contains(key) | _.Mobile.Contains(key) | _.Mail.Contains(key);
         }
 
         p.Sort = "Id";
@@ -876,7 +876,7 @@ public partial class UserE : User {
     /// <param name="StarTime"></param>
     /// <param name="UId"></param>
     /// <returns></returns>
-    public static Int64 FindCountByCreateTime(DateTime StarTime, Int32 UId)
+    public static Int64 FindCountByCreateTime(DateTime StarTime, Int32? UId)
     {
         if (StarTime < DateTime.MinValue)
         {

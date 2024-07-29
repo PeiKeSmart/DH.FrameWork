@@ -5,6 +5,11 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Events
     /// <summary>
     /// <para>表示 PAYSCORE.USER_CONFIRM（针对直连商户）通知的数据。</para>
     /// <para>表示 PAYSCORE.USER_PAID（针对直连商户）通知的数据。</para>
+    /// <para>
+    /// REF: <br/>
+    /// <![CDATA[ https://pay.weixin.qq.com/docs/merchant/apis/weixin-pay-score/success-notification.html ]]> <br/>
+    /// <![CDATA[ https://pay.weixin.qq.com/docs/merchant/apis/weixin-pay-score/confirm-notification.html ]]>
+    /// </para>
     /// </summary>
     public class PayScoreServiceOrderResource : WechatTenpayEvent.Types.IDecryptedResource
     {
@@ -71,9 +76,9 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Events
                 /// 获取或设置服务开始时间。
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("start_time")]
-                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.PureDigitalTextDateTimeOffsetConverter))]
+                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.Common.DigitalDateTimeOffsetConverter))]
                 [System.Text.Json.Serialization.JsonPropertyName("start_time")]
-                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.PureDigitalTextDateTimeOffsetConverter))]
+                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.DigitalDateTimeOffsetConverter))]
                 public DateTimeOffset StartTime { get; set; }
 
                 /// <summary>
@@ -87,9 +92,9 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Events
                 /// 获取或设置服务结束时间。
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("end_time")]
-                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.PureDigitalTextNullableDateTimeOffsetConverter))]
+                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.Common.DigitalDateTimeOffsetConverter))]
                 [System.Text.Json.Serialization.JsonPropertyName("end_time")]
-                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.PureDigitalTextNullableDateTimeOffsetConverter))]
+                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.DigitalDateTimeOffsetConverter))]
                 public DateTimeOffset? EndTime { get; set; }
 
                 /// <summary>

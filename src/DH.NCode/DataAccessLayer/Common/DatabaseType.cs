@@ -57,6 +57,14 @@ public enum DatabaseType
     [Description("Hana数据库")]
     Hana = 12,
 
+    /// <summary>人大金仓(KingBase)数据库</summary>
+    [Description("人大金仓(KingBase)数据库")]
+    KingBase = 13,
+
+    /// <summary>瀚高(HighGo)数据库</summary>
+    [Description("瀚高(HighGo)数据库")]
+    HighGo = 14,
+
     ///// <summary>网络虚拟数据库</summary>
     //[Description("网络虚拟数据库")]
     //Network = 100,

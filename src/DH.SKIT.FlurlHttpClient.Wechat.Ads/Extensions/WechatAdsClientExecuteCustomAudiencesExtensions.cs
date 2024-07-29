@@ -23,10 +23,10 @@ namespace SKIT.FlurlHttpClient.Wechat.Ads
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "custom_audiences", "add")
+                .CreateFlurlRequest(request, HttpMethod.Post, "custom_audiences", "add")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendRequestWithJsonAsync<Models.CustomAudiencesAddResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsJsonAsync<Models.CustomAudiencesAddResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -42,10 +42,10 @@ namespace SKIT.FlurlHttpClient.Wechat.Ads
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "custom_audiences", "update")
+                .CreateFlurlRequest(request, HttpMethod.Post, "custom_audiences", "update")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendRequestWithJsonAsync<Models.CustomAudiencesUpdateResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsJsonAsync<Models.CustomAudiencesUpdateResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -61,19 +61,19 @@ namespace SKIT.FlurlHttpClient.Wechat.Ads
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Get, "custom_audiences", "get")
+                .CreateFlurlRequest(request, HttpMethod.Get, "custom_audiences", "get")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            if (request.CustomAudienceId != null)
+            if (request.CustomAudienceId is not null)
                 flurlReq.SetQueryParam("audience_id", request.CustomAudienceId.Value);
 
-            if (request.PageSize != null)
+            if (request.PageSize is not null)
                 flurlReq.SetQueryParam("page_size", request.PageSize.Value);
 
-            if (request.Page != null)
+            if (request.Page is not null)
                 flurlReq.SetQueryParam("page", request.Page.Value);
 
-            return await client.SendRequestWithJsonAsync<Models.CustomAudiencesGetResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsJsonAsync<Models.CustomAudiencesGetResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         #region Files
@@ -101,10 +101,10 @@ namespace SKIT.FlurlHttpClient.Wechat.Ads
             fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("application/zip");
             fileContent.Headers.ContentLength = request.FileBytes?.Length;
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "custom_audience_files", "add")
+                .CreateFlurlRequest(request, HttpMethod.Post, "custom_audience_files", "add")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendRequestAsync<Models.CustomAudienceFilesAddResponse>(flurlReq, httpContent: httpContent, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsync<Models.CustomAudienceFilesAddResponse>(flurlReq, httpContent: httpContent, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -120,22 +120,22 @@ namespace SKIT.FlurlHttpClient.Wechat.Ads
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Get, "custom_audience_files", "get")
+                .CreateFlurlRequest(request, HttpMethod.Get, "custom_audience_files", "get")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            if (request.CustomAudienceId != null)
+            if (request.CustomAudienceId is not null)
                 flurlReq.SetQueryParam("audience_id", request.CustomAudienceId.Value);
 
-            if (request.CustomAudienceFileId != null)
+            if (request.CustomAudienceFileId is not null)
                 flurlReq.SetQueryParam("custom_audience_file_id", request.CustomAudienceFileId.Value);
 
-            if (request.PageSize != null)
+            if (request.PageSize is not null)
                 flurlReq.SetQueryParam("page_size", request.PageSize.Value);
 
-            if (request.Page != null)
+            if (request.Page is not null)
                 flurlReq.SetQueryParam("page", request.Page.Value);
 
-            return await client.SendRequestWithJsonAsync<Models.CustomAudienceFilesGetResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsJsonAsync<Models.CustomAudienceFilesGetResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
         #endregion
     }

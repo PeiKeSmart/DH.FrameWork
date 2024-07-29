@@ -4,6 +4,7 @@ using System.Net;
 using NewLife;
 using NewLife.Collections;
 using NewLife.Data;
+using NewLife.Log;
 
 namespace XCode.DataAccessLayer;
 
@@ -272,8 +273,9 @@ internal class HanaSession : RemoteDbSession
         var db = Database as DbBase;
 
         // 字段列表
-        if (columns == null) columns = table.Columns.ToArray();
+        columns ??= table.Columns.ToArray();
         BuildInsert(sb, db, action, table, columns);
+        DefaultSpan.Current?.AppendTag(sb.ToString());
 
         // 值列表
         sb.Append(" Values");
@@ -547,7 +549,7 @@ internal class HanaMetaData : RemoteDbMetaData
         return dt != null && dt.Rows != null && dt.Rows.Count > 0;
     }
 
-    public override String CreateDatabaseSQL(String dbname, String file) => base.CreateDatabaseSQL(dbname, file) + " DEFAULT CHARACTER SET utf8mb4";
+    public override String CreateDatabaseSQL(String dbname, String? file) => base.CreateDatabaseSQL(dbname, file) + " DEFAULT CHARACTER SET utf8mb4";
 
     public override String DropDatabaseSQL(String dbname) => $"Drop Database If Exists {Database.FormatName(dbname)}";
 
@@ -587,14 +589,14 @@ internal class HanaMetaData : RemoteDbMetaData
         return sb.Put(true);
     }
 
-    public override String AddTableDescriptionSQL(IDataTable table)
+    public override String? AddTableDescriptionSQL(IDataTable table)
     {
         if (String.IsNullOrEmpty(table.Description)) return null;
 
         return $"Alter Table {FormatName(table)} Comment '{table.Description}'";
     }
 
-    public override String AlterColumnSQL(IDataColumn field, IDataColumn oldfield) => $"Alter Table {FormatName(field.Table)} Modify Column {FieldClause(field, false)}";
+    public override String AlterColumnSQL(IDataColumn field, IDataColumn? oldfield) => $"Alter Table {FormatName(field.Table)} Modify Column {FieldClause(field, false)}";
 
     public override String AddColumnDescriptionSQL(IDataColumn field) =>
         // 返回String.Empty表示已经在别的SQL中处理

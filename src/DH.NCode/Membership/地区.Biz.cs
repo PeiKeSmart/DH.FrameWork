@@ -668,6 +668,9 @@ public partial class Area : Entity<Area>
             var bs = new List<Area>();
             foreach (var item in list)
             {
+                // 香港澳门没有三层地区，一级直辖三级
+                if (i == layer - 1 && item.ID > 810000) continue;
+
                 bs.AddRange(item.Childs);
             }
 
@@ -892,7 +895,7 @@ public partial class Area : Entity<Area>
     {
         //if (url.IsNullOrEmpty()) url = "http://www.mca.gov.cn/article/sj/xzqh/2020/2020/2020092500801.html";
         //if (url.IsNullOrEmpty()) url = "https://www.mca.gov.cn/mzsj/xzqh/2022/202201xzqh.html";
-        if (url.IsNullOrEmpty()) url = "https://x.newlifex.com/202201xzqh.htm";
+        if (url.IsNullOrEmpty()) url = "http://x.newlifex.com/202301xzqh.html";
 
         var http = new HttpClient();
         var html = Task.Run(() => http.GetStringAsync(url)).Result;

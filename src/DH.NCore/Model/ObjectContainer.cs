@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 namespace NewLife.Model;
@@ -13,10 +12,17 @@ public class ObjectContainer : IObjectContainer
 {
     #region 静态
     /// <summary>当前容器</summary>
-    public static IObjectContainer Current { get; set; } = new ObjectContainer();
+    public static IObjectContainer Current { get; set; }
 
     /// <summary>当前容器提供者</summary>
-    public static IServiceProvider Provider { get; set; } = new ServiceProvider(Current);
+    public static IServiceProvider Provider { get; set; }
+
+    static ObjectContainer()
+    {
+        var ioc = new ObjectContainer();
+        Current = ioc;
+        Provider = ioc.BuildServiceProvider() ?? new ServiceProvider(ioc);
+    }
     #endregion
 
     #region 属性
@@ -117,27 +123,30 @@ public class ObjectContainer : IObjectContainer
     public virtual Object Resolve(IObject item, IServiceProvider? serviceProvider)
     {
         var map = item as ServiceDescriptor;
+        if (item.Lifetime == ObjectLifetime.Singleton && map?.Instance != null) return map.Instance;
+
         var type = item.ImplementationType ?? item.ServiceType;
+        serviceProvider ??= new ServiceProvider(this);
         switch (item.Lifetime)
         {
             case ObjectLifetime.Singleton:
                 if (map != null)
                 {
-                    map.Instance ??= CreateInstance(type, serviceProvider ?? new ServiceProvider(this), map.Factory);
+                    map.Instance ??= CreateInstance(type, serviceProvider, map.Factory, true)!;
 
                     return map.Instance;
                 }
-                return CreateInstance(type, serviceProvider ?? new ServiceProvider(this), null);
+                return CreateInstance(type, serviceProvider, null, true)!;
 
             case ObjectLifetime.Scoped:
             case ObjectLifetime.Transient:
             default:
-                return CreateInstance(type, serviceProvider ?? new ServiceProvider(this), map?.Factory);
+                return CreateInstance(type, serviceProvider, map?.Factory, true)!;
         }
     }
 
     private static IDictionary<TypeCode, Object?>? _defs;
-    private static Object CreateInstance(Type type, IServiceProvider provider, Func<IServiceProvider, Object>? factory)
+    internal static Object? CreateInstance(Type type, IServiceProvider provider, Func<IServiceProvider, Object>? factory, Boolean throwOnError)
     {
         if (factory != null) return factory(provider);
 
@@ -208,7 +217,10 @@ public class ObjectContainer : IObjectContainer
             }
         }
 
-        throw new InvalidOperationException($"No suitable constructor was found for '{type}'. Please confirm that all required parameters for the type constructor are registered. Unable to parse parameter '{errorParameter}'");
+        if (throwOnError)
+            throw new InvalidOperationException($"No suitable constructor was found for '{type}'. Please confirm that all required parameters for the type constructor are registered. Unable to parse parameter '{errorParameter}'");
+
+        return null;
     }
     #endregion
 

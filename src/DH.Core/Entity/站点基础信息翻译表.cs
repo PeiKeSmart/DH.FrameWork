@@ -153,6 +153,21 @@ public partial class SiteInfoLan : ISiteInfoLan, IEntity<ISiteInfoLan>
     #region 关联映射
     #endregion
 
+    #region 扩展查询
+    /// <summary>根据站点基础信息Id查找</summary>
+    /// <param name="siteInfoId">站点基础信息Id</param>
+    /// <returns>实体列表</returns>
+    public static IList<SiteInfoLan> FindAllBySiteInfoId(Int32 siteInfoId)
+    {
+        if (siteInfoId < 0) return [];
+
+        // 实体缓存
+        if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => e.SiteInfoId == siteInfoId);
+
+        return FindAll(_.SiteInfoId == siteInfoId);
+    }
+    #endregion
+
     #region 字段名
     /// <summary>取得站点基础信息翻译表字段信息的快捷方式</summary>
     public partial class _

@@ -2,14 +2,14 @@
 using NewLife.IoT.Drivers;
 using NewLife.Siemens.Models;
 
-namespace NewLife.Omron.Drivers;
+namespace NewLife.Siemens.Drivers;
 
 /// <summary>Omron参数</summary>
 public class SiemensParameter : IDriverParameter
 {
     /// <summary>地址。例如 127.0.0.1:9600</summary>
     [Description("地址。例如 127.0.0.1:9600")]
-    public String Address { get; set; }
+    public String? Address { get; set; }
 
     /// <summary>西门子PLC种类</summary>
     [Description("西门子PLC种类")]

@@ -88,7 +88,7 @@ internal partial class DbMetaData
         var dbExist = false;
         try
         {
-            dbExist = (Boolean)SetSchema(DDLSchema.DatabaseExist, null);
+            dbExist = (Boolean)(SetSchema(DDLSchema.DatabaseExist) ?? false);
         }
         catch
         {
@@ -101,13 +101,13 @@ internal partial class DbMetaData
             if (mode > Migration.ReadOnly)
             {
                 WriteLog("创建数据库：{0}", ConnName);
-                SetSchema(DDLSchema.CreateDatabase, null, null);
+                SetSchema(DDLSchema.CreateDatabase, [null, null]);
 
                 dbExist = true;
             }
             else
             {
-                var sql = GetSchemaSQL(DDLSchema.CreateDatabase, null, null);
+                var sql = GetSchemaSQL(DDLSchema.CreateDatabase, [null, null]);
                 if (String.IsNullOrEmpty(sql))
                     WriteLog("请为连接{0}创建数据库！", ConnName);
                 else
@@ -152,7 +152,7 @@ internal partial class DbMetaData
         }
     }
 
-    protected virtual void CheckTable(IDataTable entitytable, IDataTable dbtable, Migration mode)
+    protected virtual void CheckTable(IDataTable entitytable, IDataTable? dbtable, Migration mode)
     {
         var @readonly = mode <= Migration.ReadOnly;
         if (dbtable == null)
@@ -188,7 +188,7 @@ internal partial class DbMetaData
             sql = CheckAddIndex(entitytable, dbtable, mode);
             if (!sql.IsNullOrEmpty()) Append(sb, ";" + Environment.NewLine, sql);
 
-            if (sb.Length > 0) WriteLog($"DDL模式[{mode}]，请手工修改表：{Environment.NewLine}{sb}");
+            if (sb.Length > 0) WriteLog($"DDL模式[{mode}]，请手工修改表[{dbtable.TableName}]：{Environment.NewLine}{sb}");
         }
     }
 
@@ -261,6 +261,7 @@ internal partial class DbMetaData
         #region 修改列
         // 开发时的实体数据库
         var entityDb = DbFactory.Create(entitytable.DbType);
+        //if (entityDb == null) throw new NotSupportedException($"Not supported DbType [{entitytable.DbType}]");
 
         foreach (var item in entitytable.Columns)
         {
@@ -269,7 +270,7 @@ internal partial class DbMetaData
             // 对于修改列，只读或者只创建，都只要sql
             if (IsColumnTypeChanged(item, dbf))
             {
-                WriteLog("字段[{0}.{1}]类型需要由数据库的[{2}]改变为实体的[{3}]，RawType={4}", entitytable.Name, item.Name, dbf.DataType.Name, item.DataType.FullName.TrimStart("System."), dbf.RawType);
+                WriteLog("字段[{0}.{1}]类型需要由数据库的[{2}]改变为实体的[{3}]，RawType={4}", entitytable.Name, item.Name, dbf.DataType?.Name, item.DataType?.FullName.TrimStart("System."), dbf.RawType);
                 PerformSchema(sb, @readonly || onlyCreate, DDLSchema.AlterColumn, item, dbf);
             }
             else if (IsColumnLengthChanged(item, dbf, entityDb))
@@ -431,7 +432,7 @@ internal partial class DbMetaData
     /// <param name="dbColumn"></param>
     /// <param name="entityDb"></param>
     /// <returns></returns>
-    protected virtual Boolean IsColumnChanged(IDataColumn entityColumn, IDataColumn dbColumn, IDatabase entityDb)
+    protected virtual Boolean IsColumnChanged(IDataColumn entityColumn, IDataColumn dbColumn, IDatabase? entityDb)
     {
         // 自增、主键、非空等，不再认为是字段修改，减轻反向工程复杂度
         //if (entityColumn.Identity != dbColumn.Identity) return true;
@@ -461,7 +462,7 @@ internal partial class DbMetaData
     /// <param name="dbColumn"></param>
     /// <param name="entityDb"></param>
     /// <returns></returns>
-    protected virtual Boolean IsColumnLengthChanged(IDataColumn entityColumn, IDataColumn dbColumn, IDatabase entityDb)
+    protected virtual Boolean IsColumnLengthChanged(IDataColumn entityColumn, IDataColumn dbColumn, IDatabase? entityDb)
     {
         // 是否已改变
         var isChanged = false;
@@ -484,6 +485,8 @@ internal partial class DbMetaData
     protected virtual Boolean IsColumnTypeChanged(IDataColumn entityColumn, IDataColumn dbColumn)
     {
         var type = entityColumn.DataType;
+        if (type == null || dbColumn.DataType == null) return true;
+
         //if (type.IsEnum) type = typeof(Int32);
         if (type.IsEnum && (dbColumn.DataType.IsInt() || dbColumn.DataType == typeof(Boolean))) return false;
         if (type == dbColumn.DataType) return false;
@@ -566,7 +569,7 @@ internal partial class DbMetaData
                             if (sbName.Length > 0) sbName.Append(", ");
                             if (sbValue.Length > 0) sbValue.Append(", ");
                             sbName.Append(fname);
-                            sbValue.Append(db.FormatDateTime(DateTime.MinValue));
+                            sbValue.Append(db.FormatDateTime(item, DateTime.MinValue));
                         }
                         else if (type == typeof(Boolean))
                         {
@@ -592,10 +595,10 @@ internal partial class DbMetaData
                         if (type == typeof(String))
                             sbValue.Append($"ifnull({fname}, \'\')");
                         else if (type == typeof(Int16) || type == typeof(Int32) || type == typeof(Int64) ||
-                           type == typeof(Single) || type == typeof(Double) || type == typeof(Decimal) || type.IsEnum)
+                           type == typeof(Single) || type == typeof(Double) || type == typeof(Decimal) || type != null && type.IsEnum)
                             sbValue.Append($"ifnull({fname}, 0)");
                         else if (type == typeof(DateTime))
-                            sbValue.Append($"ifnull({fname}, {db.FormatDateTime(DateTime.MinValue)})");
+                            sbValue.Append($"ifnull({fname}, {db.FormatDateTime(field, DateTime.MinValue)})");
                         else if (type == typeof(Boolean))
                             sbValue.Append($"ifnull({fname}, {db.FormatValue(item, false)})");
                         else
@@ -659,7 +662,7 @@ internal partial class DbMetaData
         {
             // 没办法形成SQL，输出日志信息
             var s = new StringBuilder();
-            if (values != null && values.Length > 0)
+            if (values.Length > 0)
             {
                 foreach (var item in values)
                 {
@@ -670,7 +673,7 @@ internal partial class DbMetaData
 
             IDataColumn? dc = null;
             IDataTable? dt = null;
-            if (values != null && values.Length > 0)
+            if (values.Length > 0)
             {
                 dc = values[0] as IDataColumn;
                 dt = values[0] as IDataTable;
@@ -679,6 +682,7 @@ internal partial class DbMetaData
             switch (schema)
             {
                 case DDLSchema.AddTableDescription:
+                    if (dt == null) throw new ArgumentNullException(nameof(values));
                     WriteLog("{0}({1},{2})", schema, dt.TableName, dt.Description);
                     break;
                 case DDLSchema.DropTableDescription:
@@ -690,12 +694,15 @@ internal partial class DbMetaData
                 //case DDLSchema.AlterColumn:
                 //    break;
                 case DDLSchema.DropColumn:
+                    if (dc == null) throw new ArgumentNullException(nameof(values));
                     WriteLog("{0}({1})", schema, dc.ColumnName);
                     break;
                 case DDLSchema.AddColumnDescription:
+                    if (dc == null) throw new ArgumentNullException(nameof(values));
                     WriteLog("{0}({1},{2})", schema, dc.ColumnName, dc.Description);
                     break;
                 case DDLSchema.DropColumnDescription:
+                    if (dc == null) throw new ArgumentNullException(nameof(values));
                     WriteLog("{0}({1})", schema, dc.ColumnName);
                     break;
                 default:
@@ -786,24 +793,24 @@ internal partial class DbMetaData
     /// <param name="schema">数据定义模式</param>
     /// <param name="values">其它信息</param>
     /// <returns></returns>
-    public virtual String GetSchemaSQL(DDLSchema schema, params Object[] values)
+    public virtual String? GetSchemaSQL(DDLSchema schema, params Object?[] values)
     {
         return schema switch
         {
-            DDLSchema.CreateDatabase => CreateDatabaseSQL((String)values[0], (String)values[1]),
-            DDLSchema.DropDatabase => DropDatabaseSQL((String)values[0]),
-            DDLSchema.DatabaseExist => DatabaseExistSQL(values == null || values.Length <= 0 ? null : (String)values[0]),
-            DDLSchema.CreateTable => CreateTableSQL((IDataTable)values[0]),
-            DDLSchema.DropTable => DropTableSQL((IDataTable)values[0]),
-            DDLSchema.AddTableDescription => AddTableDescriptionSQL((IDataTable)values[0]),
-            DDLSchema.DropTableDescription => DropTableDescriptionSQL((IDataTable)values[0]),
-            DDLSchema.AddColumn => AddColumnSQL((IDataColumn)values[0]),
-            DDLSchema.AlterColumn => AlterColumnSQL((IDataColumn)values[0], values.Length > 1 ? (IDataColumn)values[1] : null),
-            DDLSchema.DropColumn => DropColumnSQL((IDataColumn)values[0]),
-            DDLSchema.AddColumnDescription => AddColumnDescriptionSQL((IDataColumn)values[0]),
-            DDLSchema.DropColumnDescription => DropColumnDescriptionSQL((IDataColumn)values[0]),
-            DDLSchema.CreateIndex => CreateIndexSQL((IDataIndex)values[0]),
-            DDLSchema.DropIndex => DropIndexSQL((IDataIndex)values[0]),
+            DDLSchema.CreateDatabase => CreateDatabaseSQL((String)values[0]!, (String?)values[1]),
+            DDLSchema.DropDatabase => DropDatabaseSQL((String)values[0]!),
+            DDLSchema.DatabaseExist => DatabaseExistSQL((String)values[0]!),
+            DDLSchema.CreateTable => CreateTableSQL((IDataTable)values[0]!),
+            DDLSchema.DropTable => DropTableSQL((IDataTable)values[0]!),
+            DDLSchema.AddTableDescription => AddTableDescriptionSQL((IDataTable)values[0]!),
+            DDLSchema.DropTableDescription => DropTableDescriptionSQL((IDataTable)values[0]!),
+            DDLSchema.AddColumn => AddColumnSQL((IDataColumn)values[0]!),
+            DDLSchema.AlterColumn => AlterColumnSQL((IDataColumn)values[0]!, values.Length > 1 ? (IDataColumn)values[1]! : null),
+            DDLSchema.DropColumn => DropColumnSQL((IDataColumn)values[0]!),
+            DDLSchema.AddColumnDescription => AddColumnDescriptionSQL((IDataColumn)values[0]!),
+            DDLSchema.DropColumnDescription => DropColumnDescriptionSQL((IDataColumn)values[0]!),
+            DDLSchema.CreateIndex => CreateIndexSQL((IDataIndex)values[0]!),
+            DDLSchema.DropIndex => DropIndexSQL((IDataIndex)values[0]!),
             DDLSchema.CompactDatabase => CompactDatabaseSQL(),
             _ => throw new NotSupportedException("不支持该操作！"),
         };
@@ -813,13 +820,14 @@ internal partial class DbMetaData
     /// <param name="schema">数据定义模式</param>
     /// <param name="values">其它信息</param>
     /// <returns></returns>
-    public virtual Object? SetSchema(DDLSchema schema, params Object[]? values)
+    public virtual Object? SetSchema(DDLSchema schema, params Object?[] values)
     {
-        var db = Database as DbBase;
+        if (Database is not DbBase db) return null;
+
         using var span = db.Tracer?.NewSpan($"db:{db.ConnName}:SetSchema:{schema}", values);
 
         var sql = GetSchemaSQL(schema, values);
-        if (String.IsNullOrEmpty(sql)) return null;
+        if (sql.IsNullOrEmpty()) return null;
 
         if (span != null) span.Tag += Environment.NewLine + sql;
 
@@ -930,7 +938,7 @@ internal partial class DbMetaData
     /// <param name="field"></param>
     /// <param name="onlyDefine"></param>
     /// <returns></returns>
-    protected virtual String GetDefault(IDataColumn field, Boolean onlyDefine)
+    protected virtual String? GetDefault(IDataColumn field, Boolean onlyDefine)
     {
         if (field.DataType.IsInt() || field.DataType.IsEnum)
             return $" DEFAULT {field.DefaultValue.ToInt()}";
@@ -948,11 +956,11 @@ internal partial class DbMetaData
     #endregion
 
     #region 数据定义语句
-    public virtual String CreateDatabaseSQL(String dbname, String file) => $"Create Database {Database.FormatName(dbname)}";
+    public virtual String CreateDatabaseSQL(String dbname, String? file) => $"Create Database {Database.FormatName(dbname)}";
 
     public virtual String DropDatabaseSQL(String dbname) => $"Drop Database {Database.FormatName(dbname)}";
 
-    public virtual String DatabaseExistSQL(String dbname) => null;
+    public virtual String? DatabaseExistSQL(String dbname) => null;
 
     public virtual String CreateTableSQL(IDataTable table)
     {
@@ -977,19 +985,19 @@ internal partial class DbMetaData
 
     //public virtual String TableExistSQL(IDataTable table) => throw new NotSupportedException("该功能未实现！");
 
-    public virtual String AddTableDescriptionSQL(IDataTable table) => null;
+    public virtual String? AddTableDescriptionSQL(IDataTable table) => null;
 
-    public virtual String DropTableDescriptionSQL(IDataTable table) => null;
+    public virtual String? DropTableDescriptionSQL(IDataTable table) => null;
 
-    public virtual String AddColumnSQL(IDataColumn field) => $"Alter Table {FormatName(field.Table)} Add {FieldClause(field, true)}";
+    public virtual String? AddColumnSQL(IDataColumn field) => $"Alter Table {FormatName(field.Table)} Add {FieldClause(field, true)}";
 
-    public virtual String AlterColumnSQL(IDataColumn field, IDataColumn oldfield) => $"Alter Table {FormatName(field.Table)} Alter Column {FieldClause(field, false)}";
+    public virtual String? AlterColumnSQL(IDataColumn field, IDataColumn? oldfield) => $"Alter Table {FormatName(field.Table)} Alter Column {FieldClause(field, false)}";
 
-    public virtual String DropColumnSQL(IDataColumn field) => $"Alter Table {FormatName(field.Table)} Drop Column {FormatName(field)}";
+    public virtual String? DropColumnSQL(IDataColumn field) => $"Alter Table {FormatName(field.Table)} Drop Column {FormatName(field)}";
 
-    public virtual String AddColumnDescriptionSQL(IDataColumn field) => null;
+    public virtual String? AddColumnDescriptionSQL(IDataColumn field) => null;
 
-    public virtual String DropColumnDescriptionSQL(IDataColumn field) => null;
+    public virtual String? DropColumnDescriptionSQL(IDataColumn field) => null;
 
     public virtual String CreateIndexSQL(IDataIndex index)
     {
@@ -1008,11 +1016,11 @@ internal partial class DbMetaData
 
     public virtual String DropIndexSQL(IDataIndex index) => $"Drop Index {index.Name} On {FormatName(index.Table)}";
 
-    public virtual String CompactDatabaseSQL() => null;
+    public virtual String? CompactDatabaseSQL() => null;
     #endregion
 
     #region 操作
-    public virtual String Backup(String dbname, String bakfile, Boolean compressed) => null;
+    public virtual String? Backup(String dbname, String? bakfile, Boolean compressed) => null;
 
     //public virtual Int32 CompactDatabase() => -1;
     #endregion

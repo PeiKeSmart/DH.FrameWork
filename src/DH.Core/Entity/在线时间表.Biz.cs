@@ -1,3 +1,4 @@
+using DH.Extensions;
 using DH.Helpers;
 using DH.Timing;
 
@@ -362,8 +363,6 @@ public partial class SysOnlineTime : DHEntityBase<SysOnlineTime> {
         var model = FindByIdAndYearAndMonth(uid, updateTime.Year, updateTime.Month);
         if (model != null)
         {
-            XTrace.WriteLine($"测试写入在线时间表的数据3：{onlineTime}_{model.ToJson()}");
-
             model.UId = uid;
             model.RoleId = roleId;
             model.UName = uName;
@@ -379,6 +378,11 @@ public partial class SysOnlineTime : DHEntityBase<SysOnlineTime> {
             else
             {
                 model.DayTimes += onlineTime;
+            }
+
+            if (model.DayTimes < 0)
+            {
+                model.DayTimes = Math.Abs(model.DayTimes);
             }
 
             model.UpdateTime = updateTime;
@@ -511,8 +515,6 @@ public partial class SysOnlineTime : DHEntityBase<SysOnlineTime> {
             //model[$"Day{updateTime.Day}"] = model.DayTimes;
             //model.SetItem($"Day{updateTime.Day}", model.DayTimes);
 
-            XTrace.WriteLine($"测试写入在线时间表的数据2：{onlineTime}_{model.ToJson()}");
-
             model.Update();
         }
         else
@@ -526,6 +528,11 @@ public partial class SysOnlineTime : DHEntityBase<SysOnlineTime> {
             model.MonthTimes = onlineTime;
             model.DayTimes = onlineTime;
             model.RoleId = roleId;
+
+            if (model.DayTimes < 0)
+            {
+                model.DayTimes = Math.Abs(model.DayTimes);
+            }
 
             for (var i = 1; i <= DateTimeUtil.GetMonthLen(updateTime.Year, updateTime.Month); i++)
             {

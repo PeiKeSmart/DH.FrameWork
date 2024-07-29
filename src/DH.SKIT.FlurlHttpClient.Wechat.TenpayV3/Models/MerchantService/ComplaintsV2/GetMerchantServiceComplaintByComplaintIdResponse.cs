@@ -81,14 +81,52 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Models
                 {
                     public class SharePowerInfo
                     {
+                        public static class Types
+                        {
+                            public class ReturnAddress
+                            {
+                                /// <summary>
+                                /// 获取或设置地址。
+                                /// </summary>
+                                [Newtonsoft.Json.JsonProperty("return_address")]
+                                [System.Text.Json.Serialization.JsonPropertyName("return_address")]
+                                public string? Address { get; set; }
+
+                                /// <summary>
+                                /// 获取或设置经度。
+                                /// </summary>
+                                [Newtonsoft.Json.JsonProperty("longitude")]
+                                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.Common.TextualNumberReadOnlyConverter))]
+                                [System.Text.Json.Serialization.JsonPropertyName("longitude")]
+                                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.TextualNumberReadOnlyConverter))]
+                                public decimal? Longitude { get; set; }
+
+                                /// <summary>
+                                /// 获取或设置纬度。
+                                /// </summary>
+                                [Newtonsoft.Json.JsonProperty("latitude")]
+                                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.Common.TextualNumberReadOnlyConverter))]
+                                [System.Text.Json.Serialization.JsonPropertyName("latitude")]
+                                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.TextualNumberReadOnlyConverter))]
+                                public decimal? Latitude { get; set; }
+                            }
+                        }
+
                         /// <summary>
                         /// 获取或设置归还时间。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("return_time")]
-                        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.RFC3339NullableDateTimeOffsetConverter))]
+                        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.Common.Rfc3339DateTimeOffsetConverter))]
                         [System.Text.Json.Serialization.JsonPropertyName("return_time")]
-                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.RFC3339NullableDateTimeOffsetConverter))]
+                        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.Rfc3339DateTimeOffsetConverter))]
                         public DateTimeOffset? ReturnTime { get; set; }
+
+                        /// <summary>
+                        /// 获取或设置归还地点信息。
+                        /// </summary>
+                        [Newtonsoft.Json.JsonProperty("return_address_info")]
+                        [System.Text.Json.Serialization.JsonPropertyName("return_address_info")]
+                        public Types.ReturnAddress? ReturnAddress { get; set; }
                     }
                 }
 
@@ -133,9 +171,9 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Models
         /// 获取或设置投诉时间。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("complaint_time")]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.RFC3339DateTimeOffsetConverter))]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.Common.Rfc3339DateTimeOffsetConverter))]
         [System.Text.Json.Serialization.JsonPropertyName("complaint_time")]
-        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.RFC3339DateTimeOffsetConverter))]
+        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.Rfc3339DateTimeOffsetConverter))]
         public DateTimeOffset ComplaintTime { get; set; }
 
         /// <summary>
@@ -143,7 +181,7 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Models
         /// </summary>
         [Newtonsoft.Json.JsonProperty("complainted_mchid")]
         [System.Text.Json.Serialization.JsonPropertyName("complainted_mchid")]
-        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalStringReadOnlyConverter))]
+        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.NumericalStringReadOnlyConverter))]
         public string? ComplaintedMerchantId { get; set; }
 
         /// <summary>

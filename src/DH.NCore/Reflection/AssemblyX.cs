@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Linq;
 using System.Reflection;
 using NewLife.Collections;
 using NewLife.Log;
@@ -314,7 +310,7 @@ public class AssemblyX
         // 如果type是null，则返回所有类型
         if (_plugins.TryGetValue(baseType, out var list)) return list;
 
-        list = new List<Type>();
+        list = [];
         try
         {
             foreach (var item in Asm.GetTypes())
@@ -370,39 +366,38 @@ public class AssemblyX
                 }
             }
         }
-        if (isLoadAssembly)
+        if (!isLoadAssembly) yield break;
+
+        foreach (var item in ReflectionOnlyGetAssemblies())
         {
-            foreach (var item in ReflectionOnlyGetAssemblies())
+            //// 如果excludeGlobalTypes为true，则指检查来自非GAC引用的程序集
+            //if (excludeGlobalTypes && item.Asm.GlobalAssemblyCache) continue;
+
+            // 不搜索系统程序集，不搜索未引用基类所在程序集的程序集，优化性能
+            if (item.IsSystemAssembly || !IsReferencedFrom(item.Asm, baseAssemblyName)) continue;
+
+            var ts = item.FindPlugins(baseType);
+            if (ts != null && ts.Count > 0)
             {
-                //// 如果excludeGlobalTypes为true，则指检查来自非GAC引用的程序集
-                //if (excludeGlobalTypes && item.Asm.GlobalAssemblyCache) continue;
-
-                // 不搜索系统程序集，不搜索未引用基类所在程序集的程序集，优化性能
-                if (item.IsSystemAssembly || !IsReferencedFrom(item.Asm, baseAssemblyName)) continue;
-
-                var ts = item.FindPlugins(baseType);
-                if (ts != null && ts.Count > 0)
+                // 真实加载
+                if (XTrace.Debug)
                 {
-                    // 真实加载
-                    if (XTrace.Debug)
+                    // 如果是本目录的程序集，去掉目录前缀
+                    var file = item.Asm.Location;
+                    var root = AppDomain.CurrentDomain.BaseDirectory;
+                    if (!root.IsNullOrEmpty() && file.StartsWithIgnoreCase(root)) file = file.Substring(root.Length).TrimStart("\\");
+                    XTrace.WriteLine("AssemblyX.FindAllPlugins(\"{0}\") => {1}", baseType.FullName, file);
+                }
+                var asm2 = Assembly.LoadFrom(item.Asm.Location);
+                ts = Create(asm2)?.FindPlugins(baseType);
+                if (ts != null)
+                {
+                    foreach (var elm in ts)
                     {
-                        // 如果是本目录的程序集，去掉目录前缀
-                        var file = item.Asm.Location;
-                        var root = AppDomain.CurrentDomain.BaseDirectory;
-                        if (!root.IsNullOrEmpty() && file.StartsWithIgnoreCase(root)) file = file.Substring(root.Length).TrimStart("\\");
-                        XTrace.WriteLine("AssemblyX.FindAllPlugins(\"{0}\") => {1}", baseType.FullName, file);
-                    }
-                    var asm2 = Assembly.LoadFrom(item.Asm.Location);
-                    ts = Create(asm2)?.FindPlugins(baseType);
-                    if (ts != null)
-                    {
-                        foreach (var elm in ts)
+                        if (!list.Contains(elm))
                         {
-                            if (!list.Contains(elm))
-                            {
-                                list.Add(elm);
-                                yield return elm;
-                            }
+                            list.Add(elm);
+                            yield return elm;
                         }
                     }
                 }

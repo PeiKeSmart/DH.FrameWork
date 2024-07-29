@@ -39,6 +39,9 @@ public class TinyHttpClient : DisposeBase
     /// <summary>缓冲区大小。接收缓冲区默认64*1024</summary>
     public Int32 BufferSize { get; set; } = 64 * 1024;
 
+    /// <summary>Json序列化</summary>
+    public IJsonHost JsonHost { get; set; } = JsonHelper.Default;
+
     /// <summary>性能追踪</summary>
     public ITracer? Tracer { get; set; } = HttpHelper.Tracer;
 
@@ -206,8 +209,12 @@ public class TinyHttpClient : DisposeBase
         }
 
         // chunk编码
-        if (rs != null && rs.Count > 0 && res.Headers.TryGetValue("Transfer-Encoding", out var s) && s.EqualIgnoreCase("chunked"))
+        if (rs != null && res.Headers.TryGetValue("Transfer-Encoding", out var s) && s.EqualIgnoreCase("chunked"))
         {
+            // 如果不足则读取一个chunk，因为有可能第一个响应包只有头部
+            if (rs.Count == 0)
+                rs = await SendDataAsync(null, null).ConfigureAwait(false);
+
             res.Body = await ReadChunkAsync(rs);
         }
 
@@ -347,7 +354,7 @@ public class TinyHttpClient : DisposeBase
 
         var ps = args.ToDictionary();
         if (method.EqualIgnoreCase("Post"))
-            req.Body = ps.ToJson().GetBytes();
+            req.Body = JsonHost.Write(ps).GetBytes();
         else
         {
             var sb = Pool.StringBuilder.Get();
@@ -373,15 +380,18 @@ public class TinyHttpClient : DisposeBase
     private TResult? ProcessResponse<TResult>(Packet rs)
     {
         var str = rs.ToStr();
-        if (Type.GetTypeCode(typeof(TResult)) != TypeCode.Object) return str.ChangeType<TResult>();
+        if (typeof(TResult).IsBaseType()) return str.ChangeType<TResult>();
 
         // 反序列化
-        var dic = JsonParser.Decode(str);
+        var obj = JsonHost.Parse(str);
+        if (obj is TResult result) return result;
+
+        var dic = obj as IDictionary<String, Object?>;
         if (dic == null || !dic.TryGetValue("data", out var data)) throw new InvalidDataException("Unrecognized response data");
 
-        if (dic.TryGetValue("result", out var result))
+        if (dic.TryGetValue("result", out var result2))
         {
-            if (result is Boolean res && !res) throw new InvalidOperationException($"remote error: {data}");
+            if (result2 is Boolean res && !res) throw new InvalidOperationException($"remote error: {data}");
         }
         else if (dic.TryGetValue("code", out var code))
         {
@@ -394,7 +404,7 @@ public class TinyHttpClient : DisposeBase
 
         if (data == null) return default;
 
-        return JsonHelper.Convert<TResult>(data);
+        return JsonHost.Convert<TResult>(data);
     }
     #endregion
 

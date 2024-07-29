@@ -56,6 +56,7 @@ public class DGResult : JsonResult
     /// <param name="code">状态码</param>
     /// <param name="message">消息</param>
     /// <param name="data">数据</param>
+    /// <param name="extdata">其他数据</param>
     public DGResult(StateCode code, string message, dynamic data = null, dynamic extdata = null) : base(null)
     {
         Code = code;

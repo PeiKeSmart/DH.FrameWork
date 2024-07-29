@@ -33,7 +33,7 @@
 		<Authors>$(Company)</Authors>
 		<PackageProjectUrl>https://www.haocoding.com/</PackageProjectUrl>
 		<PackageIcon>DH.png</PackageIcon>
-		<RepositoryUrl>https://gitee.com/chuangchu/DH.FrameWork</RepositoryUrl>
+		<RepositoryUrl>https://gitee.com/dengho/DH.FrameWork</RepositoryUrl>
 		<RepositoryType>Git</RepositoryType>
 		<PackageTags>湖北登灏科技有限公司;DH组件;DH;$(AssemblyName)</PackageTags>
 		<PackageReleaseNotes>DH框架的Excel处理库</PackageReleaseNotes>
@@ -66,14 +66,19 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="DynamicExpresso.Core" Version="2.16.1" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+		<PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="2.88.8" />
+		<PackageReference Include="System.Linq.Dynamic.Core" Version="1.4.3" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Magicodes.IE.Excel" Version="2.7.5.1" />
+	  <ProjectReference Include="..\DH.Magicodes.IE.Core\DH.Magicodes.IE.Core.csproj" />
+	  <ProjectReference Include="..\DH.Magicodes.IE.EPPlus\DH.Magicodes.IE.EPPlus.csproj" />
+	  <ProjectReference Include="..\DH.NCore\DH.NCore.csproj" />
 	</ItemGroup>
 
 </Project>

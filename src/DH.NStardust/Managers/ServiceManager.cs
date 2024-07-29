@@ -2,10 +2,11 @@
 using NewLife.Http;
 using NewLife.IO;
 using NewLife.Log;
+using NewLife.Remoting.Clients;
+using NewLife.Remoting.Models;
 using NewLife.Serialization;
 using NewLife.Threading;
 using Stardust.Models;
-using Stardust.Services;
 
 namespace Stardust.Managers;
 
@@ -160,17 +161,17 @@ public class ServiceManager : DisposeBase
         _timer?.TryDispose();
         _timer = null;
 
-        //// 伴随服务停止一起退出
-        //var svcs = _services;
-        //for (var i = svcs.Count - 1; i >= 0; i--)
-        //{
-        //    var svc = svcs[i];
-        //    if (svc.Info != null && svc.Info.AutoStop)
-        //    {
-        //        svc.Stop(reason);
-        //        svcs.RemoveAt(i);
-        //    }
-        //}
+        // 伴随服务停止一起退出
+        var svcs = _controllers;
+        for (var i = svcs.Count - 1; i >= 0; i--)
+        {
+            var ctrl = svcs[i];
+            if (ctrl.Info != null && ctrl.Info.AutoStop)
+            {
+                ctrl.Stop(reason);
+                svcs.RemoveAt(i);
+            }
+        }
 
         SaveDb();
     }
@@ -422,9 +423,10 @@ public class ServiceManager : DisposeBase
                 old.Arguments = svc.Arguments;
                 old.WorkingDirectory = svc.WorkingDirectory;
                 old.UserName = svc.UserName;
+                old.Environments = svc.Environments;
                 old.Enable = svc.Enable;
-                //old.AutoStart = svc.AutoStart;
-                //svc.AutoStop = item.AutoStop;
+                old.AutoStop = svc.AutoStop;
+                old.ReloadOnChange = svc.ReloadOnChange;
                 old.MaxMemory = svc.MaxMemory;
                 old.Mode = svc.Mode;
                 old.ZipFile = svc.ZipFile;
@@ -547,7 +549,7 @@ public class ServiceManager : DisposeBase
 
         // 应用服务的上报和拉取
         DeployInfo[]? deploys = null;
-        if (_client != null && !_client.Token.IsNullOrEmpty())
+        if (_client != null && _client.Logined)
         {
             // 上传失败不应该影响本地拉起服务
             try
@@ -704,7 +706,7 @@ public class ServiceManager : DisposeBase
         using var span = Tracer?.NewSpan("ServiceManager-DoControl", cmd);
 
         var my = cmd.Argument?.ToJsonEntity<MyApp>();
-        var serviceName = my?.AppName;
+        var serviceName = my?.DeployName ?? my?.AppName;
         if (my == null || serviceName.IsNullOrEmpty())
             return new CommandReplyModel { Status = CommandStatus.错误, Data = "参数错误" };
 
@@ -730,6 +732,8 @@ public class ServiceManager : DisposeBase
     private class MyApp
     {
         public Int32 Id { get; set; }
+
+        public String? DeployName { get; set; }
 
         public String? AppName { get; set; }
     }

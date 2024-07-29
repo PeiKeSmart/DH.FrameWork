@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Reflection;
-using NewLife.Caching;
 using NewLife.Collections;
 using NewLife.Data;
 using NewLife.Log;
@@ -8,6 +7,7 @@ using NewLife.Messaging;
 using NewLife.Net;
 using NewLife.Reflection;
 using NewLife.Remoting.Http;
+using NewLife.Serialization;
 
 namespace NewLife.Remoting;
 
@@ -46,10 +46,10 @@ public class ApiHandler : IApiHandler
         if (action.IsNullOrEmpty()) action = "Api/Info";
 
         var manager = (Host as ApiServer)?.Manager;
-        var api = manager?.Find(action) ?? throw new ApiException(404, $"无法找到名为[{action}]的服务！");
+        var api = manager?.Find(action) ?? throw new ApiException(ApiCode.NotFound, $"无法找到名为[{action}]的服务！");
 
         // 全局共用控制器，或者每次创建对象实例
-        var controller = manager.CreateController(api) ?? throw new ApiException(403, $"无法创建名为[{api.Name}]的服务！");
+        var controller = manager.CreateController(api) ?? throw new ApiException(ApiCode.Forbidden, $"无法创建名为[{api.Name}]的服务！");
         if (controller is IApi capi) capi.Session = session;
         if (session is INetSession ss)
             api.LastSession = ss.Remote + "";
@@ -82,9 +82,8 @@ public class ApiHandler : IApiHandler
                 // 特殊处理参数和返回类型都是Packet的服务
                 if (api.IsPacketParameter && api.IsPacketReturn)
                 {
-                    var func = api.Method.As<Func<Packet?, Packet?>>(controller);
-                    if (func == null) throw new ArgumentOutOfRangeException(nameof(api.Method));
-
+                    var func = api.Method.As<Func<Packet?, Packet?>>(controller)
+                        ?? throw new ArgumentOutOfRangeException(nameof(api.Method));
                     rs = func(args);
                 }
                 else if (api.IsPacketParameter)
@@ -95,6 +94,7 @@ public class ApiHandler : IApiHandler
                 {
                     rs = controller.InvokeWithParams(api.Method, ctx.ActionParameters as IDictionary);
                 }
+
                 ctx.Result = rs;
             }
 
@@ -104,6 +104,9 @@ public class ApiHandler : IApiHandler
                 filter2.OnActionExecuted(ctx);
                 rs = ctx.Result;
             }
+
+            // 特殊处理IAccessor返回值，直接进行二进制序列化
+            if (rs is IAccessor accessor) rs = accessor.ToPacket();
         }
         catch (ThreadAbortException) { throw; }
         catch (Exception ex)
@@ -156,9 +159,40 @@ public class ApiHandler : IApiHandler
         // 如果服务只有一个二进制参数，则走快速通道
         if (api.IsPacketParameter) return ctx;
 
+        // IAccessor参数，直接进行二进制反序列化
+        if (api.IsAccessorParameter)
+        {
+            if (args == null) return ctx;
+
+            var pi = api.Method.GetParameters().FirstOrDefault();
+            if (pi != null && !pi.Name.IsNullOrEmpty())
+            {
+                var value = pi.ParameterType.CreateInstance();
+                if (value is IAccessor accessor)
+                {
+                    if (accessor.Read(args.GetStream(), args))
+                    {
+                        ctx.ActionParameters = new NullableDictionary<String, Object?>(StringComparer.OrdinalIgnoreCase)
+                        {
+                            [pi.Name] = value
+                        };
+                    }
+
+                    return ctx;
+                }
+            }
+        }
+
         // 不允许参数字典为空。接口只有一个入参时，客户端可能用基础类型封包传递
         IDictionary<String, Object?>? dic = null;
-        if (args != null && args.Total > 0) dic = enc.DecodeParameters(action, args, msg);
+        Object? raw = null;
+        if (args != null && args.Total > 0)
+        {
+            raw = enc.DecodeParameters(action, args, msg);
+            if (raw is IDictionary<String, Object?> dic2)
+                dic = dic2;
+        }
+
         dic ??= new NullableDictionary<String, Object?>(StringComparer.OrdinalIgnoreCase);
         if (dic != null)
         {
@@ -177,7 +211,7 @@ public class ApiHandler : IApiHandler
             }
 
             // 准备好参数
-            var ps = GetParams(api.Method, dic, args, enc);
+            var ps = GetParams(api.Method, dic, raw, args, enc);
             ctx.ActionParameters = ps;
         }
 
@@ -187,10 +221,11 @@ public class ApiHandler : IApiHandler
     /// <summary>获取参数</summary>
     /// <param name="method"></param>
     /// <param name="dic"></param>
+    /// <param name="raw"></param>
     /// <param name="args"></param>
     /// <param name="encoder"></param>
     /// <returns></returns>
-    protected virtual IDictionary<String, Object?> GetParams(MethodInfo method, IDictionary<String, Object?> dic, Packet? args, IEncoder encoder)
+    protected virtual IDictionary<String, Object?> GetParams(MethodInfo method, IDictionary<String, Object?> dic, Object? raw, Packet? args, IEncoder encoder)
     {
         var ps = new Dictionary<String, Object?>();
 
@@ -198,19 +233,34 @@ public class ApiHandler : IApiHandler
         var pis = method.GetParameters();
         if (pis == null || pis.Length <= 0) return ps;
 
-        // 接口只有一个基础类型入参时，客户端可能用基础类型封包传递（字符串）。
-        // 例如接口 Say(String text)，客户端可用 InvokeAsync<Object>("Say", "Hello NewLife!")
-        if (pis.Length == 1 && pis[0].ParameterType.GetTypeCode() != TypeCode.Object && dic.Count == 0 && args != null)
+        if (pis.Length == 1 && dic.Count == 0)
         {
             var pi = pis[0];
-            ps[pi.Name] = args.ToStr().ChangeType(pi.ParameterType);
+            if (!pi.Name.IsNullOrEmpty())
+            {
+                // 唯一参数，客户端直传数组而没有传字典
+                if (pi.ParameterType.GetTypeCode() == TypeCode.Object)
+                {
+                    //ps[pi.Name] = raw.ChangeType(pi.ParameterType);
+                    ps[pi.Name] = raw == null ? null : encoder.Convert(raw, pi.ParameterType);
 
-            return ps;
+                    return ps;
+                }
+                // 接口只有一个基础类型入参时，客户端可能用基础类型封包传递（字符串）。
+                // 例如接口 Say(String text)，客户端可用 InvokeAsync<Object>("Say", "Hello NewLife!")
+                else if (args != null)
+                {
+                    ps[pi.Name] = args.ToStr().ChangeType(pi.ParameterType);
+
+                    return ps;
+                }
+            }
         }
 
         foreach (var pi in pis)
         {
             var name = pi.Name;
+            if (name.IsNullOrEmpty()) continue;
 
             Object? v = null;
             if (dic != null && dic.TryGetValue(name, out var v2)) v = v2;
@@ -218,7 +268,8 @@ public class ApiHandler : IApiHandler
             // 基本类型
             if (pi.ParameterType.GetTypeCode() != TypeCode.Object)
             {
-                ps[name] = v.ChangeType(pi.ParameterType);
+                //ps[name] = v.ChangeType(pi.ParameterType);
+                ps[name] = v == null ? null : encoder.Convert(v, pi.ParameterType);
             }
             // 复杂对象填充，各个参数填充到一个模型参数里面去
             else
@@ -229,8 +280,7 @@ public class ApiHandler : IApiHandler
                 else
                 {
                     v ??= dic;
-                    if (v != null)
-                        ps[name] = encoder.Convert(v, pi.ParameterType);
+                    ps[name] = v == null ? null : encoder.Convert(v, pi.ParameterType);
                 }
             }
         }

@@ -275,6 +275,13 @@ public class ModelResolver : IModelResolver
             if (f != null) f.Master = true;
         }
 
+        // 去除外键
+        if (table.Columns.Any())
+        {
+            table.Columns.RemoveAll(e => e.RawType.EqualIgnoreCase("KEY", "K"));
+        }
+
+
         return table;
     }
 
@@ -282,7 +289,16 @@ public class ModelResolver : IModelResolver
     /// <param name="column"></param>
     public virtual IDataColumn Fix(IDataColumn column)
     {
-        if (column.Name.IsNullOrEmpty()) column.Name = GetName(column.ColumnName);
+        if (column.Name.IsNullOrEmpty())
+        {
+            var name = GetName(column.ColumnName);
+
+            // 检查该名字是否已存在，可能两个字段名差异只是多了个下划线
+            if (column.Table == null || !column.Table.Columns.Any(e => e.Name.EqualIgnoreCase(name)))
+                column.Name = name;
+            else
+                column.Name = column.ColumnName;
+        }
 
         return column;
     }

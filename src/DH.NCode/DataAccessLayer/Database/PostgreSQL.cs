@@ -5,6 +5,7 @@ using System.Text;
 using NewLife;
 using NewLife.Collections;
 using NewLife.Data;
+using NewLife.Log;
 
 namespace XCode.DataAccessLayer;
 
@@ -107,7 +108,7 @@ internal class PostgreSQL : RemoteDb
     /// <summary>长文本长度</summary>
     public override Int32 LongTextLength => 4000;
 
-    protected internal override String ParamPrefix => "$";
+    protected internal override String ParamPrefix => "@";
 
     /// <summary>系统数据库名</summary>
     public override String SystemDatabaseName => "postgres";
@@ -134,6 +135,17 @@ internal class PostgreSQL : RemoteDb
         return $"\"{name}\"";
     }
 
+    /// <inheritdoc/>
+    public override String? BuildDeleteSql(String tableName, String where, Int32 batchSize)
+    {
+        if (batchSize <= 0) return base.BuildDeleteSql(tableName, where, 0);
+        var xWhere = string.Empty;
+        var xTable = this.FormatName(tableName);
+        if (!string.IsNullOrWhiteSpace(where)) xWhere = " Where " + where;
+        var sql = $"WITH to_delete AS (SELECT ctid FROM {xTable} {xWhere} LIMIT {batchSize}) ";
+        sql += $"DELETE FROM {xTable} where ctid in (SELECT ctid from to_delete)";
+        return sql;
+    }
     #endregion 数据库特性
 
     #region 分页
@@ -260,8 +272,9 @@ internal class PostgreSQLSession : RemoteDbSession
         var db = Database as DbBase;
 
         // 字段列表
-        if (columns == null) columns = table.Columns.ToArray();
+        columns ??= table.Columns.ToArray();
         BuildInsert(sb, db, action, table, columns);
+        DefaultSpan.Current?.AppendTag(sb.ToString());
 
         // 值列表
         sb.Append(" Values");
@@ -329,7 +342,7 @@ internal class PostgreSQLMetaData : RemoteDbMetaData
     protected override void FixTable(IDataTable table, DataRow dr, IDictionary<String, DataTable> data)
     {
         // 注释
-        if (TryGetDataRowValue(dr, "TABLE_COMMENT", out String comment)) table.Description = comment;
+        if (TryGetDataRowValue(dr, "TABLE_COMMENT", out String? comment)) table.Description = comment;
 
         base.FixTable(table, dr, data);
     }
@@ -337,16 +350,16 @@ internal class PostgreSQLMetaData : RemoteDbMetaData
     protected override void FixField(IDataColumn field, DataRow dr)
     {
         // 修正原始类型
-        if (TryGetDataRowValue(dr, "COLUMN_TYPE", out String rawType)) field.RawType = rawType;
+        if (TryGetDataRowValue(dr, "COLUMN_TYPE", out String? rawType)) field.RawType = rawType;
 
         // 修正自增字段
-        if (TryGetDataRowValue(dr, "EXTRA", out String extra) && extra == "auto_increment") field.Identity = true;
+        if (TryGetDataRowValue(dr, "EXTRA", out String? extra) && extra == "auto_increment") field.Identity = true;
 
         // 修正主键
-        if (TryGetDataRowValue(dr, "COLUMN_KEY", out String key)) field.PrimaryKey = key == "PRI";
+        if (TryGetDataRowValue(dr, "COLUMN_KEY", out String? key)) field.PrimaryKey = key == "PRI";
 
         // 注释
-        if (TryGetDataRowValue(dr, "COLUMN_COMMENT", out String comment)) field.Description = comment;
+        if (TryGetDataRowValue(dr, "COLUMN_COMMENT", out String? comment)) field.Description = comment;
 
         // 布尔类型
         if (field.RawType == "enum")

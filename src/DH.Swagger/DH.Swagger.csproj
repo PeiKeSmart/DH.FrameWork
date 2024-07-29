@@ -34,7 +34,7 @@
     <Authors>$(Company)</Authors>
     <PackageProjectUrl>https://www.haocoding.com/</PackageProjectUrl>
     <PackageIcon>DH.png</PackageIcon>
-    <RepositoryUrl>https://gitee.com/chuangchu/DH.FrameWork</RepositoryUrl>
+    <RepositoryUrl>https://gitee.com/dengho/DH.FrameWork</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <PackageTags>湖北登灏科技有限公司;DH组件;DH;$(AssemblyName)</PackageTags>
     <PackageReleaseNotes>用于DH框架的Swagger扩展库，包含认证，文件上传，公共参，个性主题</PackageReleaseNotes>
@@ -69,24 +69,18 @@
   <ItemGroup>
     <None Remove="index.html" />
     <None Remove="IndexDark.html" />
-    <None Remove="wwwroot\*\*\*\*.*" />
-    <None Remove="wwwroot\*\*\*.*" />
-    <None Remove="wwwroot\*\*.*" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="index.html" />
     <EmbeddedResource Include="IndexDark.html" />
-    <EmbeddedResource Include="wwwroot\*\*\*.*" />
-    <EmbeddedResource Include="wwwroot\*\*.*" />
-    <EmbeddedResource Include="wwwroot\*\*\*\*.*" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="8.0.1" />
-    <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.5.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore.ReDoc" Version="6.5.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="8.0.2" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.6.2" />
+    <PackageReference Include="Swashbuckle.AspNetCore.ReDoc" Version="6.6.2" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 
   <ItemGroup>

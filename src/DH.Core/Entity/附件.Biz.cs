@@ -176,10 +176,15 @@ public partial class Attachment : DHEntityBase<Attachment> {
     /// <param name="url">远程地址</param>
     /// <param name="uploadPath">上传目录</param>
     /// <param name="filePath">文件名，如未指定则自动生成</param>
+    /// <param name="client">指定定制化HttpClient，默认为空，由内部实例化。语雀SDK抓取附件时需要</param>
     /// <returns></returns>
-    public async Task<Boolean> Fetch(String url, String uploadPath = null, String filePath = null)
+    public async Task<Boolean> Fetch(String url, String uploadPath = null, String filePath = null, HttpClient client = null)
     {
         if (url.IsNullOrEmpty()) return false;
+
+        // 清理url的#后续部分
+        var p = url.IndexOf('#');
+        if (p > 0) url = url[..p];
 
         // 提前生成雪花Id，用于保存文件
         var isNew = Id == 0;
@@ -187,7 +192,8 @@ public partial class Attachment : DHEntityBase<Attachment> {
 
         // 构造文件路径
         //if (!filePath.IsNullOrEmpty()) FilePath = filePath;
-        var file = BuildFilePath(url);
+        var file = filePath;
+        if (file.IsNullOrEmpty()) file = BuildFilePath(url);
         if (file.IsNullOrEmpty()) return false;
 
         Source = url;
@@ -201,8 +207,8 @@ public partial class Attachment : DHEntityBase<Attachment> {
         //if (File.Exists(fullFile)) File.Delete(fullFile);
 
         // 抓取并保存
-        _client ??= new HttpClient();
-        var rs = await _client.GetAsync(url);
+        client ??= _client ??= new HttpClient();
+        var rs = await client.GetAsync(url);
         var contentType = rs.Content.Headers.ContentType + "";
         if (!contentType.IsNullOrEmpty()) ContentType = contentType;
 

@@ -87,6 +87,9 @@ public partial class SiteSettingInfo : ISiteSettingInfo, IEntity<ISiteSettingInf
     #region 关联映射
     #endregion
 
+    #region 扩展查询
+    #endregion
+
     #region 字段名
     /// <summary>取得站点设置字段信息的快捷方式</summary>
     public partial class _

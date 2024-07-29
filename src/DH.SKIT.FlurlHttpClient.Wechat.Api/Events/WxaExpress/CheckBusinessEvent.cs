@@ -2,9 +2,12 @@ namespace SKIT.FlurlHttpClient.Wechat.Api.Events
 {
     /// <summary>
     /// <para>表示 EVENT.check_biz 事件的数据。</para>
-    /// <para>REF: https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/express/express-by-provider/onCheckBusiness.html </para>
+    /// <para>
+    /// REF: <br/>
+    /// <![CDATA[ https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/express/express-by-provider/onCheckBusiness.html ]]>
+    /// </para>
     /// </summary>
-    public class CheckBusinessEvent : WechatApiEvent, WechatApiEvent.Serialization.IJsonSerializable, WechatApiEvent.Serialization.IXmlSerializable
+    public class CheckBusinessEvent : WechatApiEvent
     {
         /// <summary>
         /// 获取或设置快递公司客户编码。

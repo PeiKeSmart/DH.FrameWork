@@ -1,40 +1,66 @@
-﻿using DH.Core.Infrastructure;
+﻿using System.Diagnostics;
+using System.Reflection;
+
 using DH.Entity;
-using DH.Jobs;
+using DH.Services.Jobs;
 
 using Microsoft.Extensions.DependencyInjection;
 
 using NewLife;
 using NewLife.Caching;
+using NewLife.Common;
 using NewLife.Log;
 using NewLife.Reflection;
 using NewLife.Threading;
-
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Reflection;
-
-using XCode.DataAccessLayer;
-using XCode.Membership;
 
 using IHostedService = Microsoft.Extensions.Hosting.IHostedService;
 
 namespace DH.Services.Services;
 
+/// <summary>作业扩展</summary>
+public static class JobServiceExtersions
+{
+    /// <summary>启用魔方CronJob</summary>
+    /// <param name="services"></param>
+    /// <returns></returns>
+    public static IServiceCollection AddCubeJob(this IServiceCollection services)
+    {
+        //// 注册作业服务，这些作业可以使用DI
+        //services.AddSingleton<SqlService>();
+        //services.AddSingleton<HttpService>();
+
+        // 传统建议定时作业，可以不用注册
+        //services.AddSingleton<BackupDbService>();
+        BackupDbService.Init();
+
+        // 定时作业调度服务
+        services.AddHostedService<JobService>();
+
+        // 扫描并添加ICubeJob作业
+        Task.Run(JobService.ScanJobs);
+
+        return services;
+    }
+}
+
 /// <summary>定时作业服务</summary>
-public class JobService : IHostedService {
+public class JobService : IHostedService
+{
     #region 核心控制
 
-    private static readonly IList<MyJob> _jobs = new List<MyJob>();
+    private static readonly IList<MyJob> _jobs = [];
     private readonly IServiceProvider _serviceProvider;
+    private readonly ICacheProvider _cacheProvider;
     private readonly ITracer _tracer;
 
     /// <summary>实例化作业服务</summary>
     /// <param name="serviceProvider"></param>
+    /// <param name="tracer"></param>
     public JobService(IServiceProvider serviceProvider, ITracer tracer)
     {
-        _tracer = EngineContext.Current.Resolve<ITracer>() ?? DefaultTracer.Instance;
+        _tracer = tracer;
         _serviceProvider = serviceProvider;
+        _cacheProvider = serviceProvider.GetService<ICacheProvider>();
     }
 
     private static TimerX _timer;
@@ -43,7 +69,8 @@ public class JobService : IHostedService {
     /// <returns></returns>
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        _timer = new TimerX(DoJob, null, 1_000, 600_000);
+        // 定时检测作业参数的变更，如果管理界面修改了作业参数，需要唤醒定时器马上检查
+        _timer = new TimerX(DoJob, null, 1_000, 600_000) { Async = true };
 
         return Task.CompletedTask;
     }
@@ -76,24 +103,18 @@ public class JobService : IHostedService {
 
     private void DoJob(Object state)
     {
-        if (_jobs.Count == 0)
-        {
-            // 添加默认作业
-            CronJob.Add(null, RunSql, "15 * * * * ? *", false);
-            CronJob.Add(null, BackupDb, "5 0 0 * * ? *", false);
-        }
-
         var list = CronJob.FindAll();
         foreach (var item in list)
         {
             var job = _jobs.FirstOrDefault(e => e.Job.Id == item.Id);
             if (job == null)
             {
-                //将ICacheProvider 改为IServiceProvider注入，避免没有星辰注册导致的Job注入错误
+                // 将ICacheProvider 改为IServiceProvider注入，避免没有星尘注册导致的Job注入错误
                 job = new MyJob
                 {
                     Job = item,
-                    CacheProvider = _serviceProvider.GetService<ICacheProvider>(),
+                    CacheProvider = _cacheProvider,
+                    ServiceProvider = _serviceProvider,
                     Tracer = _tracer
                 };
                 _jobs.Add(job);
@@ -111,8 +132,8 @@ public class JobService : IHostedService {
             {
                 WriteLog("控制", false, $"作业[{item.Name}/{item.DisplayName}]失败，{ex.Message}", item);
 
-                item.Enable = false;
-                item.Update();
+                //item.Enable = false;
+                //item.Update();
             }
         }
 
@@ -122,97 +143,62 @@ public class JobService : IHostedService {
     #endregion
 
     #region 辅助
+    /// <summary>扫描并添加ICubeJob作业</summary>
+    public static void ScanJobs()
+    {
+        var jobs = CronJob.FindAll();
+
+        foreach (var type in typeof(ICubeJob).GetAllSubclasses())
+        {
+            var name = type.Name;
+            var att = type.GetCustomAttribute<CronJobAttribute>();
+            if (att != null) name = att.Name;
+
+            // 查找或新增作业，仅首次新增是设置Cron，后续在管理界面修改
+            var job = jobs.FirstOrDefault(e => e.Name.EqualIgnoreCase(name));
+            job ??= new CronJob
+            {
+                Name = name,
+                Cron = att?.Cron,
+                Enable = att?.Enable ?? true,
+                EnableLog = true,
+                Remark = type.GetDescription(),
+            };
+
+            job.DisplayName = type.GetDisplayName();
+            job.Method = type.FullName;
+            if (job.Remark.IsNullOrEmpty()) job.Remark = type.GetDescription();
+
+            job.Save();
+        }
+    }
+
     internal static void WriteLog(String action, Boolean success, String remark, CronJob job)
     {
-        if (job != null && !job.EnableLog) return;
-
-        var log = LogProvider.Provider.CreateLog("JobService", action, success, remark);
-        if (job != null) log.LinkID = job.Id;
-        log.TraceId = DefaultSpan.Current?.TraceId;
-
-        log.SaveAsync();
-    }
-    #endregion
-
-    #region 常用任务
-    /// <summary>运行Sql语句，格式 connName#sql</summary>
-    /// <param name="argument"></param>
-    [DisplayName("运行Sql")]
-    [Description("参数格式 connName#sql")]
-    public static void RunSql(String argument)
-    {
-        //var argument = job?.Argument;
-        if (argument.IsNullOrEmpty()) return;
-
-        var p = argument.IndexOf('#');
-        if (p <= 0) return;
-
-        var connName = argument[..p].Trim();
-        var sql = argument[(p + 1)..].Trim();
-
-        var message = $"执行 在[{connName}]上执行SQL。";
-        var success = true;
-        try
-        {
-            var rs = DAL.Create(connName).Execute(sql);
-            message += "返回：" + rs;
-        }
-        catch (Exception ex)
-        {
-            success = false;
-            message += ex.ToString();
-        }
-
-        var job = TimerX.Current?.State as CronJob;
-        WriteLog(nameof(RunSql), success, message, job);
-    }
-
-    /// <summary></summary>
-    /// <param name="connNames"></param>
-    [DisplayName("备份数据库")]
-    [Description("参数是连接名connName，多个逗号隔开。仅支持SQLite")]
-    public static void BackupDb(String connNames)
-    {
-        var ns = connNames.Split(",", ";");
-        foreach (var name in ns)
-        {
-            if (DAL.ConnStrs.ContainsKey(name))
-            {
-                // 仅支持备份SQLite
-                var dal = DAL.Create(name);
-                if (dal.DbType == DatabaseType.SQLite)
-                {
-                    XTrace.WriteLine("在[{0}]上备份数据库", name);
-
-                    var sw = Stopwatch.StartNew();
-
-                    //var bak = dal.Db.CreateMetaData().SetSchema(DDLSchema.BackupDatabase, dal.ConnName, null, false);
-                    var bak = dal.Db.CreateMetaData().Invoke("Backup", dal.ConnName, null, false);
-
-                    sw.Stop();
-
-                    var job = (TimerX.Current?.State as MyJob)?.Job;
-                    WriteLog(nameof(BackupDb), true, $"备份数据库 {name} 到 {bak}，耗时 {sw.Elapsed}", job);
-                }
-            }
-        }
+        job ??= new CronJob();
+        job.WriteLog(action, success, remark);
     }
     #endregion
 }
 
 /// <summary>定时作业项</summary>
-internal class MyJob : IDisposable {
+internal class MyJob : IDisposable
+{
     public CronJob Job { get; set; }
 
     public ICacheProvider CacheProvider { get; set; }
+
+    public IServiceProvider ServiceProvider { get; set; }
 
     public ITracer Tracer { get; set; }
 
     private TimerX _timer;
     private String _id;
-    private Action<String> _action;
     private Type _type;
     private MethodInfo _method;
+    private Action<String> _action;
+
+    ~MyJob() => Dispose();
 
     public void Dispose() => Stop();
 
@@ -227,25 +213,36 @@ internal class MyJob : IDisposable {
         var cmd = job.Method;
         if (cmd.IsNullOrEmpty()) throw new ArgumentNullException(nameof(job.Method));
 
-        // 标识相同，不要处理
-        var id = $"{expession}@{cmd}";
+        // 标识相同，不要处理。可能在运行过程中用户修改了作业参数
+        var id = $"{expession}@{cmd}@{job.Argument}";
         if (id == _id && _timer != null) return;
 
-        var cron = new Cron();
-        if (!cron.Parse(expession)) throw new InvalidOperationException($"无效表达式 {expession}");
+        foreach (var item in expession.Split(";"))
+        {
+            var cron = new Cron();
+            if (!cron.Parse(item)) throw new InvalidOperationException($"无效表达式 {item}");
+        }
 
         // 找到类和方法
-        var p = cmd.LastIndexOf('.');
-        if (p <= 0) throw new InvalidOperationException($"无效作业方法 {cmd}");
-
-        _type = cmd[..p].GetTypeEx();
-        _method = _type?.GetMethodEx(cmd[(p + 1)..]);
-        if (_method == null) throw new InvalidOperationException($"无效作业方法 {cmd}");
-
-        if (_method.IsStatic)
+        _type = cmd.GetTypeEx();
+        if (_type == null || !_type.As<ICubeJob>())
         {
-            _action = _method.As<Action<String>>();
-            if (_action == null) throw new InvalidOperationException($"无效作业方法 {cmd}");
+            var p = cmd.LastIndexOf('.');
+            if (p <= 0) throw new InvalidOperationException($"无效作业方法[{cmd}]");
+
+            var typeName = cmd[..p];
+            _type = typeName.GetTypeEx();
+            if (_type == null) throw new InvalidOperationException($"无法找到作业类[{typeName}]");
+
+            var methodName = cmd[(p + 1)..];
+            _method = _type.GetMethodEx(methodName);
+            if (_method == null) throw new InvalidOperationException($"类[{_type.FullName}]中找不到作业方法[{methodName}]");
+
+            if (_method.IsStatic)
+            {
+                _action = _method.As<Action<String>>();
+                if (_action == null) throw new InvalidOperationException($"无效作业方法[{cmd}]，静态方法无法转为Action<String>委托");
+            }
         }
 
         JobService.WriteLog("启用", true, $"作业[{job.Name}]，定时 {job.Cron}，方法 {job.Method}", job);
@@ -280,15 +277,20 @@ internal class MyJob : IDisposable {
     private Boolean CheckRunning(CronJob job)
     {
         // 检查分布式锁，避免多节点重复执行
-        var key = $"Job:{job.Id}";
-        if (CacheProvider != null && !CacheProvider.Cache.Add(key, job.Name, 10)) return false;
+        var key = $"Job:{SysConfig.Current.Name}:{job.Id}";
+        if (CacheProvider != null)
+        {
+            if (CacheProvider.Cache.ContainsKey(key)) return false;
+
+            CacheProvider.Cache.Set(key, job.Name, 5);
+        }
 
         // 有时候可能并没有配置Redis，借助数据库事务实现去重，需要20230804版本的XCode
         using var tran = CronJob.Meta.CreateTrans();
 
         // 如果短时间内重复执行，跳过
         var job2 = CronJob.FindByKey(job.Id);
-        if (job2 != null && job2.LastTime.AddSeconds(10) > DateTime.Now) return false;
+        if (job2 != null && job2.LastTime.AddSeconds(5) > DateTime.Now) return false;
 
         job2.LastTime = DateTime.Now;
         job2.Update();
@@ -298,7 +300,7 @@ internal class MyJob : IDisposable {
         return true;
     }
 
-    private void DoJobWork(Object state)
+    private async void DoJobWork(Object state)
     {
         var job = Job;
 
@@ -308,7 +310,6 @@ internal class MyJob : IDisposable {
             var set = DHSetting.Current;
             if (set.Debug)
                 JobService.WriteLog(job.Name, false, "分布式锁检查失败，跳过执行", job);
-
             return;
         }
 
@@ -320,14 +321,26 @@ internal class MyJob : IDisposable {
         var success = true;
         try
         {
-            if (_method.IsStatic)
+            if (_method != null && _method.IsStatic)
             {
                 _action?.Invoke(job.Argument);
             }
             else
             {
-                var instance = _type?.CreateInstance() as DHJobBase;
-                instance?.Execute(job.Argument);
+                // 新功能IServiceProvider.CreateInstance可以在第二位创建对象，定时任务类就不需要注册到容器里面了
+                var instance = ServiceProvider?.GetService(_type);
+                instance ??= NewLife.Model.ModelExtension.CreateInstance(ServiceProvider, _type);
+                instance ??= _type?.CreateInstance();
+                if (instance is ICubeJob cubeJob)
+                {
+                    if (instance is CubeJobBase cubeJob2) cubeJob2.Job = job;
+
+                    message = await cubeJob.Execute(job.Argument);
+                }
+                else
+                {
+                    _method?.Invoke(instance, [job.Argument]);
+                }
             }
         }
         catch (Exception ex)
@@ -341,9 +354,19 @@ internal class MyJob : IDisposable {
         sw.Stop();
         message += $" 耗时 {sw.Elapsed}";
 
-        JobService.WriteLog(job.Name, success, message, job);
+        job.WriteLog(job.Name, success, message);
 
-        job.NextTime = _timer.Cron.GetNext(_timer.NextTime);
+        //job.NextTime = _timer.Cron.GetNext(_timer.NextTime);
+        // 本次任务未完成，timer.NextTime不变
+        //job.NextTime = _timer.NextTime;
+        var next = DateTime.MinValue;
+        foreach (var cron in _timer.Crons)
+        {
+            var dt = cron.GetNext(_timer.NextTime);
+            if (next == DateTime.MinValue || dt < next) next = dt;
+        }
+        job.NextTime = next;
+
         job.Update();
     }
 }

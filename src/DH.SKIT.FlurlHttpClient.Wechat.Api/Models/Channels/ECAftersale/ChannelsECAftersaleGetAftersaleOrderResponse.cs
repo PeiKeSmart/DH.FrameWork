@@ -13,6 +13,19 @@ namespace SKIT.FlurlHttpClient.Wechat.Api.Models
                 {
                     public class Product
                     {
+                        public static class Types
+                        {
+                            public class Voucher
+                            {
+                                /// <summary>
+                                /// 获取或设置团购优惠券码。
+                                /// </summary>
+                                [Newtonsoft.Json.JsonProperty("vourcher_code")]
+                                [System.Text.Json.Serialization.JsonPropertyName("vourcher_code")]
+                                public string VoucherCode { get; set; } = default!;
+                            }
+                        }
+
                         /// <summary>
                         /// 获取或设置商品 ID。
                         /// </summary>
@@ -35,6 +48,13 @@ namespace SKIT.FlurlHttpClient.Wechat.Api.Models
                         [Newtonsoft.Json.JsonProperty("count")]
                         [System.Text.Json.Serialization.JsonPropertyName("count")]
                         public int Count { get; set; }
+
+                        /// <summary>
+                        /// 获取或设置团购优惠券列表。
+                        /// </summary>
+                        [Newtonsoft.Json.JsonProperty("voucher_list")]
+                        [System.Text.Json.Serialization.JsonPropertyName("voucher_list")]
+                        public Types.Voucher[]? VoucherList { get; set; }
                     }
 
                     public class AftersaleDetail
@@ -83,6 +103,13 @@ namespace SKIT.FlurlHttpClient.Wechat.Api.Models
                         [Newtonsoft.Json.JsonProperty("amount")]
                         [System.Text.Json.Serialization.JsonPropertyName("amount")]
                         public int Amount { get; set; }
+
+                        /// <summary>
+                        /// 获取或设置退款直接原因类型。
+                        /// </summary>
+                        [Newtonsoft.Json.JsonProperty("refund_reason")]
+                        [System.Text.Json.Serialization.JsonPropertyName("refund_reason")]
+                        public int? RefundReasonType { get; set; }
                     }
 
                     public class Return
@@ -156,7 +183,7 @@ namespace SKIT.FlurlHttpClient.Wechat.Api.Models
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("after_sale_order_id")]
                 [System.Text.Json.Serialization.JsonPropertyName("after_sale_order_id")]
-                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalStringReadOnlyConverter))]
+                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.NumericalStringReadOnlyConverter))]
                 public string AftersaleOrderId { get; set; } = default!;
 
                 /// <summary>
@@ -164,7 +191,7 @@ namespace SKIT.FlurlHttpClient.Wechat.Api.Models
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("order_id")]
                 [System.Text.Json.Serialization.JsonPropertyName("order_id")]
-                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalStringReadOnlyConverter))]
+                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.NumericalStringReadOnlyConverter))]
                 public string OrderId { get; set; } = default!;
 
                 /// <summary>
@@ -236,6 +263,20 @@ namespace SKIT.FlurlHttpClient.Wechat.Api.Models
                 [Newtonsoft.Json.JsonProperty("refund_resp")]
                 [System.Text.Json.Serialization.JsonPropertyName("refund_resp")]
                 public Types.RefundResultInfo? RefundResultInfo { get; set; }
+
+                /// <summary>
+                /// 获取或设置生成售后单场景值。
+                /// </summary>
+                [Newtonsoft.Json.JsonProperty("gen_scene")]
+                [System.Text.Json.Serialization.JsonPropertyName("gen_scene")]
+                public int? GenerateScene { get; set; }
+
+                /// <summary>
+                /// 获取或设置操作剩余时间（单位：秒）。
+                /// </summary>
+                [Newtonsoft.Json.JsonProperty("deadline")]
+                [System.Text.Json.Serialization.JsonPropertyName("deadline")]
+                public int Deadline { get; set; }
 
                 /// <summary>
                 /// 获取或设置更新时间戳。

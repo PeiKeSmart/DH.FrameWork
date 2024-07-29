@@ -2,6 +2,7 @@
 using NewLife.Data;
 using NewLife.Log;
 using NewLife.Reflection;
+using NewLife.Serialization;
 
 namespace NewLife.Remoting;
 
@@ -27,6 +28,12 @@ public class ApiAction
     /// <summary>是否二进制返回</summary>
     public Boolean IsPacketReturn { get; }
 
+    /// <summary>是否Accessor参数</summary>
+    public Boolean IsAccessorParameter { get; }
+
+    /// <summary>是否Accessor返回</summary>
+    public Boolean IsAccessorReturn { get; }
+
     /// <summary>处理统计</summary>
     public ICounter StatProcess { get; set; } = new PerfCounter();
 
@@ -36,7 +43,7 @@ public class ApiAction
     /// <summary>实例化</summary>
     public ApiAction(MethodInfo method, Type type)
     {
-        if (type == null) type = method.DeclaringType;
+        if (type == null) type = method.DeclaringType!;
         Name = GetName(type, method);
 
         // 必须同时记录类型和方法，因为有些方法位于继承的不同层次，那样会导致实例化的对象不一致
@@ -44,9 +51,14 @@ public class ApiAction
         Method = method;
 
         var ps = method.GetParameters();
-        if (ps != null && ps.Length == 1 && ps[0].ParameterType == typeof(Packet)) IsPacketParameter = true;
+        if (ps != null && ps.Length == 1)
+        {
+            if (ps[0].ParameterType == typeof(Packet)) IsPacketParameter = true;
+            if (ps[0].ParameterType.As<IAccessor>()) IsAccessorParameter = true;
+        }
 
         if (method.ReturnType == typeof(Packet)) IsPacketReturn = true;
+        if (method.ReturnType.As<IAccessor>()) IsAccessorReturn = true;
     }
 
     /// <summary>获取名称</summary>
@@ -55,7 +67,7 @@ public class ApiAction
     /// <returns></returns>
     public static String GetName(Type? type, MethodInfo method)
     {
-        if (type == null) type = method.DeclaringType;
+        if (type == null) type = method.DeclaringType!;
         //if (type == null) return null;
 
         var typeName = type.Name.TrimEnd("Controller", "Service");

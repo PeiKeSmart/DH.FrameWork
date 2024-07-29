@@ -162,7 +162,7 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Models
 
                         /// <summary>
                         /// 获取或设置税收优惠政策标识。
-                        /// <para>默认值：NO_FAVORABLE</para>
+                        /// <para>默认值："NO_FAVORABLE"</para>
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("tax_prefer_mark")]
                         [System.Text.Json.Serialization.JsonPropertyName("tax_prefer_mark")]
@@ -202,9 +202,9 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Models
                 /// 获取或设置开票时间。
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("fapiao_time")]
-                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.RFC3339DateTimeOffsetConverter))]
+                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.Common.Rfc3339DateTimeOffsetConverter))]
                 [System.Text.Json.Serialization.JsonPropertyName("fapiao_time")]
-                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.RFC3339DateTimeOffsetConverter))]
+                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.Rfc3339DateTimeOffsetConverter))]
                 public DateTimeOffset FapiaoTime { get; set; }
 
                 /// <summary>

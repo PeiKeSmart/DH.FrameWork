@@ -64,9 +64,10 @@ class Access : FileDbBase
     }
 
     /// <summary>格式化时间为SQL字符串</summary>
+    /// <param name="column">字段</param>
     /// <param name="dateTime">时间值</param>
     /// <returns></returns>
-    public override String FormatDateTime(DateTime dateTime) => "#" + dateTime.ToFullString() + "#";
+    public override String FormatDateTime(IDataColumn column, DateTime dateTime) => $"#{dateTime:yyyy-MM-dd HH:mm:ss.fff}#";
 
     /// <summary>格式化关键字</summary>
     /// <param name="keyWord">关键字</param>
@@ -147,7 +148,7 @@ internal class AccessSession : FileDbSession
     /// <param name="type">命令类型，默认SQL文本</param>
     /// <param name="ps">命令参数</param>
     /// <returns>新增行的自动编号</returns>
-    public override Int64 InsertAndGetIdentity(String sql, CommandType type = CommandType.Text, params IDataParameter[] ps)
+    public override Int64 InsertAndGetIdentity(String sql, CommandType type = CommandType.Text, params IDataParameter[]? ps)
     {
         BeginTransaction(IsolationLevel.Serializable);
         try
@@ -193,7 +194,8 @@ class AccessMetaData : FileDbMetaData
 
         foreach (var dr in rows)
         {
-            list.Add(GetDataRowValue<String>(dr, _.TalbeName));
+            var tn = GetDataRowValue<String>(dr, _.TalbeName);
+            if (!tn.IsNullOrEmpty()) list.Add(tn);
         }
 
         return list;
@@ -204,37 +206,36 @@ class AccessMetaData : FileDbMetaData
     /// <param name="indexes">索引</param>
     /// <param name="indexColumns">索引列</param>
     /// <returns></returns>
-    protected override List<IDataIndex> GetIndexes(IDataTable table, DataTable indexes, DataTable indexColumns)
+    protected override List<IDataIndex> GetIndexes(IDataTable table, DataTable? indexes, DataTable? indexColumns)
     {
         var list = base.GetIndexes(table, indexes, indexColumns);
-        if (/*list != null &&*/ list.Count > 0)
-        {
-            // Access的索引直接以索引字段的方式排布，所以需要重新组合起来
-            var dic = new Dictionary<String, IDataIndex>();
-            foreach (var item in list)
-            {
-                if (item.Name.IsNullOrEmpty()) continue;
 
-                if (!dic.TryGetValue(item.Name, out var di))
-                {
-                    dic.Add(item.Name, item);
-                }
-                else
-                {
-                    var ss = new List<String>(di.Columns);
-                    if (item.Columns != null && item.Columns.Length > 0 && !ss.Contains(item.Columns[0]))
-                    {
-                        ss.Add(item.Columns[0]);
-                        di.Columns = ss.ToArray();
-                    }
-                }
-            }
-            list.Clear();
-            foreach (var item in dic.Values)
+        // Access的索引直接以索引字段的方式排布，所以需要重新组合起来
+        var dic = new Dictionary<String, IDataIndex>();
+        foreach (var item in list)
+        {
+            if (item.Name.IsNullOrEmpty()) continue;
+
+            if (!dic.TryGetValue(item.Name, out var di))
             {
-                list.Add(item);
+                dic.Add(item.Name, item);
+            }
+            else
+            {
+                var ss = new List<String>(di.Columns);
+                if (item.Columns != null && item.Columns.Length > 0 && !ss.Contains(item.Columns[0]))
+                {
+                    ss.Add(item.Columns[0]);
+                    di.Columns = ss.ToArray();
+                }
             }
         }
+        list.Clear();
+        foreach (var item in dic.Values)
+        {
+            list.Add(item);
+        }
+
         return list;
     }
 

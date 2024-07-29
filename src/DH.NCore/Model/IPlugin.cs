@@ -21,15 +21,13 @@ public interface IPlugin
 }
 
 /// <summary>插件特性。用于判断某个插件实现类是否支持某个宿主</summary>
-[AttributeUsage(AttributeTargets.Class)]
-public class PluginAttribute : Attribute
+/// <remarks>实例化</remarks>
+/// <param name="identity"></param>
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
+public class PluginAttribute(String identity) : Attribute
 {
     /// <summary>插件宿主标识</summary>
-    public String Identity { get; set; }
-
-    /// <summary>实例化</summary>
-    /// <param name="identity"></param>
-    public PluginAttribute(String identity) => Identity = identity;
+    public String Identity { get; set; } = identity;
 }
 
 /// <summary>插件管理器</summary>
@@ -90,7 +88,7 @@ public class PluginManager : DisposeBase, IServiceProvider
                 {
                     // 插件类注册到容器中，方便后续获取
                     var container = Provider?.GetService<IObjectContainer>();
-                    container?.TryAddSingleton(item, item);
+                    container?.TryAddTransient(item, item);
 
                     var obj = Provider?.GetService(item) ?? item.CreateInstance();
                     if (obj is IPlugin plugin) list.Add(plugin);
@@ -104,7 +102,9 @@ public class PluginManager : DisposeBase, IServiceProvider
         Plugins = list.ToArray();
     }
 
-    IEnumerable<Type> LoadPlugins()
+    /// <summary>加载插件</summary>
+    /// <returns></returns>
+    public IEnumerable<Type> LoadPlugins()
     {
         // 此时是加载所有插件，无法识别哪些是需要的
         foreach (var item in AssemblyX.FindAllPlugins(typeof(IPlugin), true))

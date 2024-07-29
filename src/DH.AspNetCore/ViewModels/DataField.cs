@@ -1,12 +1,14 @@
-﻿using NewLife;
-using NewLife.Collections;
-
-using System.Collections;
+﻿using System.Collections;
 using System.ComponentModel;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 using System.Xml.Serialization;
+
+using DH.AspNetCore.MVC;
+
+using NewLife;
+using NewLife.Collections;
 
 using XCode;
 using XCode.Configuration;
@@ -124,6 +126,13 @@ public class DataField {
     #endregion
 
     #region 构造
+    /// <summary>实例化数据字段</summary>
+    public DataField() { }
+
+    /// <summary>实例化数据字段</summary>
+    /// <param name="field"></param>
+    public DataField(FieldItem field) => Fill(field);
+
     /// <summary>已重载</summary>
     /// <returns></returns>
     public override String ToString() => $"{Name} {DisplayName} {Type.Name}";
@@ -256,10 +265,19 @@ public class DataField {
     /// <summary>是否附件列</summary>
     /// <returns></returns>
     public Boolean IsAttachment() => ItemType.EqualIgnoreCase("file", "image") || ItemType.StartsWithIgnoreCase("file-", "image-");
+
+    /// <summary>格式化数据用于显示</summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public virtual String FormatValue(Object value) => ViewHelper.FormatValue(!ItemType.IsNullOrEmpty() ? ItemType : Field?.Field?.DataScale, value, Description);
     #endregion
 
     #region 服务
     private readonly List<Object> _services = [];
+    /// <summary>扩展服务</summary>
+    [XmlIgnore, IgnoreDataMember]
+    public IList<Object> Services => _services;
+
     /// <summary>添加服务</summary>
     /// <typeparam name="TService"></typeparam>
     /// <param name="service"></param>

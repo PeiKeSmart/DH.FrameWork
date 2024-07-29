@@ -1,4 +1,4 @@
-﻿namespace SKIT.FlurlHttpClient.Wechat.Api.Models
+namespace SKIT.FlurlHttpClient.Wechat.Api.Models
 {
     /// <summary>
     /// <para>表示 [POST] /wxa/msg_sec_check 接口的响应。</para>
@@ -78,7 +78,7 @@
         }
 
         /// <summary>
-        /// 获取或设置任务 ID。
+        /// 获取或设置请求跟踪标识。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("trace_id")]
         [System.Text.Json.Serialization.JsonPropertyName("trace_id")]

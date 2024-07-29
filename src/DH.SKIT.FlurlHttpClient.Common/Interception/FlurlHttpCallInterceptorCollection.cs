@@ -1,10 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-namespace SKIT.FlurlHttpClient
-{
-    public sealed class FlurlHttpCallInterceptorCollection : IEnumerable<FlurlHttpCallInterceptor>
-    {
+namespace SKIT.FlurlHttpClient {
+    public sealed class FlurlHttpCallInterceptorCollection : IEnumerable<FlurlHttpCallInterceptor> {
         private readonly IList<FlurlHttpCallInterceptor> _list;
 
         public int Count

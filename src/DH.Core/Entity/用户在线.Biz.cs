@@ -106,8 +106,8 @@ public partial class UserOnline : DHEntityBase<UserOnline> {
     /// <returns>实体列表</returns>
     public static IList<UserOnline> FindAllByUserID(Int32 userId)
     {
-        // 实体缓存
-        if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => e.UserID == userId);
+        //// 实体缓存
+        //if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => e.UserID == userId);
 
         return FindAll(_.UserID == userId);
     }
@@ -122,8 +122,8 @@ public partial class UserOnline : DHEntityBase<UserOnline> {
 
         if (cache)
         {
-            // 实体缓存
-            if (Meta.Session.Count < 1000) return Meta.Cache.Find(e => e.SessionID.EqualIgnoreCase(sessionId));
+            //// 实体缓存
+            //if (Meta.Session.Count < 1000) return Meta.Cache.Find(e => e.SessionID.EqualIgnoreCase(sessionId));
 
             return Meta.SingleCache.GetItemWithSlaveKey(sessionId) as UserOnline;
         }
@@ -167,7 +167,7 @@ public partial class UserOnline : DHEntityBase<UserOnline> {
     }
 
     //// Select Count(ID) as ID,SessionID From UserOnline Where CreateTime>'2020-01-24 00:00:00' Group By SessionID Order By ID Desc limit 20
-    //static readonly FieldCache<UserOnline> _SessionIDCache = new FieldCache<UserOnline>(nameof(SessionID))
+    //private static readonly FieldCache<UserOnline> _SessionIDCache = new FieldCache<UserOnline>(nameof(SessionID))
     //{
     //    //Where = _.CreateTime > DateTime.Today.AddDays(-30) & Expression.Empty
     //};

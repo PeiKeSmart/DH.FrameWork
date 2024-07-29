@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using NewLife;
+using NewLife.Common;
 using NewLife.Serialization;
 using NewLife.Threading;
 
@@ -13,10 +12,9 @@ namespace XCode.Cache;
 public class DataCache
 {
     #region 静态
-    private static readonly String _File = @"Config\DataCache.config";
     private static DataCache? _Current;
     /// <summary>当前实例</summary>
-    public static DataCache Current => _Current ??= Load(_File.GetBasePath(), true);
+    public static DataCache Current => _Current ??= Load();
     #endregion
 
     #region 属性
@@ -25,11 +23,41 @@ public class DataCache
     #endregion
 
     #region 方法
+    private static DataCache Load()
+    {
+        var path = Path.GetTempPath().CombinePath(SysConfig.Current.Name);
+        var file = path.CombinePath("DataCache.config").GetBasePath();
+        var old = @"Config\DataCache.config".GetBasePath();
+
+        if (!File.Exists(file) && File.Exists(old))
+        {
+            try
+            {
+                File.Move(old, file);
+            }
+            catch
+            {
+                file = old;
+            }
+        }
+
+        return Load(file, true)!;
+    }
+
+    private static void Save(DataCache? data)
+    {
+        var path = Path.GetTempPath().CombinePath(SysConfig.Current.Name);
+        var file = path.CombinePath("DataCache.config").GetBasePath();
+
+        if (data != null)
+            Save(file, data);
+    }
+
     /// <summary>加载</summary>
     /// <param name="file"></param>
     /// <param name="create"></param>
     /// <returns></returns>
-    public static DataCache Load(String file, Boolean create = false)
+    public static DataCache? Load(String file, Boolean create = false)
     {
         DataCache? data = null;
         if (!file.IsNullOrEmpty() && File.Exists(file))
@@ -66,11 +94,11 @@ public class DataCache
         catch (IOException) { }
     }
 
-    private TimerX _timer;
+    private TimerX? _timer;
     /// <summary>异步保存</summary>
     public void SaveAsync()
     {
-        _timer ??= new TimerX(s => Save(_File.GetBasePath(), s as DataCache), this, 100, 10 * 60 * 1000) { Async = true };
+        _timer ??= new TimerX(s => Save(s as DataCache), this, 100, 10 * 60 * 1000) { Async = true };
         _timer.SetNext(100);
     }
     #endregion

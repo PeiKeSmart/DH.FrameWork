@@ -1,20 +1,27 @@
-﻿using NewLife.Siemens.Common;
-using NewLife.Siemens.Models;
+﻿using NewLife.Siemens.Models;
 
 namespace NewLife.Siemens.Protocols;
 
-internal class PLCAddress
+/// <summary>PLC地址</summary>
+public class PLCAddress
 {
+    /// <summary>数据类型</summary>
     public DataType DataType { get; set; }
 
+    /// <summary>数据块</summary>
     public Int32 DbNumber { get; set; }
 
+    /// <summary>开始字节</summary>
     public Int32 StartByte { get; set; }
 
+    /// <summary>位数字</summary>
     public Int32 BitNumber { get; set; }
 
+    /// <summary>变量类型</summary>
     public VarType VarType { get; set; }
 
+    /// <summary>使用字符串实例化PLC地址</summary>
+    /// <param name="address"></param>
     public PLCAddress(String address)
     {
         Parse(address, out var dataType, out var dbNumber, out var varType, out var startByte, out var bitNumber);
@@ -26,6 +33,13 @@ internal class PLCAddress
         VarType = varType;
     }
 
+    /// <summary>分析</summary>
+    /// <param name="input"></param>
+    /// <param name="dataType"></param>
+    /// <param name="dbNumber"></param>
+    /// <param name="varType"></param>
+    /// <param name="address"></param>
+    /// <param name="bitNumber"></param>
     public static void Parse(String input, out DataType dataType, out Int32 dbNumber, out VarType varType, out Int32 address, out Int32 bitNumber)
     {
         bitNumber = -1;
@@ -34,9 +48,9 @@ internal class PLCAddress
         switch (input[..2])
         {
             case "DB":
-                var strings = input.Split(new Char[] { '.' });
+                var strings = input.Split(['.']);
                 if (strings.Length < 2)
-                    throw new InvalidAddressException("To few periods for DB address");
+                    throw new InvalidDataException("To few periods for DB address");
 
                 dataType = DataType.DataBlock;
                 dbNumber = Int32.Parse(strings[0][2..]);
@@ -57,11 +71,11 @@ internal class PLCAddress
                     case "DBX":
                         bitNumber = Int32.Parse(strings[2]);
                         if (bitNumber > 7)
-                            throw new InvalidAddressException("Bit can only be 0-7");
+                            throw new InvalidDataException("Bit can only be 0-7");
                         varType = VarType.Bit;
                         return;
                     default:
-                        throw new InvalidAddressException();
+                        throw new InvalidDataException();
                 }
             case "IB":
             case "EB":
@@ -172,17 +186,18 @@ internal class PLCAddress
                         varType = VarType.Counter;
                         return;
                     default:
-                        throw new InvalidAddressException(String.Format("{0} is not a valid address", input[..1]));
+                        throw new InvalidDataException(String.Format("{0} is not a valid address", input[..1]));
                 }
 
                 var txt2 = input[1..];
                 if (txt2.IndexOf(".") == -1)
-                    throw new InvalidAddressException("To few periods for DB address");
+                    throw new InvalidDataException("To few periods for DB address");
 
                 address = Int32.Parse(txt2[..txt2.IndexOf(".")]);
                 bitNumber = Int32.Parse(txt2[(txt2.IndexOf(".") + 1)..]);
                 if (bitNumber > 7)
-                    throw new InvalidAddressException("Bit can only be 0-7");
+                    throw new InvalidDataException("Bit can only be 0-7");
+
                 return;
         }
     }

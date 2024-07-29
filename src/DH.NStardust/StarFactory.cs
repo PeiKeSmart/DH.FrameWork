@@ -6,17 +6,20 @@ using NewLife;
 using NewLife.Caching;
 using NewLife.Common;
 using NewLife.Configuration;
-using NewLife.Http;
 using NewLife.Log;
 using NewLife.Model;
 using NewLife.Reflection;
 using NewLife.Remoting;
+using NewLife.Remoting.Clients;
+using NewLife.Remoting.Models;
 using NewLife.Security;
+using NewLife.Threading;
 using Stardust.Configs;
 using Stardust.Models;
 using Stardust.Monitors;
 using Stardust.Registry;
 using Stardust.Services;
+
 #if NET45_OR_GREATER || NETCOREAPP || NETSTANDARD
 using TaskEx = System.Threading.Tasks.Task;
 #endif
@@ -25,9 +28,13 @@ namespace Stardust;
 
 /// <summary>星尘工厂</summary>
 /// <remarks>
-/// 星尘代理 https://newlifex.com/blood/staragent_install
+/// 文档 https://newlifex.com/blood/stardust
+/// 星尘代理 https://newlifex.com/blood/staragent
+/// 节点管理 https://newlifex.com/blood/stardust_node
+/// 注册中心 https://newlifex.com/blood/stardust_registry
 /// 监控中心 https://newlifex.com/blood/stardust_monitor
 /// 配置中心 https://newlifex.com/blood/stardust_configcenter
+/// 发布中心 https://newlifex.com/blood/stardust_deploy
 /// </remarks>
 public class StarFactory : DisposeBase
 {
@@ -47,11 +54,8 @@ public class StarFactory : DisposeBase
     /// <summary>实例。应用可能多实例部署，ip@proccessid</summary>
     public String? ClientId { get; set; }
 
-    ///// <summary>服务名</summary>
-    //public String ServiceName { get; set; }
-
     /// <summary>客户端</summary>
-    public IApiClient? Client => _client;
+    public IApiClient? Client => _client?.Client;
 
     /// <summary>应用客户端</summary>
     public AppClient? App => _client;
@@ -63,7 +67,6 @@ public class StarFactory : DisposeBase
     public LocalStarClient? Local { get; private set; }
 
     private AppClient? _client;
-    private TokenHttpFilter? _tokenFilter;
     #endregion
 
     #region 构造
@@ -190,12 +193,12 @@ public class StarFactory : DisposeBase
                 else
                     XTrace.WriteLine("星尘探测：StarAgent Not Found, Cost={0}ms", sw.ElapsedMilliseconds);
 
-                if (inf != null && !inf.PluginServer.IsNullOrEmpty())
+                if (inf != null && !inf.PluginServer.IsNullOrEmpty() && !AppId.EqualIgnoreCase("StarWeb", "StarServer"))
                 {
                     var core = NewLife.Setting.Current;
                     if (!inf.PluginServer.EqualIgnoreCase(core.PluginServer))
                     {
-                        XTrace.WriteLine("插件服务器PluginServer变更为 {0}", inf.PluginServer);
+                        XTrace.WriteLine("据星尘代理公布，插件服务器PluginServer变更为 {0}", inf.PluginServer);
                         core.PluginServer = inf.PluginServer;
                         core.Save();
                     }
@@ -257,35 +260,29 @@ public class StarFactory : DisposeBase
     [MemberNotNullWhen(true, nameof(_client))]
     private Boolean Valid()
     {
-        //if (Server.IsNullOrEmpty()) throw new ArgumentNullException(nameof(Server));
-        //if (AppId.IsNullOrEmpty()) throw new ArgumentNullException(nameof(AppId));
-
         if (Server.IsNullOrEmpty() || AppId.IsNullOrEmpty()) return false;
 
         if (_client == null)
         {
-            if (!AppId.IsNullOrEmpty()) _tokenFilter = new TokenHttpFilter
-            {
-                UserName = AppId,
-                Password = Secret,
-                ClientId = ClientId,
-            };
-
+            var set = StarSetting.Current;
             var client = new AppClient(Server)
             {
                 Factory = this,
                 AppId = AppId,
                 AppName = AppName,
+                Secret = Secret,
                 ClientId = ClientId,
                 NodeCode = Local?.Info?.Code,
-                Filter = _tokenFilter,
-                UseWebSocket = true,
+                Setting = set,
 
                 Log = Log,
             };
 
-            //var set = StarSetting.Current;
-            //if (set.Debug) client.Log = XTrace.Log;
+#if !NET40
+            // 设置全局定时调度器的时间提供者，借助服务器时间差，以获得更准确的时间。避免本地时间偏差导致定时任务执行时间不准确
+            TimerScheduler.GlobalTimeProvider = new StarTimeProvider { Client = client };
+#endif
+
             client.WriteInfoEvent("应用启动", $"pid={Process.GetCurrentProcess().Id}");
 
             _client = client;
@@ -293,7 +290,7 @@ public class StarFactory : DisposeBase
             InitTracer();
 
             client.Tracer = _tracer;
-            client.Start();
+            client.Open();
 
             // 注册StarServer环境变量，子进程共享
             Environment.SetEnvironmentVariable("StarServer", Server);
@@ -331,7 +328,6 @@ public class StarFactory : DisposeBase
         {
             AppId = AppId,
             AppName = AppName,
-            //Secret = Secret,
             ClientId = ClientId,
             Client = _client,
 
@@ -367,8 +363,12 @@ public class StarFactory : DisposeBase
                     ClientId = ClientId,
                     Client = _client,
                 };
-                //if (!ClientId.IsNullOrEmpty()) config.ClientId = ClientId;
                 config.Attach(_client);
+
+                // 为了兼容旧版本，优先给它ApiHttpClient
+                var ver = typeof(HttpConfigProvider).Assembly.GetName().Version;
+                if (ver <= new Version(10, 10, 2024, 0701) && _client.Client is ApiHttpClient client)
+                    config.Client = client;
 
                 //!! 不需要默认加载，直到首次使用配置数据时才加载。因为有可能应用并不使用配置中心，仅仅是获取这个对象。避免网络不通时的报错日志
                 //config.LoadAll();
@@ -460,7 +460,7 @@ public class StarFactory : DisposeBase
     {
         if (!Valid()) return -1;
 
-        return await _client.PostAsync<Int32>("Node/SendCommand", new CommandInModel
+        return await _client.InvokeAsync<Int32>("Node/SendCommand", new CommandInModel
         {
             Code = nodeCode,
             Command = command,
@@ -481,7 +481,7 @@ public class StarFactory : DisposeBase
     {
         if (!Valid()) return -1;
 
-        return await _client.PostAsync<Int32>("App/SendCommand", new CommandInModel
+        return await _client.InvokeAsync<Int32>("App/SendCommand", new CommandInModel
         {
             Code = appId,
             Command = command,

@@ -77,17 +77,6 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                             }
                         }
 
-                        internal static class Converters
-                        {
-                            internal class NewtonsoftJsonAddressConverter : Newtonsoft.Json.Converters.TextualObjectInJsonFormatConverterBase<Types.Address?>
-                            {
-                            }
-
-                            internal class SystemTextJsonAddressConverter : System.Text.Json.Converters.TextualObjectInJsonFormatConverterBase<Types.Address?>
-                            {
-                            }
-                        }
-
                         /// <summary>
                         /// 获取或设置订单 ID。
                         /// </summary>
@@ -289,9 +278,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Models
                         /// 获取或设置收货人地址信息。
                         /// </summary>
                         [Newtonsoft.Json.JsonProperty("consignee_address")]
-                        [Newtonsoft.Json.JsonConverter((typeof(Converters.NewtonsoftJsonAddressConverter)))]
                         [System.Text.Json.Serialization.JsonPropertyName("consignee_address")]
-                        [System.Text.Json.Serialization.JsonConverter((typeof(Converters.SystemTextJsonAddressConverter)))]
                         public Types.Address ConsigneeAddress { get; set; } = default!;
 
                         /// <summary>

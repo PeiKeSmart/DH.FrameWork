@@ -73,14 +73,17 @@ public class UdpSession : DisposeBase, ISocketSession, ITransport, ILogFeature
     #region 构造
     /// <summary>实例化Udp会话</summary>
     /// <param name="server"></param>
+    /// <param name="local">接收数据的本地地址</param>
     /// <param name="remote"></param>
-    public UdpSession(UdpServer server, IPEndPoint remote)
+    public UdpSession(UdpServer server, IPAddress? local, IPEndPoint remote)
     {
         Name = server.Name;
 
         Server = server;
         Remote = new NetUri(NetType.Udp, remote);
         Tracer = server.Tracer;
+
+        if (local != null) Local.Address = local;
 
         // 检查并开启广播
         server.Client?.CheckBroadcast(remote.Address);
@@ -100,18 +103,27 @@ public class UdpSession : DisposeBase, ISocketSession, ITransport, ILogFeature
         Pipeline?.Open(Server.CreateContext(this));
     }
 
+    private void Stop(String reason)
+    {
+        if (Server == null) return;
+
+        WriteLog("Close {0} {1}", Remote.EndPoint, reason);
+
+        // 管道
+        var ctx = Server?.CreateContext(this);
+        if (ctx != null)
+            Pipeline?.Close(ctx, reason);
+
+        Server = null!;
+    }
+
     /// <summary>销毁</summary>
     /// <param name="disposing"></param>
     protected override void Dispose(Boolean disposing)
     {
         base.Dispose(disposing);
 
-        WriteLog("Close {0}", Remote.EndPoint);
-
-        // 管道
-        var ctx = Server?.CreateContext(this);
-        if (ctx != null)
-            Pipeline?.Close(ctx, disposing ? "Dispose" : "GC");
+        Stop(disposing ? "Dispose" : "GC");
 
         //// 释放对服务对象的引用，如果没有其它引用，服务对象将会被回收
         //Server = null;
@@ -246,6 +258,40 @@ public class UdpSession : DisposeBase, ISocketSession, ITransport, ILogFeature
             var ep = Remote.EndPoint as EndPoint;
             var buf = new Byte[Server.BufferSize];
             var size = Server.Client.ReceiveFrom(buf, ref ep);
+            if (span != null) span.Value = size;
+
+            return new Packet(buf, 0, size);
+        }
+        catch (Exception ex)
+        {
+            span?.SetError(ex, null);
+            throw;
+        }
+    }
+
+    /// <summary>异步接收数据</summary>
+    /// <returns></returns>
+    public virtual async Task<Packet?> ReceiveAsync(CancellationToken cancellationToken = default)
+    {
+        if (Disposed) throw new ObjectDisposedException(GetType().Name);
+        if (Server?.Client == null) throw new InvalidOperationException(nameof(Server));
+
+        using var span = Tracer?.NewSpan($"net:{Name}:Receive", Server.BufferSize + "");
+        try
+        {
+            var ep = Remote.EndPoint as EndPoint;
+            var buf = new Byte[Server.BufferSize];
+            var socket = Server.Client;
+#if NETFRAMEWORK || NETSTANDARD2_0
+            var ar = socket.BeginReceiveFrom(buf, 0, buf.Length, SocketFlags.None, ref ep, null, socket);
+            var size = ar.IsCompleted ?
+                socket.EndReceive(ar) :
+                await Task.Factory.FromAsync(ar, e => socket.EndReceiveFrom(e, ref ep));
+#else
+            var result = await socket.ReceiveFromAsync(buf, SocketFlags.None, ep);
+            var size = result.ReceivedBytes;
+#endif
+            if (span != null) span.Value = size;
 
             return new Packet(buf, 0, size);
         }
@@ -264,6 +310,13 @@ public class UdpSession : DisposeBase, ISocketSession, ITransport, ILogFeature
         LastTime = DateTime.Now;
 
         if (e != null) Received?.Invoke(this, e);
+
+        // 我们约定，UDP收到空数据包时，结束会话
+        if (e != null && (e.Packet == null || e.Packet.Total == 0))
+        {
+            Stop("Finish");
+            Dispose();
+        }
     }
 
     /// <summary>处理数据帧</summary>
@@ -291,7 +344,7 @@ public class UdpSession : DisposeBase, ISocketSession, ITransport, ILogFeature
     public override String ToString()
     {
         if (Remote != null && !Remote.EndPoint.IsAny())
-            return $"{Local}=>{Remote.EndPoint}";
+            return $"{Local}<={Remote.EndPoint}";
         else
             return Local.ToString();
     }
@@ -344,11 +397,5 @@ public class UdpSession : DisposeBase, ISocketSession, ITransport, ILogFeature
     /// <param name="format"></param>
     /// <param name="args"></param>
     public void WriteLog(String format, params Object?[] args) => Log.Info(LogPrefix + format, args);
-
-    ///// <summary>输出日志</summary>
-    ///// <param name="format"></param>
-    ///// <param name="args"></param>
-    //[Conditional("DEBUG")]
-    //public void WriteDebugLog(String format, params Object?[] args) => Log.Debug(LogPrefix + format, args);
     #endregion
 }

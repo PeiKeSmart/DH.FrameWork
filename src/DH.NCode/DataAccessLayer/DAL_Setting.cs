@@ -76,7 +76,7 @@ partial class DAL
     #region 辅助函数
     /// <summary>已重载。</summary>
     /// <returns></returns>
-    public override String ToString() => Db.ToString();
+    public override String ToString() => ConnName;
 
     /// <summary>建立数据表对象</summary>
     /// <returns></returns>
@@ -96,6 +96,19 @@ partial class DAL
 
             return false;
         }
+    }
+
+    /// <summary>获取批大小。优先取连接设置，再取全局，默认5000</summary>
+    /// <param name="defaultSize">默认批大小</param>
+    /// <returns></returns>
+    public Int32 GetBatchSize(Int32 defaultSize = 5_000)
+    {
+        var batchSize = Db.BatchSize;
+        if (batchSize <= 0) batchSize = XCodeSetting.Current.BatchSize;
+        if (batchSize <= 0) batchSize = defaultSize;
+        if (batchSize <= 0) batchSize = 5_000;
+
+        return batchSize;
     }
     #endregion
 }

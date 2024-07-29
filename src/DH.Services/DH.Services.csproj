@@ -33,7 +33,7 @@
 		<Authors>$(Company)</Authors>
 		<PackageProjectUrl>https://www.haocoding.com/</PackageProjectUrl>
 		<PackageIcon>DH.png</PackageIcon>
-		<RepositoryUrl>https://gitee.com/chuangchu/DH.FrameWork</RepositoryUrl>
+		<RepositoryUrl>https://gitee.com/dengho/DH.FrameWork</RepositoryUrl>
 		<RepositoryType>Git</RepositoryType>
 		<PackageTags>湖北登灏科技有限公司;DH组件;DH;$(AssemblyName)</PackageTags>
 		<PackageReleaseNotes>DH框架基类核心库</PackageReleaseNotes>
@@ -87,12 +87,16 @@
 
 	<ItemGroup>
 		<!--<PackageReference Include="HtmlSanitizer" Version="8.0.645" />-->
-		<PackageReference Include="IdentityModel" Version="6.2.0" />
+		<PackageReference Include="IdentityModel" Version="7.0.0" />
 		<PackageReference Include="IP2Region.Net" Version="2.0.2" />
 		<PackageReference Include="MaxMind.GeoIP2" Version="5.2.0" />
-		<PackageReference Include="Polly" Version="8.3.0" />
+		<PackageReference Include="Polly" Version="8.4.1" />
 		<PackageReference Include="TimeZoneConverter" Version="6.1.0" />
 		<PackageReference Include="ToolGood.Words" Version="3.1.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="ViewModels\" />
 	</ItemGroup>
 
 </Project>

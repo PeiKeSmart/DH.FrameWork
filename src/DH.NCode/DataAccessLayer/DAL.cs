@@ -94,6 +94,7 @@ public partial class DAL
     /// <param name="connName">配置名</param>
     private DAL(String connName) => ConnName = connName;
 
+    static String _symbols = "-_.";
     private Boolean _inited;
     private void Init()
     {
@@ -109,6 +110,10 @@ public partial class DAL
             if (!css.ContainsKey(connName)) OnResolve?.Invoke(this, new ResolveEventArgs(connName));
             if (!css.ContainsKey(connName))
             {
+                // 如果连接名不在预期之内，则需要严格检查名字，才能创建默认的SQLite数据库
+                if (connName.Any(c => !Char.IsLetterOrDigit(c) && !_symbols.Contains(c)))
+                    throw new XCodeException($"非法连接名[{connName}]");
+
                 var cfg = NewLife.Setting.Current;
                 var set = XCodeSetting.Current;
                 var connstr = "Data Source=" + cfg.DataPath.CombinePath(connName + ".db");
@@ -134,8 +139,22 @@ public partial class DAL
             if (!connName.EndsWithIgnoreCase(".readonly"))
             {
                 var connName2 = connName + ".readonly";
-                if (css.ContainsKey(connName2)) ReadOnly = Create(connName2);
+                if (css.ContainsKey(connName2)) _reads = [Create(connName2)];
             }
+            else if (!connName.Contains(".rd"))
+            {
+                // 多从库读写分离
+                var rs = new List<DAL>();
+                for (var i = 0; i < 32; i++)
+                {
+                    var connName2 = $"{connName}.rd{i}";
+                    if (css.ContainsKey(connName2)) rs.Add(Create(connName2));
+                }
+                _reads = rs;
+            }
+
+            if (_reads != null && _reads.Count > 0)
+                WriteLog("[{0}]读写分离到：{1}", this, _reads.Join());
 
             _inited = true;
         }
@@ -668,10 +687,10 @@ public partial class DAL
     /// <returns></returns>
     public static IList<IDataTable> ImportFrom(String xmlFile)
     {
-        if (xmlFile.IsNullOrEmpty()) return new IDataTable[0];
+        if (xmlFile.IsNullOrEmpty()) return [];
 
         xmlFile = xmlFile.GetFullPath();
-        if (!File.Exists(xmlFile)) return new IDataTable[0];
+        if (!File.Exists(xmlFile)) return [];
 
         return ModelHelper.FromXml(File.ReadAllText(xmlFile), CreateTable);
     }
@@ -773,7 +792,7 @@ public partial class DAL
         if (Db is DbBase db2 && !db2.SupportSchema) return;
 
         var tracer = Tracer ?? GlobalTracer;
-        using var span = tracer?.NewSpan($"db:{ConnName}:SetTables", tables.Join());
+        using var span = tracer?.NewSpan($"db:{ConnName}:SetTables", tables.Join(), tables.Length);
         try
         {
             //// 构建DataTable时也要注意表前缀，避免反向工程用错
@@ -837,6 +856,33 @@ public partial class DAL
         }
 
         return sb.ToString();
+    }
+    #endregion
+
+    #region 模型管理
+    private IList<IDataTable>? _ModelTables;
+    /// <summary>获取 或 设置 当前连接下的模型表</summary>
+    /// <remarks>
+    /// 实体类默认使用实体类特性来构建数据操作SQL语句。
+    /// 如果实体类对应的连接模型表存在，则优先使用连接模型表，以达到通过修改配置即可修改表名字段名映射的目标。
+    /// </remarks>
+    /// <returns></returns>
+    public IList<IDataTable> ModelTables
+    {
+        get
+        {
+            if (_ModelTables == null)
+            {
+                var modelPath = XCodeSetting.Current.ModelPath;
+                if (modelPath.IsNullOrEmpty()) modelPath = "Models";
+
+                var modelFile = modelPath.CombinePath(ConnName + ".xml");
+                _ModelTables = ImportFrom(modelFile);
+            }
+
+            return _ModelTables;
+        }
+        set => _ModelTables = value;
     }
     #endregion
 }

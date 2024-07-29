@@ -1,3 +1,5 @@
+using System;
+
 namespace SKIT.FlurlHttpClient.Wechat.OpenAI
 {
     /// <summary>
@@ -31,5 +33,10 @@ namespace SKIT.FlurlHttpClient.Wechat.OpenAI
         /// 获取或设置微信智能对话 EncodingAESKey。
         /// </summary>
         public string EncodingAESKey { get; set; } = string.Empty;
+
+        /// <summary>
+        /// 获取或设置自定义需加密请求路径匹配器。
+        /// </summary>
+        public Func<string, bool>? CustomEncryptedRequestPathMatcher { get; set; }
     }
 }

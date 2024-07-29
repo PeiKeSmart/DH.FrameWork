@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Models
 {
@@ -40,7 +40,7 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Models
         /// </summary>
         [Newtonsoft.Json.JsonProperty("authorization_code")]
         [System.Text.Json.Serialization.JsonPropertyName("authorization_code")]
-        public string AuthorizationCode { get; set; } = default!;
+        public string? AuthorizationCode { get; set; }
 
         /// <summary>
         /// 获取或设置授权状态。
@@ -60,18 +60,32 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Models
         /// 获取或设置最近一次解除授权时间。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("cancel_authorization_time")]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.RFC3339NullableDateTimeOffsetConverter))]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.Common.Rfc3339DateTimeOffsetConverter))]
         [System.Text.Json.Serialization.JsonPropertyName("cancel_authorization_time")]
-        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.RFC3339NullableDateTimeOffsetConverter))]
+        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.Rfc3339DateTimeOffsetConverter))]
         public DateTimeOffset? AuthorizationCancelTime { get; set; }
 
         /// <summary>
         /// 获取或设置最近一次解除授权时间。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("authorization_success_time")]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.RFC3339NullableDateTimeOffsetConverter))]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.Common.Rfc3339DateTimeOffsetConverter))]
         [System.Text.Json.Serialization.JsonPropertyName("authorization_success_time")]
-        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.RFC3339NullableDateTimeOffsetConverter))]
+        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.Rfc3339DateTimeOffsetConverter))]
         public DateTimeOffset? AuthorizationSuccessTime { get; set; }
+
+        /// <summary>
+        /// 获取或设置用户分层。
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("user_risk_level")]
+        [System.Text.Json.Serialization.JsonPropertyName("user_risk_level")]
+        public int? UserRiskLevel { get; set; }
+
+        /// <summary>
+        /// 获取或设置分层版本。
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("risk_level_version")]
+        [System.Text.Json.Serialization.JsonPropertyName("risk_level_version")]
+        public int? RiskLevelVersion { get; set; }
     }
 }

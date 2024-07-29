@@ -1,10 +1,13 @@
-﻿namespace SKIT.FlurlHttpClient.Wechat.Api.Events
+namespace SKIT.FlurlHttpClient.Wechat.Api.Events
 {
     /// <summary>
     /// <para>表示 EVENT.FREEPUBLISHJOBFINISH 事件的数据。</para>
-    /// <para>REF: https://developers.weixin.qq.com/doc/offiaccount/Publish/Callback_on_finish.html </para>
+    /// <para>
+    /// REF: <br/>
+    /// <![CDATA[ https://developers.weixin.qq.com/doc/offiaccount/Publish/Callback_on_finish.html ]]>
+    /// </para>
     /// </summary>
-    public class FreePublishJobFinishEvent : WechatApiEvent, WechatApiEvent.Serialization.IJsonSerializable, WechatApiEvent.Serialization.IXmlSerializable
+    public class FreePublishJobFinishEvent : WechatApiEvent
     {
         public static class Types
         {
@@ -59,8 +62,9 @@
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("publish_id")]
                 [System.Text.Json.Serialization.JsonPropertyName("publish_id")]
+                [System.Text.Json.Serialization.JsonNumberHandling(System.Text.Json.Serialization.JsonNumberHandling.AllowReadingFromString)]
                 [System.Xml.Serialization.XmlElement("publish_id")]
-                public string PublishId { get; set; } = default!;
+                public long PublishId { get; set; }
 
                 /// <summary>
                 /// 获取或设置发布状态。
@@ -75,6 +79,7 @@
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("article_id")]
                 [System.Text.Json.Serialization.JsonPropertyName("article_id")]
+                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.NumericalStringReadOnlyConverter))]
                 [System.Xml.Serialization.XmlElement("article_id")]
                 public string? ArticleId { get; set; }
 

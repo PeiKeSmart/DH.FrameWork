@@ -10,7 +10,10 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3
     {
         /// <summary>
         /// <para>异步调用 [GET] /iotmanage/devices 接口。</para>
-        /// <para>REF: https://pay.weixin.qq.com/wiki/doc/wxfacepay/develop/point/iotmanage-devices.html </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://pay.weixin.qq.com/wiki/doc/wxfacepay/develop/point/iotmanage-devices.html ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -22,9 +25,9 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Get, "iotmanage", "devices");
+                .CreateFlurlRequest(request, HttpMethod.Get, "iotmanage", "devices");
 
-            return await client.SendRequestWithJsonAsync<Models.QueryIoTManageDevicesResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsJsonAsync<Models.QueryIoTManageDevicesResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
     }
 }

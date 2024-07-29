@@ -36,7 +36,7 @@ public partial class SysOnlineUsers : ISysOnlineUsers, IEntity<ISysOnlineUsers>
     [DisplayName("用户id")]
     [Description("用户id")]
     [DataObjectField(false, false, false, 0)]
-    [BindColumn("Uid", "用户id", "int(11)")]
+    [BindColumn("Uid", "用户id", "")]
     public Int32 Uid { get => _Uid; set { if (OnPropertyChanging("Uid", value)) { _Uid = value; OnPropertyChanged("Uid"); } } }
 
     private Int64 _Sid;
@@ -60,15 +60,15 @@ public partial class SysOnlineUsers : ISysOnlineUsers, IEntity<ISysOnlineUsers>
     [DisplayName("用户名")]
     [Description("用户名")]
     [DataObjectField(false, false, false, 100)]
-    [BindColumn("Name", "用户名", "varchar(100)", Master = true)]
+    [BindColumn("Name", "用户名", "", Master = true)]
     public String Name { get => _Name; set { if (OnPropertyChanging("Name", value)) { _Name = value; OnPropertyChanged("Name"); } } }
 
     private String _Ip;
     /// <summary>用户ip</summary>
     [DisplayName("用户ip")]
     [Description("用户ip")]
-    [DataObjectField(false, false, false, 20)]
-    [BindColumn("Ip", "用户ip", "varchar(20)")]
+    [DataObjectField(false, false, false, 30)]
+    [BindColumn("Ip", "用户ip", "")]
     public String Ip { get => _Ip; set { if (OnPropertyChanging("Ip", value)) { _Ip = value; OnPropertyChanged("Ip"); } } }
 
     private String _Region;
@@ -163,6 +163,9 @@ public partial class SysOnlineUsers : ISysOnlineUsers, IEntity<ISysOnlineUsers>
     #endregion
 
     #region 关联映射
+    #endregion
+
+    #region 扩展查询
     #endregion
 
     #region 字段名

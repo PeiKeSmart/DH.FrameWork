@@ -22,54 +22,34 @@ public class TableItem
     /// <summary>绑定索引特性</summary>
     private readonly BindIndexAttribute[] _Indexes;
 
+    private String? _description;
     private readonly DescriptionAttribute? _Description;
     /// <summary>说明</summary>
     public String? Description
     {
         get
         {
-            if (_Description != null && !String.IsNullOrEmpty(_Description.Description)) return _Description.Description;
-            if (_Table != null && !String.IsNullOrEmpty(_Table.Description)) return _Table.Description;
+            if (_description != null) return _description;
 
-            return null;
+            if (_Description != null && !String.IsNullOrEmpty(_Description.Description)) return _description = _Description.Description;
+            if (_Table != null && !String.IsNullOrEmpty(_Table.Description)) return _description = _Table.Description;
+
+            return _description;
         }
     }
     #endregion
 
     #region 属性
-    private String? _TableName;
-    /// <summary>表名</summary>
-    public String TableName
-    {
-        get
-        {
-            if (_TableName.IsNullOrEmpty()) _TableName = _Table?.Name ?? EntityType.Name;
+    private String? _tableName;
+    /// <summary>表名。来自实体类特性，合并文件模型</summary>
+    public String TableName => _tableName ??= _Table?.Name ?? EntityType.Name;
 
-            return _TableName;
-        }
-        set
-        {
-            _TableName = value;
-            DataTable.TableName = value;
-        }
-    }
+    /// <summary>原始表名</summary>
+    public String RawTableName => _Table?.Name ?? EntityType.Name;
 
-    private String? _ConnName;
-    /// <summary>连接名</summary>
-    public String ConnName
-    {
-        get
-        {
-            if (_ConnName.IsNullOrEmpty())
-            {
-                var connName = _Table?.ConnName + "";
-
-                _ConnName = connName;
-            }
-            return _ConnName;
-        }
-        set => _ConnName = value;
-    }
+    private String? _connName;
+    /// <summary>连接名。来自实体类特性，合并文件模型</summary>
+    public String ConnName => _connName ??= _Table?.ConnName + "";
     #endregion
 
     #region 扩展属性
@@ -165,16 +145,35 @@ public class TableItem
         InitFields();
     }
 
-    private static readonly ConcurrentDictionary<Type, TableItem> cache = new();
-    /// <summary>创建</summary>
+    private static readonly ConcurrentDictionary<String, TableItem> _cache = new();
+    /// <summary>创建数据表元数据信息。并合并连接名上的文件模型映射</summary>
     /// <param name="type">类型</param>
+    /// <param name="connName">连接名。该类型的架构信息，则不同连接上可能存在文件模型映射，导致不一致</param>
     /// <returns></returns>
-    public static TableItem Create(Type type)
+    public static TableItem Create(Type type, String? connName)
     {
         if (type == null) throw new ArgumentNullException(nameof(type));
 
+        var key = $"{type.FullName}#{connName}";
+        if (_cache.TryGetValue(key, out var tableItem)) return tableItem;
+
         // 不能给没有BindTableAttribute特性的类型创建TableItem，否则可能会在InitFields中抛出异常
-        return cache.GetOrAdd(type, key => key.GetCustomAttribute<BindTableAttribute>(true) != null ? new TableItem(key) : null);
+        if (type.GetCustomAttribute<BindTableAttribute>(true) == null) throw new ArgumentOutOfRangeException(nameof(type));
+
+        // 先创建，然后合并外部文件模型
+        var ti = new TableItem(type);
+
+        if (connName.IsNullOrEmpty()) connName = ti.ConnName;
+        if (!connName.IsNullOrEmpty())
+        {
+            // 根据默认连接名找到目标文件模型，如果存在则合并
+            var table = DAL.Create(connName).ModelTables.FirstOrDefault(e => e.Name == ti.EntityType.Name);
+            if (table != null) ti.Merge(table);
+        }
+
+        ti._connName = connName;
+
+        return _cache.GetOrAdd(key, ti);
     }
 
     private void InitFields()
@@ -358,7 +357,71 @@ public class TableItem
     #endregion
 
     #region 方法
-    private Dictionary<String, Field> _all;
+    /// <summary>合并目标表到当前元数据</summary>
+    /// <param name="table"></param>
+    public void Merge(IDataTable table)
+    {
+        table = (table.Clone() as IDataTable)!;
+        if (table == null) return;
+
+        DataTable = table;
+
+        // 合并字段
+        _tableName = table.TableName;
+        _description = table.Description;
+
+        var allfields = AllFields.ToList();
+        var fields = Fields.ToList();
+        var pkeys = new List<FieldItem>();
+        foreach (var column in table.Columns)
+        {
+            if (column.Name.IsNullOrEmpty()) continue;
+
+            var fi = fields.FirstOrDefault(e => e.Name.EqualIgnoreCase(column.Name));
+            if (fi is null)
+            {
+                fi = new Field(this, column.Name, column.DataType!, column.Description, column.Length)
+                {
+                    ColumnName = column.ColumnName,
+                    IsNullable = column.Nullable,
+                    IsIdentity = column.Identity,
+                    PrimaryKey = column.PrimaryKey,
+                    Master = column.Master,
+                    DisplayName = column.DisplayName,
+                    Description = column.Description,
+                    //Map = column.Map,
+                    IsDataObjectField = true,
+                    Field = column,
+                };
+
+                fields.Add(fi);
+
+                if (!allfields.Any(e => e.Name.EqualIgnoreCase(column.Name)))
+                    allfields.Add(fi);
+            }
+            else
+            {
+                fi.ColumnName = column.ColumnName;
+                fi.IsNullable = column.Nullable;
+                fi.IsIdentity = column.Identity;
+                fi.PrimaryKey = column.PrimaryKey;
+                fi.Master = column.Master;
+                fi.DisplayName = column.DisplayName;
+                fi.Description = column.Description;
+                fi.Field = column;
+            }
+
+            if (fi.PrimaryKey) pkeys.Add(fi);
+            if (fi.IsIdentity) Identity = fi;
+            if (fi.Master) Master = fi;
+        }
+
+        Fields = fields.ToArray();
+        AllFields = allfields.ToArray();
+        PrimaryKeys = pkeys.ToArray();
+    }
+
+    private IDictionary<String, Field?> _all;
 
     /// <summary>根据名称查找</summary>
     /// <param name="name">名称</param>
@@ -373,23 +436,23 @@ public class TableItem
         // 借助字典，快速搜索数据列
         if (_all == null)
         {
-            var dic = new Dictionary<String, Field>(StringComparer.OrdinalIgnoreCase);
+            var dic = new ConcurrentDictionary<String, Field?>(StringComparer.OrdinalIgnoreCase);
 
             foreach (var item in Fields)
             {
                 if (item is not Field field) continue;
 
                 if (!dic.ContainsKey(item.Name))
-                    dic.Add(item.Name, field);
+                    dic.TryAdd(item.Name, field);
             }
             foreach (var item in AllFields)
             {
                 if (item is not Field field) continue;
 
                 if (!dic.ContainsKey(item.Name))
-                    dic.Add(item.Name, field);
+                    dic.TryAdd(item.Name, field);
                 else if (!item.ColumnName.IsNullOrEmpty() && !dic.ContainsKey(item.ColumnName))
-                    dic.Add(item.ColumnName, field);
+                    dic.TryAdd(item.ColumnName, field);
             }
 
             // 宁可重复计算，也要避免锁
@@ -397,58 +460,53 @@ public class TableItem
         }
         if (_all.TryGetValue(name, out var f)) return f;
 
+        // 即使没有找到，也要缓存起来，避免下次重复查找
         foreach (var item in Fields)
         {
-            if (item.Name.EqualIgnoreCase(name)) return item as Field;
+            if (item.Name.EqualIgnoreCase(name)) return _all[name] = item as Field;
         }
 
         foreach (var item in Fields)
         {
-            if (item.ColumnName.EqualIgnoreCase(name)) return item as Field;
+            if (item.ColumnName.EqualIgnoreCase(name)) return _all[name] = item as Field;
         }
 
         foreach (var item in AllFields)
         {
-            if (item.Name.EqualIgnoreCase(name)) return item as Field;
+            if (item.Name.EqualIgnoreCase(name)) return _all[name] = item as Field;
         }
 
-        return null;
+        return _all[name] = null;
     }
 
     /// <summary>已重载。</summary>
     /// <returns></returns>
-    public override String ToString()
-    {
-        if (String.IsNullOrEmpty(Description))
-            return TableName;
-        else
-            return $"{TableName}（{Description}）";
-    }
+    public override String ToString() => Description.IsNullOrEmpty() ? TableName : $"{TableName}（{Description}）";
     #endregion
 
     #region 动态增加字段
-    /// <summary>动态增加字段</summary>
-    /// <param name="name"></param>
-    /// <param name="type"></param>
-    /// <param name="description"></param>
-    /// <param name="length"></param>
-    /// <returns></returns>
-    public TableItem Add(String name, Type type, String? description = null, Int32 length = 0)
-    {
-        var f = new Field(this, name, type, description, length);
+    ///// <summary>动态增加字段</summary>
+    ///// <param name="name"></param>
+    ///// <param name="type"></param>
+    ///// <param name="description"></param>
+    ///// <param name="length"></param>
+    ///// <returns></returns>
+    //public TableItem Add(String name, Type type, String? description = null, Int32 length = 0)
+    //{
+    //    var f = new Field(this, name, type, description, length);
 
-        var list = new List<FieldItem>(Fields) { f };
-        Fields = list.ToArray();
+    //    var list = new List<FieldItem>(Fields) { f };
+    //    Fields = list.ToArray();
 
-        list = new List<FieldItem>(AllFields) { f };
-        AllFields = list.ToArray();
+    //    list = new List<FieldItem>(AllFields) { f };
+    //    AllFields = list.ToArray();
 
-        var dc = DataTable.CreateColumn();
-        f.Fill(dc);
+    //    var dc = DataTable.CreateColumn();
+    //    f.Fill(dc);
 
-        DataTable.Columns.Add(dc);
+    //    DataTable.Columns.Add(dc);
 
-        return this;
-    }
+    //    return this;
+    //}
     #endregion
 }

@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using NewLife;
 using NewLife.Collections;
 using NewLife.Data;
+using NewLife.Log;
 using NewLife.Reflection;
 using XCode.Common;
 
@@ -19,7 +20,7 @@ class DaMeng : RemoteDb
 
     /// <summary>创建工厂</summary>
     /// <returns></returns>
-    protected override DbProviderFactory CreateFactory() => GetProviderFactory(null, "DmProvider.dll", "Dm.DmClientFactory");
+    protected override DbProviderFactory? CreateFactory() => GetProviderFactory(null, "DmProvider.dll", "Dm.DmClientFactory");
 
     const String Server_Key = "Server";
     protected override void OnSetConnectionString(ConnectionStringBuilder builder)
@@ -189,8 +190,8 @@ internal class DaMengSession : RemoteDbSession
         if (p >= 0 && p < tableName.Length - 1) tableName = tableName[(p + 1)..];
         tableName = tableName.ToUpper();
 
-        var owner = (Database as DaMeng).Owner;
-        if (owner.IsNullOrEmpty()) owner = (Database as DaMeng).User;
+        var owner = (Database as DaMeng)!.Owner;
+        if (owner.IsNullOrEmpty()) owner = (Database as DaMeng)!.User;
         //var owner = (Database as DaMeng).Owner.ToUpper();
         owner = owner.ToUpper();
 
@@ -206,7 +207,7 @@ internal class DaMengSession : RemoteDbSession
     /// <param name="type">命令类型，默认SQL文本</param>
     /// <param name="ps">命令参数</param>
     /// <returns>新增行的自动编号</returns>
-    public override Int64 InsertAndGetIdentity(String sql, CommandType type = CommandType.Text, params IDataParameter[] ps)
+    public override Int64 InsertAndGetIdentity(String sql, CommandType type = CommandType.Text, params IDataParameter[]? ps)
     {
         BeginTransaction(IsolationLevel.Serializable);
         try
@@ -293,6 +294,7 @@ internal class DaMengSession : RemoteDbSession
         var ps = new HashSet<String>();
         var sql = GetInsertSql(table, columns, ps);
         var dps = GetParameters(columns, ps, list);
+        DefaultSpan.Current?.AppendTag(sql);
 
         return Execute(sql, CommandType.Text, dps);
     }
@@ -303,7 +305,7 @@ internal class DaMengSession : RemoteDbSession
         var db = Database as DbBase;
 
         // 字段列表
-        sb.AppendFormat("Insert Into {0}(", db.FormatName(table));
+        sb.AppendFormat("Insert Into {0}(", db!.FormatName(table));
         foreach (var dc in columns)
         {
             //if (dc.Identity) continue;
@@ -337,12 +339,11 @@ internal class DaMengSession : RemoteDbSession
         var dps = new List<IDataParameter>();
         foreach (var dc in columns)
         {
-            //if (dc.Identity) continue;
             if (!ps.Contains(dc.Name)) continue;
 
-            //var vs = new List<Object>();
-            var type = dc.DataType;
-            if (!type.IsInt() && type.IsEnum) type = typeof(Int32);
+            var type = dc.DataType ?? throw new ArgumentNullException(nameof(dc.DataType));
+            if (type.IsEnum) type = typeof(Int32);
+
             var arr = Array.CreateInstance(type, list.Count());
             var k = 0;
             foreach (var entity in list)
@@ -358,7 +359,7 @@ internal class DaMengSession : RemoteDbSession
         return dps.ToArray();
     }
 
-    public override Int32 Upsert(IDataTable table, IDataColumn[] columns, ICollection<String> updateColumns, ICollection<String> addColumns, IEnumerable<IModel> list)
+    public override Int32 Upsert(IDataTable table, IDataColumn[] columns, ICollection<String>? updateColumns, ICollection<String>? addColumns, IEnumerable<IModel> list)
     {
         var ps = new HashSet<String>();
         var insert = GetInsertSql(table, columns, ps);
@@ -383,13 +384,14 @@ internal class DaMengSession : RemoteDbSession
         sb.AppendLine("END;");
 
         var sql = sb.Put(true);
+        DefaultSpan.Current?.AppendTag(sql);
 
         var dps = GetParameters(columns, ps, list);
 
         return Execute(sql, CommandType.Text, dps);
     }
 
-    private String GetUpdateSql(IDataTable table, IDataColumn[] columns, ICollection<String> updateColumns, ICollection<String> addColumns, ICollection<String> ps)
+    private String? GetUpdateSql(IDataTable table, IDataColumn[] columns, ICollection<String>? updateColumns, ICollection<String>? addColumns, ICollection<String> ps)
     {
         if ((updateColumns == null || updateColumns.Count == 0)
             && (addColumns == null || addColumns.Count == 0)) return null;
@@ -398,7 +400,7 @@ internal class DaMengSession : RemoteDbSession
         var db = Database as DbBase;
 
         // 字段列表
-        sb.AppendFormat("Update {0} Set ", db.FormatName(table));
+        sb.AppendFormat("Update {0} Set ", db!.FormatName(table));
         foreach (var dc in columns)
         {
             if (dc.Identity || dc.PrimaryKey) continue;
@@ -434,10 +436,13 @@ internal class DaMengSession : RemoteDbSession
         return sb.Put(true);
     }
 
-    public override Int32 Update(IDataTable table, IDataColumn[] columns, ICollection<String> updateColumns, ICollection<String> addColumns, IEnumerable<IModel> list)
+    public override Int32 Update(IDataTable table, IDataColumn[] columns, ICollection<String>? updateColumns, ICollection<String>? addColumns, IEnumerable<IModel> list)
     {
         var ps = new HashSet<String>();
         var sql = GetUpdateSql(table, columns, updateColumns, addColumns, ps);
+        if (sql.IsNullOrEmpty()) return 0;
+        DefaultSpan.Current?.AppendTag(sql);
+
         var dps = GetParameters(columns, ps, list);
 
         return Execute(sql, CommandType.Text, dps);
@@ -467,7 +472,7 @@ class DaMengMeta : RemoteDbMetaData
 
     /// <summary>取得所有表构架</summary>
     /// <returns></returns>
-    protected override List<IDataTable> OnGetTables(String[] names)
+    protected override List<IDataTable> OnGetTables(String[]? names)
     {
         DataTable? dt = null;
 
@@ -476,7 +481,7 @@ class DaMengMeta : RemoteDbMetaData
         {
             var db = Database as DaMeng;
             /*if (db.IgnoreCase)*/
-            names = names.Select(e => db.IsReservedWord(e) ? e : e.ToUpper()).ToArray();
+            names = names.Select(e => db!.IsReservedWord(e) ? e : e.ToUpper()).ToArray();
         }
 
         // 采用集合过滤，提高效率
@@ -488,19 +493,21 @@ class DaMengMeta : RemoteDbMetaData
         //if (owner.IsNullOrEmpty()) owner = UserID;
 
         //dt = Get("all_tables", owner, tableName);
-        dt = GetSchema(_.Tables, new String[] { owner, tableName });
+        dt = GetSchema(_.Tables, [owner, tableName]);
+        if (dt == null) return [];
+
         if (!dt.Columns.Contains("TABLE_TYPE"))
         {
             dt.Columns.Add("TABLE_TYPE", typeof(String));
-            foreach (var dr in dt.Rows?.ToArray())
+            foreach (var dr in dt.Rows.ToArray())
             {
                 dr["TABLE_TYPE"] = "Table";
             }
         }
-        var dtView = GetSchema(_.Views, new String[] { owner, tableName });
+        var dtView = GetSchema(_.Views, [owner, tableName]);
         if (dtView != null && dtView.Rows.Count != 0)
         {
-            foreach (var dr in dtView.Rows?.ToArray())
+            foreach (var dr in dtView.Rows.ToArray())
             {
                 var drNew = dt.NewRow();
                 drNew["OWNER"] = dr["OWNER"];
@@ -510,7 +517,7 @@ class DaMengMeta : RemoteDbMetaData
             }
         }
 
-        var data = new NullableDictionary<String, DataTable>(StringComparer.OrdinalIgnoreCase);
+        var data = new NullableDictionary<String, DataTable?>(StringComparer.OrdinalIgnoreCase);
 
         // 如果表太多，则只要目标表数据
         var mulTable = "";
@@ -527,7 +534,8 @@ class DaMengMeta : RemoteDbMetaData
         data["IndexColumns"] = Get("all_ind_columns", owner, tableName, mulTable, "Table_Owner");
 
         // 主键
-        if (MetaDataCollections.Contains(_.PrimaryKeys) && !tableName.IsNullOrEmpty()) data["PrimaryKeys"] = GetSchema(_.PrimaryKeys, new String[] { owner, tableName, null });
+        if (MetaDataCollections.Contains(_.PrimaryKeys) && !tableName.IsNullOrEmpty())
+            data["PrimaryKeys"] = GetSchema(_.PrimaryKeys, [owner, tableName, null]);
 
         // 序列
         data["Sequences"] = Get("all_sequences", owner, null, null, "Sequence_Owner");
@@ -551,18 +559,19 @@ class DaMengMeta : RemoteDbMetaData
     {
         var list = new List<String>();
 
-        var dt = GetSchema(_.Tables, new String[] { Owner, null });
+        var dt = GetSchema(_.Tables, [Owner, null]);
         if (dt?.Rows == null || dt.Rows.Count <= 0) return list;
 
         foreach (DataRow dr in dt.Rows)
         {
-            list.Add(GetDataRowValue<String>(dr, _.TalbeName));
+            var tn = GetDataRowValue<String>(dr, _.TalbeName);
+            if (!tn.IsNullOrEmpty()) list.Add(tn);
         }
 
         return list;
     }
 
-    private DataTable Get(String name, String owner, String tableName, String mulTable = null, String ownerName = null)
+    private DataTable Get(String name, String owner, String? tableName, String? mulTable = null, String? ownerName = null)
     {
         if (ownerName.IsNullOrEmpty()) ownerName = "Owner";
         var sql = $"Select * From {name} Where {ownerName}='{owner}'";
@@ -574,7 +583,7 @@ class DaMengMeta : RemoteDbMetaData
         return Database.CreateSession().Query(sql).Tables[0];
     }
 
-    protected override void FixTable(IDataTable table, DataRow dr, IDictionary<String, DataTable> data)
+    protected override void FixTable(IDataTable table, DataRow dr, IDictionary<String, DataTable?>? data)
     {
         base.FixTable(table, dr, data);
 
@@ -586,7 +595,7 @@ class DaMengMeta : RemoteDbMetaData
             if (drs != null && drs.Length > 0)
             {
                 // 找到主键所在索引，这个索引的列才是主键
-                if (TryGetDataRowValue(drs[0], _.IndexName, out String name) && !String.IsNullOrEmpty(name))
+                if (TryGetDataRowValue(drs[0], _.IndexName, out String? name) && !String.IsNullOrEmpty(name))
                 {
                     var di = table.Indexes.FirstOrDefault(i => i.Name == name);
                     if (di != null)
@@ -607,7 +616,7 @@ class DaMengMeta : RemoteDbMetaData
         if (table?.Columns == null || table.Columns.Count == 0) return;
     }
 
-    String GetTableComment(String name, IDictionary<String, DataTable> data)
+    String? GetTableComment(String name, IDictionary<String, DataTable?>? data)
     {
         var dt = data?["TableComment"];
         if (dt?.Rows == null || dt.Rows.Count <= 0) return null;
@@ -624,13 +633,13 @@ class DaMengMeta : RemoteDbMetaData
     /// <param name="columns">列</param>
     /// <param name="data"></param>
     /// <returns></returns>
-    protected override List<IDataColumn> GetFields(IDataTable table, DataTable columns, IDictionary<String, DataTable> data)
+    protected override List<IDataColumn> GetFields(IDataTable table, DataTable? columns, IDictionary<String, DataTable?>? data)
     {
         var list = base.GetFields(table, columns, data);
-        if (list == null || list.Count <= 0) return null;
+        if (list == null || list.Count <= 0) return [];
 
         // 字段注释
-        if (list != null && list.Count > 0)
+        if (list.Count > 0)
         {
             foreach (var field in list)
             {
@@ -645,7 +654,7 @@ class DaMengMeta : RemoteDbMetaData
 
     protected override List<IDataColumn> GetFields(IDataTable table, DataRow[] rows)
     {
-        if (rows == null || rows.Length <= 0) return null;
+        if (rows == null || rows.Length <= 0) return [];
 
         var owner = Owner;
         if (owner.IsNullOrEmpty() || !rows[0].Table.Columns.Contains(KEY_OWNER)) return base.GetFields(table, rows);
@@ -653,13 +662,13 @@ class DaMengMeta : RemoteDbMetaData
         var list = new List<DataRow>();
         foreach (var dr in rows)
         {
-            if (TryGetDataRowValue(dr, KEY_OWNER, out String str) && owner.EqualIgnoreCase(str)) list.Add(dr);
+            if (TryGetDataRowValue(dr, KEY_OWNER, out String? str) && owner.EqualIgnoreCase(str)) list.Add(dr);
         }
 
         return base.GetFields(table, list.ToArray());
     }
 
-    String GetColumnComment(String tableName, String columnName, IDictionary<String, DataTable> data)
+    String? GetColumnComment(String tableName, String columnName, IDictionary<String, DataTable?>? data)
     {
         var dt = data?["ColumnComment"];
         if (dt?.Rows == null || dt.Rows.Count <= 0) return null;
@@ -667,6 +676,7 @@ class DaMengMeta : RemoteDbMetaData
         var where = $"{_.TalbeName}='{tableName}' AND {_.ColumnName}='{columnName}'";
         var drs = dt.Select(where);
         if (drs != null && drs.Length > 0) return Convert.ToString(drs[0]["COMMENTS"]);
+
         return null;
     }
 
@@ -694,7 +704,7 @@ class DaMengMeta : RemoteDbMetaData
 
     protected override void FixIndex(IDataIndex index, DataRow dr)
     {
-        if (TryGetDataRowValue(dr, "UNIQUENESS", out String str))
+        if (TryGetDataRowValue(dr, "UNIQUENESS", out String? str))
             index.Unique = str == "UNIQUE";
 
         base.FixIndex(index, dr);
@@ -797,9 +807,9 @@ class DaMengMeta : RemoteDbMetaData
     //    return sql + "; " + Environment.NewLine + sqlSeq;
     //}
 
-    public override String AddColumnSQL(IDataColumn field) => $"Alter Table {FormatName(field.Table)} Add {FieldClause(field, true)}";
+    public override String? AddColumnSQL(IDataColumn field) => $"Alter Table {FormatName(field.Table)} Add {FieldClause(field, true)}";
 
-    public override String AlterColumnSQL(IDataColumn field, IDataColumn oldfield) => $"Alter Table {FormatName(field.Table)} Modify {FieldClause(field, false)}";
+    public override String AlterColumnSQL(IDataColumn field, IDataColumn? oldfield) => $"Alter Table {FormatName(field.Table)} Modify {FieldClause(field, false)}";
 
     public override String DropColumnSQL(IDataColumn field) => $"Alter Table {FormatName(field.Table)} Drop Column {field}";
 

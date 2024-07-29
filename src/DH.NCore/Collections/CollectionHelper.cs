@@ -45,7 +45,7 @@ public static class CollectionHelper
         lock (collection)
         {
             var count = collection.Count;
-            if (count == 0) return new T[0];
+            if (count == 0) return [];
 
             var arr = new T[count];
             collection.CopyTo(arr, 0);
@@ -66,7 +66,7 @@ public static class CollectionHelper
 
         if (collection is ConcurrentDictionary<TKey, TValue> cdiv && cdiv.Keys is IList<TKey> list) return list;
 
-        if (collection.Count == 0) return new TKey[0];
+        if (collection.Count == 0) return [];
         lock (collection)
         {
             var arr = new TKey[collection.Count - index];
@@ -88,7 +88,7 @@ public static class CollectionHelper
         //if (collection is ConcurrentDictionary<TKey, TValue> cdiv) return cdiv.Values as IList<TValue>;
         if (collection is ConcurrentDictionary<TKey, TValue> cdiv && cdiv.Values is IList<TValue> list) return list;
 
-        if (collection.Count == 0) return new TValue[0];
+        if (collection.Count == 0) return [];
         lock (collection)
         {
             var arr = new TValue[collection.Count - index];
@@ -105,7 +105,8 @@ public static class CollectionHelper
         //!! 即使传入为空，也返回字典，而不是null，避免业务层需要大量判空
         //if (target == null) return null;
         if (source is IDictionary<String, Object?> dic) return dic;
-        if (source != null && source.GetType().GetTypeCode() != TypeCode.Object)
+        var type = source?.GetType();
+        if (type != null && type.IsBaseType())
             throw new InvalidDataException("source is not Object");
 
         dic = new NullableDictionary<String, Object?>(StringComparer.OrdinalIgnoreCase);
@@ -166,7 +167,10 @@ public static class CollectionHelper
     }
 
 #if NETCOREAPP
-    static IList<Object?> ToArray(JsonElement element)
+    /// <summary>Json对象转为数组</summary>
+    /// <param name="element"></param>
+    /// <returns></returns>
+    public static IList<Object?> ToArray(this JsonElement element)
     {
         var list = new List<Object?>();
         foreach (var item in element.EnumerateArray())
@@ -197,7 +201,7 @@ public static class CollectionHelper
     /// <returns></returns>
     public static IDictionary<String, Object?> Merge(this IDictionary<String, Object?> dic, Object target, Boolean overwrite = true, String[]? excludes = null)
     {
-        if (target == null || target.GetType().GetTypeCode() != TypeCode.Object) return dic;
+        if (target == null || target.GetType().IsBaseType()) return dic;
 
         var exs = excludes != null ? new HashSet<String>(excludes, StringComparer.OrdinalIgnoreCase) : null;
         foreach (var item in target.ToDictionary())

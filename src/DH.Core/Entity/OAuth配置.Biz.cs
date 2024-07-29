@@ -105,6 +105,7 @@ public partial class OAuthConfig : DHEntityBase<OAuthConfig> {
             Debug = true,
             Visible = true,
             AutoRegister = true,
+            FetchAvatar = true,
         };
         entity.Insert();
 
@@ -113,6 +114,7 @@ public partial class OAuthConfig : DHEntityBase<OAuthConfig> {
         Add("Baidu", "百度", "/images/logo/Baidu.png");
         Add("Ding", "钉钉", "/Content/images/logo/Ding.png", "snsapi_qrlogin扫码登录，snsapi_auth钉钉内免登，snsapi_login密码登录");
         Add("QyWeiXin", "企业微信", "/Content/images/logo/QyWeiXin.png");
+        //Add("Weixin", "微信公众号", "/Content/images/logo/Weixin.png", "snsapi_base静默登录，snsapi_userinfo需要用户关注后授权");
         var cfg = new OAuthConfig
         {
             Name = "Weixin",
@@ -122,6 +124,7 @@ public partial class OAuthConfig : DHEntityBase<OAuthConfig> {
 
             Visible = false,
             AutoRegister = true,
+            FetchAvatar = true,
         };
         cfg.Insert();
 
@@ -210,6 +213,7 @@ public partial class OAuthConfig : DHEntityBase<OAuthConfig> {
             Logo = logo,
             Visible = true,
             AutoRegister = true,
+            FetchAvatar = true,
             Remark = remark,
         };
 
@@ -221,10 +225,10 @@ public partial class OAuthConfig : DHEntityBase<OAuthConfig> {
     /// <summary>获取全部有效设置</summary>
     /// <param name="grantType">授权类型</param>
     /// <returns></returns>
-    public static IList<OAuthConfig> GetValids(GrantTypes grantType) => FindAllWithCache().Where(e => e.Enable && e.GrantType == grantType).OrderByDescending(e => e.Sort).ThenByDescending(e => e.ID).ToList();
+    public static IList<OAuthConfig> GetValids(GrantTypes grantType) => FindAllWithCache().Where(e => e.Enable && !e.IsDeleted && e.GrantType == grantType).OrderByDescending(e => e.Sort).ThenByDescending(e => e.ID).ToList();
 
     /// <summary>获取全部有效且可见设置</summary>
     /// <returns></returns>
-    public static IList<OAuthConfig> GetVisibles() => FindAllWithCache().Where(e => e.Enable && e.Visible).OrderByDescending(e => e.Sort).ThenByDescending(e => e.ID).ToList();
+    public static IList<OAuthConfig> GetVisibles() => FindAllWithCache().Where(e => e.Enable && !e.IsDeleted && e.Visible).OrderByDescending(e => e.Sort).ThenByDescending(e => e.ID).ToList();
     #endregion
 }

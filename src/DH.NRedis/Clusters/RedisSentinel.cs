@@ -8,11 +8,11 @@ namespace NewLife.Caching.Clusters;
 public class RedisSentinel : RedisBase, IRedisCluster, IDisposable
 {
     #region 属性
+    /// <summary>节点集合</summary>
+    IList<IRedisNode> IRedisCluster.Nodes => Nodes.Select(x => (IRedisNode)x).ToList();
 
-    /// <summary>
-    /// redis nodes
-    /// </summary>
-    public List<IRedisNode> RedisNodes => Nodes.Select(x => (IRedisNode)x).ToList();
+    /// <summary>节点改变事件</summary>
+    public event EventHandler NodeChanged;
 
     /// <summary>集群节点</summary>
     public RedisNode[]? Nodes { get; protected set; }
@@ -69,14 +69,14 @@ public class RedisSentinel : RedisBase, IRedisCluster, IDisposable
         {
             foreach (var item in rep.Masters)
             {
-                if (!item.IP.IsNullOrEmpty()) servers.Add(item.EndPoint);
+                if (!item.EndPoint.IsNullOrEmpty()) servers.Add(item.EndPoint);
             }
         }
         if (rep.Slaves != null)
         {
             foreach (var item in rep.Slaves)
             {
-                if (!item.IP.IsNullOrEmpty()) servers.Add(item.EndPoint);
+                if (!item.EndPoint.IsNullOrEmpty()) servers.Add(item.EndPoint);
             }
         }
 
@@ -142,24 +142,28 @@ public class RedisSentinel : RedisBase, IRedisCluster, IDisposable
             {
                 if (node.EndPoint.IsNullOrEmpty()) return;
 
-                var uri = new NetUri(node.EndPoint);
+                var uri = new NetUri(node.EndPoint) { Type = NetType.Tcp };
                 if (uri.Port == 0) uri.Port = 6379;
                 uris.Add(uri);
             }
             if (uris.Count > 0) Redis.SetSevices(uris.ToArray());
         }
 
+        var changed = false;
         var str = nodes.Join("\n", e => $"{e.EndPoint}-{e.Slave}");
         if (_lastNodes != str)
         {
-            WriteLog("得到[{0}]节点：", Redis.Name);
+            WriteLog("得到[{0}]哨兵节点：", Redis.Name);
             showLog = true;
+            changed = true;
             _lastNodes = str;
         }
         foreach (var node in nodes)
         {
             if (showLog) WriteLog("节点：{0} {1}", node.Slave ? "slave" : "master", node.EndPoint);
         }
+
+        if (changed) NodeChanged?.Invoke(this, EventArgs.Empty);
     }
 
     /// <summary>根据Key选择节点</summary>

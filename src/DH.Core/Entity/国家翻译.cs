@@ -98,6 +98,23 @@ public partial class CountryLan : ICountryLan, IEntity<ICountryLan>
     #region 关联映射
     #endregion
 
+    #region 扩展查询
+    /// <summary>根据关联国家Id、关联所属语言Id查找</summary>
+    /// <param name="cId">关联国家Id</param>
+    /// <param name="lId">关联所属语言Id</param>
+    /// <returns>实体对象</returns>
+    public static CountryLan FindByCIdAndLId(Int32 cId, Int32 lId)
+    {
+        if (cId < 0) return null;
+        if (lId < 0) return null;
+
+        // 实体缓存
+        if (Meta.Session.Count < 1000) return Meta.Cache.Find(e => e.CId == cId && e.LId == lId);
+
+        return Find(_.CId == cId & _.LId == lId);
+    }
+    #endregion
+
     #region 字段名
     /// <summary>取得国家翻译字段信息的快捷方式</summary>
     public partial class _

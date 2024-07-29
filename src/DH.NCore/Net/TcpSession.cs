@@ -16,8 +16,8 @@ public class TcpSession : SessionBase, ISocketSession
     /// <summary>实际使用的远程地址。Remote配置域名时，可能有多个IP地址</summary>
     public IPAddress? RemoteAddress { get; private set; }
 
-    /// <summary>收到空数据时抛出异常并断开连接。默认true</summary>
-    public Boolean DisconnectWhenEmptyData { get; set; } = true;
+    ///// <summary>收到空数据时抛出异常并断开连接。默认true</summary>
+    //public Boolean DisconnectWhenEmptyData { get; set; } = true;
 
     internal ISocketServer? _Server;
 
@@ -37,7 +37,13 @@ public class TcpSession : SessionBase, ISocketSession
     public SslProtocols SslProtocol { get; set; } = SslProtocols.None;
 
     /// <summary>X509证书。用于SSL连接时验证证书指纹，可以直接加载pem证书文件，未指定时不验证证书</summary>
-    /// <remarks>var cert = new X509Certificate2("file", "pass");</remarks>
+    /// <remarks>
+    /// 可以使用pfx证书文件，也可以使用pem证书文件。
+    /// 服务端必须指定证书，客户端可以不指定，除非服务端请求客户端证书。
+    /// </remarks>
+    /// <example>
+    /// var cert = new X509Certificate2("file", "pass");
+    /// </example>
     public X509Certificate? Certificate { get; set; }
 
     private SslStream? _Stream;
@@ -105,7 +111,7 @@ public class TcpSession : SessionBase, ISocketSession
 
             var sp = SslProtocol;
 
-            WriteLog("服务端SSL认证 {0} {1}", sp, cert.Issuer);
+            WriteLog("服务端SSL认证，SslProtocol={0}，Issuer: {1}", sp, cert.Issuer);
 
             //var cert = new X509Certificate2("file", "pass");
             sslStream.AuthenticateAsServer(cert, false, sp, false);
@@ -186,11 +192,16 @@ public class TcpSession : SessionBase, ISocketSession
             if (sp != SslProtocols.None)
             {
                 var host = uri.Host ?? uri.Address + "";
-                WriteLog("客户端SSL认证 {0} {1}", sp, host);
+                WriteLog("客户端SSL认证，SslProtocol={0}，Host={1}", sp, host);
+
+                // 服务端请求客户端证书时，需要传入证书
+                var certs = new X509CertificateCollection();
+                var cert = Certificate;
+                if (cert != null) certs.Add(cert);
 
                 var ns = new NetworkStream(sock);
                 var sslStream = new SslStream(ns, false, OnCertificateValidationCallback);
-                sslStream.AuthenticateAsClient(host, new X509CertificateCollection(), sp, false);
+                sslStream.AuthenticateAsClient(host, certs, sp, false);
 
                 _Stream = sslStream;
             }
@@ -284,7 +295,8 @@ public class TcpSession : SessionBase, ISocketSession
 
         if (Log != null && Log.Enable && LogSend) WriteLog("Send [{0}]: {1}", count, pk.ToHex(LogDataLength));
 
-        using var span = Tracer?.NewSpan($"net:{Name}:Send", pk.Total + "");
+        using var span = Tracer?.NewSpan($"net:{Name}:Send", pk.Total + "", pk.Total);
+
         var rs = count;
         var sock = Client;
         if (sock == null) return -1;
@@ -353,6 +365,32 @@ public class TcpSession : SessionBase, ISocketSession
     #endregion 发送
 
     #region 接收
+    /// <summary>异步接收数据。重载以支持SSL</summary>
+    /// <returns></returns>
+    public override async Task<Packet?> ReceiveAsync(CancellationToken cancellationToken = default)
+    {
+        if (!Open() || Client == null) return null;
+
+        var ss = _Stream;
+        if (ss != null)
+        {
+            using var span = Tracer?.NewSpan($"net:{Name}:ReceiveAsync", BufferSize + "");
+            try
+            {
+                var buf = new Byte[BufferSize];
+                var count = await ss.ReadAsync(buf, 0, buf.Length, cancellationToken);
+                if (span != null) span.Value = count;
+                return new Packet(buf, 0, count);
+            }
+            catch (Exception ex)
+            {
+                span?.SetError(ex, null);
+                throw;
+            }
+        }
+
+        return await base.ReceiveAsync(cancellationToken);
+    }
 
     internal override Boolean OnReceiveAsync(SocketAsyncEventArgs se)
     {
@@ -395,29 +433,34 @@ public class TcpSession : SessionBase, ISocketSession
         if (ar.AsyncState is SocketAsyncEventArgs se) ProcessEvent(se, bytes, 1);
     }
 
-    private Int32 _empty;
+    //private Int32 _empty;
 
     /// <summary>预处理</summary>
     /// <param name="pk">数据包</param>
+    /// <param name="local">接收数据的本地地址</param>
     /// <param name="remote">远程地址</param>
     /// <returns>将要处理该数据包的会话</returns>
-    protected internal override ISocketSession? OnPreReceive(Packet pk, IPEndPoint remote)
+    protected internal override ISocketSession? OnPreReceive(Packet pk, IPAddress local, IPEndPoint remote)
     {
         if (pk.Count == 0)
         {
             using var span = Tracer?.NewSpan($"net:{Name}:EmptyData", remote?.ToString());
 
             // 连续多次空数据，则断开
-            if (DisconnectWhenEmptyData && ++_empty >= 3)
+            //if (DisconnectWhenEmptyData && ++_empty >= 3)
             {
-                Close("EmptyData");
-                Dispose();
+                var reason = CheckClosed();
+                if (reason != null)
+                {
+                    Close(reason);
+                    Dispose();
 
-                return null;
+                    return null;
+                }
             }
         }
-        else
-            _empty = 0;
+        //else
+        //    _empty = 0;
 
         return this;
     }
@@ -463,22 +506,18 @@ public class TcpSession : SessionBase, ISocketSession
     #endregion 自动重连
 
     #region 辅助
-
-    private String? _LogPrefix;
-
     /// <summary>日志前缀</summary>
-    public override String LogPrefix
+    public override String? LogPrefix
     {
         get
         {
-            if (_LogPrefix == null)
-            {
-                var name = _Server == null ? "" : _Server.Name;
-                _LogPrefix = $"{name}[{ID}].";
-            }
-            return _LogPrefix;
+            var pf = base.LogPrefix;
+            if (pf == null && _Server != null)
+                pf = base.LogPrefix = $"{_Server.Name}[{ID}].";
+
+            return pf;
         }
-        set { _LogPrefix = value; }
+        set { base.LogPrefix = value; }
     }
 
     /// <summary>已重载。</summary>
@@ -492,6 +531,5 @@ public class TcpSession : SessionBase, ISocketSession
 
         return _Server == null ? $"{local}=>{remote}" : $"{local}<={remote}";
     }
-
-    #endregion 辅助
+    #endregion
 }

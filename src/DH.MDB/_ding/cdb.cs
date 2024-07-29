@@ -1,6 +1,4 @@
-﻿using DH.Data;
-
-using System.Collections;
+﻿using System.Collections;
 
 namespace DH;
 
@@ -8,7 +6,7 @@ namespace DH;
 /// 从内存数据库中查询数据
 /// </summary>
 /// <remarks>
-/// 数据持久化在 /framework/data/ 目录下，以json格式存储。加载之后常驻内存。
+/// 数据持久化在 /data/ 目录下，以json格式存储。加载之后常驻内存。
 /// 特点：直接从内存中检索，速度相当于 Hashtable。插入和更新较慢(相对而言)，因为插入和更新会在内存中重建索引。
 /// </remarks>
 public class cdb

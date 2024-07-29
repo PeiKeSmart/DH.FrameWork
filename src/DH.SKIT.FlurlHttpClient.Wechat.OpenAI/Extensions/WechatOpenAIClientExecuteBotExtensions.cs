@@ -9,98 +9,91 @@ namespace SKIT.FlurlHttpClient.Wechat.OpenAI
     public static class WechatOpenAIClientExecuteBotExtensions
     {
         /// <summary>
-        /// <para>异步调用 [POST] /batchimportskill/{TOKEN} 接口。</para>
-        /// <para>REF: https://developers.weixin.qq.com/doc/aispeech/confapi/bot/batchimportskill.html </para>
+        /// <para>异步调用 [POST] /v2/bot/import/json 接口。</para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developers.weixin.qq.com/doc/aispeech/confapi/dialog/bot/import.html ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public static async Task<Models.BatchImportSkillResponse> ExecuteBatchImportSkillAsync(this WechatOpenAIClient client, Models.BatchImportSkillRequest request, CancellationToken cancellationToken = default)
+        public static async Task<Models.BotImportJsonV2Response> ExecuteBotImportJsonV2Async(this WechatOpenAIClient client, Models.BotImportJsonV2Request request, CancellationToken cancellationToken = default)
         {
             if (client is null) throw new ArgumentNullException(nameof(client));
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "batchimportskill", client.Credentials.Token!);
+                .CreateFlurlRequest(request, HttpMethod.Post, "v2", "bot", "import", "json");
 
-            return await client.SendRequestWithJsonAsync<Models.BatchImportSkillResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsJsonAsync<Models.BotImportJsonV2Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
-        /// <para>异步调用 [POST] /publish/{TOKEN} 接口。</para>
-        /// <para>REF: https://developers.weixin.qq.com/doc/aispeech/confapi/bot/publish.html </para>
+        /// <para>异步调用 [POST] /v2/bot/publish 接口。</para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developers.weixin.qq.com/doc/aispeech/confapi/dialog/bot/publish.html ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public static async Task<Models.PublishResponse> ExecutePublishAsync(this WechatOpenAIClient client, Models.PublishRequest request, CancellationToken cancellationToken = default)
+        public static async Task<Models.BotPublishV2Response> ExecuteBotPublishV2Async(this WechatOpenAIClient client, Models.BotPublishV2Request request, CancellationToken cancellationToken = default)
         {
             if (client is null) throw new ArgumentNullException(nameof(client));
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "publish", client.Credentials.Token!);
+                .CreateFlurlRequest(request, HttpMethod.Post, "v2", "bot", "publish");
 
-            return await client.SendRequestWithJsonAsync<Models.PublishResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsJsonAsync<Models.BotPublishV2Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
-        /// <para>异步调用 [POST] /publish_progress/{TOKEN} 接口。</para>
-        /// <para>REF: https://developers.weixin.qq.com/doc/aispeech/confapi/bot/publish_progress.html </para>
+        /// <para>异步调用 [POST] /v2/bot/effective_progress 接口。</para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developers.weixin.qq.com/doc/aispeech/confapi/dialog/bot/progress.html ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public static async Task<Models.PublishProgressResponse> ExecutePublishProgressAsync(this WechatOpenAIClient client, Models.PublishProgressRequest request, CancellationToken cancellationToken = default)
+        public static async Task<Models.BotEffectiveProgressV2Response> ExecuteBotEffectiveProgressV2Async(this WechatOpenAIClient client, Models.BotEffectiveProgressV2Request request, CancellationToken cancellationToken = default)
         {
             if (client is null) throw new ArgumentNullException(nameof(client));
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "publish_progress", client.Credentials.Token!);
+                .CreateFlurlRequest(request, HttpMethod.Post, "v2", "bot", "effective_progress");
 
-            return await client.SendRequestWithJsonAsync<Models.PublishProgressResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsJsonAsync<Models.BotEffectiveProgressV2Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
-        /// <para>异步调用 [POST] /setautoreply/{TOKEN} 接口。</para>
-        /// <para>REF: https://developers.weixin.qq.com/doc/aispeech/confapi/bot/setautoreply.html </para>
+        /// <para>异步调用 [POST] /v2/bot/query 接口。</para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developers.weixin.qq.com/doc/aispeech/confapi/dialog/bot/query.html ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public static async Task<Models.SetAutoReplyResponse> ExecuteSetAutoReplyAsync(this WechatOpenAIClient client, Models.SetAutoReplyRequest request, CancellationToken cancellationToken = default)
+        public static async Task<Models.BotQueryV2Response> ExecuteBotQueryV2Async(this WechatOpenAIClient client, Models.BotQueryV2Request request, CancellationToken cancellationToken = default)
         {
             if (client is null) throw new ArgumentNullException(nameof(client));
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "setautoreply", client.Credentials.Token!);
+                .CreateFlurlRequest(request, HttpMethod.Post, "v2", "bot", "query");
 
-            return await client.SendRequestWithJsonAsync<Models.SetAutoReplyResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
-        }
-
-        /// <summary>
-        /// <para>异步调用 [POST] /label/batchset/{TOKEN} 接口。</para>
-        /// <para>REF: https://developers.weixin.qq.com/doc/aispeech/confapi/bot/batchsetlabel.html </para>
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public static async Task<Models.LabelBatchSetResponse> ExecuteLabelBatchSetAsync(this WechatOpenAIClient client, Models.LabelBatchSetRequest request, CancellationToken cancellationToken = default)
-        {
-            if (client is null) throw new ArgumentNullException(nameof(client));
-            if (request is null) throw new ArgumentNullException(nameof(request));
-
-            IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "label", "batchset", client.Credentials.Token!);
-
-            return await client.SendRequestWithJsonAsync<Models.LabelBatchSetResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsJsonAsync<Models.BotQueryV2Response>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
     }
 }

@@ -10,7 +10,10 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV2
     {
         /// <summary>
         /// <para>异步调用 [POST] /vehicle/pay/notification 接口。</para>
-        /// <para>REF: https://pay.weixin.qq.com/wiki/doc/api/vehicle_v2.php?chapter=20_992 </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://pay.weixin.qq.com/wiki/doc/api/vehicle_v2.php?chapter=20_992 ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -22,14 +25,17 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV2
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "vehicle", "pay", "notification");
+                .CreateFlurlRequest(request, HttpMethod.Post, "vehicle", "pay", "notification");
 
-            return await client.SendRequestWithXmlAsync<Models.NotifyVehiclePayResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsXmlAsync<Models.NotifyVehiclePayResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// <para>异步调用 [POST] /vehicle/pay/payapply 接口。</para>
-        /// <para>REF: https://pay.weixin.qq.com/wiki/doc/api/vehicle_v2.php?chapter=20_982 </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://pay.weixin.qq.com/wiki/doc/api/vehicle_v2.php?chapter=20_982 ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -41,14 +47,17 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV2
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "vehicle", "pay", "payapply");
+                .CreateFlurlRequest(request, HttpMethod.Post, "vehicle", "pay", "payapply");
 
-            return await client.SendRequestWithXmlAsync<Models.ApplyVehiclePayResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsXmlAsync<Models.ApplyVehiclePayResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// <para>异步调用 [POST] /vehicle/pay/querystate 接口。</para>
-        /// <para>REF: https://pay.weixin.qq.com/wiki/doc/api/vehicle_v2.php?chapter=20_93 </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://pay.weixin.qq.com/wiki/doc/api/vehicle_v2.php?chapter=20_93 ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -60,14 +69,17 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV2
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "vehicle", "pay", "querystate");
+                .CreateFlurlRequest(request, HttpMethod.Post, "vehicle", "pay", "querystate");
 
-            return await client.SendRequestWithXmlAsync<Models.GetVehiclePayStateResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsXmlAsync<Models.GetVehiclePayStateResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// <para>异步调用 [POST] /transit/queryorder 接口。</para>
-        /// <para>REF: https://pay.weixin.qq.com/wiki/doc/api/vehicle_v2.php?chapter=20_96 </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://pay.weixin.qq.com/wiki/doc/api/vehicle_v2.php?chapter=20_96 ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -79,9 +91,9 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV2
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "transit", "queryorder");
+                .CreateFlurlRequest(request, HttpMethod.Post, "transit", "queryorder");
 
-            return await client.SendRequestWithXmlAsync<Models.GetTransitOrderResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsXmlAsync<Models.GetTransitOrderResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
     }
 }

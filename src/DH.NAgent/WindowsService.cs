@@ -2,17 +2,20 @@
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Runtime.Versioning;
 using System.Security.Principal;
 using System.Text;
+using NewLife.Agent.Windows;
 using NewLife.Log;
-using static NewLife.Agent.Advapi32;
+using NewLife.Threading;
+using static NewLife.Agent.Windows.Advapi32;
 
 namespace NewLife.Agent;
 
 /// <summary>Windows服务</summary>
 /// <remarks>
-/// 特别注意，主线程和服务内部线程，不要调用任何系统WinApi
+/// 支持派生类重写OnPowerEvent、OnSessionChange、OnTimeChange等方法，以处理系统事件。
+/// 
+/// 特别注意，主线程和服务内部线程，不要调用任何系统WinApi。
 /// </remarks>
 public class WindowsService : DefaultHost
 {
@@ -47,10 +50,10 @@ public class WindowsService : DefaultHost
             _status.waitHint = 0;
 
             // 正常运行后可接受的命令
-#if NETSTANDARD2_0
+#if NETSTANDARD2_0 || NETCOREAPP
             _acceptedCommands = ControlsAccepted.CanStop
                 | ControlsAccepted.CanShutdown
-                //| ControlsAccepted.CanPauseAndContinue
+                | ControlsAccepted.CanPauseAndContinue
                 | ControlsAccepted.ParamChange
                 | ControlsAccepted.NetBindChange
                 | ControlsAccepted.HardwareProfileChange
@@ -64,6 +67,16 @@ public class WindowsService : DefaultHost
 #else
             _acceptedCommands = ControlsAccepted.CanStop
                 | ControlsAccepted.CanShutdown
+                | ControlsAccepted.CanPauseAndContinue
+                | ControlsAccepted.ParamChange
+                | ControlsAccepted.NetBindChange
+                | ControlsAccepted.HardwareProfileChange
+                | ControlsAccepted.CanHandlePowerEvent
+                | ControlsAccepted.CanHandleSessionChangeEvent
+                | ControlsAccepted.PreShutdown
+                | ControlsAccepted.TimeChange
+                | ControlsAccepted.TriggerEvent
+                //| ControlsAccepted.UserModeReboot
                 ;
 #endif
 
@@ -188,17 +201,20 @@ public class WindowsService : DefaultHost
                 });
                 break;
             case ControlOptions.PowerEvent:
-                XTrace.WriteLine("PowerEvent {0}", (PowerBroadcastStatus)eventType);
+                var powerStatus = (PowerBroadcastStatus)eventType;
+                var power = new PowerStatus();
+                ThreadPoolX.QueueUserWorkItem(() => OnPowerEvent(powerStatus, power));
                 break;
             case ControlOptions.SessionChange:
                 var sessionNotification = new WTSSESSION_NOTIFICATION();
                 Marshal.PtrToStructure(eventData, sessionNotification);
-                XTrace.WriteLine("SessionChange {0}, {1}", (SessionChangeReason)eventType, sessionNotification.sessionId);
+                var reason = (SessionChangeReason)eventType;
+                ThreadPoolX.QueueUserWorkItem(() => OnSessionChange(sessionNotification.sessionId, reason));
                 break;
             case ControlOptions.TimeChange:
                 var time = new SERVICE_TIMECHANGE_INFO();
                 Marshal.PtrToStructure(eventData, time);
-                XTrace.WriteLine("TimeChange {0}=>{1}", DateTime.FromFileTime(time.OldTime), DateTime.FromFileTime(time.NewTime));
+                ThreadPoolX.QueueUserWorkItem(() => OnTimeChange(DateTime.FromFileTime(time.OldTime), DateTime.FromFileTime(time.NewTime)));
                 break;
             default:
                 ReportStatus(_status.currentState);
@@ -239,6 +255,30 @@ public class WindowsService : DefaultHost
 
             return SetServiceStatus(_statusHandle, status);
         }
+    }
+
+    /// <summary>当在派生类中实现时，该方法于计算机电源状态更改时执行。 这适用于膝上型计算机进入挂起模式时的情况，该模式不同于系统关闭。</summary>
+    /// <param name="powerStatus">指示来自系统的有关电源状态的通知</param>
+    /// <param name="status">电源状态</param>
+    protected virtual void OnPowerEvent(PowerBroadcastStatus powerStatus, PowerStatus status)
+    {
+        XTrace.WriteLine("PowerEvent: {0}, LineStatus={1}, LifePercent={2:p0}, ChargeStatus={3}", powerStatus, status.PowerLineStatus, status.BatteryLifePercent, status.BatteryChargeStatus);
+    }
+
+    /// <summary>从终端服务器会话接收到更改事件时执行</summary>
+    /// <param name="sessionId"></param>
+    /// <param name="reason"></param>
+    protected virtual void OnSessionChange(Int32 sessionId, SessionChangeReason reason)
+    {
+        XTrace.WriteLine("SessionChange {0}, sessionId={1}", reason, sessionId);
+    }
+
+    /// <summary>系统时间改变时执行</summary>
+    /// <param name="oldTime"></param>
+    /// <param name="newTime"></param>
+    protected virtual void OnTimeChange(DateTime oldTime, DateTime newTime)
+    {
+        XTrace.WriteLine("TimeChange {0}=>{1}", oldTime, newTime);
     }
 
     #region 服务状态和控制
@@ -294,7 +334,7 @@ public class WindowsService : DefaultHost
         var binPath = fileName;
         if (!arguments.IsNullOrEmpty()) binPath += " " + arguments;
 
-        using var service = new SafeServiceHandle(CreateService(manager, serviceName, displayName, ServiceOptions.SERVICE_ALL_ACCESS, 0x10, 2, 1, binPath, null, 0, null, null, null));
+        using var service = new SafeServiceHandle(CreateService(manager, serviceName, displayName, ServiceOptions.SERVICE_ALL_ACCESS, (Int32)ServiceType.Win32OwnProcess, (Int32)StartType.AutoStart, 1, binPath, null, 0, null, null, null));
         if (service.IsInvalid) throw new Win32Exception(Marshal.GetLastWin32Error());
 
         // 设置描述信息

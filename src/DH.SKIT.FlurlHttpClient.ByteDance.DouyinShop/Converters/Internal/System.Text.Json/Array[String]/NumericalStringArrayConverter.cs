@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using System.Text.Json.Serialization.Common;
 
 namespace System.Text.Json.Converters
 {

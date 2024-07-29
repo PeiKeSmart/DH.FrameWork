@@ -5,6 +5,10 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Events
     /// <summary>
     /// <para>表示 PAYSCORE.USER_OPEN_SERVICE（针对直连商户）通知的数据。</para>
     /// <para>表示 PAYSCORE.USER_CLOSE_SERVICE（针对直连商户）通知的数据。</para>
+    /// <para>
+    /// REF: <br/>
+    /// <![CDATA[ https://pay.weixin.qq.com/docs/merchant/apis/weixin-pay-score/open/disable-notification.html ]]>
+    /// </para>
     /// </summary>
     public class PayScorePermissionsResource : WechatTenpayEvent.Types.IDecryptedResource
     {
@@ -61,9 +65,9 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Events
         /// 获取或设置服务开启或解除授权时间。
         /// </summary>
         [Newtonsoft.Json.JsonProperty("openorclose_time")]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.PureDigitalTextNullableDateTimeOffsetConverter))]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.Common.DigitalDateTimeOffsetConverter))]
         [System.Text.Json.Serialization.JsonPropertyName("openorclose_time")]
-        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.PureDigitalTextNullableDateTimeOffsetConverter))]
+        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.DigitalDateTimeOffsetConverter))]
         public DateTimeOffset? OpenOrCloseTime { get; set; }
     }
 }

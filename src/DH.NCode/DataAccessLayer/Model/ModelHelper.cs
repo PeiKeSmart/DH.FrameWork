@@ -28,7 +28,7 @@ public static class ModelHelper
     /// <returns></returns>
     public static IDataColumn[] GetColumns(this IDataTable table, String[] names)
     {
-        if (names == null || names.Length <= 0) return new IDataColumn[0];
+        if (names == null || names.Length <= 0) return [];
 
         //return table.Columns.Where(c => names.Any(n => c.Is(n))).ToArray();
         var dcs = new List<IDataColumn>();
@@ -98,9 +98,9 @@ public static class ModelHelper
     /// <param name="table"></param>
     /// <param name="columnNames"></param>
     /// <returns></returns>
-    public static IDataIndex GetIndex(this IDataTable table, params String[] columnNames)
+    public static IDataIndex? GetIndex(this IDataTable table, params String[] columnNames)
     {
-        var dis = table?.Indexes;
+        var dis = table.Indexes;
         if (dis == null || dis.Count <= 0 || columnNames == null || columnNames.Length <= 0) return null;
 
         //var di = dis.FirstOrDefault(e => e != null && e.Columns.EqualIgnoreCase(columnNames));
@@ -147,6 +147,9 @@ public static class ModelHelper
     public static String CamelName(this IDataColumn column)
     {
         var name = column.Name;
+        if (name.IsNullOrEmpty()) name = column.ColumnName;
+        if (name.IsNullOrEmpty()) return name;
+
         if (name.EqualIgnoreCase("id")) return "id";
 
         // 全小写，直接返回
@@ -257,7 +260,7 @@ public static class ModelHelper
     /// <returns></returns>
     public static IList<IDataTable> FromXml(String xml, Func<IDataTable> createTable, Object? option = null, IDictionary<String, String>? atts = null)
     {
-        if (xml.IsNullOrEmpty()) return new IDataTable[0];
+        if (xml.IsNullOrEmpty()) return [];
         if (createTable == null) throw new ArgumentNullException(nameof(createTable));
 
         var settings = new XmlReaderSettings
@@ -267,8 +270,9 @@ public static class ModelHelper
         };
 
         var reader = XmlReader.Create(new MemoryStream(Encoding.UTF8.GetBytes(xml)), settings);
-        while (reader.NodeType != XmlNodeType.Element) { if (!reader.Read()) return null; }
+        while (reader.NodeType != XmlNodeType.Element) { if (!reader.Read()) return []; }
 
+        // 读取根节点特性
         if (atts != null && reader.HasAttributes)
         {
             reader.MoveToFirstAttribute();
@@ -341,7 +345,7 @@ public static class ModelHelper
     static void ReadTable(XmlReader reader, Func<IDataTable> createTable, IList<IDataTable> list)
     {
         var table = createTable();
-        (table as IXmlSerializable).ReadXml(reader);
+        (table as IXmlSerializable)!.ReadXml(reader);
 
         // 判断是否存在属性NeedHistory设置且为true
         var needHistory = table.Properties.FirstOrDefault(x => x.Key.EqualIgnoreCase("NeedHistory"));
@@ -429,7 +433,7 @@ public static class ModelHelper
                             // 清空默认的原始类型，让其从xml读取
                             dc.RawType = null;
                         }
-                        (dc as IXmlSerializable).ReadXml(reader);
+                        (dc as IXmlSerializable)!.ReadXml(reader);
                         table.Columns.Add(dc);
                     }
                     reader.ReadEndElement();
@@ -446,7 +450,7 @@ public static class ModelHelper
                     while (reader.IsStartElement())
                     {
                         var di = table.CreateIndex();
-                        (di as IXmlSerializable).ReadXml(reader);
+                        (di as IXmlSerializable)!.ReadXml(reader);
                         di.Fix();
                         table.Indexes.Add(di);
                     }
@@ -569,26 +573,29 @@ public static class ModelHelper
         if (pi1 != null && pi2 != null)
         {
             // 写入的时候省略了相同的TableName/ColumnName
-            var v2 = (String)value.GetValue(pi2);
+            var v2 = (String?)value.GetValue(pi2);
             if (String.IsNullOrEmpty(v2))
             {
                 value.SetValue(pi2, value.GetValue(pi1));
             }
         }
         // 自增字段非空
-        if (value is IDataColumn)
+        if (value is IDataColumn dc)
         {
-            var dc = value as IDataColumn;
             if (dc.Identity) dc.Nullable = false;
 
             // 优化字段名
             //dc.Fix();
-            if (dc.Name.IsNullOrEmpty())
-                dc.Name = ModelResolver.Current.GetName(dc.ColumnName);
-            else if (dc.ColumnName.IsNullOrEmpty() || dc.ColumnName == dc.Name)
+            if (dc.ColumnName.IsNullOrEmpty()) dc.ColumnName = dc.Name;
+            if (dc.Name.IsNullOrEmpty() || dc.ColumnName == dc.Name)
             {
-                dc.ColumnName = dc.Name;
-                dc.Name = ModelResolver.Current.GetName(dc.ColumnName);
+                var name = ModelResolver.Current.GetName(dc.ColumnName);
+
+                // 检查该名字是否已存在，可能两个字段名差异只是多了个下划线
+                if (dc.Table == null || !dc.Table.Columns.Any(e => e.Name.EqualIgnoreCase(name)))
+                    dc.Name = name;
+                else
+                    dc.Name = dc.ColumnName;
             }
         }
         //reader.Skip();
@@ -596,14 +603,23 @@ public static class ModelHelper
         // 剩余特性作为扩展属性
         if (reader.MoveToFirstAttribute())
         {
-            if (value is IDataTable or IDataColumn)
+            if (value is IDataTable dt)
             {
-                var dic = (value is IDataTable) ? (value as IDataTable).Properties : (value as IDataColumn).Properties;
                 do
                 {
                     if (!names.Contains(reader.Name))
                     {
-                        dic[reader.Name] = reader.Value;
+                        dt.Properties[reader.Name] = reader.Value;
+                    }
+                } while (reader.MoveToNextAttribute());
+            }
+            else if (value is IDataColumn dc3)
+            {
+                do
+                {
+                    if (!names.Contains(reader.Name))
+                    {
+                        dc3.Properties[reader.Name] = reader.Value;
                     }
                 } while (reader.MoveToNextAttribute());
             }
@@ -732,19 +748,17 @@ public static class ModelHelper
 
     private static readonly ConcurrentDictionary<Type, Object> cache = new();
 
-    private static Object GetDefault(Type type) => cache.GetOrAdd(type, item => item.CreateInstance());
+    private static Object GetDefault(Type type) => cache.GetOrAdd(type, item => item.CreateInstance()!);
     #endregion
 
-    #region 修正连接
+    #region 修正数据列
     /// <summary>根据类型修正字段的一些默认值</summary>
     /// <param name="dc"></param>
     /// <param name="oridc"></param>
     /// <returns></returns>
-    private static IDataColumn FixDefaultByType(this IDataColumn dc, IDataColumn oridc)
+    private static IDataColumn FixDefaultByType(this IDataColumn dc, IDataColumn? oridc)
     {
-        if (dc?.DataType == null) return dc;
-
-        var isnew = oridc == null || oridc == dc;
+        if (dc.DataType == null) return dc;
 
         switch (dc.DataType.GetTypeCode())
         {
@@ -791,7 +805,7 @@ public static class ModelHelper
                 break;
             case TypeCode.String:
                 // 原来就是普通字符串，或者非ntext字符串，一律转nvarchar
-                if (dc.Length >= 0 && dc.Length < 4000 || !isnew && oridc.RawType != "ntext")
+                if (dc.Length >= 0 && dc.Length < 4000 || oridc != null && oridc != dc && oridc.RawType != "ntext")
                 {
                     var len = dc.Length;
                     if (len == 0) len = 50;
@@ -804,7 +818,7 @@ public static class ModelHelper
                 {
                     // 新建默认长度-1，写入忽略所有长度
                     dc.Length = -1;
-                    if (isnew)
+                    if (oridc == null || oridc == dc)
                     {
                         dc.RawType = "ntext";
                         //dc.Length = -1;

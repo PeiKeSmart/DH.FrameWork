@@ -23,11 +23,14 @@ public partial interface ICronJob
     /// <summary>Cron表达式。用于定时执行的Cron表达式</summary>
     String Cron { get; set; }
 
-    /// <summary>命令。作业方法全名，含命名空间和类名，静态方法，包含一个String参数</summary>
+    /// <summary>命令。ICubeJob类名或静态方法全名(包含一个String参数)</summary>
     String Method { get; set; }
 
     /// <summary>参数。方法参数，时间日期、网址、SQL等</summary>
     String Argument { get; set; }
+
+    /// <summary>数据。作业运行中的小量数据，可传递给下一次作业执行，例如记录数据统计的时间点</summary>
+    String Data { get; set; }
 
     /// <summary>启用</summary>
     Boolean Enable { get; set; }

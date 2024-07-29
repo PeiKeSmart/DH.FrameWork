@@ -64,10 +64,10 @@ public interface IDatabase : IDisposable2
     //ConnectionPool Pool { get; }
 
     /// <summary>拥有者</summary>
-    String Owner { get; set; }
+    String? Owner { get; set; }
 
     /// <summary>数据库名</summary>
-    String DatabaseName { get; }
+    String? DatabaseName { get; }
 
     /// <summary>数据库服务器版本</summary>
     String ServerVersion { get; }
@@ -148,11 +148,6 @@ public interface IDatabase : IDisposable2
     /// <summary>长文本长度</summary>
     Int32 LongTextLength { get; }
 
-    /// <summary>格式化时间为SQL字符串</summary>
-    /// <param name="dateTime">时间值</param>
-    /// <returns></returns>
-    String FormatDateTime(DateTime dateTime);
-
     /// <summary>格式化名称，如果不是关键字，则原样返回</summary>
     /// <param name="name">名称</param>
     /// <returns></returns>
@@ -175,12 +170,29 @@ public interface IDatabase : IDisposable2
     /// <returns></returns>
     String FormatValue(IDataColumn column, Object? value);
 
+    /// <summary>格式化时间为SQL字符串</summary>
+    /// <param name="dateTime">时间值</param>
+    /// <returns></returns>
+    String FormatDateTime(DateTime dateTime);
+
+    /// <summary>格式化时间为SQL字符串</summary>
+    /// <param name="column">字段</param>
+    /// <param name="dateTime">时间值</param>
+    /// <returns></returns>
+    String FormatDateTime(IDataColumn column, DateTime dateTime);
+
     /// <summary>格式化模糊搜索的字符串。处理转义字符</summary>
     /// <param name="column">字段</param>
     /// <param name="format">格式化字符串</param>
     /// <param name="value">数值</param>
     /// <returns></returns>
     String FormatLike(IDataColumn column, String format, String value);
+
+    /// <summary>(参数化)格式化模糊搜索的字符串。处理转义字符</summary>
+    /// <param name="column">字段</param>
+    /// <param name="format">格式化字符串</param>
+    /// <returns></returns>
+    String FormatLike(IDataColumn column, String format);
 
     ///// <summary>格式化标识列，返回插入数据时所用的表达式，如果字段本身支持自增，则返回空</summary>
     ///// <param name="field">字段</param>
@@ -204,7 +216,7 @@ public interface IDatabase : IDisposable2
     /// <param name="value">值</param>
     /// <param name="field">字段</param>
     /// <returns></returns>
-    IDataParameter CreateParameter(String name, Object? value, IDataColumn field);
+    IDataParameter CreateParameter(String name, Object? value, IDataColumn? field);
 
     /// <summary>创建参数</summary>
     /// <param name="name">名称</param>
@@ -223,6 +235,13 @@ public interface IDatabase : IDisposable2
     /// <returns></returns>
     IDataParameter[] CreateParameters(Object? model);
 
+    /// <summary>生成批量删除SQL。部分数据库支持分批删除</summary>
+    /// <param name="tableName"></param>
+    /// <param name="where"></param>
+    /// <param name="batchSize"></param>
+    /// <returns>不支持分批删除时返回null</returns>
+    String? BuildDeleteSql(String tableName, String where, Int32 batchSize);
+
     /// <summary>本连接数据只读</summary>
     Boolean Readonly { get; set; }
 
@@ -230,6 +249,6 @@ public interface IDatabase : IDisposable2
     Int32 DataCache { get; set; }
 
     /// <summary>表前缀。所有在该连接上的表名都自动增加该前缀</summary>
-    String TablePrefix { get; set; }
+    String? TablePrefix { get; set; }
     #endregion
 }

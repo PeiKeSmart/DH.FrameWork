@@ -1,3 +1,5 @@
+using System;
+
 namespace SKIT.FlurlHttpClient.Wechat.Api.Models
 {
     /// <summary>
@@ -23,7 +25,7 @@ namespace SKIT.FlurlHttpClient.Wechat.Api.Models
                                 [Newtonsoft.Json.JsonProperty("cat_id")]
                                 [System.Text.Json.Serialization.JsonPropertyName("cat_id")]
                                 [System.Text.Json.Serialization.JsonNumberHandling(System.Text.Json.Serialization.JsonNumberHandling.AllowReadingFromString)]
-                                public int CategoryId { get; set; }
+                                public long CategoryId { get; set; }
 
                                 /// <summary>
                                 /// 获取或设置类目名称。
@@ -38,7 +40,7 @@ namespace SKIT.FlurlHttpClient.Wechat.Api.Models
                                 [Newtonsoft.Json.JsonProperty("f_cat_id")]
                                 [System.Text.Json.Serialization.JsonPropertyName("f_cat_id")]
                                 [System.Text.Json.Serialization.JsonNumberHandling(System.Text.Json.Serialization.JsonNumberHandling.AllowReadingFromString)]
-                                public int ParentCategoryId { get; set; }
+                                public long ParentCategoryId { get; set; }
 
                                 /// <summary>
                                 /// 获取或设置类目层级。
@@ -57,7 +59,14 @@ namespace SKIT.FlurlHttpClient.Wechat.Api.Models
                                 [Newtonsoft.Json.JsonProperty("qua_id")]
                                 [System.Text.Json.Serialization.JsonPropertyName("qua_id")]
                                 [System.Text.Json.Serialization.JsonNumberHandling(System.Text.Json.Serialization.JsonNumberHandling.AllowReadingFromString)]
-                                public int QualificationId { get; set; }
+                                public long QualificationId { get; set; }
+
+                                /// <summary>
+                                /// 获取或设置资质名称。
+                                /// </summary>
+                                [Newtonsoft.Json.JsonProperty("name")]
+                                [System.Text.Json.Serialization.JsonPropertyName("name")]
+                                public string? Name { get; set; }
 
                                 /// <summary>
                                 /// 获取或设置资质信息。
@@ -99,9 +108,24 @@ namespace SKIT.FlurlHttpClient.Wechat.Api.Models
                         /// <summary>
                         /// 获取或设置商品资质信息。
                         /// </summary>
+                        [Obsolete("相关接口或字段于 2024-03-19 下线。")]
                         [Newtonsoft.Json.JsonProperty("product_qua")]
                         [System.Text.Json.Serialization.JsonPropertyName("product_qua")]
                         public Types.Qualification? ProductQualification { get; set; }
+
+                        /// <summary>
+                        /// 获取或设置商品资质列表。
+                        /// </summary>
+                        [Newtonsoft.Json.JsonProperty("product_qua_list")]
+                        [System.Text.Json.Serialization.JsonPropertyName("product_qua_list")]
+                        public Types.Qualification[]? ProductQualificationList { get; set; }
+
+                        /// <summary>
+                        /// 获取或设置品牌资质信息。
+                        /// </summary>
+                        [Newtonsoft.Json.JsonProperty("brand_qua")]
+                        [System.Text.Json.Serialization.JsonPropertyName("brand_qua")]
+                        public Types.Qualification? BrandQualification { get; set; }
                     }
                 }
 

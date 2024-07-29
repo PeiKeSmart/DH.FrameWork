@@ -5,6 +5,9 @@ using NewLife;
 using NewLife.Caching;
 using NewLife.Collections;
 using NewLife.Data;
+using NewLife.Log;
+using NewLife.Reflection;
+using NewLife.Threading;
 
 namespace XCode.DataAccessLayer;
 
@@ -21,11 +24,16 @@ partial class DAL
     /// <summary>执行次数</summary>
     public static Int32 ExecuteTimes => _ExecuteTimes;
 
+    private IList<DAL>? _reads;
+    /// <summary>只读连接集合。读写分离时，读取操作分走</summary>
+    public IList<DAL>? Reads => _reads;
+
     /// <summary>只读实例。读写分离时，读取操作分走</summary>
-    public DAL? ReadOnly { get; set; }
+    [Obsolete("=>Reads")]
+    public DAL? ReadOnly => _reads?.FirstOrDefault();
 
     /// <summary>读写分离策略。忽略时间区间和表名</summary>
-    public ReadWriteStrategy Strategy { get; set; } = new ReadWriteStrategy();
+    public ReadWriteStrategy Strategy { get; set; } = new();
     #endregion
 
     #region 数据操作方法
@@ -45,10 +53,7 @@ partial class DAL
     /// <summary>执行SQL查询，返回记录集</summary>
     /// <param name="sql">SQL语句</param>
     /// <returns></returns>
-    public DataSet Select(String sql)
-    {
-        return QueryByCache(sql, "", "", (s, k2, k3) => Session.Query(s), nameof(Select));
-    }
+    public DataSet Select(String sql) => QueryWrap(sql, "", "", (ss, s, k2, k3) => ss.Query(s), nameof(Select));
 
     /// <summary>执行SQL查询，返回记录集</summary>
     /// <param name="builder">SQL语句</param> 
@@ -57,11 +62,8 @@ partial class DAL
     /// <returns></returns>
     public DataSet Select(SelectBuilder builder, Int64 startRowIndex, Int64 maximumRows)
     {
-        return QueryByCache(builder, startRowIndex, maximumRows, (sb, start, max) =>
-        {
-            sb = PageSplit(sb, start, max);
-            return Session.Query(sb.ToString(), CommandType.Text, sb.Parameters.ToArray());
-        }, nameof(Select));
+        var sql = PageSplit(builder, startRowIndex, maximumRows).ToString();
+        return QueryWrap(sql, builder, "", (ss, sql, sb, k3) => ss.Query(sql, CommandType.Text, sb.Parameters.ToArray()), nameof(Select));
     }
 
     /// <summary>执行SQL查询，返回记录集</summary>
@@ -71,105 +73,72 @@ partial class DAL
     /// <returns></returns>
     public DbTable Query(SelectBuilder builder, Int64 startRowIndex, Int64 maximumRows)
     {
-        return QueryByCache(builder, startRowIndex, maximumRows, (sb, start, max) =>
-        {
-            sb = PageSplit(sb, start, max);
-            return Session.Query(sb);
-        }, nameof(Query));
+        builder = PageSplit(builder, startRowIndex, maximumRows);
+        return QueryWrap(builder, "", "", (ss, sb, k2, k3) => ss.Query(sb), nameof(Query));
     }
 
     /// <summary>执行SQL查询，返回记录集</summary>
     /// <param name="sql">SQL语句</param>
     /// <param name="ps">命令参数</param>
     /// <returns></returns>
-    public DbTable Query(String sql, IDictionary<String, Object>? ps = null)
-    {
-        return QueryByCache(sql, ps, "", (s, p, k3) => Session.Query(s, Db.CreateParameters(p)), nameof(Query));
-    }
+    public DbTable Query(String sql, IDictionary<String, Object>? ps = null) => QueryWrap(sql, ps, "", (ss, s, p, k3) => ss.Query(s, Db.CreateParameters(p)), nameof(Query));
 
     /// <summary>执行SQL查询，返回总记录数</summary>
     /// <param name="sb">查询生成器</param>
     /// <returns></returns>
-    public Int32 SelectCount(SelectBuilder sb)
-    {
-        return (Int32)QueryByCache(sb, "", "", (s, k2, k3) => Session.QueryCount(s), nameof(SelectCount));
-    }
+    public Int32 SelectCount(SelectBuilder sb) => (Int32)QueryWrap(sb, "", "", (ss, s, k2, k3) => ss.QueryCount(s), nameof(SelectCount));
 
     /// <summary>执行SQL查询，返回总记录数</summary>
     /// <param name="sql">SQL语句</param>
     /// <param name="type">命令类型，默认SQL文本</param>
     /// <param name="ps">命令参数</param>
     /// <returns></returns>
-    public Int32 SelectCount(String sql, CommandType type, params IDataParameter[] ps)
-    {
-        return (Int32)QueryByCache(sql, type, ps, (s, t, p) => Session.QueryCount(s, t, p), nameof(SelectCount));
-    }
+    public Int32 SelectCount(String sql, CommandType type, params IDataParameter[] ps) => (Int32)QueryWrap(sql, type, ps, (ss, s, t, p) => ss.QueryCount(s, t, p), nameof(SelectCount));
 
     /// <summary>执行SQL语句，返回受影响的行数</summary>
     /// <param name="sql">SQL语句</param>
     /// <returns></returns>
-    public Int32 Execute(String sql)
-    {
-        return ExecuteByCache(sql, "", "", (s, t, p) => Session.Execute(s));
-    }
+    public Int32 Execute(String sql) => ExecuteWrap(sql, "", "", (ss, s, t, p) => ss.Execute(s), nameof(Execute));
 
     /// <summary>执行插入语句并返回新增行的自动编号</summary>
     /// <param name="sql"></param>
     /// <returns>新增行的自动编号</returns>
-    public Int64 InsertAndGetIdentity(String sql)
-    {
-        return ExecuteByCache(sql, "", "", (s, t, p) => Session.InsertAndGetIdentity(s));
-    }
+    public Int64 InsertAndGetIdentity(String sql) => ExecuteWrap(sql, "", "", (ss, s, t, p) => ss.InsertAndGetIdentity(s), nameof(InsertAndGetIdentity));
 
     /// <summary>执行SQL查询，返回记录集</summary>
     /// <param name="sql">SQL语句</param>
     /// <param name="type">命令类型，默认SQL文本</param>
     /// <param name="ps">命令参数</param>
     /// <returns></returns>
-    public DataSet Select(String sql, CommandType type, params IDataParameter[] ps)
-    {
-        return QueryByCache(sql, type, ps, (s, t, p) => Session.Query(s, t, p), nameof(Select));
-    }
+    public DataSet Select(String sql, CommandType type, params IDataParameter[] ps) => QueryWrap(sql, type, ps, (ss, s, t, p) => ss.Query(s, t, p), nameof(Select));
 
     /// <summary>执行SQL语句，返回受影响的行数</summary>
     /// <param name="sql">SQL语句</param>
     /// <param name="type">命令类型，默认SQL文本</param>
     /// <param name="ps">命令参数</param>
     /// <returns></returns>
-    public Int32 Execute(String sql, CommandType type, params IDataParameter[] ps)
-    {
-        return ExecuteByCache(sql, type, ps, (s, t, p) => Session.Execute(s, t, p));
-    }
+    public Int32 Execute(String sql, CommandType type, params IDataParameter[] ps) => ExecuteWrap(sql, type, ps, (ss, s, t, p) => ss.Execute(s, t, p), nameof(Execute));
 
     /// <summary>执行插入语句并返回新增行的自动编号</summary>
     /// <param name="sql"></param>
     /// <param name="type">命令类型，默认SQL文本</param>
     /// <param name="ps">命令参数</param>
     /// <returns>新增行的自动编号</returns>
-    public Int64 InsertAndGetIdentity(String sql, CommandType type, params IDataParameter[] ps)
-    {
-        return ExecuteByCache(sql, type, ps, (s, t, p) => Session.InsertAndGetIdentity(s, t, p));
-    }
+    public Int64 InsertAndGetIdentity(String sql, CommandType type, params IDataParameter[] ps) => ExecuteWrap(sql, type, ps, (ss, s, t, p) => ss.InsertAndGetIdentity(s, t, p), nameof(InsertAndGetIdentity));
 
     /// <summary>执行SQL查询，返回记录集</summary>
     /// <param name="sql">SQL语句</param>
     /// <param name="type">命令类型，默认SQL文本</param>
     /// <param name="ps">命令参数</param>
     /// <returns></returns>
-    public DataSet Select(String sql, CommandType type, IDictionary<String, Object> ps)
-    {
-        return QueryByCache(sql, type, ps, (s, t, p) => Session.Query(s, t, Db.CreateParameters(p)), nameof(Select));
-    }
+    public DataSet Select(String sql, CommandType type, IDictionary<String, Object> ps) => QueryWrap(sql, type, ps, (ss, s, t, p) => ss.Query(s, t, Db.CreateParameters(p)), nameof(Select));
 
     /// <summary>执行SQL语句，返回受影响的行数</summary>
     /// <param name="sql">SQL语句</param>
     /// <param name="type">命令类型，默认SQL文本</param>
     /// <param name="ps">命令参数</param>
     /// <returns></returns>
-    public Int32 Execute(String sql, CommandType type, IDictionary<String, Object> ps)
-    {
-        return ExecuteByCache(sql, type, ps, (s, t, p) => Session.Execute(s, t, Db.CreateParameters(p)));
-    }
+    public Int32 Execute(String sql, CommandType type, IDictionary<String, Object> ps) => ExecuteWrap(sql, type, ps, (ss, s, t, p) => ss.Execute(s, t, Db.CreateParameters(p)), nameof(Execute));
 
     /// <summary>执行SQL语句，返回受影响的行数</summary>
     /// <param name="sql">SQL语句</param>
@@ -177,12 +146,12 @@ partial class DAL
     /// <returns></returns>
     public Int32 Execute(String sql, Int32 commandTimeout)
     {
-        return ExecuteByCache(sql, commandTimeout, "", (s, t, p) =>
+        return ExecuteWrap(sql, commandTimeout, "", (ss, s, t, p) =>
         {
-            using var cmd = Session.CreateCommand(s);
+            using var cmd = ss.CreateCommand(s);
             if (t > 0) cmd.CommandTimeout = t;
-            return Session.Execute(cmd);
-        });
+            return ss.Execute(cmd);
+        }, nameof(Execute));
     }
 
     /// <summary>执行SQL语句，返回结果中的第一行第一列</summary>
@@ -191,10 +160,7 @@ partial class DAL
     /// <param name="type">命令类型，默认SQL文本</param>
     /// <param name="ps">命令参数</param>
     /// <returns></returns>
-    public T ExecuteScalar<T>(String sql, CommandType type, IDictionary<String, Object> ps)
-    {
-        return ExecuteByCache(sql, type, ps, (s, t, p) => Session.ExecuteScalar<T>(s, t, Db.CreateParameters(p)));
-    }
+    public T? ExecuteScalar<T>(String sql, CommandType type, IDictionary<String, Object> ps) => ExecuteWrap(sql, type, ps, (ss, s, t, p) => ss.ExecuteScalar<T>(s, t, Db.CreateParameters(p)), nameof(ExecuteScalar));
     #endregion
 
     #region 异步操作
@@ -205,85 +171,58 @@ partial class DAL
     /// <returns></returns>
     public Task<DbTable> QueryAsync(SelectBuilder builder, Int64 startRowIndex, Int64 maximumRows)
     {
-        return QueryByCacheAsync(builder, startRowIndex, maximumRows, (sb, start, max) =>
-        {
-            sb = PageSplit(sb, start, max);
-            return AsyncSession.QueryAsync(sb.ToString(), sb.Parameters.ToArray());
-        }, nameof(QueryAsync));
+        var sql = PageSplit(builder, startRowIndex, maximumRows).ToString();
+        return QueryAsyncWrap(sql, builder, "", (ss, sql, sb, k3) => ss.QueryAsync(sql, sb.Parameters.ToArray()), nameof(QueryAsync));
     }
 
     /// <summary>执行SQL查询，返回记录集</summary>
     /// <param name="sql">SQL语句</param>
     /// <param name="ps">命令参数</param>
     /// <returns></returns>
-    public Task<DbTable> QueryAsync(String sql, IDictionary<String, Object>? ps = null)
-    {
-        return QueryByCacheAsync(sql, ps, "", (s, p, k3) => AsyncSession.QueryAsync(s, Db.CreateParameters(p)), nameof(QueryAsync));
-    }
+    public Task<DbTable> QueryAsync(String sql, IDictionary<String, Object>? ps = null) => QueryAsyncWrap(sql, ps, "", (ss, s, p, k3) => ss.QueryAsync(s, Db.CreateParameters(p)), nameof(QueryAsync));
 
     /// <summary>执行SQL查询，返回总记录数</summary>
     /// <param name="sb">查询生成器</param>
     /// <returns></returns>
-    public Task<Int64> SelectCountAsync(SelectBuilder sb)
-    {
-        return QueryByCacheAsync(sb, "", "", (s, k2, k3) => AsyncSession.QueryCountAsync(s), nameof(SelectCountAsync));
-    }
+    public Task<Int64> SelectCountAsync(SelectBuilder sb) => QueryAsyncWrap(sb, "", "", (ss, s, k2, k3) => ss.QueryCountAsync(s), nameof(SelectCountAsync));
 
     /// <summary>执行SQL查询，返回总记录数</summary>
     /// <param name="sql">SQL语句</param>
     /// <param name="type">命令类型，默认SQL文本</param>
     /// <param name="ps">命令参数</param>
     /// <returns></returns>
-    public Task<Int64> SelectCountAsync(String sql, CommandType type, params IDataParameter[] ps)
-    {
-        return QueryByCacheAsync(sql, type, ps, (s, t, p) => AsyncSession.QueryCountAsync(s, t, p), nameof(SelectCountAsync));
-    }
+    public Task<Int64> SelectCountAsync(String sql, CommandType type, params IDataParameter[] ps) => QueryAsyncWrap(sql, type, ps, (ss, s, t, p) => ss.QueryCountAsync(s, t, p), nameof(SelectCountAsync));
 
     /// <summary>执行SQL语句，返回受影响的行数</summary>
     /// <param name="sql">SQL语句</param>
     /// <returns></returns>
-    public Task<Int32> ExecuteAsync(String sql)
-    {
-        return ExecuteByCacheAsync(sql, "", "", (s, t, p) => AsyncSession.ExecuteAsync(s));
-    }
+    public Task<Int32> ExecuteAsync(String sql) => ExecuteAsyncWrap(sql, "", "", (ss, s, t, p) => ss.ExecuteAsync(s), nameof(ExecuteAsync));
 
     /// <summary>执行插入语句并返回新增行的自动编号</summary>
     /// <param name="sql"></param>
     /// <returns>新增行的自动编号</returns>
-    public Task<Int64> InsertAndGetIdentityAsync(String sql)
-    {
-        return ExecuteByCacheAsync(sql, "", "", (s, t, p) => AsyncSession.InsertAndGetIdentityAsync(s));
-    }
+    public Task<Int64> InsertAndGetIdentityAsync(String sql) => ExecuteAsyncWrap(sql, "", "", (ss, s, t, p) => ss.InsertAndGetIdentityAsync(s), nameof(InsertAndGetIdentityAsync));
 
     /// <summary>执行SQL语句，返回受影响的行数</summary>
     /// <param name="sql">SQL语句</param>
     /// <param name="type">命令类型，默认SQL文本</param>
     /// <param name="ps">命令参数</param>
     /// <returns></returns>
-    public Task<Int32> ExecuteAsync(String sql, CommandType type, params IDataParameter[]? ps)
-    {
-        return ExecuteByCacheAsync(sql, type, ps, (s, t, p) => AsyncSession.ExecuteAsync(s, t, p));
-    }
+    public Task<Int32> ExecuteAsync(String sql, CommandType type, params IDataParameter[]? ps) => ExecuteAsyncWrap(sql, type, ps, (ss, s, t, p) => ss.ExecuteAsync(s, t, p), nameof(ExecuteAsync));
 
     /// <summary>执行插入语句并返回新增行的自动编号</summary>
     /// <param name="sql"></param>
     /// <param name="type">命令类型，默认SQL文本</param>
     /// <param name="ps">命令参数</param>
     /// <returns>新增行的自动编号</returns>
-    public Task<Int64> InsertAndGetIdentityAsync(String sql, CommandType type, params IDataParameter[]? ps)
-    {
-        return ExecuteByCacheAsync(sql, type, ps, (s, t, p) => AsyncSession.InsertAndGetIdentityAsync(s, t, p));
-    }
+    public Task<Int64> InsertAndGetIdentityAsync(String sql, CommandType type, params IDataParameter[]? ps) => ExecuteAsyncWrap(sql, type, ps, (ss, s, t, p) => ss.InsertAndGetIdentityAsync(s, t, p), nameof(InsertAndGetIdentityAsync));
 
     /// <summary>执行SQL语句，返回受影响的行数</summary>
     /// <param name="sql">SQL语句</param>
     /// <param name="type">命令类型，默认SQL文本</param>
     /// <param name="ps">命令参数</param>
     /// <returns></returns>
-    public Task<Int32> ExecuteAsync(String sql, CommandType type, IDictionary<String, Object> ps)
-    {
-        return ExecuteByCacheAsync(sql, type, ps, (s, t, p) => AsyncSession.ExecuteAsync(s, t, Db.CreateParameters(p)));
-    }
+    public Task<Int32> ExecuteAsync(String sql, CommandType type, IDictionary<String, Object> ps) => ExecuteAsyncWrap(sql, type, ps, (ss, s, t, p) => ss.ExecuteAsync(s, t, Db.CreateParameters(p)), nameof(ExecuteAsync));
 
     /// <summary>执行SQL语句，返回受影响的行数</summary>
     /// <param name="sql">SQL语句</param>
@@ -291,12 +230,12 @@ partial class DAL
     /// <returns></returns>
     public Task<Int32> ExecuteAsync(String sql, Int32 commandTimeout)
     {
-        return ExecuteByCacheAsync(sql, commandTimeout, "", (s, t, p) =>
+        return ExecuteAsyncWrap(sql, commandTimeout, "", (ss, s, t, p) =>
         {
-            using var cmd = Session.CreateCommand(s);
+            using var cmd = (ss as IDbSession)!.CreateCommand(s);
             if (t > 0) cmd.CommandTimeout = t;
-            return AsyncSession.ExecuteAsync(cmd);
-        });
+            return ss.ExecuteAsync(cmd);
+        }, nameof(ExecuteAsync));
     }
 
     /// <summary>执行SQL语句，返回结果中的第一行第一列</summary>
@@ -305,10 +244,7 @@ partial class DAL
     /// <param name="type">命令类型，默认SQL文本</param>
     /// <param name="ps">命令参数</param>
     /// <returns></returns>
-    public Task<T> ExecuteScalarAsync<T>(String sql, CommandType type, IDictionary<String, Object> ps)
-    {
-        return ExecuteByCacheAsync(sql, type, ps, (s, t, p) => AsyncSession.ExecuteScalarAsync<T>(s, t, Db.CreateParameters(p)));
-    }
+    public Task<T?> ExecuteScalarAsync<T>(String sql, CommandType type, IDictionary<String, Object> ps) => ExecuteAsyncWrap(sql, type, ps, (ss, s, t, p) => ss.ExecuteScalarAsync<T>(s, t, Db.CreateParameters(p)), nameof(ExecuteScalarAsync));
     #endregion
 
     #region 事务
@@ -323,12 +259,7 @@ partial class DAL
     /// </remarks>
     /// <param name="level">事务隔离等级</param>
     /// <returns>剩下的事务计数</returns>
-    public Int32 BeginTransaction(IsolationLevel level = IsolationLevel.ReadCommitted)
-    {
-        //CheckDatabase();
-
-        return Session.BeginTransaction(level);
-    }
+    public Int32 BeginTransaction(IsolationLevel level = IsolationLevel.ReadCommitted) => Session.BeginTransaction(level);
 
     /// <summary>提交事务</summary>
     /// <returns>剩下的事务计数</returns>
@@ -339,7 +270,7 @@ partial class DAL
     public Int32 Rollback() => Session.Rollback();
     #endregion
 
-    #region 缓存
+    #region 缓存&埋点
     /// <summary>缓存存储</summary>
     public ICache? Store { get; set; }
 
@@ -347,13 +278,13 @@ partial class DAL
     public Int32 Expire { get; set; }
 
 #if NET45
-    private static readonly ThreadLocal<String> _SpanTag = new();
+    private static readonly ThreadLocal<String?> _SpanTag = new();
 #else
-    private static readonly AsyncLocal<String> _SpanTag = new();
+    private static readonly AsyncLocal<String?> _SpanTag = new();
 #endif
 
     /// <summary>埋点上下文信息。用于附加在埋点标签后的上下文信息</summary>
-    public static void SetSpanTag(String value) => _SpanTag.Value = value;
+    public static void SetSpanTag(String? value) => _SpanTag.Value = value;
 
     private ICache? GetCache()
     {
@@ -382,12 +313,15 @@ partial class DAL
         return st;
     }
 
-    private TResult QueryByCache<T1, T2, T3, TResult>(T1 k1, T2 k2, T3 k3, Func<T1, T2, T3, TResult> callback, String action)
+#if NETCOREAPP
+    [StackTraceHidden]
+#endif
+    private TResult QueryWrap<T1, T2, T3, TResult>(T1 k1, T2 k2, T3 k3, Func<IDbSession, T1, T2, T3, TResult> callback, String action)
     {
         // 读写分离
-        if (Strategy != null && ReadOnly != null)
+        if (Strategy != null && Strategy.TryGet(this, k1 + "", action, out var rd) && rd != null)
         {
-            if (Strategy.Validate(this, k1 + "", action)) return ReadOnly.QueryByCache(k1, k2, k3, callback, action);
+            return rd.QueryWrap(k1, k2, k3, callback, action);
         }
 
         //CheckDatabase();
@@ -412,20 +346,23 @@ partial class DAL
         }
 
         Interlocked.Increment(ref _QueryTimes);
-        var rs = Invoke(k1, k2, k3, callback, action);
+        var rs = Invoke(Session, k1, k2, k3, callback, action);
 
         cache?.Set(key, rs, Expire);
 
         return rs;
     }
 
-    private TResult ExecuteByCache<T1, T2, T3, TResult>(T1 k1, T2 k2, T3 k3, Func<T1, T2, T3, TResult> callback)
+#if NETCOREAPP
+    [StackTraceHidden]
+#endif
+    private TResult ExecuteWrap<T1, T2, T3, TResult>(T1 k1, T2 k2, T3 k3, Func<IDbSession, T1, T2, T3, TResult> callback, String action)
     {
         if (Db.Readonly) throw new InvalidOperationException($"数据连接[{ConnName}]只读，禁止执行{k1}");
 
         //CheckDatabase();
 
-        var rs = Invoke(k1, k2, k3, callback, "Execute");
+        var rs = Invoke(Session, k1, k2, k3, callback, action);
 
         GetCache()?.Clear();
 
@@ -434,7 +371,10 @@ partial class DAL
         return rs;
     }
 
-    private TResult Invoke<T1, T2, T3, TResult>(T1 k1, T2 k2, T3 k3, Func<T1, T2, T3, TResult> callback, String action)
+#if NETCOREAPP
+    [StackTraceHidden]
+#endif
+    private TResult Invoke<T1, T2, T3, TResult>(IDbSession session, T1 k1, T2 k2, T3 k3, Func<IDbSession, T1, T2, T3, TResult> callback, String action)
     {
         var tracer = Tracer ?? GlobalTracer;
         var traceName = "";
@@ -444,43 +384,15 @@ partial class DAL
         if (tracer != null)
         {
             sql = (k1 + "").Trim();
-            if (action == "Execute")
-            {
-                // 使用 Insert/Update/Delete 作为埋点操作名
-                var p = sql.IndexOf(' ');
-                if (p > 0) action = sql[..p];
-            }
-            else if (action.EqualIgnoreCase("Query", "Select"))
-            {
-                // 查询数据时，Group作为独立埋点操作名
-                if (sql.ToLower().Contains("group by"))
-                    action = "Group";
-            }
-
-            traceName = $"db:{ConnName}:{action}";
-
-            var tables = GetTables(sql, true);
-            if (tables.Length > 0) traceName += ":" + tables.Join("-");
+            traceName = GetTraceName(sql, action);
         }
 
         // 使用k1参数作为tag，一般是sql
-        var span = tracer?.NewSpan(traceName, sql);
+        using var span = tracer?.NewSpan(traceName, sql);
         try
         {
-            var rs = callback(k1, k2, k3);
-
-            if (span != null)
-            {
-                if (rs is DbTable dt)
-                    span.Tag = $"{sql} [rows={dt.Rows?.Count}]";
-                else if (rs is DataSet ds && ds.Tables.Count > 0)
-                    span.Tag = $"{sql} [rows={ds.Tables[0].Rows.Count}]";
-                else
-                    span.Tag = $"{sql} [result={rs}]";
-
-                var stag = _SpanTag.Value;
-                if (!stag.IsNullOrEmpty()) span.Tag += " " + stag;
-            }
+            var rs = callback(session, k1, k2, k3);
+            AppendTag(span, sql, rs, action);
 
             return rs;
         }
@@ -489,18 +401,90 @@ partial class DAL
             span?.SetError(ex, null);
             throw;
         }
-        finally
-        {
-            span?.Dispose();
-        }
     }
 
-    private async Task<TResult> QueryByCacheAsync<T1, T2, T3, TResult>(T1 k1, T2 k2, T3 k3, Func<T1, T2, T3, Task<TResult>> callback, String action)
+    private String GetTraceName(String sql, String action)
+    {
+        var act = (action + "").TrimEnd("Async");
+        if (act.EqualIgnoreCase("InsertAndGetIdentity"))
+        {
+            act = "Insert";
+        }
+        else if (act.EqualIgnoreCase("Execute", "ExecuteScalar"))
+        {
+            // 使用 Insert/Update/Delete 作为埋点操作名
+            var p = sql.IndexOf(' ');
+            if (p > 0) act = sql[..p];
+        }
+        else if (act.EqualIgnoreCase("Query", "Select"))
+        {
+            // 查询数据时，Group作为独立埋点操作名
+            if (sql.ToLower().Contains("group by"))
+                act = "Group";
+        }
+
+        var traceName = $"db:{ConnName}:{act}";
+
+        var tables = GetTables(sql, true);
+        if (tables.Length > 0) traceName += ":" + tables.Join("-");
+
+        return traceName;
+    }
+
+    private void AppendTag(ISpan? span, String sql, Object? rs, String action)
+    {
+        if (span == null) return;
+
+        if (rs is DbTable dt)
+        {
+            // 数值记录行数，标签记录结果
+            var rows = dt.Rows?.Count ?? 0;
+            span.Value = rows;
+
+            if (dt.Rows != null && dt.Rows.Count == 1 && dt.Columns != null && dt.Columns.Length <= 3)
+                span.Tag = $"{sql} [rows={rows}, result={dt.Rows[0].Join(",")}]";
+            else
+                span.Tag = $"{sql} [rows={rows}]";
+        }
+        else if (rs is DataSet ds && ds.Tables.Count > 0)
+        {
+            // 数值记录行数，标签记录结果
+            var dst = ds.Tables[0];
+            var rows = dst.Rows.Count;
+            span.Value = rows;
+
+            if (dst.Rows != null && dst.Rows.Count == 1 && dst.Columns != null && dst.Columns.Count <= 3)
+                span.Tag = $"{sql} [rows={rows}, result={dst.Rows[0].ItemArray.Join(",")}]";
+            else
+                span.Tag = $"{sql} [rows={rows}]";
+        }
+        else if (action == nameof(InsertAndGetIdentity) || action == nameof(InsertAndGetIdentityAsync))
+        {
+            if (rs.ToInt() > 0) span.Value = 1;
+
+            span.Tag = $"{sql} [id={rs}]";
+        }
+        else
+        {
+            // 数值和标签都记录结果，大概率是受影响行数
+            if (rs != null && rs.GetType().IsInt()) span.Value = rs.ToLong();
+
+            span.Tag = $"{sql} [result={rs}]";
+        }
+
+        var stag = _SpanTag.Value;
+        if (!stag.IsNullOrEmpty()) span.Tag += " " + stag;
+    }
+
+#if NETCOREAPP
+    [StackTraceHidden]
+#endif
+    private async Task<TResult> QueryAsyncWrap<T1, T2, T3, TResult>(T1 k1, T2 k2, T3 k3, Func<IAsyncDbSession, T1, T2, T3, Task<TResult>> callback, String action)
     {
         // 读写分离
-        if (Strategy != null && ReadOnly != null)
+        if (Strategy != null && Strategy.TryGet(this, k1 + "", action, out var rd) && rd != null)
         {
-            if (Strategy.Validate(this, k1 + "", action)) return await ReadOnly.QueryByCacheAsync(k1, k2, k3, callback, action);
+            return await rd.QueryAsyncWrap(k1, k2, k3, callback, action);
         }
 
         //CheckDatabase();
@@ -525,20 +509,23 @@ partial class DAL
         }
 
         Interlocked.Increment(ref _QueryTimes);
-        var rs = await InvokeAsync(k1, k2, k3, callback, action);
+        var rs = await InvokeAsync(AsyncSession, k1, k2, k3, callback, action);
 
         cache?.Set(key, rs, Expire);
 
         return rs;
     }
 
-    private async Task<TResult> ExecuteByCacheAsync<T1, T2, T3, TResult>(T1 k1, T2 k2, T3 k3, Func<T1, T2, T3, Task<TResult>> callback)
+#if NETCOREAPP
+    [StackTraceHidden]
+#endif
+    private async Task<TResult> ExecuteAsyncWrap<T1, T2, T3, TResult>(T1 k1, T2 k2, T3 k3, Func<IAsyncDbSession, T1, T2, T3, Task<TResult>> callback, String action)
     {
         if (Db.Readonly) throw new InvalidOperationException($"数据连接[{ConnName}]只读，禁止执行{k1}");
 
         //CheckDatabase();
 
-        var rs = await InvokeAsync(k1, k2, k3, callback, "Execute");
+        var rs = await InvokeAsync(AsyncSession, k1, k2, k3, callback, action);
 
         GetCache()?.Clear();
 
@@ -547,7 +534,10 @@ partial class DAL
         return rs;
     }
 
-    private async Task<TResult> InvokeAsync<T1, T2, T3, TResult>(T1 k1, T2 k2, T3 k3, Func<T1, T2, T3, Task<TResult>> callback, String action)
+#if NETCOREAPP
+    [StackTraceHidden]
+#endif
+    private async Task<TResult> InvokeAsync<T1, T2, T3, TResult>(IAsyncDbSession session, T1 k1, T2 k2, T3 k3, Func<IAsyncDbSession, T1, T2, T3, Task<TResult>> callback, String action)
     {
         var tracer = Tracer ?? GlobalTracer;
         var traceName = "";
@@ -557,37 +547,15 @@ partial class DAL
         if (tracer != null)
         {
             sql = (k1 + "").Trim();
-            if (action == "Execute")
-            {
-                // 使用 Insert/Update/Delete 作为埋点操作名
-                var p = sql.IndexOf(' ');
-                if (p > 0) action = sql[..p];
-            }
-
-            traceName = $"db:{ConnName}:{action}";
-
-            var tables = GetTables(sql, true);
-            if (tables.Length > 0) traceName += ":" + tables.Join("-");
+            traceName = GetTraceName(sql, action);
         }
 
         // 使用k1参数作为tag，一般是sql
-        var span = tracer?.NewSpan(traceName, sql);
+        using var span = tracer?.NewSpan(traceName, sql);
         try
         {
-            var rs = await callback(k1, k2, k3);
-
-            if (span != null)
-            {
-                if (rs is DbTable dt)
-                    span.Tag = $"{sql} [rows={dt.Rows?.Count}]";
-                else if (rs is DataSet ds && ds.Tables.Count > 0)
-                    span.Tag = $"{sql} [rows={ds.Tables[0].Rows.Count}]";
-                else
-                    span.Tag = $"{sql} [result={rs}]";
-
-                var stag = _SpanTag.Value;
-                if (!stag.IsNullOrEmpty()) span.Tag += " " + stag;
-            }
+            var rs = await callback(session, k1, k2, k3);
+            AppendTag(span, sql, rs, action);
 
             return rs;
         }
@@ -596,13 +564,9 @@ partial class DAL
             span?.SetError(ex, null);
             throw;
         }
-        finally
-        {
-            span?.Dispose();
-        }
     }
 
-    private static readonly Regex reg_table = new("(?:\\s+from|insert\\s+into|update|\\s+join|drop\\s+table|truncate\\s+table)\\s+[`'\"\\[]?([\\w]+)[`'\"\\[]?", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+    private static readonly Regex reg_table = new("""(?:\s+from|insert\s+into|update|\s+join|drop\s+table|truncate\s+table)\s+(?:[`'"\[]?[\w]+[`'"\]]?\.)?[`'"\[]?([\w]+)[`'"\]]?""", RegexOptions.Compiled | RegexOptions.IgnoreCase);
     /// <summary>从Sql语句中截取表名</summary>
     /// <param name="sql">Sql语句</param>
     /// <param name="trimShard">是否去掉表名后面的分表信息。如日期分表</param>
@@ -615,12 +579,12 @@ partial class DAL
         {
             //list.Add(item.Groups[1].Value);
             var tableName = item.Groups[1].Value;
-            if (trimShard && tableName.Contains("_"))
+            if (trimShard)
             {
                 var p = tableName.LastIndexOf('_');
-                if (p > 0 && tableName.Substring(p + 1).ToInt() > 0)
+                if (p > 0 && tableName[(p + 1)..].ToInt() > 0)
                 {
-                    tableName = tableName.Substring(0, p);
+                    tableName = tableName[..p];
                 }
             }
             if (!list.Contains(tableName)) list.Add(tableName);
@@ -667,6 +631,50 @@ partial class DAL
         {
             sb.Append('#');
             sb.Append(value);
+        }
+    }
+    #endregion
+
+    #region 读写分离
+    private IList<DAL>? _bakReads;
+    /// <summary>停用只读从库</summary>
+    /// <param name="delayTime">延迟恢复的时间。单位秒，默认0等待手动恢复</param>
+    /// <returns></returns>
+    public Boolean SuspendReadOnly(Int32 delayTime = 0)
+    {
+        if (_reads == null) return false;
+        lock (this)
+        {
+            if (_reads == null) return false;
+
+            var tracer = Tracer ?? GlobalTracer;
+            using var span = tracer?.NewSpan($"db:{ConnName}:SuspendReadOnly", "delayTime=" + delayTime);
+
+            _bakReads = _reads;
+            _reads = null;
+
+            if (delayTime > 0) TimerX.Delay(s => ResumeReadOnly(), delayTime * 1000);
+
+            return true;
+        }
+    }
+
+    /// <summary>恢复只读从库</summary>
+    /// <returns></returns>
+    public Boolean ResumeReadOnly()
+    {
+        if (_bakReads == null) return false;
+        lock (this)
+        {
+            if (_bakReads == null) return false;
+
+            var tracer = Tracer ?? GlobalTracer;
+            using var span = tracer?.NewSpan($"db:{ConnName}:ResumeReadOnly");
+
+            _reads = _bakReads;
+            _bakReads = null;
+
+            return true;
         }
     }
     #endregion

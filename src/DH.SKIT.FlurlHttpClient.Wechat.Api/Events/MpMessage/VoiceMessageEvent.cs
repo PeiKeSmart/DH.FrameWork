@@ -2,9 +2,12 @@ namespace SKIT.FlurlHttpClient.Wechat.Api.Events
 {
     /// <summary>
     /// <para>表示 VOICE 事件的数据。</para>
-    /// <para>REF: https://developers.weixin.qq.com/doc/offiaccount/Message_Management/Receiving_standard_messages.html#%E8%AF%AD%E9%9F%B3%E6%B6%88%E6%81%AF </para>
+    /// <para>
+    /// REF: <br/>
+    /// <![CDATA[ https://developers.weixin.qq.com/doc/offiaccount/Message_Management/Receiving_standard_messages.html#%E8%AF%AD%E9%9F%B3%E6%B6%88%E6%81%AF ]]>
+    /// </para>
     /// </summary>
-    public class VoiceMessageEvent : WechatApiEvent, WechatApiEvent.Serialization.IJsonSerializable, WechatApiEvent.Serialization.IXmlSerializable
+    public class VoiceMessageEvent : WechatApiEvent
     {
         /// <summary>
         /// 获取或设置消息 ID。
@@ -29,6 +32,14 @@ namespace SKIT.FlurlHttpClient.Wechat.Api.Events
         [System.Text.Json.Serialization.JsonPropertyName("MediaId")]
         [System.Xml.Serialization.XmlElement("MediaId")]
         public string MediaId { get; set; } = default!;
+
+        /// <summary>
+        /// 获取或设置 16K 采样率的语音消息 MediaId。
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("MediaId16K")]
+        [System.Text.Json.Serialization.JsonPropertyName("MediaId16K")]
+        [System.Xml.Serialization.XmlElement("MediaId16K", IsNullable = true)]
+        public string? MediaId16K { get; set; }
 
         /// <summary>
         /// 获取或设置消息数据 ID。

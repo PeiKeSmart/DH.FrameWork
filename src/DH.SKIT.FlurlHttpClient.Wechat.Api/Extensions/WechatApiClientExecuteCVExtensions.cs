@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -16,7 +16,7 @@ namespace SKIT.FlurlHttpClient.Wechat.Api
             string boundary = "--BOUNDARY--" + DateTimeOffset.Now.Ticks.ToString("x");
             var httpContent = new MultipartFormDataContent(boundary);
 
-            if (fileBytes != null && fileBytes.Any())
+            if (fileBytes is not null && fileBytes.Any())
             {
                 var fileContent = new ByteArrayContent(fileBytes ?? Array.Empty<byte>());
                 httpContent.Add(fileContent, "\"img\"", "\"image.png\"");
@@ -32,8 +32,11 @@ namespace SKIT.FlurlHttpClient.Wechat.Api
         #region Image
         /// <summary>
         /// <para>异步调用 [POST] /cv/img/qrcode 接口。</para>
-        /// <para>REF: https://developers.weixin.qq.com/doc/offiaccount/Intelligent_Interface/Img_Proc.html#%E4%BA%8C%E3%80%81%E4%BA%8C%E7%BB%B4%E7%A0%81-%E6%9D%A1%E7%A0%81%E8%AF%86%E5%88%AB%E6%8E%A5%E5%8F%A3 </para>
-        /// <para>REF: https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/img/img.scanQRCode.html </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developers.weixin.qq.com/doc/offiaccount/Intelligent_Interface/Img_Proc.html#%E4%BA%8C%E3%80%81%E4%BA%8C%E7%BB%B4%E7%A0%81-%E6%9D%A1%E7%A0%81%E8%AF%86%E5%88%AB%E6%8E%A5%E5%8F%A3 ]]> <br/>
+        /// <![CDATA[ https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/img/img.scanQRCode.html ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -45,20 +48,23 @@ namespace SKIT.FlurlHttpClient.Wechat.Api
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "cv", "img", "qrcode")
+                .CreateFlurlRequest(request, HttpMethod.Post, "cv", "img", "qrcode")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            if (request.ImageUrl != null)
+            if (request.ImageUrl is not null)
                 flurlReq.SetQueryParam("img_url", request.ImageUrl);
 
             using var httpContent = CreateRequestHttpContent(request.ImageFileBytes ?? Array.Empty<byte>());
-            return await client.SendRequestAsync<Models.CVImageQrcodeResponse>(flurlReq, httpContent: httpContent, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsync<Models.CVImageQrcodeResponse>(flurlReq, httpContent: httpContent, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// <para>异步调用 [POST] /cv/img/superresolution 接口。</para>
-        /// <para>REF: https://developers.weixin.qq.com/doc/offiaccount/Intelligent_Interface/Img_Proc.html#%E4%B8%89%E3%80%81%E5%9B%BE%E7%89%87%E9%AB%98%E6%B8%85%E5%8C%96%E6%8E%A5%E5%8F%A3 </para>
-        /// <para>REF: https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/img/img.superresolution.html </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developers.weixin.qq.com/doc/offiaccount/Intelligent_Interface/Img_Proc.html#%E4%B8%89%E3%80%81%E5%9B%BE%E7%89%87%E9%AB%98%E6%B8%85%E5%8C%96%E6%8E%A5%E5%8F%A3 ]]> <br/>
+        /// <![CDATA[ https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/img/img.superresolution.html ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -70,20 +76,23 @@ namespace SKIT.FlurlHttpClient.Wechat.Api
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "cv", "img", "superresolution")
+                .CreateFlurlRequest(request, HttpMethod.Post, "cv", "img", "superresolution")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            if (request.ImageUrl != null)
+            if (request.ImageUrl is not null)
                 flurlReq.SetQueryParam("img_url", request.ImageUrl);
 
             using var httpContent = CreateRequestHttpContent(request.ImageFileBytes ?? Array.Empty<byte>());
-            return await client.SendRequestAsync<Models.CVImageSuperResolutionResponse>(flurlReq, httpContent: httpContent, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsync<Models.CVImageSuperResolutionResponse>(flurlReq, httpContent: httpContent, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// <para>异步调用 [POST] /cv/img/aicrop 接口。</para>
-        /// <para>REF: https://developers.weixin.qq.com/doc/offiaccount/Intelligent_Interface/Img_Proc.html#%E5%9B%9B%E3%80%81%E5%9B%BE%E7%89%87%E6%99%BA%E8%83%BD%E8%A3%81%E5%89%AA%E6%8E%A5%E5%8F%A3 </para>
-        /// <para>REF: https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/img/img.aiCrop.html </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developers.weixin.qq.com/doc/offiaccount/Intelligent_Interface/Img_Proc.html#%E5%9B%9B%E3%80%81%E5%9B%BE%E7%89%87%E6%99%BA%E8%83%BD%E8%A3%81%E5%89%AA%E6%8E%A5%E5%8F%A3 ]]> <br/>
+        /// <![CDATA[ https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/img/img.aiCrop.html ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -95,22 +104,25 @@ namespace SKIT.FlurlHttpClient.Wechat.Api
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "cv", "img", "aicrop")
+                .CreateFlurlRequest(request, HttpMethod.Post, "cv", "img", "aicrop")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            if (request.ImageUrl != null)
+            if (request.ImageUrl is not null)
                 flurlReq.SetQueryParam("img_url", request.ImageUrl);
 
             using var httpContent = CreateRequestHttpContent(request.ImageFileBytes ?? Array.Empty<byte>());
-            return await client.SendRequestAsync<Models.CVImageAICropResponse>(flurlReq, httpContent: httpContent, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsync<Models.CVImageAICropResponse>(flurlReq, httpContent: httpContent, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
         #endregion
 
         #region OCR
         /// <summary>
         /// <para>异步调用 [POST] /cv/ocr/idcard 接口。</para>
-        /// <para>REF: https://developers.weixin.qq.com/doc/offiaccount/Intelligent_Interface/OCR.html </para>
-        /// <para>REF: https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/ocr/ocr.idcard.html </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developers.weixin.qq.com/doc/offiaccount/Intelligent_Interface/OCR.html ]]> <br/>
+        /// <![CDATA[ https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/ocr/ocr.idcard.html ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -122,21 +134,24 @@ namespace SKIT.FlurlHttpClient.Wechat.Api
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "cv", "ocr", "idcard")
+                .CreateFlurlRequest(request, HttpMethod.Post, "cv", "ocr", "idcard")
                 .SetQueryParam("access_token", request.AccessToken)
                 .SetQueryParam("type", request.ImageMode);
 
-            if (request.ImageUrl != null)
+            if (request.ImageUrl is not null)
                 flurlReq.SetQueryParam("img_url", request.ImageUrl);
 
             using var httpContent = CreateRequestHttpContent(request.ImageFileBytes ?? Array.Empty<byte>());
-            return await client.SendRequestAsync<Models.CVOCRIdCardResponse>(flurlReq, httpContent: httpContent, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsync<Models.CVOCRIdCardResponse>(flurlReq, httpContent: httpContent, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// <para>异步调用 [POST] /cv/ocr/bankcard 接口。</para>
-        /// <para>REF: https://developers.weixin.qq.com/doc/offiaccount/Intelligent_Interface/OCR.html </para>
-        /// <para>REF: https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/ocr/ocr.bankcard.html </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developers.weixin.qq.com/doc/offiaccount/Intelligent_Interface/OCR.html ]]> <br/>
+        /// <![CDATA[ https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/ocr/ocr.bankcard.html ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -148,21 +163,24 @@ namespace SKIT.FlurlHttpClient.Wechat.Api
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "cv", "ocr", "bankcard")
+                .CreateFlurlRequest(request, HttpMethod.Post, "cv", "ocr", "bankcard")
                 .SetQueryParam("access_token", request.AccessToken)
                 .SetQueryParam("type", request.ImageMode);
 
-            if (request.ImageUrl != null)
+            if (request.ImageUrl is not null)
                 flurlReq.SetQueryParam("img_url", request.ImageUrl);
 
             using var httpContent = CreateRequestHttpContent(request.ImageFileBytes ?? Array.Empty<byte>());
-            return await client.SendRequestAsync<Models.CVOCRBankCardResponse>(flurlReq, httpContent: httpContent, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsync<Models.CVOCRBankCardResponse>(flurlReq, httpContent: httpContent, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// <para>异步调用 [POST] /cv/ocr/driving 接口。</para>
-        /// <para>REF: https://developers.weixin.qq.com/doc/offiaccount/Intelligent_Interface/OCR.html </para>
-        /// <para>REF: https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/ocr/ocr.vehicleLicense.html </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developers.weixin.qq.com/doc/offiaccount/Intelligent_Interface/OCR.html ]]> <br/>
+        /// <![CDATA[ https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/ocr/ocr.vehicleLicense.html ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -174,21 +192,24 @@ namespace SKIT.FlurlHttpClient.Wechat.Api
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "cv", "ocr", "driving")
+                .CreateFlurlRequest(request, HttpMethod.Post, "cv", "ocr", "driving")
                 .SetQueryParam("access_token", request.AccessToken)
                 .SetQueryParam("type", request.ImageMode);
 
-            if (request.ImageUrl != null)
+            if (request.ImageUrl is not null)
                 flurlReq.SetQueryParam("img_url", request.ImageUrl);
 
             using var httpContent = CreateRequestHttpContent(request.ImageFileBytes ?? Array.Empty<byte>());
-            return await client.SendRequestAsync<Models.CVOCRDrivingResponse>(flurlReq, httpContent: httpContent, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsync<Models.CVOCRDrivingResponse>(flurlReq, httpContent: httpContent, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// <para>异步调用 [POST] /cv/ocr/drivinglicense 接口。</para>
-        /// <para>REF: https://developers.weixin.qq.com/doc/offiaccount/Intelligent_Interface/OCR.html </para>
-        /// <para>REF: https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/ocr/ocr.driverLicense.html </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developers.weixin.qq.com/doc/offiaccount/Intelligent_Interface/OCR.html ]]> <br/>
+        /// <![CDATA[ https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/ocr/ocr.driverLicense.html ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -200,21 +221,24 @@ namespace SKIT.FlurlHttpClient.Wechat.Api
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "cv", "ocr", "drivinglicense")
+                .CreateFlurlRequest(request, HttpMethod.Post, "cv", "ocr", "drivinglicense")
                 .SetQueryParam("access_token", request.AccessToken)
                 .SetQueryParam("type", request.ImageMode);
 
-            if (request.ImageUrl != null)
+            if (request.ImageUrl is not null)
                 flurlReq.SetQueryParam("img_url", request.ImageUrl);
 
             using var httpContent = CreateRequestHttpContent(request.ImageFileBytes ?? Array.Empty<byte>());
-            return await client.SendRequestAsync<Models.CVOCRDrivingLicenseResponse>(flurlReq, httpContent: httpContent, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsync<Models.CVOCRDrivingLicenseResponse>(flurlReq, httpContent: httpContent, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// <para>异步调用 [POST] /cv/ocr/bizlicense 接口。</para>
-        /// <para>REF: https://developers.weixin.qq.com/doc/offiaccount/Intelligent_Interface/OCR.html </para>
-        /// <para>REF: https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/ocr/ocr.businessLicense.html </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developers.weixin.qq.com/doc/offiaccount/Intelligent_Interface/OCR.html ]]> <br/>
+        /// <![CDATA[ https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/ocr/ocr.businessLicense.html ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -226,21 +250,24 @@ namespace SKIT.FlurlHttpClient.Wechat.Api
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "cv", "ocr", "bizlicense")
+                .CreateFlurlRequest(request, HttpMethod.Post, "cv", "ocr", "bizlicense")
                 .SetQueryParam("access_token", request.AccessToken)
                 .SetQueryParam("type", request.ImageMode);
 
-            if (request.ImageUrl != null)
+            if (request.ImageUrl is not null)
                 flurlReq.SetQueryParam("img_url", request.ImageUrl);
 
             using var httpContent = CreateRequestHttpContent(request.ImageFileBytes ?? Array.Empty<byte>());
-            return await client.SendRequestAsync<Models.CVOCRBusinessLicenseResponse>(flurlReq, httpContent: httpContent, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsync<Models.CVOCRBusinessLicenseResponse>(flurlReq, httpContent: httpContent, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// <para>异步调用 [POST] /cv/ocr/comm 接口。</para>
-        /// <para>REF: https://developers.weixin.qq.com/doc/offiaccount/Intelligent_Interface/OCR.html </para>
-        /// <para>REF: https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/ocr/ocr.printedText.html </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developers.weixin.qq.com/doc/offiaccount/Intelligent_Interface/OCR.html ]]> <br/>
+        /// <![CDATA[ https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/ocr/ocr.printedText.html ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -252,19 +279,22 @@ namespace SKIT.FlurlHttpClient.Wechat.Api
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "cv", "ocr", "comm")
+                .CreateFlurlRequest(request, HttpMethod.Post, "cv", "ocr", "comm")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            if (request.ImageUrl != null)
+            if (request.ImageUrl is not null)
                 flurlReq.SetQueryParam("img_url", request.ImageUrl);
 
             using var httpContent = CreateRequestHttpContent(request.ImageFileBytes ?? Array.Empty<byte>());
-            return await client.SendRequestAsync<Models.CVOCRCommonResponse>(flurlReq, httpContent: httpContent, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsync<Models.CVOCRCommonResponse>(flurlReq, httpContent: httpContent, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// <para>异步调用 [POST] /cv/ocr/platenum 接口。</para>
-        /// <para>REF: https://developers.weixin.qq.com/doc/offiaccount/Intelligent_Interface/OCR.html </para>
+        /// <para>
+        /// REF: <br/>
+        /// <![CDATA[ https://developers.weixin.qq.com/doc/offiaccount/Intelligent_Interface/OCR.html ]]>
+        /// </para>
         /// </summary>
         /// <param name="client"></param>
         /// <param name="request"></param>
@@ -276,14 +306,14 @@ namespace SKIT.FlurlHttpClient.Wechat.Api
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             IFlurlRequest flurlReq = client
-                .CreateRequest(request, HttpMethod.Post, "cv", "ocr", "platenum")
+                .CreateFlurlRequest(request, HttpMethod.Post, "cv", "ocr", "platenum")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            if (request.ImageUrl != null)
+            if (request.ImageUrl is not null)
                 flurlReq.SetQueryParam("img_url", request.ImageUrl);
 
             using var httpContent = CreateRequestHttpContent(request.ImageFileBytes ?? Array.Empty<byte>());
-            return await client.SendRequestAsync<Models.CVOCRPlateNumberResponse>(flurlReq, httpContent: httpContent, cancellationToken: cancellationToken);
+            return await client.SendFlurlRequestAsync<Models.CVOCRPlateNumberResponse>(flurlReq, httpContent: httpContent, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
         #endregion
     }

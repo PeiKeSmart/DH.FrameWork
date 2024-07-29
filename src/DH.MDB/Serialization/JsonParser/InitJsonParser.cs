@@ -1,26 +1,23 @@
-﻿using System;
+﻿namespace DH.Serialization;
 
-namespace DH.Serialization
+internal class InitJsonParser : JsonParserBase
 {
-    internal class InitJsonParser : JsonParserBase
+
+    private Object _result;
+
+    public InitJsonParser(CharSource charSrc)
+        : base(charSrc)
     {
-
-        private Object _result;
-
-        public InitJsonParser(CharSource charSrc)
-            : base(charSrc)
-        {
-        }
-
-        protected override void parse()
-        {
-            _result = moveAndGetParser().getResult();
-        }
-
-        public override Object getResult()
-        {
-            return _result;
-        }
-
     }
+
+    protected override void parse()
+    {
+        _result = moveAndGetParser().getResult();
+    }
+
+    public override Object getResult()
+    {
+        return _result;
+    }
+
 }

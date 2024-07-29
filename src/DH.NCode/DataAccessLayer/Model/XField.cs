@@ -31,7 +31,7 @@ class XField : SerializableDataMember, IDataColumn, ICloneable
     [XmlAttribute]
     [DisplayName("数据类型")]
     [Description("数据类型")]
-    public Type DataType { get; set; } = null!;
+    public Type DataType { get; set; }
 
     /// <summary>原始数据类型</summary>
     [XmlAttribute]
@@ -92,6 +92,12 @@ class XField : SerializableDataMember, IDataColumn, ICloneable
     [DisplayName("允许空")]
     [Description("允许空")]
     public Boolean Nullable { get; set; }
+
+    /// <summary>数据规模。time表示这是大数据单表的数据时间字段，shard:yyMMdd表示这是大数据多表的分表字段</summary>
+    [XmlAttribute]
+    [DisplayName("数据规模")]
+    [Description("数据规模。time表示这是大数据单表的数据时间字段，shard:yyMMdd表示这是大数据多表的分表字段")]
+    public String? DataScale { get; set; }
 
     /// <summary>默认值</summary>
     [XmlAttribute]

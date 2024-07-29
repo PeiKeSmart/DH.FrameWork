@@ -19,6 +19,8 @@ public static class DbFactory
         Register<DB2>(DatabaseType.DB2);
         Register<TDengine>(DatabaseType.TDengine);
         Register<Hana>(DatabaseType.Hana);
+        Register<KingBase>(DatabaseType.KingBase);
+        Register<HighGo>(DatabaseType.HighGo);
         //Register<Access>(DatabaseType.Access);
         //Register<SqlCe>(DatabaseType.SqlCe);
         //Register<Network>(DatabaseType.Network);
@@ -83,9 +85,9 @@ public static class DbFactory
             if (type != null)
             {
                 if (type.CreateInstance() is IDatabase db) _dbs[db.Type] = db;
-            }
 
-            return type;
+                return type;
+            }
         }
 
         // 默认SQLite

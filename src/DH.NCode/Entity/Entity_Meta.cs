@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using NewLife;
+using NewLife.Log;
 using XCode.Cache;
 using XCode.Configuration;
 using XCode.DataAccessLayer;
@@ -32,39 +33,20 @@ public partial class Entity<TEntity>
                 //if (_Factory != null) return _Factory;
 
                 var type = ThisType;
-                return type.IsInterface ? null : type.AsFactory();
+                return type.AsFactory();
             }
         }
         #endregion
 
         #region 基本属性
-        private static readonly Lazy<TableItem> _Table = new(() => TableItem.Create(ThisType));
-        /// <summary>表信息</summary>
-        public static TableItem Table => _Table.Value;
+        /// <summary>数据表元数据信息。来自实体类，并合并默认连接名上的文件模型</summary>
+        public static TableItem Table { get => Wrap.Table; set => Wrap.Table = value; }
 
-#if NET45
-        private static readonly ThreadLocal<String?> _ConnName = new();
-#else
-        private static readonly AsyncLocal<String?> _ConnName = new();
-#endif
-        /// <summary>链接名。线程内允许修改，修改者负责还原。若要还原默认值，设为null即可</summary>
-        public static String? ConnName
-        {
-            get => _ConnName.Value ??= Table.ConnName;
-            set { _Session.Value = null; _ConnName.Value = value; }
-        }
+        /// <summary>当前链接名。线程内允许修改，修改者负责还原。若要还原默认值，设为null即可</summary>
+        public static String ConnName { get => Wrap.ConnName; set { Wrap.ConnName = value; } }
 
-#if NET45
-        private static readonly ThreadLocal<String?> _TableName = new();
-#else
-        private static readonly AsyncLocal<String?> _TableName = new();
-#endif
-        /// <summary>表名。线程内允许修改，修改者负责还原</summary>
-        public static String? TableName
-        {
-            get => _TableName.Value ??= Table.TableName;
-            set { _Session.Value = null; _TableName.Value = value; }
-        }
+        /// <summary>当前表名。线程内允许修改，修改者负责还原</summary>
+        public static String TableName { get => Wrap.TableName; set { Wrap.TableName = value; } }
 
         /// <summary>所有数据属性</summary>
         public static FieldItem[] AllFields => Table.AllFields;
@@ -76,7 +58,7 @@ public partial class Entity<TEntity>
         public static ICollection<String> FieldNames => Table.FieldNames;
 
         /// <summary>唯一键，返回第一个标识列或者唯一的主键</summary>
-        public static FieldItem Unique
+        public static FieldItem? Unique
         {
             get
             {
@@ -87,17 +69,52 @@ public partial class Entity<TEntity>
         }
 
         /// <summary>主字段。主字段作为业务主要字段，代表当前数据行意义</summary>
-        public static FieldItem Master => Table.Master ?? Unique;
+        public static FieldItem? Master => Table.Master ?? Unique;
         #endregion
 
         #region 会话
 #if NET45
-        private static readonly ThreadLocal<EntitySession<TEntity>?> _Session = new();
+        private static readonly ThreadLocal<SessionWrap?> _wrap = new();
 #else
-        private static readonly AsyncLocal<EntitySession<TEntity>?> _Session = new();
+        private static readonly AsyncLocal<SessionWrap?> _wrap = new();
 #endif
+        private static SessionWrap Wrap => _wrap.Value ??= new SessionWrap();
+
         /// <summary>实体会话。线程静态</summary>
-        public static EntitySession<TEntity> Session => _Session.Value ??= EntitySession<TEntity>.Create(ConnName, TableName);
+        public static EntitySession<TEntity> Session => Wrap.Session;
+
+        class SessionWrap
+        {
+            private String? _ConnName;
+            public String ConnName
+            {
+                get => _ConnName ??= Table.ConnName;
+                set { _ConnName = value; Reset(); }
+            }
+
+            private String? _TableName;
+            public String TableName
+            {
+                get => _TableName ??= Table.TableName;
+                set { _TableName = value; Reset(); }
+            }
+
+            private TableItem? _Table;
+            public TableItem Table
+            {
+                get => _Table ??= TableItem.Create(ThisType, _ConnName);
+                set { _Table = value; _Session = null; }
+            }
+
+            private EntitySession<TEntity>? _Session;
+            public EntitySession<TEntity> Session => _Session ??= EntitySession<TEntity>.Create(ConnName, TableName);
+
+            void Reset()
+            {
+                _Table = null;
+                _Session = null;
+            }
+        }
         #endregion
 
         #region 事务保护
@@ -167,7 +184,12 @@ public partial class Entity<TEntity>
 
         #region 分表分库
         /// <summary>分表分库策略</summary>
-        public static IShardPolicy ShardPolicy { get; set; }
+        public static IShardPolicy? ShardPolicy { get; set; }
+
+        [ThreadStatic]
+        private static Boolean _InShard;
+        /// <summary>是否正处于分表操作中</summary>
+        public static Boolean InShard => _InShard;
 
         /// <summary>创建分库会话，using结束时自动还原</summary>
         /// <param name="connName">连接名</param>
@@ -175,15 +197,15 @@ public partial class Entity<TEntity>
         /// <returns></returns>
         public static IDisposable CreateSplit(String connName, String tableName) => new SplitPackge(connName, tableName);
 
-        /// <summary>针对实体对象自动分库分表</summary>
-        /// <param name="entity"></param>
-        /// <returns></returns>
-        public static IDisposable? CreateShard(TEntity entity)
-        {
-            // 使用自动分表分库策略
-            var model = ShardPolicy?.Shard(entity);
-            return model != null ? new SplitPackge(model.ConnName, model.TableName) : null;
-        }
+        ///// <summary>针对实体对象自动分库分表</summary>
+        ///// <param name="entity"></param>
+        ///// <returns></returns>
+        //public static IDisposable? CreateShard(TEntity entity)
+        //{
+        //    // 使用自动分表分库策略
+        //    var model = ShardPolicy?.Shard(entity);
+        //    return model != null ? new SplitPackge(model.ConnName, model.TableName) : null;
+        //}
 
         /// <summary>为实体对象、时间、雪花Id等计算分表分库</summary>
         /// <param name="value"></param>
@@ -213,32 +235,61 @@ public partial class Entity<TEntity>
                 if (!dal.TableNames.Contains(shard.TableName)) continue;
 
                 using var split = new SplitPackge(shard.ConnName, shard.TableName);
-                var rs = callback();
-                if (!Equals(rs, default)) yield return rs;
+                yield return callback();
             }
         }
 
         private class SplitPackge : IDisposable
         {
             /// <summary>连接名</summary>
-            public String ConnName { get; set; }
+            public String? ConnName { get; set; }
 
             /// <summary>表名</summary>
-            public String TableName { get; set; }
+            public String? TableName { get; set; }
 
             public SplitPackge(String connName, String tableName)
             {
                 ConnName = Meta.ConnName;
                 TableName = Meta.TableName;
+#if DEBUG
+                XTrace.WriteLine("CreateSplit: {0}->{2}, {1}->{3}", ConnName, TableName, connName, tableName);
+#endif
 
                 Meta.ConnName = connName;
                 Meta.TableName = tableName;
+                _InShard = true;
             }
 
             public void Dispose()
             {
-                Meta.ConnName = ConnName;
-                Meta.TableName = TableName;
+#if DEBUG
+                XTrace.WriteLine("RestoreSplit: {0}, {1}", ConnName, TableName);
+#endif
+                Meta.ConnName = ConnName!;
+                Meta.TableName = TableName!;
+                _InShard = false;
+            }
+        }
+
+        /// <summary>针对时间区间自动分库分表，常用于多表顺序查询，支持倒序</summary>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <param name="callback"></param>
+        /// <returns></returns>
+        public static IEnumerable<T> AutoShard<T>(DateTime start, DateTime end, Func<IEntitySession, T> callback)
+        {
+            // 使用自动分表分库策略
+            var models = ShardPolicy?.Shards(start, end);
+            if (models == null) yield break;
+
+            foreach (var shard in models)
+            {
+                // 如果目标分表不存在，则不要展开查询
+                var dal = !shard.ConnName.IsNullOrEmpty() ? DAL.Create(shard.ConnName) : Session.Dal;
+                if (!dal.TableNames.Contains(shard.TableName)) continue;
+
+                var ss = EntitySession<TEntity>.Create(shard.ConnName, shard.TableName);
+                yield return callback(ss);
             }
         }
         #endregion

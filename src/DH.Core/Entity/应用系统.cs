@@ -54,13 +54,21 @@ public partial class App : IApp, IEntity<IApp>
     [BindColumn("Secret", "密钥。AppSecret", "")]
     public String Secret { get => _Secret; set { if (OnPropertyChanging("Secret", value)) { _Secret = value; OnPropertyChanged("Secret"); } } }
 
-    private Boolean _IsInternal;
-    /// <summary>是否内部项目</summary>
-    [DisplayName("是否内部项目")]
-    [Description("是否内部项目")]
+    private String _Category;
+    /// <summary>类别</summary>
+    [DisplayName("类别")]
+    [Description("类别")]
+    [DataObjectField(false, false, true, 50)]
+    [BindColumn("Category", "类别", "")]
+    public String Category { get => _Category; set { if (OnPropertyChanging("Category", value)) { _Category = value; OnPropertyChanged("Category"); } } }
+
+    private Boolean _Enable;
+    /// <summary>启用</summary>
+    [DisplayName("启用")]
+    [Description("启用")]
     [DataObjectField(false, false, false, 0)]
-    [BindColumn("IsInternal", "是否内部项目", "")]
-    public Boolean IsInternal { get => _IsInternal; set { if (OnPropertyChanging("IsInternal", value)) { _IsInternal = value; OnPropertyChanged("IsInternal"); } } }
+    [BindColumn("Enable", "启用", "")]
+    public Boolean Enable { get => _Enable; set { if (OnPropertyChanging("Enable", value)) { _Enable = value; OnPropertyChanged("Enable"); } } }
 
     private String _HomePage;
     /// <summary>首页</summary>
@@ -79,28 +87,22 @@ public partial class App : IApp, IEntity<IApp>
     public String Logo { get => _Logo; set { if (OnPropertyChanging("Logo", value)) { _Logo = value; OnPropertyChanged("Logo"); } } }
 
     private String _White;
-    /// <summary>白名单</summary>
-    [DisplayName("白名单")]
-    [Description("白名单")]
-    [DataObjectField(false, false, true, 200)]
-    [BindColumn("White", "白名单", "")]
+    /// <summary>IP白名单。符合条件的来源IP才允许访问，支持*通配符，多个逗号隔开</summary>
+    [Category("安全告警")]
+    [DisplayName("IP白名单")]
+    [Description("IP白名单。符合条件的来源IP才允许访问，支持*通配符，多个逗号隔开")]
+    [DataObjectField(false, false, true, 50)]
+    [BindColumn("White", "IP白名单。符合条件的来源IP才允许访问，支持*通配符，多个逗号隔开", "")]
     public String White { get => _White; set { if (OnPropertyChanging("White", value)) { _White = value; OnPropertyChanged("White"); } } }
 
     private String _Black;
-    /// <summary>黑名单。黑名单优先于白名单</summary>
-    [DisplayName("黑名单")]
-    [Description("黑名单。黑名单优先于白名单")]
-    [DataObjectField(false, false, true, 200)]
-    [BindColumn("Black", "黑名单。黑名单优先于白名单", "")]
+    /// <summary>IP黑名单。符合条件的来源IP禁止访问，支持*通配符，多个逗号隔开</summary>
+    [Category("安全告警")]
+    [DisplayName("IP黑名单")]
+    [Description("IP黑名单。符合条件的来源IP禁止访问，支持*通配符，多个逗号隔开")]
+    [DataObjectField(false, false, true, 50)]
+    [BindColumn("Black", "IP黑名单。符合条件的来源IP禁止访问，支持*通配符，多个逗号隔开", "")]
     public String Black { get => _Black; set { if (OnPropertyChanging("Black", value)) { _Black = value; OnPropertyChanged("Black"); } } }
-
-    private Boolean _Enable;
-    /// <summary>启用</summary>
-    [DisplayName("启用")]
-    [Description("启用")]
-    [DataObjectField(false, false, false, 0)]
-    [BindColumn("Enable", "启用", "")]
-    public Boolean Enable { get => _Enable; set { if (OnPropertyChanging("Enable", value)) { _Enable = value; OnPropertyChanged("Enable"); } } }
 
     private Int32 _TokenExpire;
     /// <summary>有效期。访问令牌AccessToken的有效期，单位秒，默认使用全局设置</summary>
@@ -165,6 +167,14 @@ public partial class App : IApp, IEntity<IApp>
     [DataObjectField(false, false, true, 0)]
     [BindColumn("LastAuth", "最后请求", "")]
     public DateTime LastAuth { get => _LastAuth; set { if (OnPropertyChanging("LastAuth", value)) { _LastAuth = value; OnPropertyChanged("LastAuth"); } } }
+
+    private Boolean _IsDeleted;
+    /// <summary>删除。是否已删除，可恢复</summary>
+    [DisplayName("删除")]
+    [Description("删除。是否已删除，可恢复")]
+    [DataObjectField(false, false, false, 0)]
+    [BindColumn("IsDeleted", "删除。是否已删除，可恢复", "")]
+    public Boolean IsDeleted { get => _IsDeleted; set { if (OnPropertyChanging("IsDeleted", value)) { _IsDeleted = value; OnPropertyChanged("IsDeleted"); } } }
 
     private Int32 _CreateUserID;
     /// <summary>创建者</summary>
@@ -239,12 +249,12 @@ public partial class App : IApp, IEntity<IApp>
         Name = model.Name;
         DisplayName = model.DisplayName;
         Secret = model.Secret;
-        IsInternal = model.IsInternal;
+        Category = model.Category;
+        Enable = model.Enable;
         HomePage = model.HomePage;
         Logo = model.Logo;
         White = model.White;
         Black = model.Black;
-        Enable = model.Enable;
         TokenExpire = model.TokenExpire;
         Urls = model.Urls;
         RoleIds = model.RoleIds;
@@ -253,6 +263,7 @@ public partial class App : IApp, IEntity<IApp>
         Expired = model.Expired;
         Auths = model.Auths;
         LastAuth = model.LastAuth;
+        IsDeleted = model.IsDeleted;
         CreateUserID = model.CreateUserID;
         CreateTime = model.CreateTime;
         CreateIP = model.CreateIP;
@@ -275,12 +286,12 @@ public partial class App : IApp, IEntity<IApp>
             "Name" => _Name,
             "DisplayName" => _DisplayName,
             "Secret" => _Secret,
-            "IsInternal" => _IsInternal,
+            "Category" => _Category,
+            "Enable" => _Enable,
             "HomePage" => _HomePage,
             "Logo" => _Logo,
             "White" => _White,
             "Black" => _Black,
-            "Enable" => _Enable,
             "TokenExpire" => _TokenExpire,
             "Urls" => _Urls,
             "RoleIds" => _RoleIds,
@@ -289,6 +300,7 @@ public partial class App : IApp, IEntity<IApp>
             "Expired" => _Expired,
             "Auths" => _Auths,
             "LastAuth" => _LastAuth,
+            "IsDeleted" => _IsDeleted,
             "CreateUserID" => _CreateUserID,
             "CreateTime" => _CreateTime,
             "CreateIP" => _CreateIP,
@@ -306,12 +318,12 @@ public partial class App : IApp, IEntity<IApp>
                 case "Name": _Name = Convert.ToString(value); break;
                 case "DisplayName": _DisplayName = Convert.ToString(value); break;
                 case "Secret": _Secret = Convert.ToString(value); break;
-                case "IsInternal": _IsInternal = value.ToBoolean(); break;
+                case "Category": _Category = Convert.ToString(value); break;
+                case "Enable": _Enable = value.ToBoolean(); break;
                 case "HomePage": _HomePage = Convert.ToString(value); break;
                 case "Logo": _Logo = Convert.ToString(value); break;
                 case "White": _White = Convert.ToString(value); break;
                 case "Black": _Black = Convert.ToString(value); break;
-                case "Enable": _Enable = value.ToBoolean(); break;
                 case "TokenExpire": _TokenExpire = value.ToInt(); break;
                 case "Urls": _Urls = Convert.ToString(value); break;
                 case "RoleIds": _RoleIds = Convert.ToString(value); break;
@@ -320,6 +332,7 @@ public partial class App : IApp, IEntity<IApp>
                 case "Expired": _Expired = value.ToDateTime(); break;
                 case "Auths": _Auths = value.ToInt(); break;
                 case "LastAuth": _LastAuth = value.ToDateTime(); break;
+                case "IsDeleted": _IsDeleted = value.ToBoolean(); break;
                 case "CreateUserID": _CreateUserID = value.ToInt(); break;
                 case "CreateTime": _CreateTime = value.ToDateTime(); break;
                 case "CreateIP": _CreateIP = Convert.ToString(value); break;
@@ -334,6 +347,9 @@ public partial class App : IApp, IEntity<IApp>
     #endregion
 
     #region 关联映射
+    #endregion
+
+    #region 扩展查询
     #endregion
 
     #region 字段名
@@ -352,8 +368,11 @@ public partial class App : IApp, IEntity<IApp>
         /// <summary>密钥。AppSecret</summary>
         public static readonly Field Secret = FindByName("Secret");
 
-        /// <summary>是否内部项目</summary>
-        public static readonly Field IsInternal = FindByName("IsInternal");
+        /// <summary>类别</summary>
+        public static readonly Field Category = FindByName("Category");
+
+        /// <summary>启用</summary>
+        public static readonly Field Enable = FindByName("Enable");
 
         /// <summary>首页</summary>
         public static readonly Field HomePage = FindByName("HomePage");
@@ -361,14 +380,11 @@ public partial class App : IApp, IEntity<IApp>
         /// <summary>图标。附件路径</summary>
         public static readonly Field Logo = FindByName("Logo");
 
-        /// <summary>白名单</summary>
+        /// <summary>IP白名单。符合条件的来源IP才允许访问，支持*通配符，多个逗号隔开</summary>
         public static readonly Field White = FindByName("White");
 
-        /// <summary>黑名单。黑名单优先于白名单</summary>
+        /// <summary>IP黑名单。符合条件的来源IP禁止访问，支持*通配符，多个逗号隔开</summary>
         public static readonly Field Black = FindByName("Black");
-
-        /// <summary>启用</summary>
-        public static readonly Field Enable = FindByName("Enable");
 
         /// <summary>有效期。访问令牌AccessToken的有效期，单位秒，默认使用全局设置</summary>
         public static readonly Field TokenExpire = FindByName("TokenExpire");
@@ -393,6 +409,9 @@ public partial class App : IApp, IEntity<IApp>
 
         /// <summary>最后请求</summary>
         public static readonly Field LastAuth = FindByName("LastAuth");
+
+        /// <summary>删除。是否已删除，可恢复</summary>
+        public static readonly Field IsDeleted = FindByName("IsDeleted");
 
         /// <summary>创建者</summary>
         public static readonly Field CreateUserID = FindByName("CreateUserID");
@@ -433,8 +452,11 @@ public partial class App : IApp, IEntity<IApp>
         /// <summary>密钥。AppSecret</summary>
         public const String Secret = "Secret";
 
-        /// <summary>是否内部项目</summary>
-        public const String IsInternal = "IsInternal";
+        /// <summary>类别</summary>
+        public const String Category = "Category";
+
+        /// <summary>启用</summary>
+        public const String Enable = "Enable";
 
         /// <summary>首页</summary>
         public const String HomePage = "HomePage";
@@ -442,14 +464,11 @@ public partial class App : IApp, IEntity<IApp>
         /// <summary>图标。附件路径</summary>
         public const String Logo = "Logo";
 
-        /// <summary>白名单</summary>
+        /// <summary>IP白名单。符合条件的来源IP才允许访问，支持*通配符，多个逗号隔开</summary>
         public const String White = "White";
 
-        /// <summary>黑名单。黑名单优先于白名单</summary>
+        /// <summary>IP黑名单。符合条件的来源IP禁止访问，支持*通配符，多个逗号隔开</summary>
         public const String Black = "Black";
-
-        /// <summary>启用</summary>
-        public const String Enable = "Enable";
 
         /// <summary>有效期。访问令牌AccessToken的有效期，单位秒，默认使用全局设置</summary>
         public const String TokenExpire = "TokenExpire";
@@ -474,6 +493,9 @@ public partial class App : IApp, IEntity<IApp>
 
         /// <summary>最后请求</summary>
         public const String LastAuth = "LastAuth";
+
+        /// <summary>删除。是否已删除，可恢复</summary>
+        public const String IsDeleted = "IsDeleted";
 
         /// <summary>创建者</summary>
         public const String CreateUserID = "CreateUserID";

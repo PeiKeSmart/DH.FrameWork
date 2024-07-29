@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 using NewLife.Data;
@@ -27,11 +26,21 @@ public class MqttClient : DisposeBase
     /// <summary>服务器地址</summary>
     public String? Server { get; set; }
 
-    /// <summary>SSL协议。默认None，服务端Default，客户端不启用</summary>
-    public SslProtocols SslProtocol { get; set; } = SslProtocols.Tls12;
+    /// <summary>是否进行SSL连接</summary>
+    [Obsolete("=>SslProtocol")]
+    public Boolean UseSSL { get => SslProtocol != SslProtocols.None; set => SslProtocol = SslProtocols.Tls12; }
+
+    /// <summary>SSL协议。默认None，一般使用Tls12来启用TLS</summary>
+    public SslProtocols SslProtocol { get; set; } = SslProtocols.None;
 
     /// <summary>X509证书。用于SSL连接时验证证书指纹，可以直接加载pem证书文件，未指定时不验证证书</summary>
-    /// <remarks>var cert = new X509Certificate2("file", "pass");</remarks>
+    /// <remarks>
+    /// 可以使用pfx证书文件，也可以使用pem证书文件。
+    /// 服务端必须指定证书，客户端可以不指定，除非服务端请求客户端证书。
+    /// </remarks>
+    /// <example>
+    /// var cert = new X509Certificate2("file", "pass");
+    /// </example>
     public X509Certificate? Certificate { get; set; }
 
     /// <summary>客户端标识。应用可能多实例部署，ip@proccessid</summary>
@@ -47,6 +56,9 @@ public class MqttClient : DisposeBase
     /// 清除会话，默认true
     /// </summary>
     public Boolean CleanSession { get; set; } = true;
+
+    /// <summary>编码器。决定对象存储序列化格式，默认json</summary>
+    public IPacketEncoder Encoder { get; set; } = new DefaultPacketEncoder();
 
     /// <summary>
     /// 断开后是否自动重连
@@ -143,7 +155,11 @@ public class MqttClient : DisposeBase
             client.Add(new MqttCodec());
 
             // 关闭Tcp延迟以合并小包的算法，降低延迟
-            if (client is TcpSession tcp) tcp.NoDelay = true;
+            if (client is TcpSession tcp)
+            {
+                tcp.NoDelay = true;
+                //tcp.DisconnectWhenEmptyData = false;
+            }
 
             if (Certificate != null)
             {
@@ -186,15 +202,14 @@ public class MqttClient : DisposeBase
         if (Log != null && Log.Level <= LogLevel.Debug)
         {
             if (msg is PublishMessage pm)
-                WriteLog("=> {0} {1}", msg, pm.Payload.ToStr());
+                WriteLog("=> {0} {1}", msg, pm.Payload?.ToStr());
             else
                 WriteLog("=> {0}", msg);
         }
 
         Init();
 
-        var client = _Client;
-        if (client == null) throw new ArgumentNullException(nameof(_Client));
+        var client = _Client ?? throw new ArgumentNullException(nameof(_Client));
         try
         {
             // 断开消息没有响应
@@ -255,7 +270,7 @@ public class MqttClient : DisposeBase
         if (Log != null && Log.Level <= LogLevel.Debug)
         {
             if (msg is PublishMessage pm)
-                WriteLog("<= {0} {1}", msg, pm.Payload.ToStr());
+                WriteLog("<= {0} {1}", msg, pm.Payload?.ToStr());
             else
                 WriteLog("<= {0}", msg);
         }
@@ -431,17 +446,6 @@ public class MqttClient : DisposeBase
     #endregion
 
     #region 发布
-    ///// <summary>
-    ///// PublicAsync=>PublishAsync
-    ///// </summary>
-    ///// <param name="topic"></param>
-    ///// <param name="data"></param>
-    ///// <param name="qos"></param>
-    ///// <returns></returns>
-    //[Obsolete("PublicAsync=>PublishAsync", true)]
-    //public async Task<MqttIdMessage> PublicAsync(String topic, Object data,
-    //    QualityOfService qos = QualityOfService.AtMostOnce) => await PublishAsync(topic, data, qos);
-
     /// <summary>发布消息</summary>
     /// <param name="topic">主题</param>
     /// <param name="data">消息数据</param>
@@ -450,7 +454,7 @@ public class MqttClient : DisposeBase
     public async Task<MqttIdMessage?> PublishAsync(String topic, Object data, QualityOfService qos = QualityOfService.AtMostOnce)
     {
         var pk = data as Packet;
-        if (pk == null && data != null) pk = Serialize(data);
+        if (pk == null && data != null) pk = Encoder.Encode(data);
         if (pk == null) throw new ArgumentNullException(nameof(data));
 
         var message = new PublishMessage
@@ -462,14 +466,6 @@ public class MqttClient : DisposeBase
 
         return await PublishAsync(message);
     }
-
-    ///// <summary>
-    ///// PublicAsync=>PublishAsync
-    ///// </summary>
-    ///// <param name="message"></param>
-    ///// <returns></returns>
-    //[Obsolete("PublicAsync=>PublishAsync")]
-    //public async Task<MqttIdMessage> PublicAsync(PublishMessage message) => await PublishAsync(message);
 
     /// <summary>发布消息</summary>
     /// <param name="message"></param>
@@ -489,18 +485,6 @@ public class MqttClient : DisposeBase
 
         return rs;
     }
-
-    /// <summary>把对象序列化为数据，字节数组和字符串以外的复杂类型，走Json序列化</summary>
-    /// <param name="data"></param>
-    /// <returns></returns>
-    protected virtual Packet Serialize(Object data)
-    {
-        if (data is Packet pk) return pk;
-        if (data is Byte[] buf) return buf;
-        if (data is String str) return str.GetBytes();
-
-        return data.ToJson().GetBytes();
-    }
     #endregion
 
     #region 订阅
@@ -512,7 +496,7 @@ public class MqttClient : DisposeBase
     {
         var subscription = new Subscription(topicFilter, QualityOfService.AtMostOnce);
 
-        return await SubscribeAsync(new[] { subscription }, callback);
+        return await SubscribeAsync([subscription], callback);
     }
 
     /// <summary>订阅主题</summary>

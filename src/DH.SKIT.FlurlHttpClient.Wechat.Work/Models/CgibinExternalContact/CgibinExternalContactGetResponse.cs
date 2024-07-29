@@ -1,4 +1,4 @@
-﻿namespace SKIT.FlurlHttpClient.Wechat.Work.Models
+namespace SKIT.FlurlHttpClient.Wechat.Work.Models
 {
     /// <summary>
     /// <para>表示 [GET] /cgi-bin/externalcontact/get 接口的响应。</para>
@@ -87,6 +87,7 @@
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("gender")]
                 [System.Text.Json.Serialization.JsonPropertyName("gender")]
+                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.TextualNumberReadOnlyConverter))]
                 public int Gender { get; set; }
 
                 /// <summary>
@@ -114,9 +115,9 @@
                 /// 获取或设置是否关注了“学校通知”。
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("is_subscribe")]
-                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.NumericalNullableBooleanConverter))]
+                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.Common.NumericalBooleanConverter))]
                 [System.Text.Json.Serialization.JsonPropertyName("is_subscribe")]
-                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.NumericalNullableBooleanConverter))]
+                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.NumericalBooleanConverter))]
                 public bool? IsSubscribe { get; set; }
 
                 /// <summary>

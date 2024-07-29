@@ -117,7 +117,9 @@ public class JsonReader
         var elmType = type?.GetElementTypeEx();
         if (elmType == null) elmType = typeof(Object);
 
-        if (target is not Array arr) arr = Array.CreateInstance(elmType, list.Count);
+        // 如果元素组长度不足，则创建新数组。主要是某些成员使用数组类型，然后使用[]初始化，导致数组长度为零
+        if (target is not Array arr || arr.Length < list.Count) arr = Array.CreateInstance(elmType, list.Count);
+
         // 如果源数组有值，则最大只能创建源数组那么多项，抛弃多余项
         for (var i = 0; i < list.Count && i < arr.Length; i++)
         {
@@ -172,7 +174,7 @@ public class JsonReader
         if (type == typeof(StringDictionary)) return CreateSD(dic);
         if (type == typeof(Object)) return dic;
 
-        target ??= Provider.GetService(type) ?? type.CreateInstance();
+        target ??= Provider.GetService(type) ?? Provider.CreateInstance(type) ?? type.CreateInstance();
         if (target == null) return null;
 
         if (type.IsDictionary()) return CreateDic(dic, type, target);
@@ -208,7 +210,7 @@ public class JsonReader
             if (!pi.CanWrite) continue;
 
             var pt = pi.PropertyType;
-            if (pt.GetTypeCode() != TypeCode.Object)
+            if (pt.IsBaseType())
                 target.SetValue(pi, ChangeType(v, pt));
             else
             {
@@ -266,9 +268,10 @@ public class JsonReader
 
         if (type == typeof(TimeSpan)) return TimeSpan.Parse(value + "");
 
-        if (type.GetTypeCode() == TypeCode.Object) return null;
+        if (value is String str2) return str2.ChangeType(type);
+        if (type.IsBaseType()) return value.ChangeType(type);
 
-        return value.ChangeType(type);
+        return null;
     }
 
     private StringDictionary CreateSD(IDictionary<String, Object> dic)

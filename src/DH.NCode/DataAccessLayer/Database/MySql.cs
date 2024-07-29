@@ -4,6 +4,7 @@ using System.Net;
 using NewLife;
 using NewLife.Collections;
 using NewLife.Data;
+using NewLife.Log;
 
 namespace XCode.DataAccessLayer;
 
@@ -89,7 +90,7 @@ internal class MySql : RemoteDb
     #region 数据库特性
 
     protected override String ReservedWordsStr => "ACCESSIBLE,ADD,ALL,ALTER,ANALYZE,AND,AS,ASC,ASENSITIVE,BEFORE,BETWEEN,BIGINT,BINARY,BLOB,BOTH,BY,CALL,CASCADE,CASE,CHANGE,CHAR,CHARACTER,CHECK,COLLATE,COLUMN,CONDITION,CONNECTION,CONSTRAINT,CONTINUE,CONTRIBUTORS,CONVERT,CREATE,CROSS,CURRENT_DATE,CURRENT_TIME,CURRENT_TIMESTAMP,CURRENT_USER,CURSOR,DATABASE,DATABASES,DAY_HOUR,DAY_MICROSECOND,DAY_MINUTE,DAY_SECOND,DEC,DECIMAL,DECLARE,DEFAULT,DELAYED,DELETE,DESC,DESCRIBE,DETERMINISTIC,DISTINCT,DISTINCTROW,DIV,DOUBLE,DROP,DUAL,EACH,ELSE,ELSEIF,ENCLOSED,ESCAPED,EXISTS,EXIT,EXPLAIN,FALSE,FETCH,FLOAT,FLOAT4,FLOAT8,FOR,FORCE,FOREIGN,FROM,FULLTEXT,GRANT,GROUP,HAVING,HIGH_PRIORITY,HOUR_MICROSECOND,HOUR_MINUTE,HOUR_SECOND,IF,IGNORE,IN,INDEX,INFILE,INNER,INOUT,INSENSITIVE,INSERT,INT,INT1,INT2,INT3,INT4,INT8,INTEGER,INTERVAL,INTO,IS,ITERATE,JOIN,KEY,KEYS,KILL,LEADING,LEAVE,LEFT,LIKE,LIMIT,LINEAR,LINES,LOAD,LOCALTIME,LOCALTIMESTAMP,LOCK,LONG,LONGBLOB,LONGTEXT,LOOP,LOW_PRIORITY,MATCH,MEDIUMBLOB,MEDIUMINT,MEDIUMTEXT,MIDDLEINT,MINUTE_MICROSECOND,MINUTE_SECOND,MOD,MODIFIES,NATURAL,NOT,NO_WRITE_TO_BINLOG,NULL,NUMERIC,ON,OPTIMIZE,OPTION,OPTIONALLY,OR,ORDER,OUT,OUTER,OUTFILE,PRECISION,PRIMARY,PROCEDURE,PURGE,RANGE,READ,READS,READ_ONLY,READ_WRITE,REAL,REFERENCES,REGEXP,RELEASE,RENAME,REPEAT,REPLACE,REQUIRE,RESTRICT,RETURN,REVOKE,RIGHT,RLIKE,SCHEMA,SCHEMAS,SECOND_MICROSECOND,SELECT,SENSITIVE,SEPARATOR,SET,SHOW,SMALLINT,SPATIAL,SPECIFIC,SQL,SQLEXCEPTION,SQLSTATE,SQLWARNING,SQL_BIG_RESULT,SQL_CALC_FOUND_ROWS,SQL_SMALL_RESULT,SSL,STARTING,STRAIGHT_JOIN,TABLE,TERMINATED,THEN,TINYBLOB,TINYINT,TINYTEXT,TO,TRAILING,TRIGGER,TRUE,UNDO,UNION,UNIQUE,UNLOCK,UNSIGNED,UPDATE,UPGRADE,USAGE,USE,USING,UTC_DATE,UTC_TIME,UTC_TIMESTAMP,VALUES,VARBINARY,VARCHAR,VARCHARACTER,VARYING,WHEN,WHERE,WHILE,WITH,WRITE,X509,XOR,YEAR_MONTH,ZEROFILL," +
-                "LOG,User,Role,Admin,Rank,Member,Groups,Error,MaxValue,MinValue";
+                "LOG,User,Role,Admin,Rank,Member,Groups,Error,MaxValue,MinValue,Signal";
 
     /// <summary>格式化关键字</summary>
     /// <param name="keyWord">关键字</param>
@@ -132,7 +133,7 @@ internal class MySql : RemoteDb
         return base.FormatValue(field, value);
     }
 
-    private static readonly Char[] _likeKeys = new[] { '\\', '\'', '\"', '%', '_' };
+    private static readonly Char[] _likeKeys = ['\\', '\'', '\"', '%', '_'];
 
     /// <summary>格式化模糊搜索的字符串。处理转义字符</summary>
     /// <param name="column">字段</param>
@@ -164,7 +165,7 @@ internal class MySql : RemoteDb
     /// <param name="value">值</param>
     /// <param name="type">类型</param>
     /// <returns></returns>
-    public override IDataParameter CreateParameter(String name, Object value, Type type = null)
+    public override IDataParameter CreateParameter(String name, Object? value, Type? type = null)
     {
         var dp = base.CreateParameter(name, value, type);
 
@@ -199,6 +200,21 @@ internal class MySql : RemoteDb
     /// <returns></returns>
     public override String StringConcat(String left, String right) => $"concat({(!String.IsNullOrEmpty(left) ? left : "\'\'")},{(!String.IsNullOrEmpty(right) ? right : "\'\'")})";
 
+    /// <summary>生成批量删除SQL。部分数据库支持分批删除</summary>
+    /// <param name="tableName"></param>
+    /// <param name="where"></param>
+    /// <param name="batchSize"></param>
+    /// <returns>不支持分批删除时返回null</returns>
+    public override String? BuildDeleteSql(String tableName, String where, Int32 batchSize)
+    {
+        var sql = base.BuildDeleteSql(tableName, where, 0);
+
+        if (batchSize <= 0) return sql;
+
+        sql = $"{sql} limit {batchSize}";
+
+        return sql;
+    }
     #endregion 数据库特性
 
     #region 跨版本兼容
@@ -300,8 +316,9 @@ internal class MySqlSession : RemoteDbSession
         var db = Database as DbBase;
 
         // 字段列表
-        if (columns == null) columns = table.Columns.ToArray();
+        columns ??= table.Columns.ToArray();
         BuildInsert(sb, db, action, table, columns);
+        DefaultSpan.Current?.AppendTag(sb.ToString());
 
         // 值列表
         sb.Append(" Values");
@@ -347,19 +364,19 @@ internal class MySqlMetaData : RemoteDbMetaData
 
     #region 数据类型
 
-    //protected override List<KeyValuePair<Type, Type>> FieldTypeMaps
-    //{
-    //    get
-    //    {
-    //        if (_FieldTypeMaps == null)
-    //        {
-    //            var list = base.FieldTypeMaps;
-    //            if (!list.Any(e => e.Key == typeof(Byte) && e.Value == typeof(Boolean)))
-    //                list.Add(new(typeof(Byte), typeof(Boolean)));
-    //        }
-    //        return base.FieldTypeMaps;
-    //    }
-    //}
+    protected override List<KeyValuePair<Type, Type>> FieldTypeMaps
+    {
+        get
+        {
+            if (_FieldTypeMaps == null)
+            {
+                var list = base.FieldTypeMaps;
+                if (!list.Any(e => e.Key == typeof(Byte) && e.Value == typeof(Boolean)))
+                    list.Add(new(typeof(Byte), typeof(Boolean)));
+            }
+            return base.FieldTypeMaps;
+        }
+    }
 
     /// <summary>数据类型映射</summary>
     private static readonly Dictionary<Type, String[]> _DataTypes = new()
@@ -381,6 +398,7 @@ internal class MySqlMetaData : RemoteDbMetaData
         // mysql中nvarchar会变成utf8字符集的varchar，而不会取数据库的utf8mb4
         { typeof(String), new String[] { "VARCHAR({0})", "LONGTEXT", "TEXT", "CHAR({0})", "NCHAR({0})", "NVARCHAR({0})", "SET", "ENUM", "TINYTEXT", "TEXT", "MEDIUMTEXT" } },
         { typeof(Boolean), new String[] { "TINYINT" } },
+        { typeof(Guid), new String[] { "CHAR(36)" } },
     };
 
     #endregion 数据类型
@@ -401,7 +419,15 @@ internal class MySqlMetaData : RemoteDbMetaData
             var dt = ss.Query(sql, null);
             if (dt.Rows == null || dt.Rows.Count == 0) return list;
 
-            var hs = new HashSet<String>(names ?? new String[0], StringComparer.OrdinalIgnoreCase);
+            sql = $"select * from information_schema.columns where table_schema='{db}'";
+            if (names != null && names.Length > 0) sql += " and table_name in ('" + names.Join("','") + "')";
+            var columns = ss.Query(sql, null);
+
+            sql = $"select * from information_schema.STATISTICS where table_schema='{db}'";
+            if (names != null && names.Length > 0) sql += " and table_name in ('" + names.Join("','") + "')";
+            var indexes = ss.Query(sql, null);
+
+            var hs = new HashSet<String>(names ?? [], StringComparer.OrdinalIgnoreCase);
 
             // 所有表
             foreach (var dr in dt)
@@ -415,65 +441,127 @@ internal class MySqlMetaData : RemoteDbMetaData
                 table.DbType = Database.Type;
 
                 #region 字段
-
-                sql = $"SHOW FULL COLUMNS FROM `{db}`.`{name}`";
-                var dcs = ss.Query(sql, null);
-                foreach (var dc in dcs)
+                if (columns.Rows != null && columns.Rows.Count > 0)
                 {
-                    var field = table.CreateColumn();
-
-                    field.ColumnName = dc["Field"] + "";
-                    field.RawType = dc["Type"] + "";
-                    field.Description = dc["Comment"] + "";
-
-                    if (dc["Extra"] + "" == "auto_increment") field.Identity = true;
-                    if (dc["Key"] + "" == "PRI") field.PrimaryKey = true;
-                    if (dc["Null"] + "" == "YES") field.Nullable = true;
-
-                    field.Length = field.RawType.Substring("(", ")").ToInt();
-                    field.DataType = GetDataType(field);
-
-                    if (field.DataType == null)
+                    foreach (var dc in columns)
                     {
-                        if (field.RawType.StartsWithIgnoreCase("varchar", "nvarchar")) field.DataType = typeof(String);
+                        if (dc["TABLE_NAME"] + "" != table.TableName) continue;
+
+                        var field = table.CreateColumn();
+
+                        field.ColumnName = dc["COLUMN_NAME"] + "";
+                        field.RawType = dc["COLUMN_TYPE"] + "";
+                        field.Description = dc["COLUMN_COMMENT"] + "";
+
+                        if (dc["Extra"] + "" == "auto_increment") field.Identity = true;
+                        if (dc["COLUMN_KEY"] + "" == "PRI") field.PrimaryKey = true;
+                        if (dc["IS_NULLABLE"] + "" == "YES") field.Nullable = true;
+
+                        field.Length = field.RawType.Substring("(", ")").ToInt();
+
+                        var type = GetDataType(field);
+                        if (type == null)
+                        {
+                            if (field.RawType.StartsWithIgnoreCase("varchar", "nvarchar")) field.DataType = typeof(String);
+                        }
+                        else
+                            field.DataType = type;
+
+                        // MySql中没有布尔型，这里处理YN枚举作为布尔型
+                        if (field.RawType is "enum('N','Y')" or "enum('Y','N')") field.DataType = typeof(Boolean);
+
+                        field.Fix();
+
+                        table.Columns.Add(field);
                     }
-
-                    // MySql中没有布尔型，这里处理YN枚举作为布尔型
-                    if (field.RawType is "enum('N','Y')" or "enum('Y','N')") field.DataType = typeof(Boolean);
-
-                    field.Fix();
-
-                    table.Columns.Add(field);
                 }
+                else
+                {
+                    sql = $"SHOW FULL COLUMNS FROM `{db}`.`{name}`";
+                    var dcs = ss.Query(sql, null);
+                    foreach (var dc in dcs)
+                    {
+                        var field = table.CreateColumn();
 
+                        field.ColumnName = dc["Field"] + "";
+                        field.RawType = dc["Type"] + "";
+                        field.Description = dc["Comment"] + "";
+
+                        if (dc["Extra"] + "" == "auto_increment") field.Identity = true;
+                        if (dc["Key"] + "" == "PRI") field.PrimaryKey = true;
+                        if (dc["Null"] + "" == "YES") field.Nullable = true;
+
+                        field.Length = field.RawType.Substring("(", ")").ToInt();
+                        field.DataType = GetDataType(field);
+
+                        if (field.DataType == null)
+                        {
+                            if (field.RawType.StartsWithIgnoreCase("varchar", "nvarchar")) field.DataType = typeof(String);
+                        }
+
+                        // MySql中没有布尔型，这里处理YN枚举作为布尔型
+                        if (field.RawType is "enum('N','Y')" or "enum('Y','N')") field.DataType = typeof(Boolean);
+
+                        field.Fix();
+
+                        table.Columns.Add(field);
+                    }
+                }
                 #endregion 字段
 
                 #region 索引
-
-                sql = $"SHOW INDEX FROM `{db}`.`{name}`";
-                var dis = ss.Query(sql, null);
-                foreach (var dr2 in dis)
+                if (indexes.Rows != null && indexes.Rows.Count > 0)
                 {
-                    var dname = dr2["Key_name"] + "";
-                    var di = table.Indexes.FirstOrDefault(e => e.Name == dname) ?? table.CreateIndex();
-                    //di.Name = dname;
-                    di.Unique = dr2.Get<Int32>("Non_unique") == 0;
-
-                    var cname = dr2.Get<String>("Column_name");
-                    if (cname.IsNullOrEmpty()) continue;
-
-                    var cs = new List<String>();
-                    if (di.Columns != null && di.Columns.Length > 0) cs.AddRange(di.Columns);
-                    cs.Add(cname);
-                    di.Columns = cs.ToArray();
-
-                    if (di.Name == null)
+                    foreach (var dr2 in indexes)
                     {
-                        di.Name = dname;
-                        table.Indexes.Add(di);
+                        if (dr2["TABLE_NAME"] + "" != table.TableName) continue;
+
+                        var dname = dr2["INDEX_NAME"] + "";
+                        var di = table.Indexes.FirstOrDefault(e => e.Name == dname) ?? table.CreateIndex();
+                        //di.Name = dname;
+                        di.Unique = dr2.Get<Int32>("Non_unique") == 0;
+
+                        var cname = dr2.Get<String>("Column_name");
+                        if (cname.IsNullOrEmpty()) continue;
+
+                        var cs = new List<String>();
+                        if (di.Columns != null && di.Columns.Length > 0) cs.AddRange(di.Columns);
+                        cs.Add(cname);
+                        di.Columns = cs.ToArray();
+
+                        if (di.Name == null)
+                        {
+                            di.Name = dname;
+                            table.Indexes.Add(di);
+                        }
                     }
                 }
+                else
+                {
+                    sql = $"SHOW INDEX FROM `{db}`.`{name}`";
+                    var dis = ss.Query(sql, null);
+                    foreach (var dr2 in dis)
+                    {
+                        var dname = dr2["Key_name"] + "";
+                        var di = table.Indexes.FirstOrDefault(e => e.Name == dname) ?? table.CreateIndex();
+                        //di.Name = dname;
+                        di.Unique = dr2.Get<Int32>("Non_unique") == 0;
 
+                        var cname = dr2.Get<String>("Column_name");
+                        if (cname.IsNullOrEmpty()) continue;
+
+                        var cs = new List<String>();
+                        if (di.Columns != null && di.Columns.Length > 0) cs.AddRange(di.Columns);
+                        cs.Add(cname);
+                        di.Columns = cs.ToArray();
+
+                        if (di.Name == null)
+                        {
+                            di.Name = dname;
+                            table.Indexes.Add(di);
+                        }
+                    }
+                }
                 #endregion 索引
 
                 // 修正关系数据
@@ -594,11 +682,11 @@ internal class MySqlMetaData : RemoteDbMetaData
 
     protected override Boolean DatabaseExist(String databaseName)
     {
-        var dt = GetSchema(_.Databases, new String[] { databaseName });
+        var dt = GetSchema(_.Databases, [databaseName]);
         return dt != null && dt.Rows != null && dt.Rows.Count > 0;
     }
 
-    public override String CreateDatabaseSQL(String dbname, String file) => base.CreateDatabaseSQL(dbname, file) + " DEFAULT CHARACTER SET utf8mb4";
+    public override String CreateDatabaseSQL(String dbname, String? file) => base.CreateDatabaseSQL(dbname, file) + " DEFAULT CHARACTER SET utf8mb4";
 
     public override String DropDatabaseSQL(String dbname) => $"Drop Database If Exists {Database.FormatName(dbname)}";
 

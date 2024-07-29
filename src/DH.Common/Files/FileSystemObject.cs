@@ -193,9 +193,10 @@ public abstract class FileSystemObject {
         num2 += directories.Length;
         foreach (DirectoryInfo info2 in directories)
         {
-            num += DirInfo(info2)[0];
-            num2 += DirInfo(info2)[1];
-            num3 += DirInfo(info2)[2];
+            var dirInfo = DirInfo(info2);
+            num += dirInfo[0];
+            num2 += dirInfo[1];
+            num3 += dirInfo[2];
         }
         numArray[0] = num;
         numArray[1] = num2;

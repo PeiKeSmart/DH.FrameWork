@@ -17,8 +17,8 @@ namespace XCode.Membership;
 [Serializable]
 [DataObject]
 [Description("菜单。功能权限，大多数时候也是可见页面")]
-[BindIndex("IX_Menu_Name", false, "Name")]
 [BindIndex("IU_Menu_ParentID_Name", true, "ParentID,Name")]
+[BindIndex("IX_Menu_Name", false, "Name")]
 [BindTable("Menu", Description = "菜单。功能权限，大多数时候也是可见页面", ConnName = "Membership", DbType = DatabaseType.None)]
 public partial class Menu : IMenu, IEntity<MenuModel>
 {
@@ -365,6 +365,9 @@ public partial class Menu : IMenu, IEntity<MenuModel>
     #endregion
 
     #region 关联映射
+    #endregion
+
+    #region 扩展查询
     #endregion
 
     #region 字段名

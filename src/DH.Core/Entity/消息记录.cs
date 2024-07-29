@@ -176,6 +176,9 @@ public partial class SendLog : ISendLog, IEntity<ISendLog>
     #region 关联映射
     #endregion
 
+    #region 扩展查询
+    #endregion
+
     #region 字段名
     /// <summary>取得消息记录字段信息的快捷方式</summary>
     public partial class _

@@ -1,30 +1,16 @@
 namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop.Models
 {
     /// <summary>
-    /// <para>表示 [POST] /promotion/activity/create 接口的请求。</para>
+    /// <para>表示 [POST] /promotion/{version}/activities 接口的请求。</para>
     /// </summary>
     public class PromotionCreateActivityRequest : TikTokShopRequest
     {
         /// <summary>
-        /// 获取或设置请求序列号。
+        /// 获取或设置活动类型。
         /// </summary>
-        [Newtonsoft.Json.JsonProperty("request_serial_no")]
-        [System.Text.Json.Serialization.JsonPropertyName("request_serial_no")]
-        public string RequestSerialNumber { get; set; } = string.Empty;
-
-        /// <summary>
-        /// 获取或设置促销 ID。
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("promotion_id")]
-        [System.Text.Json.Serialization.JsonPropertyName("promotion_id")]
-        public string PromotionId { get; set; } = string.Empty;
-
-        /// <summary>
-        /// 获取或设置促销类型。
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("promotion_type")]
-        [System.Text.Json.Serialization.JsonPropertyName("promotion_type")]
-        public int PromotionType { get; set; }
+        [Newtonsoft.Json.JsonProperty("activity_type")]
+        [System.Text.Json.Serialization.JsonPropertyName("activity_type")]
+        public string ActivityType { get; set; } = string.Empty;
 
         /// <summary>
         /// 获取或设置活动标题。
@@ -36,9 +22,9 @@ namespace SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop.Models
         /// <summary>
         /// 获取或设置商品类型。
         /// </summary>
-        [Newtonsoft.Json.JsonProperty("product_type")]
-        [System.Text.Json.Serialization.JsonPropertyName("product_type")]
-        public int ProductType { get; set; }
+        [Newtonsoft.Json.JsonProperty("product_level")]
+        [System.Text.Json.Serialization.JsonPropertyName("product_level")]
+        public string ProductLevel { get; set; } = string.Empty;
 
         /// <summary>
         /// 获取或设置活动开始时间戳。

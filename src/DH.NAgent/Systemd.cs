@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
-using System.Text;
 using NewLife.Log;
+using NewLife.Serialization;
 
 namespace NewLife.Agent;
 
@@ -11,26 +11,29 @@ namespace NewLife.Agent;
 public class Systemd : DefaultHost
 {
     #region 静态
-    private static String _path;
-    //private ServiceBase _service;
+    /// <summary>路径</summary>
+    public static String ServicePath { get; set; }
 
     /// <summary>是否可用</summary>
-    public static Boolean Available => !_path.IsNullOrEmpty();
+    public static Boolean Available => !ServicePath.IsNullOrEmpty();
+
+    /// <summary>相关目录，可以参考 systemd 目录优先级</summary>
+    public readonly static String[] SystemdPaths = [
+        "/etc/systemd/system",
+        "/run/systemd/system",
+        "/usr/local/lib/systemd/system",
+        "/lib/systemd/system",
+        "/usr/lib/systemd/system",
+    ];
 
     /// <summary>实例化</summary>
     static Systemd()
     {
-        var ps = new[] {
-            "/etc/systemd/system",
-            "/lib/systemd/system",
-            "/run/systemd/system",
-            "/usr/lib/systemd/system",
-        };
-        foreach (var p in ps)
+        foreach (var p in SystemdPaths)
         {
             if (Directory.Exists(p))
             {
-                _path = p;
+                ServicePath = p;
                 break;
             }
         }
@@ -38,14 +41,8 @@ public class Systemd : DefaultHost
     #endregion
 
     #region 属性
-    /// <summary>用于执行服务的用户</summary>
-    public String User { get; set; }
-
-    /// <summary>用于执行服务的用户组</summary>
-    public String Group { get; set; }
-
-    /// <summary>是否依赖于网络。在网络就绪后才启动服务</summary>
-    public Boolean DependOnNetwork { get; set; }
+    /// <summary>服务设置。应用于服务安装</summary>
+    public SystemdSetting Setting { get; set; } = new();
     #endregion
 
     #region 构造
@@ -84,9 +81,8 @@ public class Systemd : DefaultHost
     /// <returns></returns>
     public override Boolean IsInstalled(String serviceName)
     {
-        var file = _path.CombinePath($"{serviceName}.service");
-
-        return File.Exists(file);
+        var file = GetServicePath(serviceName);
+        return file != null;
     }
 
     /// <summary>服务是否已启动</summary>
@@ -94,11 +90,17 @@ public class Systemd : DefaultHost
     /// <returns></returns>
     public override Boolean IsRunning(String serviceName)
     {
-        var file = _path.CombinePath($"{serviceName}.service");
-        if (!File.Exists(file)) return false;
-
-        var str = Execute("systemctl", $"status {serviceName}", false);
-        if (!str.IsNullOrEmpty() && str.Contains("running")) return true;
+        if (!IsInstalled(serviceName)) return false;
+        //检查服务状态
+        var status = Execute("systemctl", $"show {serviceName} -p SubState", false);
+        if (!status.IsNullOrEmpty())
+        {
+            //大部分服务状态为running时，表示服务已启动
+            if (status.Contains("=running"))
+            {
+                return true;
+            }
+        }
 
         return false;
     }
@@ -112,7 +114,25 @@ public class Systemd : DefaultHost
     /// <returns></returns>
     public override Boolean Install(String serviceName, String displayName, String fileName, String arguments, String description)
     {
-        if (User.IsNullOrEmpty())
+        var set = Setting;
+        set.ServiceName = serviceName;
+        set.DisplayName = displayName;
+        set.Description = description;
+        set.FileName = fileName;
+        set.Arguments = arguments;
+
+        // 从文件名中分析工作目录
+        var ss = fileName.Split(" ");
+        if (ss.Length >= 2 && ss[0].EndsWithIgnoreCase("dotnet", "java"))
+        {
+            var file = ss[1];
+            if (File.Exists(file))
+                set.WorkingDirectory = Path.GetDirectoryName(file).GetFullPath();
+            else
+                set.WorkingDirectory = ".".GetFullPath();
+        }
+
+        if (set.User.IsNullOrEmpty())
         {
             // 从命令行参数加载用户设置 -user
             var args = Environment.GetCommandLineArgs();
@@ -122,78 +142,35 @@ public class Systemd : DefaultHost
                 {
                     if (args[i].EqualIgnoreCase("-user") && i + 1 < args.Length)
                     {
-                        User = args[i + 1];
+                        set.User = args[i + 1];
                         break;
                     }
                     if (args[i].EqualIgnoreCase("-group") && i + 1 < args.Length)
                     {
-                        Group = args[i + 1];
+                        set.Group = args[i + 1];
                         break;
                     }
                 }
-                if (!User.IsNullOrEmpty() && Group.IsNullOrEmpty()) Group = User;
+                if (!set.User.IsNullOrEmpty() && set.Group.IsNullOrEmpty()) set.Group = set.User;
             }
         }
 
-        return Install(_path, serviceName, displayName, fileName, arguments, description, User, Group, DependOnNetwork);
+        return Install(ServicePath, set);
     }
 
     /// <summary>安装服务</summary>
     /// <param name="systemdPath">systemd目录有</param>
-    /// <param name="serviceName">服务名</param>
-    /// <param name="displayName">显示名</param>
-    /// <param name="fileName">文件路径</param>
-    /// <param name="arguments">命令参数</param>
-    /// <param name="description">描述信息</param>
-    /// <param name="user">用户</param>
-    /// <param name="group">用户组</param>
-    /// <param name="network"></param>
+    /// <param name="set">服务名</param>
     /// <returns></returns>
-    public static Boolean Install(String systemdPath, String serviceName, String displayName, String fileName, String arguments, String description, String user, String group, Boolean network)
+    public static Boolean Install(String systemdPath, SystemdSetting set)
     {
-        XTrace.WriteLine("{0}.Install {1}, {2}, {3}, {4}", typeof(Systemd).Name, serviceName, displayName, fileName, arguments, description);
+        XTrace.WriteLine("{0}.Install {1}", typeof(Systemd).Name, set.ToJson());
 
+        var serviceName = set.ServiceName;
         var file = systemdPath.CombinePath($"{serviceName}.service");
         XTrace.WriteLine(file);
 
-        //var asm = Assembly.GetEntryAssembly();
-        var des = !displayName.IsNullOrEmpty() ? displayName : description;
-
-        var sb = new StringBuilder();
-        sb.AppendLine("[Unit]");
-        sb.AppendLine($"Description={des}");
-
-        if (network)
-            sb.AppendLine($"After=network.target");
-        //sb.AppendLine("StartLimitIntervalSec=0");
-
-        sb.AppendLine();
-        sb.AppendLine("[Service]");
-        sb.AppendLine("Type=simple");
-        //sb.AppendLine($"ExecStart=/usr/bin/dotnet {asm.Location}");
-        sb.AppendLine($"ExecStart={fileName} {arguments}");
-        sb.AppendLine($"WorkingDirectory={".".GetFullPath()}");
-        if (!user.IsNullOrEmpty()) sb.AppendLine($"User={user}");
-        if (!group.IsNullOrEmpty()) sb.AppendLine($"Group={group}");
-
-        // no 表示服务退出时，服务不会自动重启，默认值。
-        // on-failure 表示当进程以非零退出代码退出，由信号终止；当操作(如服务重新加载)超时；以及何时触发配置的监视程序超时时，服务会自动重启。
-        // always 表示只要服务退出，则服务将自动重启。
-        sb.AppendLine("Restart=always");
-
-        // RestartSec 重启间隔，比如某次异常后，等待3(s)再进行启动，默认值0.1(s)
-        sb.AppendLine("RestartSec=3");
-
-        // StartLimitInterval: 无限次重启，默认是10秒内如果重启超过5次则不再重启，设置为0表示不限次数重启
-        sb.AppendLine("StartLimitInterval=0");
-
-        sb.AppendLine("KillSignal=SIGINT");
-
-        sb.AppendLine();
-        sb.AppendLine("[Install]");
-        sb.AppendLine("WantedBy=multi-user.target");
-
-        File.WriteAllText(file, sb.ToString());
+        File.WriteAllText(file, set.Build());
 
         // sudo systemctl daemon-reload
         // sudo systemctl enable StarAgent
@@ -213,9 +190,10 @@ public class Systemd : DefaultHost
     {
         XTrace.WriteLine("{0}.Remove {1}", Name, serviceName);
 
-        var file = _path.CombinePath($"{serviceName}.service");
+        Process.Start("systemctl", $"disable  {serviceName}");
+        var file = ServicePath.CombinePath($"{serviceName}.service");
         if (File.Exists(file)) File.Delete(file);
-
+        Process.Start("systemctl", "daemon-reload");
         return true;
     }
 
@@ -225,7 +203,6 @@ public class Systemd : DefaultHost
     public override Boolean Start(String serviceName)
     {
         XTrace.WriteLine("{0}.Start {1}", Name, serviceName);
-
         return Process.Start("systemctl", $"start {serviceName}") != null;
     }
 
@@ -235,7 +212,6 @@ public class Systemd : DefaultHost
     public override Boolean Stop(String serviceName)
     {
         XTrace.WriteLine("{0}.Stop {1}", Name, serviceName);
-
         return Process.Start("systemctl", $"stop {serviceName}") != null;
     }
 
@@ -274,8 +250,8 @@ public class Systemd : DefaultHost
     /// <param name="serviceName">服务名</param>
     public override ServiceConfig QueryConfig(String serviceName)
     {
-        var file = _path.CombinePath($"{serviceName}.service");
-        if (!File.Exists(file)) return null;
+        var file = GetServicePath(serviceName);
+        if (file == null) return null;
 
         var txt = File.ReadAllText(file);
         if (txt != null)
@@ -291,6 +267,21 @@ public class Systemd : DefaultHost
             return cfg;
         }
 
+        return null;
+    }
+
+    /// <summary>
+    /// 获取服务配置文件的路径
+    /// </summary>
+    /// <param name="serviceName">服务名称</param>
+    /// <returns></returns>
+    public static String GetServicePath(String serviceName)
+    {
+        foreach (var path in SystemdPaths)
+        {
+            var file = Path.Combine(path, $"{serviceName}.service");
+            if (File.Exists(file)) return file;
+        }
         return null;
     }
 }

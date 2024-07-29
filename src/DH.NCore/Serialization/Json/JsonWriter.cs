@@ -16,6 +16,9 @@ namespace NewLife.Serialization;
 public class JsonWriter
 {
     #region 属性
+    /// <summary>配置选项</summary>
+    public JsonOptions Options { get; set; } = new();
+
     /// <summary>使用UTC时间。默认false</summary>
     public Boolean UseUTCDateTime { get; set; }
 
@@ -23,10 +26,12 @@ public class JsonWriter
     public Boolean LowerCase { get; set; }
 
     /// <summary>使用驼峰命名</summary>
-    public Boolean CamelCase { get; set; }
+    [Obsolete("=>Options")]
+    public Boolean CamelCase { get => Options.CamelCase; set => Options.CamelCase = value; }
 
     /// <summary>忽略空值。默认false</summary>
-    public Boolean IgnoreNullValues { get; set; }
+    [Obsolete("=>Options")]
+    public Boolean IgnoreNullValues { get => Options.IgnoreNullValues; set => Options.IgnoreNullValues = value; }
 
     /// <summary>忽略只读属性。默认false</summary>
     public Boolean IgnoreReadOnlyProperties { get; set; }
@@ -34,14 +39,16 @@ public class JsonWriter
     /// <summary>忽略注释。默认true</summary>
     public Boolean IgnoreComment { get; set; } = true;
 
-    /// <summary>忽略循环引用。遇到循环引用时写{}，默认true</summary>
-    public Boolean IgnoreCircle { get; set; } = true;
+    /// <summary>忽略循环引用。遇到循环引用时写{}，默认false</summary>
+    [Obsolete("=>Options")]
+    public Boolean IgnoreCycles => Options.IgnoreCycles;
 
     /// <summary>枚举使用字符串。默认false使用数字</summary>
     public Boolean EnumString { get; set; }
 
     /// <summary>缩进。默认false</summary>
-    public Boolean Indented { get; set; }
+    [Obsolete("=>Options")]
+    public Boolean Indented { get => Options.WriteIndented; set => Options.WriteIndented = value; }
 
     ///// <summary>智能缩进，内层不换行。默认false</summary>
     //public Boolean SmartIndented { get; set; }
@@ -56,7 +63,7 @@ public class JsonWriter
     public Boolean ByteArrayAsHex { get; set; }
 
     /// <summary>缩进字符数。默认2</summary>
-    public Int32 IndentedLength { get; set; } = 4;
+    public Int32 IndentedLength { get; set; } = 2;
 
     /// <summary>最大序列化深度。超过时不再序列化，而不是抛出异常，默认5</summary>
     public Int32 MaxDepth { get; set; } = 5;
@@ -80,16 +87,40 @@ public class JsonWriter
     {
         var jw = new JsonWriter
         {
-            IgnoreNullValues = !nullValue,
-            CamelCase = camelCase,
-            Indented = indented,
+            //IgnoreNullValues = !nullValue,
+            //CamelCase = camelCase,
+            //Indented = indented,
             //SmartIndented = indented,
+        };
+        jw.Options.IgnoreNullValues = !nullValue;
+        jw.Options.CamelCase = camelCase;
+        jw.Options.WriteIndented = indented;
+
+        jw.WriteValue(obj);
+
+        var json = jw._Builder.ToString();
+
+        return json;
+    }
+
+    /// <summary>对象序列化为Json字符串</summary>
+    /// <param name="obj"></param>
+    /// <param name="jsonOptions">序列化选项</param>
+    /// <returns></returns>
+    public static String ToJson(Object obj, JsonOptions jsonOptions)
+    {
+        var jw = new JsonWriter
+        {
+            //IgnoreNullValues = jsonOptions.IgnoreNullValues,
+            //CamelCase = jsonOptions.CamelCase,
+            //Indented = jsonOptions.WriteIndented,
+            //IgnoreCycles = jsonOptions.IgnoreCycles,
+            Options = jsonOptions,
         };
 
         jw.WriteValue(obj);
 
         var json = jw._Builder.ToString();
-        //if (indented) json = JsonHelper.Format(json);
 
         return json;
     }
@@ -143,7 +174,13 @@ public class JsonWriter
             WriteDateTime(time);
 
         else if (obj is DateTimeOffset offset)
-            WriteDateTime(offset);
+            _Builder.AppendFormat("\"{0:O}\"", offset);
+#if NET6_0_OR_GREATER
+        else if (obj is DateOnly date)
+            _Builder.AppendFormat("\"{0:O}\"", date);
+        else if (obj is TimeOnly time2)
+            _Builder.AppendFormat("\"{0}\"", time2);
+#endif
 
         else if (obj is IDictionary<String, Object?> sdic)
             WriteStringDictionary(sdic);
@@ -184,6 +221,10 @@ public class JsonWriter
                 WriteValue(obj.ToLong());
         }
 
+        // 支持格式化的类型，有去有回
+        else if (obj is IFormattable)
+            WriteValue(obj + "");
+
         else
             WriteObject(obj);
     }
@@ -199,7 +240,7 @@ public class JsonWriter
         {
             if (item is not String key) continue;
 
-            if (!IgnoreNullValues || !IsNull(nvs[key]))
+            if (!Options.IgnoreNullValues || !IsNull(nvs[key]))
             {
                 if (!first)
                 {
@@ -228,7 +269,7 @@ public class JsonWriter
         {
             if (item is not DictionaryEntry entry) continue;
 
-            if (!IgnoreNullValues || !IsNull(entry.Value))
+            if (!Options.IgnoreNullValues || !IsNull(entry.Value))
             {
                 if (!first)
                 {
@@ -246,13 +287,6 @@ public class JsonWriter
         _Builder.Append('}');
     }
 
-    private void WriteDateTime(DateTimeOffset dateTimeOffset)
-    {
-        //2022-11-29T14:13:17.8763881+08:00
-        var str = dateTimeOffset.ToString("O");
-        _Builder.AppendFormat("\"{0}\"", str);
-    }
-
     private void WriteDateTime(DateTime dateTime)
     {
         var dt = dateTime;
@@ -260,7 +294,9 @@ public class JsonWriter
 
         // 纯日期缩短长度
         var str = "";
-        if (dt.Year > 1000)
+        if (Options.FullTime)
+            str = dt.ToString("O");
+        else if (dt.Year > 1000)
         {
             //if (dt.Hour == 0 && dt.Minute == 0 && dt.Second == 0)
             //{
@@ -277,11 +313,11 @@ public class JsonWriter
     }
 
     Int32 _depth = 0;
-    private readonly ICollection<Object> _cirobj = new HashSet<Object>();
+    private readonly ICollection<Object> _cirobj = [];
     private void WriteObject(Object obj)
     {
         // 循环引用
-        if (IgnoreCircle && _cirobj.Contains(obj))
+        if (Options.IgnoreCycles && _cirobj.Contains(obj))
         {
             _Builder.Append("{}");
             return;
@@ -319,11 +355,11 @@ public class JsonWriter
             if (IgnoreReadOnlyProperties && pi.CanRead && !pi.CanWrite) continue;
 
             var value = obj is IModel src ? src[pi.Name] : obj.GetValue(pi);
-            if (!IgnoreNullValues || !IsNull(value))
+            if (!Options.IgnoreNullValues || !IsNull(value))
             {
                 var name = FormatName(SerialHelper.GetName(pi));
                 String? comment = null;
-                if (!IgnoreComment && Indented) comment = pi.GetDisplayName() ?? pi.GetDescription();
+                if (!IgnoreComment && Options.WriteIndented) comment = pi.GetDisplayName() ?? pi.GetDescription();
 
                 if (!hs.Contains(name))
                 {
@@ -370,7 +406,7 @@ public class JsonWriter
 
     private void WriteMember(String name, Object? value, String? comment, ref Boolean first)
     {
-        if (!IgnoreNullValues || !IsNull(value))
+        if (!Options.IgnoreNullValues || !IsNull(value))
         {
             if (!first)
             {
@@ -380,7 +416,7 @@ public class JsonWriter
             first = false;
 
             // 注释
-            if (!IgnoreComment && Indented)
+            if (!IgnoreComment && Options.WriteIndented)
             {
                 //var comment = pi.GetDisplayName() ?? pi.GetDescription();
                 if (!comment.IsNullOrEmpty())
@@ -410,7 +446,7 @@ public class JsonWriter
         WriteStringFast(name);
 
         _Builder.Append(':');
-        if (Indented) _Builder.Append(' ');
+        if (Options.WriteIndented) _Builder.Append(' ');
 
         WriteValue(value);
     }
@@ -451,7 +487,7 @@ public class JsonWriter
         {
             if (item is not DictionaryEntry entry) continue;
 
-            if (!IgnoreNullValues || !IsNull(entry.Value))
+            if (!Options.IgnoreNullValues || !IsNull(entry.Value))
             {
                 if (!first)
                 {
@@ -480,7 +516,7 @@ public class JsonWriter
             // 跳过注释
             if (item.Key[0] == '#') continue;
 
-            if (!IgnoreNullValues || !IsNull(item.Value))
+            if (!Options.IgnoreNullValues || !IsNull(item.Value))
             {
                 if (!first)
                 {
@@ -492,7 +528,7 @@ public class JsonWriter
                 var name = FormatName(item.Key);
 
                 // 注释
-                if (!IgnoreComment && Indented && dic.TryGetValue("#" + name, out var comment) && comment != null)
+                if (!IgnoreComment && Options.WriteIndented && dic.TryGetValue("#" + name, out var comment) && comment != null)
                 {
                     WritePair("#" + name, comment);
                     _Builder.Append(',');
@@ -518,7 +554,7 @@ public class JsonWriter
         {
             if (item is not DictionaryEntry entry) continue;
 
-            if (!IgnoreNullValues || !IsNull(entry.Value))
+            if (!Options.IgnoreNullValues || !IsNull(entry.Value))
             {
                 if (!first)
                 {
@@ -599,7 +635,7 @@ public class JsonWriter
         if (name.IsNullOrEmpty()) return name;
 
         if (LowerCase) return name.ToLower();
-        if (CamelCase)
+        if (Options.CamelCase)
         {
             if (name == "ID") return "id";
             return name[..1].ToLower() + name[1..];
@@ -652,7 +688,7 @@ public class JsonWriter
 
     private void WriteIndent()
     {
-        if (!Indented) return;
+        if (!Options.WriteIndented) return;
 
         _Builder.AppendLine();
         _Builder.Append(' ', _level * IndentedLength);
@@ -660,7 +696,7 @@ public class JsonWriter
 
     private void WriteLeftIndent()
     {
-        if (!Indented) return;
+        if (!Options.WriteIndented) return;
 
         _Builder.AppendLine();
         _Builder.Append(' ', ++_level * IndentedLength);
@@ -668,7 +704,7 @@ public class JsonWriter
 
     private void WriteRightIndent()
     {
-        if (!Indented) return;
+        if (!Options.WriteIndented) return;
 
         _Builder.AppendLine();
         _Builder.Append(' ', --_level * IndentedLength);

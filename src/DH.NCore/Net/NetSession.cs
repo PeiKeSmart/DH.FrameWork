@@ -32,7 +32,7 @@ public class NetSession<TServer> : NetSession where TServer : NetServer
 /// 
 /// 实际应用可通过重载OnReceive实现收到数据时的业务逻辑。
 /// </remarks>
-public class NetSession : DisposeBase, INetSession, IExtend
+public class NetSession : DisposeBase, INetSession, IServiceProvider, IExtend
 {
     #region 属性
     /// <summary>唯一会话标识。在主服务中唯一标识当前会话，原子自增</summary>
@@ -49,6 +49,9 @@ public class NetSession : DisposeBase, INetSession, IExtend
 
     /// <summary>客户端地址</summary>
     public NetUri Remote => Session.Remote;
+
+    /// <summary>网络数据处理器。可作为业务处理实现，也可以作为前置协议解析</summary>
+    public INetHandler? Handler { get; set; }
 
     /// <summary>用户会话数据</summary>
     public IDictionary<String, Object?> Items => Session.Items;
@@ -89,13 +92,17 @@ public class NetSession : DisposeBase, INetSession, IExtend
         // 服务提供者，用于创建Scoped范围服务，以使得各服务解析在本会话中唯一
         if (ServiceProvider == null)
         {
-            _scope = ns?.ServiceProvider?.CreateScope();
-            ServiceProvider = _scope?.ServiceProvider ?? ns?.ServiceProvider;
+            _scope = ns.ServiceProvider?.CreateScope();
+            ServiceProvider = _scope?.ServiceProvider ?? ns.ServiceProvider;
         }
 
-        using var span = ns?.Tracer?.NewSpan($"net:{ns?.Name}:Connect", Remote?.ToString());
+        using var span = ns.Tracer?.NewSpan($"net:{ns.Name}:Connect", Remote?.ToString());
         try
         {
+            // 网络处理器，独立的业务处理器
+            Handler = ns.CreateHandler(this);
+            Handler?.Init(this);
+
             OnConnected();
 
             var ss = Session;
@@ -131,12 +138,16 @@ public class NetSession : DisposeBase, INetSession, IExtend
     private void Ss_Received(Object? sender, ReceivedEventArgs e)
     {
         var ns = (this as INetSession).Host;
-        var tracer = ns?.Tracer;
-        using var span = tracer?.NewSpan($"net:{ns?.Name}:Receive", e.Message);
+        using var span = ns?.Tracer?.NewSpan($"net:{ns?.Name}:Receive", e.Message, e.Packet?.Total ?? 0);
 
         try
         {
-            OnReceive(e);
+            // 网络处理器先行，还有数据再往下执行
+            Handler?.Process(e);
+
+            // 前面逻辑可能关闭连接，也可能清空数据不允许继续
+            if (!Disposed && (e.Packet != null || e.Message != null))
+                OnReceive(e);
         }
         catch (Exception ex)
         {
@@ -150,6 +161,9 @@ public class NetSession : DisposeBase, INetSession, IExtend
     protected override void Dispose(Boolean disposing)
     {
         base.Dispose(disposing);
+
+        // 停止网络处理器
+        Handler.TryDispose();
 
         var reason = GetType().Name + (disposing ? "Dispose" : "GC");
 
@@ -307,5 +321,20 @@ public class NetSession : DisposeBase, INetSession, IExtend
     /// <summary>已重载。</summary>
     /// <returns></returns>
     public override String ToString() => $"{(this as INetSession).Host?.Name}[{ID}] {Session}";
+
+    /// <summary>获取服务</summary>
+    /// <param name="serviceType"></param>
+    /// <returns></returns>
+    public virtual Object GetService(Type serviceType)
+    {
+        if (serviceType == typeof(IServiceProvider)) return this;
+        if (serviceType == typeof(NetSession)) return this;
+        if (serviceType == typeof(INetSession)) return this;
+        if (serviceType == typeof(NetServer)) return (this as INetSession).Host;
+        if (serviceType == typeof(ISocketSession)) return Session;
+        if (serviceType == typeof(ISocketServer)) return Server;
+
+        return ServiceProvider!.GetService(serviceType)!;
+    }
     #endregion
 }

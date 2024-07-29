@@ -1,13 +1,11 @@
 using System;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using Org.BouncyCastle.Asn1;
 using Org.BouncyCastle.Asn1.GM;
 using Org.BouncyCastle.Asn1.X9;
 using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Crypto.Digests;
 using Org.BouncyCastle.Crypto.Engines;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Math;
@@ -20,6 +18,8 @@ using Org.BouncyCastle.X509;
 
 namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Utilities
 {
+    using SKIT.FlurlHttpClient.Primitives;
+
     /// <summary>
     /// SM2 算法工具类。
     /// <para>此实现遵循国家标准 GM/T 0009-2012 的有关规定。</para>
@@ -33,59 +33,51 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Utilities
         private const int SM2_C3_LENGTH = 32;
         private const int SM2_RS_LENGTH = 32;
 
-        private static byte[] ConvertPrivateKeyPkcs8PemToByteArray(string privateKey)
+        private static byte[] ConvertPrivateKeyPemToByteArray(string privateKeyPem)
         {
-            privateKey = privateKey
+            privateKeyPem = privateKeyPem
                 .Replace("-----BEGIN PRIVATE KEY-----", string.Empty)
                 .Replace("-----END PRIVATE KEY-----", string.Empty);
-            privateKey = Regex.Replace(privateKey, "\\s+", string.Empty);
-            return Convert.FromBase64String(privateKey);
+            privateKeyPem = Regex.Replace(privateKeyPem, "\\s+", string.Empty);
+            return Convert.FromBase64String(privateKeyPem);
         }
 
-        private static byte[] ConvertPublicKeyPkcs8PemToByteArray(string publicKey)
+        private static byte[] ConvertPublicKeyPemToByteArray(string publicKeyPem)
         {
-            publicKey = publicKey
+            publicKeyPem = publicKeyPem
                 .Replace("-----BEGIN PUBLIC KEY-----", string.Empty)
                 .Replace("-----END PUBLIC KEY-----", string.Empty);
-            publicKey = Regex.Replace(publicKey, "\\s+", string.Empty);
-            return Convert.FromBase64String(publicKey);
+            publicKeyPem = Regex.Replace(publicKeyPem, "\\s+", string.Empty);
+            return Convert.FromBase64String(publicKeyPem);
         }
 
-        private static X509Certificate ConvertCertificatePemToX509(string certificate)
+        private static X509Certificate ParseCertificatePemToX509(string certificatePem)
         {
-            using (TextReader sreader = new StringReader(certificate))
+            using (TextReader sreader = new StringReader(certificatePem))
             {
                 PemReader pemReader = new PemReader(sreader);
                 return (X509Certificate)pemReader.ReadObject();
             }
         }
 
-        private static ECPrivateKeyParameters ParsePrivateKeyPemToPrivateKeyParameters(string privateKey)
-        {
-            byte[] privateKeyBytes = ConvertPrivateKeyPkcs8PemToByteArray(privateKey);
-            return ParsePrivateKeyPemToPrivateKeyParameters(privateKeyBytes);
-        }
-
-        private static ECPrivateKeyParameters ParsePrivateKeyPemToPrivateKeyParameters(byte[] privateKeyBytes)
+        private static ECPrivateKeyParameters ParsePrivateKeyToParameters(byte[] privateKeyBytes)
         {
             return (ECPrivateKeyParameters)PrivateKeyFactory.CreateKey(privateKeyBytes);
         }
 
-        private static ECPrivateKeyParameters ParseECPrivateKeyToPrivateKeyParameters(string ecPrivateKeyHex)
+        private static ECPrivateKeyParameters ParseECPrivateKeyToParameters(byte[] ecPrivateKeyBytes)
         {
-            BigInteger ecPrivateKeyParamsD = new BigInteger(ecPrivateKeyHex, 16);
+            BigInteger ecPrivateKeyParamsD = new BigInteger(Hex.ToHexString(ecPrivateKeyBytes), 16);
             return new ECPrivateKeyParameters(ecPrivateKeyParamsD, SM2_DOMAIN_PARAMS);
         }
 
-        private static ECPublicKeyParameters ParsePublicKeyPemToPublicKeyParameters(byte[] publicKeyBytes)
+        private static ECPublicKeyParameters ParsePublicKeyToParameters(byte[] publicKeyBytes)
         {
             return (ECPublicKeyParameters)PublicKeyFactory.CreateKey(publicKeyBytes);
         }
 
-        private static ECPublicKeyParameters ParseECPublicKeyToPublicKeyParameters(string ecPublicKeyHex)
+        private static ECPublicKeyParameters ParseECPublicKeyToParameters(byte[] ecPublicKeyBytes)
         {
-            byte[] ecPublicKeyBytes = Hex.Decode(ecPublicKeyHex);
-
             const int KEY_BYTE_LENGTH = 64;
 
             bool unzipped = ecPublicKeyBytes.FirstOrDefault() == 0x04;
@@ -197,11 +189,11 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Utilities
             }
         }
 
-        private static byte[] SignWithSM3(ECPrivateKeyParameters sm2PrivateKeyParams, byte[] uidBytes, byte[] msgBytes, bool asn1Encoding)
+        private static byte[] SignWithSM3(ECPrivateKeyParameters sm2PrivateKeyParams, byte[] uidBytes, byte[] messageBytes, bool asn1Encoding)
         {
             ISigner signer = SignerUtilities.GetSigner("SM3withSM2");
             signer.Init(true, new ParametersWithID(sm2PrivateKeyParams, uidBytes));
-            signer.BlockUpdate(msgBytes, 0, msgBytes.Length);
+            signer.BlockUpdate(messageBytes, 0, messageBytes.Length);
             byte[] signBytes = signer.GenerateSignature();
 
             // BouncyCastle 库的签名结果默认 ASN.1 编码，如不需要需要手动转换
@@ -213,11 +205,11 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Utilities
             return signBytes;
         }
 
-        private static bool VerifyWithSM3(ECPublicKeyParameters sm2PublicKeyParams, byte[] uidBytes, byte[] msgBytes, byte[] signBytes, bool asn1Encoding)
+        private static bool VerifyWithSM3(ECPublicKeyParameters sm2PublicKeyParams, byte[] uidBytes, byte[] messageBytes, byte[] signBytes, bool asn1Encoding)
         {
             ISigner signer = SignerUtilities.GetSigner("SM3withSM2");
             signer.Init(false, new ParametersWithID(sm2PublicKeyParams, uidBytes));
-            signer.BlockUpdate(msgBytes, 0, msgBytes.Length);
+            signer.BlockUpdate(messageBytes, 0, messageBytes.Length);
 
             // BouncyCastle 库的签名结果默认 ASN.1 编码，如不需要需要手动转换
             if (!asn1Encoding)
@@ -278,32 +270,32 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Utilities
         /// </summary>
         /// <param name="privateKeyBytes">PKCS#8 私钥字节数组。</param>
         /// <param name="uidBytes">用户标识符字节数组。</param>
-        /// <param name="msgBytes">数据字节数组。</param>
+        /// <param name="messageBytes">数据字节数组。</param>
         /// <param name="asn1Encoding">指示签名结果是否为 ASN.1 编码的形式。（默认值：true）</param>
         /// <returns>签名字节数组。</returns>
-        public static byte[] SignWithSM3(byte[] privateKeyBytes, byte[] uidBytes, byte[] msgBytes, bool asn1Encoding = true)
+        public static byte[] SignWithSM3(byte[] privateKeyBytes, byte[] uidBytes, byte[] messageBytes, bool asn1Encoding = true)
         {
-            if (privateKeyBytes == null) throw new ArgumentNullException(nameof(privateKeyBytes));
-            if (uidBytes == null) throw new ArgumentNullException(nameof(uidBytes));
-            if (msgBytes == null) throw new ArgumentNullException(nameof(msgBytes));
+            if (privateKeyBytes is null) throw new ArgumentNullException(nameof(privateKeyBytes));
+            if (uidBytes is null) throw new ArgumentNullException(nameof(uidBytes));
+            if (messageBytes is null) throw new ArgumentNullException(nameof(messageBytes));
 
-            ECPrivateKeyParameters sm2PrivateKeyParams = ParsePrivateKeyPemToPrivateKeyParameters(privateKeyBytes);
-            return SignWithSM3(sm2PrivateKeyParams, uidBytes, msgBytes, asn1Encoding);
+            ECPrivateKeyParameters sm2PrivateKeyParams = ParsePrivateKeyToParameters(privateKeyBytes);
+            return SignWithSM3(sm2PrivateKeyParams, uidBytes, messageBytes, asn1Encoding);
         }
 
         /// <summary>
         /// 使用私钥基于 SM3 算法生成签名。
         /// </summary>
         /// <param name="privateKeyBytes">PKCS#8 私钥字节数组。</param>
-        /// <param name="msgBytes">待签名的数据字节数组。</param>
+        /// <param name="messageBytes">待签名的数据字节数组。</param>
         /// <param name="asn1Encoding">指示签名结果是否为 ASN.1 编码的形式。（默认值：true）</param>
         /// <returns>签名字节数组。</returns>
-        public static byte[] SignWithSM3(byte[] privateKeyBytes, byte[] msgBytes, bool asn1Encoding = true)
+        public static byte[] SignWithSM3(byte[] privateKeyBytes, byte[] messageBytes, bool asn1Encoding = true)
         {
             return SignWithSM3(
                 privateKeyBytes: privateKeyBytes,
                 uidBytes: SM2_DEFAULT_UID,
-                msgBytes: msgBytes,
+                messageBytes: messageBytes,
                 asn1Encoding: asn1Encoding
             );
         }
@@ -311,93 +303,93 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Utilities
         /// <summary>
         /// 使用私钥基于 SM3 算法生成签名。
         /// </summary>
-        /// <param name="privateKey">PKCS#8 私钥（PEM 格式）。</param>
-        /// <param name="message">待签名的文本数据。</param>
+        /// <param name="privateKeyPem">PKCS#8 私钥（PEM 格式）。</param>
+        /// <param name="messageData">待签名的数据。</param>
         /// <param name="asn1Encoding">指示签名结果是否为 ASN.1 编码的形式。（默认值：true）</param>
-        /// <returns>经 Base64 编码的签名。</returns>
-        public static string SignWithSM3(string privateKey, string message, bool asn1Encoding = true)
+        /// <returns>经过 Base64 编码的签名。</returns>
+        public static EncodedString SignWithSM3(string privateKeyPem, string messageData, bool asn1Encoding = true)
         {
-            if (privateKey == null) throw new ArgumentNullException(nameof(privateKey));
-            if (message == null) throw new ArgumentNullException(nameof(message));
+            if (privateKeyPem is null) throw new ArgumentNullException(nameof(privateKeyPem));
+            if (messageData is null) throw new ArgumentNullException(nameof(messageData));
 
             byte[] signBytes = SignWithSM3(
-                privateKeyBytes: ConvertPrivateKeyPkcs8PemToByteArray(privateKey),
-                msgBytes: Encoding.UTF8.GetBytes(message),
+                privateKeyBytes: ConvertPrivateKeyPemToByteArray(privateKeyPem),
+                messageBytes: EncodedString.FromLiteralString(messageData),
                 asn1Encoding: asn1Encoding
             );
-            return Convert.ToBase64String(signBytes);
+            return EncodedString.ToBase64String(signBytes);
         }
 
         /// <summary>
-        /// 使用 EC 十六进制私钥基于 SM3 算法生成签名。
+        /// 使用 EC 私钥基于 SM3 算法生成签名。
         /// </summary>
-        /// <param name="ecPrivateKeyBytes">EC 私钥字节数据。</param>
+        /// <param name="ecPrivateKeyBytes">EC 私钥字节数组。</param>
         /// <param name="uidBytes">用户标识符字节数组。</param>
-        /// <param name="msgBytes">待签名的数据字节数组。</param>
+        /// <param name="messageBytes">待签名的数据字节数组。</param>
         /// <param name="asn1Encoding">指示签名结果是否为 ASN.1 编码的形式。（默认值：true）</param>
         /// <returns>签名字节数组。</returns>
-        public static byte[] SignWithSM3ByECPrivateKey(byte[] ecPrivateKeyBytes, byte[] uidBytes, byte[] msgBytes, bool asn1Encoding = true)
+        public static byte[] SignWithSM3ByECPrivateKey(byte[] ecPrivateKeyBytes, byte[] uidBytes, byte[] messageBytes, bool asn1Encoding = true)
         {
-            if (ecPrivateKeyBytes == null) throw new ArgumentNullException(nameof(ecPrivateKeyBytes));
-            if (uidBytes == null) throw new ArgumentNullException(nameof(uidBytes));
-            if (msgBytes == null) throw new ArgumentNullException(nameof(msgBytes));
+            if (ecPrivateKeyBytes is null) throw new ArgumentNullException(nameof(ecPrivateKeyBytes));
+            if (uidBytes is null) throw new ArgumentNullException(nameof(uidBytes));
+            if (messageBytes is null) throw new ArgumentNullException(nameof(messageBytes));
 
-            return SignWithSM3ByECPrivateKey(
-                ecPrivateKeyHex: Hex.ToHexString(ecPrivateKeyBytes),
-                uidBytes: uidBytes,
-                msgBytes: msgBytes,
-                asn1Encoding: asn1Encoding
-            );
+            ECPrivateKeyParameters sm2PrivateKeyParams = ParseECPrivateKeyToParameters(ecPrivateKeyBytes);
+            return SignWithSM3(sm2PrivateKeyParams, uidBytes, messageBytes, asn1Encoding);
         }
 
         /// <summary>
-        /// 使用 EC 十六进制私钥基于 SM3 算法生成签名。
+        /// 使用 EC 私钥基于 SM3 算法生成签名。
         /// </summary>
-        /// <param name="ecPrivateKeyBytes">EC 私钥字节数据。</param>
-        /// <param name="msgBytes">待签名的数据字节数组。</param>
+        /// <param name="ecPrivateKeyBytes">EC 私钥字节数组。</param>
+        /// <param name="messageBytes">待签名的数据字节数组。</param>
         /// <param name="asn1Encoding">指示签名结果是否为 ASN.1 编码的形式。（默认值：true）</param>
         /// <returns>签名字节数组。</returns>
-        public static byte[] SignWithSM3ByECPrivateKey(byte[] ecPrivateKeyBytes, byte[] msgBytes, bool asn1Encoding = true)
+        public static byte[] SignWithSM3ByECPrivateKey(byte[] ecPrivateKeyBytes, byte[] messageBytes, bool asn1Encoding = true)
         {
             return SignWithSM3ByECPrivateKey(
                 ecPrivateKeyBytes: ecPrivateKeyBytes,
                 uidBytes: SM2_DEFAULT_UID,
-                msgBytes: msgBytes,
+                messageBytes: messageBytes,
                 asn1Encoding: asn1Encoding
             );
         }
 
         /// <summary>
-        /// 使用 EC 十六进制私钥基于 SM3 算法生成签名。
+        /// 使用 EC 私钥基于 SM3 算法生成签名。
         /// </summary>
-        /// <param name="ecPrivateKeyHex">EC 私钥（十六进制格式）。</param>
+        /// <param name="encodingECPrivateKey">经过编码后的（通常为十六进制）EC 私钥。</param>
         /// <param name="uidBytes">用户标识符字节数组。</param>
-        /// <param name="msgBytes">待签名的数据字节数组。</param>
+        /// <param name="messageBytes">待签名的数据字节数组。</param>
         /// <param name="asn1Encoding">指示签名结果是否为 ASN.1 编码的形式。（默认值：true）</param>
         /// <returns>签名字节数组。</returns>
-        public static byte[] SignWithSM3ByECPrivateKey(string ecPrivateKeyHex, byte[] uidBytes, byte[] msgBytes, bool asn1Encoding = true)
+        public static byte[] SignWithSM3ByECPrivateKey(EncodedString encodingECPrivateKey, byte[] uidBytes, byte[] messageBytes, bool asn1Encoding = true)
         {
-            if (ecPrivateKeyHex == null) throw new ArgumentNullException(nameof(ecPrivateKeyHex));
-            if (uidBytes == null) throw new ArgumentNullException(nameof(uidBytes));
-            if (msgBytes == null) throw new ArgumentNullException(nameof(msgBytes));
+            if (encodingECPrivateKey.Value is null) throw new ArgumentNullException(nameof(encodingECPrivateKey));
+            if (uidBytes is null) throw new ArgumentNullException(nameof(uidBytes));
+            if (messageBytes is null) throw new ArgumentNullException(nameof(messageBytes));
 
-            ECPrivateKeyParameters ecPrivateKeyParams = ParseECPrivateKeyToPrivateKeyParameters(ecPrivateKeyHex);
-            return SignWithSM3(ecPrivateKeyParams, uidBytes, msgBytes, asn1Encoding);
+            return SignWithSM3ByECPrivateKey(
+                ecPrivateKeyBytes: EncodedString.FromString(encodingECPrivateKey, fallbackEncodingKind: EncodingKinds.Hex),
+                uidBytes: uidBytes,
+                messageBytes: messageBytes,
+                asn1Encoding: asn1Encoding
+            );
         }
 
         /// <summary>
-        /// 使用 EC 十六进制私钥基于 SM3 算法生成签名。
+        /// 使用 EC 私钥基于 SM3 算法生成签名。
         /// </summary>
-        /// <param name="ecPrivateKeyHex">EC 私钥（十六进制格式）。</param>
-        /// <param name="msgBytes">待签名的数据字节数组。</param>
+        /// <param name="encodingECPrivateKey">经过编码后的（通常为十六进制）EC 私钥。</param>
+        /// <param name="messageBytes">待签名的数据字节数组。</param>
         /// <param name="asn1Encoding">指示签名结果是否为 ASN.1 编码的形式。（默认值：true）</param>
         /// <returns>签名字节数组。</returns>
-        public static byte[] SignWithSM3ByECPrivateKey(string ecPrivateKeyHex, byte[] msgBytes, bool asn1Encoding = true)
+        public static byte[] SignWithSM3ByECPrivateKey(EncodedString encodingECPrivateKey, byte[] messageBytes, bool asn1Encoding = true)
         {
             return SignWithSM3ByECPrivateKey(
-                ecPrivateKeyHex: ecPrivateKeyHex,
+                encodingECPrivateKey: encodingECPrivateKey,
                 uidBytes: SM2_DEFAULT_UID,
-                msgBytes: msgBytes,
+                messageBytes: messageBytes,
                 asn1Encoding: asn1Encoding
             );
         }
@@ -405,37 +397,37 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Utilities
         /// <summary>
         /// 使用公钥基于 SM3 算法验证签名。
         /// </summary>
-        /// <param name="publicKeyBytes">PKCS#8 公钥字节数据。</param>
+        /// <param name="publicKeyBytes">PKCS#8 公钥字节数组。</param>
         /// <param name="uidBytes">用户标识符字节数组。</param>
-        /// <param name="msgBytes">待验证的数据字节数据。</param>
-        /// <param name="signBytes">待验证的签名字节数据。</param>
+        /// <param name="messageBytes">待验证的数据字节数组。</param>
+        /// <param name="signBytes">签名字节数组。</param>
         /// <param name="asn1Encoding">指示签名结果是否为 ASN.1 编码的形式。（默认值：true）</param>
         /// <returns>验证结果。</returns>
-        public static bool VerifyWithSM3(byte[] publicKeyBytes, byte[] uidBytes, byte[] msgBytes, byte[] signBytes, bool asn1Encoding = true)
+        public static bool VerifyWithSM3(byte[] publicKeyBytes, byte[] uidBytes, byte[] messageBytes, byte[] signBytes, bool asn1Encoding = true)
         {
-            if (publicKeyBytes == null) throw new ArgumentNullException(nameof(publicKeyBytes));
-            if (uidBytes == null) throw new ArgumentNullException(nameof(uidBytes));
-            if (msgBytes == null) throw new ArgumentNullException(nameof(msgBytes));
-            if (signBytes == null) throw new ArgumentNullException(nameof(signBytes));
+            if (publicKeyBytes is null) throw new ArgumentNullException(nameof(publicKeyBytes));
+            if (uidBytes is null) throw new ArgumentNullException(nameof(uidBytes));
+            if (messageBytes is null) throw new ArgumentNullException(nameof(messageBytes));
+            if (signBytes is null) throw new ArgumentNullException(nameof(signBytes));
 
-            ECPublicKeyParameters sm2PublicKeyParams = ParsePublicKeyPemToPublicKeyParameters(publicKeyBytes);
-            return VerifyWithSM3(sm2PublicKeyParams, uidBytes, msgBytes, signBytes, asn1Encoding);
+            ECPublicKeyParameters sm2PublicKeyParams = ParsePublicKeyToParameters(publicKeyBytes);
+            return VerifyWithSM3(sm2PublicKeyParams, uidBytes, messageBytes, signBytes, asn1Encoding);
         }
 
         /// <summary>
         /// 使用公钥基于 SM3 算法验证签名。
         /// </summary>
-        /// <param name="publicKeyBytes">PKCS#8 公钥字节数据。</param>
-        /// <param name="msgBytes">待验证的数据字节数据。</param>
-        /// <param name="signBytes">待验证的签名字节数据。</param>
+        /// <param name="publicKeyBytes">PKCS#8 公钥字节数组。</param>
+        /// <param name="messageBytes">待验证的数据字节数组。</param>
+        /// <param name="signBytes">签名字节数组。</param>
         /// <param name="asn1Encoding">指示签名结果是否为 ASN.1 编码的形式。（默认值：true）</param>
         /// <returns>验证结果。</returns>
-        public static bool VerifyWithSM3(byte[] publicKeyBytes, byte[] msgBytes, byte[] signBytes, bool asn1Encoding = true)
+        public static bool VerifyWithSM3(byte[] publicKeyBytes, byte[] messageBytes, byte[] signBytes, bool asn1Encoding = true)
         {
             return VerifyWithSM3(
                 publicKeyBytes: publicKeyBytes,
                 uidBytes: SM2_DEFAULT_UID,
-                msgBytes: msgBytes,
+                messageBytes: messageBytes,
                 signBytes: signBytes,
                 asn1Encoding: asn1Encoding
             );
@@ -444,21 +436,21 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Utilities
         /// <summary>
         /// 使用公钥基于 SM3 算法验证签名。
         /// </summary>
-        /// <param name="publicKey">PKCS#8 公钥（PEM 格式）。</param>
-        /// <param name="message">待验证的文本数据。</param>
-        /// <param name="signature">经 Base64 编码的待验证的签名。</param>
+        /// <param name="publicKeyPem">PKCS#8 公钥（PEM 格式）。</param>
+        /// <param name="messageData">待验证的数据。</param>
+        /// <param name="encodingSignature">经过编码后的（通常为 Base64）签名。</param>
         /// <param name="asn1Encoding">指示签名结果是否为 ASN.1 编码的形式。（默认值：true）</param>
         /// <returns>验证结果。</returns>
-        public static bool VerifyWithSM3(string publicKey, string message, string signature, bool asn1Encoding = true)
+        public static bool VerifyWithSM3(string publicKeyPem, string messageData, EncodedString encodingSignature, bool asn1Encoding = true)
         {
-            if (publicKey == null) throw new ArgumentNullException(nameof(publicKey));
-            if (message == null) throw new ArgumentNullException(nameof(message));
-            if (signature == null) throw new ArgumentNullException(nameof(signature));
+            if (publicKeyPem is null) throw new ArgumentNullException(nameof(publicKeyPem));
+            if (messageData is null) throw new ArgumentNullException(nameof(messageData));
+            if (encodingSignature.Value is null) throw new ArgumentNullException(nameof(encodingSignature));
 
             return VerifyWithSM3(
-                publicKeyBytes: ConvertPublicKeyPkcs8PemToByteArray(publicKey),
-                msgBytes: Encoding.UTF8.GetBytes(message),
-                signBytes: Convert.FromBase64String(signature),
+                publicKeyBytes: ConvertPublicKeyPemToByteArray(publicKeyPem),
+                messageBytes: EncodedString.FromLiteralString(messageData),
+                signBytes: EncodedString.FromString(encodingSignature, fallbackEncodingKind: EncodingKinds.Base64),
                 asn1Encoding: asn1Encoding
             );
         }
@@ -466,100 +458,100 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Utilities
         /// <summary>
         /// 使用证书基于 SM3 算法验证签名。
         /// </summary>
-        /// <param name="certificate">证书（PEM 格式）。</param>
-        /// <param name="message">待验证的文本数据。</param>
-        /// <param name="signature">经 Base64 编码的待验证的签名。</param>
+        /// <param name="certificatePem">证书内容（PEM 格式）。</param>
+        /// <param name="messageData">待验证的数据。</param>
+        /// <param name="encodingSignature">经过编码后的（通常为 Base64）签名。</param>
         /// <param name="asn1Encoding">指示签名结果是否为 ASN.1 编码的形式。（默认值：true）</param>
         /// <returns>验证结果。</returns>
-        public static bool VerifyWithSM3ByCertificate(string certificate, string message, string signature, bool asn1Encoding = true)
+        public static bool VerifyWithSM3ByCertificate(string certificatePem, string messageData, EncodedString encodingSignature, bool asn1Encoding = true)
         {
-            if (certificate == null) throw new ArgumentNullException(nameof(certificate));
+            if (certificatePem is null) throw new ArgumentNullException(nameof(certificatePem));
 
-            string publicKey = ExportPublicKeyFromCertificate(certificate);
+            string publicKeyPem = ExportPublicKeyFromCertificate(certificatePem);
             return VerifyWithSM3(
-                publicKey: publicKey,
-                message: message,
-                signature: signature,
+                publicKeyPem: publicKeyPem,
+                messageData: messageData,
+                encodingSignature: encodingSignature,
                 asn1Encoding: asn1Encoding
             );
         }
 
         /// <summary>
-        /// 使用 EC 十六进制公钥基于 SM3 算法生成签名。
+        /// 使用 EC 公钥基于 SM3 算法生成签名。
         /// </summary>
-        /// <param name="ecPublicKeyBytes">EC 公钥字节数据。</param>
+        /// <param name="ecPublicKeyBytes">EC 公钥字节数组。</param>
         /// <param name="uidBytes">用户标识符字节数组。</param>
-        /// <param name="msgBytes">待签名的数据字节数组。</param>
-        /// <param name="signBytes">待验证的签名字节数据。</param>
+        /// <param name="messageBytes">待验证的数据字节数组。</param>
+        /// <param name="signBytes">签名字节数组。</param>
         /// <param name="asn1Encoding">指示签名结果是否为 ASN.1 编码的形式。（默认值：true）</param>
         /// <returns>签名字节数组。</returns>
-        public static bool VerifyWithSM3ByECPublicKey(byte[] ecPublicKeyBytes, byte[] uidBytes, byte[] msgBytes, byte[] signBytes, bool asn1Encoding = true)
+        public static bool VerifyWithSM3ByECPublicKey(byte[] ecPublicKeyBytes, byte[] uidBytes, byte[] messageBytes, byte[] signBytes, bool asn1Encoding = true)
         {
-            if (ecPublicKeyBytes == null) throw new ArgumentNullException(nameof(ecPublicKeyBytes));
-            if (uidBytes == null) throw new ArgumentNullException(nameof(uidBytes));
-            if (msgBytes == null) throw new ArgumentNullException(nameof(msgBytes));
+            if (ecPublicKeyBytes is null) throw new ArgumentNullException(nameof(ecPublicKeyBytes));
+            if (uidBytes is null) throw new ArgumentNullException(nameof(uidBytes));
+            if (messageBytes is null) throw new ArgumentNullException(nameof(messageBytes));
 
-            return VerifyWithSM3ByECPublicKey(
-                ecPublicKeyHex: Hex.ToHexString(ecPublicKeyBytes),
-                uidBytes: uidBytes,
-                msgBytes: msgBytes,
-                signBytes: signBytes,
-                asn1Encoding: asn1Encoding
-            );
+            ECPublicKeyParameters sm2PublicKeyParams = ParseECPublicKeyToParameters(ecPublicKeyBytes);
+            return VerifyWithSM3(sm2PublicKeyParams, uidBytes, messageBytes, signBytes, asn1Encoding);
         }
 
         /// <summary>
-        /// 使用 EC 十六进制公钥基于 SM3 算法生成签名。
+        /// 使用 EC 公钥基于 SM3 算法生成签名。
         /// </summary>
-        /// <param name="ecPublicKeyBytes">EC 公钥字节数据。</param>
-        /// <param name="msgBytes">待签名的数据字节数组。</param>
-        /// <param name="signBytes">待验证的签名字节数据。</param>
+        /// <param name="ecPublicKeyBytes">EC 公钥字节数组。</param>
+        /// <param name="messageBytes">待验证的数据字节数组。</param>
+        /// <param name="signBytes">签名字节数组。</param>
         /// <param name="asn1Encoding">指示签名结果是否为 ASN.1 编码的形式。（默认值：true）</param>
         /// <returns>签名字节数组。</returns>
-        public static bool VerifyWithSM3ByECPublicKey(byte[] ecPublicKeyBytes, byte[] msgBytes, byte[] signBytes, bool asn1Encoding = true)
+        public static bool VerifyWithSM3ByECPublicKey(byte[] ecPublicKeyBytes, byte[] messageBytes, byte[] signBytes, bool asn1Encoding = true)
         {
             return VerifyWithSM3ByECPublicKey(
                 ecPublicKeyBytes: ecPublicKeyBytes,
                 uidBytes: SM2_DEFAULT_UID,
-                msgBytes: msgBytes,
+                messageBytes: messageBytes,
                 signBytes: signBytes,
                 asn1Encoding: asn1Encoding
             );
         }
 
         /// <summary>
-        /// 使用 EC 十六进制公钥基于 SM3 算法生成签名。
+        /// 使用 EC 公钥基于 SM3 算法生成签名。
         /// </summary>
-        /// <param name="ecPublicKeyHex">EC 公钥（十六进制格式）。</param>
+        /// <param name="encodingECPublicKey">经过编码后的（通常为十六进制）EC 公钥。</param>
         /// <param name="uidBytes">用户标识符字节数组。</param>
-        /// <param name="msgBytes">待签名的数据字节数组。</param>
-        /// <param name="signBytes">待验证的签名字节数据。</param>
+        /// <param name="messageBytes">待验证的数据字节数组。</param>
+        /// <param name="signBytes">签名字节数组。</param>
         /// <param name="asn1Encoding">指示签名结果是否为 ASN.1 编码的形式。（默认值：true）</param>
         /// <returns>签名字节数组。</returns>
-        public static bool VerifyWithSM3ByECPublicKey(string ecPublicKeyHex, byte[] uidBytes, byte[] msgBytes, byte[] signBytes, bool asn1Encoding = true)
+        public static bool VerifyWithSM3ByECPublicKey(EncodedString encodingECPublicKey, byte[] uidBytes, byte[] messageBytes, byte[] signBytes, bool asn1Encoding = true)
         {
-            if (ecPublicKeyHex == null) throw new ArgumentNullException(nameof(ecPublicKeyHex));
-            if (uidBytes == null) throw new ArgumentNullException(nameof(uidBytes));
-            if (msgBytes == null) throw new ArgumentNullException(nameof(msgBytes));
+            if (encodingECPublicKey.Value is null) throw new ArgumentNullException(nameof(encodingECPublicKey));
+            if (uidBytes is null) throw new ArgumentNullException(nameof(uidBytes));
+            if (messageBytes is null) throw new ArgumentNullException(nameof(messageBytes));
 
-            ECPublicKeyParameters ecPublicKeyParams = ParseECPublicKeyToPublicKeyParameters(ecPublicKeyHex);
-            return VerifyWithSM3(ecPublicKeyParams, uidBytes, msgBytes, signBytes, asn1Encoding);
+            return VerifyWithSM3ByECPublicKey(
+                ecPublicKeyBytes: EncodedString.FromString(encodingECPublicKey, fallbackEncodingKind: EncodingKinds.Hex),
+                uidBytes: uidBytes,
+                messageBytes: messageBytes,
+                signBytes: signBytes,
+                asn1Encoding: asn1Encoding
+            );
         }
 
         /// <summary>
-        /// 使用 EC 十六进制公钥基于 SM3 算法生成签名。
+        /// 使用 EC 公钥基于 SM3 算法生成签名。
         /// </summary>
-        /// <param name="ecPublicKeyHex">EC 公钥（十六进制格式）。</param>
-        /// <param name="msgBytes">待签名的数据字节数组。</param>
-        /// <param name="signBytes">待验证的签名字节数据。</param>
+        /// <param name="encodingECPublicKey">经过编码后的（通常为十六进制）EC 公钥。</param>
+        /// <param name="messageBytes">待验证的数据字节数组。</param>
+        /// <param name="signBytes">签名字节数组。</param>
         /// <param name="asn1Encoding">指示签名结果是否为 ASN.1 编码的形式。（默认值：true）</param>
         /// <returns>签名字节数组。</returns>
-        public static bool VerifyWithSM3ByECPublicKey(string ecPublicKeyHex, byte[] msgBytes, byte[] signBytes, bool asn1Encoding = true)
+        public static bool VerifyWithSM3ByECPublicKey(EncodedString encodingECPublicKey, byte[] messageBytes, byte[] signBytes, bool asn1Encoding = true)
         {
             return VerifyWithSM3ByECPublicKey(
-                ecPublicKeyHex: ecPublicKeyHex,
+                encodingECPublicKey: encodingECPublicKey,
                 uidBytes: SM2_DEFAULT_UID,
-                msgBytes: msgBytes,
+                messageBytes: messageBytes,
                 signBytes: signBytes,
                 asn1Encoding: asn1Encoding
             );
@@ -568,155 +560,155 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Utilities
         /// <summary>
         /// 使用私钥解密数据。
         /// </summary>
-        /// <param name="privateKeyBytes">PKCS#8 私钥字节数据。</param>
-        /// <param name="cipherBytes">待解密的数据字节数据。</param>
+        /// <param name="privateKeyBytes">PKCS#8 私钥字节数组。</param>
+        /// <param name="cipherBytes">待解密的数据字节数组。</param>
         /// <param name="asn1Encoding">指示加密结果是否为 ASN.1 编码的形式。（默认值：true）</param>
         /// <returns>解密后的数据字节数组。</returns>
         public static byte[] Decrypt(byte[] privateKeyBytes, byte[] cipherBytes, bool asn1Encoding = true)
         {
-            if (privateKeyBytes == null) throw new ArgumentNullException(nameof(privateKeyBytes));
-            if (cipherBytes == null) throw new ArgumentNullException(nameof(cipherBytes));
+            if (privateKeyBytes is null) throw new ArgumentNullException(nameof(privateKeyBytes));
+            if (cipherBytes is null) throw new ArgumentNullException(nameof(cipherBytes));
 
-            ECPrivateKeyParameters sm2PrivateKeyParams = ParsePrivateKeyPemToPrivateKeyParameters(privateKeyBytes);
+            ECPrivateKeyParameters sm2PrivateKeyParams = ParsePrivateKeyToParameters(privateKeyBytes);
             return Decrypt(sm2PrivateKeyParams, cipherBytes, asn1Encoding);
         }
 
         /// <summary>
         /// 使用私钥解密数据。
         /// </summary>
-        /// <param name="privateKey">PKCS#8 私钥（PEM 格式）。</param>
-        /// <param name="cipherText">经 Base64 编码的待解密数据。</param>
+        /// <param name="privateKeyPem">PKCS#8 私钥（PEM 格式）。</param>
+        /// <param name="encodingCipher">经过编码后的（通常为 Base64）待解密数据。</param>
         /// <param name="asn1Encoding">指示加密结果是否为 ASN.1 编码的形式。（默认值：true）</param>
-        /// <returns>解密后的文本数据。</returns>
-        public static string Decrypt(string privateKey, string cipherText, bool asn1Encoding = true)
+        /// <returns>解密后的数据。</returns>
+        public static EncodedString Decrypt(string privateKeyPem, EncodedString encodingCipher, bool asn1Encoding = true)
         {
-            if (privateKey == null) throw new ArgumentNullException(nameof(privateKey));
-            if (cipherText == null) throw new ArgumentNullException(nameof(cipherText));
+            if (privateKeyPem is null) throw new ArgumentNullException(nameof(privateKeyPem));
+            if (encodingCipher.Value is null) throw new ArgumentNullException(nameof(encodingCipher));
 
             byte[] plainBytes = Decrypt(
-                privateKeyBytes: ConvertPrivateKeyPkcs8PemToByteArray(privateKey),
-                cipherBytes: Convert.FromBase64String(cipherText),
+                privateKeyBytes: ConvertPrivateKeyPemToByteArray(privateKeyPem),
+                cipherBytes: EncodedString.FromString(encodingCipher, fallbackEncodingKind: EncodingKinds.Base64),
                 asn1Encoding: asn1Encoding
             );
-            return Encoding.UTF8.GetString(plainBytes);
+            return EncodedString.ToLiteralString(plainBytes);
         }
 
         /// <summary>
-        /// 使用 EC 十六进制私钥解密数据。
+        /// 使用 EC 私钥解密数据。
         /// </summary>
-        /// <param name="ecPrivateKeyBytes">EC 私钥字节数据。</param>
-        /// <param name="cipherBytes">待解密的数据字节数据。</param>
+        /// <param name="ecPrivateKeyBytes">EC 私钥字节数组。</param>
+        /// <param name="cipherBytes">待解密的数据字节数组。</param>
         /// <param name="asn1Encoding">指示加密结果是否为 ASN.1 编码的形式。（默认值：true）</param>
         /// <returns>解密后的数据字节数组。</returns>
         public static byte[] DecryptByECPrivateKey(byte[] ecPrivateKeyBytes, byte[] cipherBytes, bool asn1Encoding = true)
         {
-            if (ecPrivateKeyBytes == null) throw new ArgumentNullException(nameof(ecPrivateKeyBytes));
+            if (ecPrivateKeyBytes is null) throw new ArgumentNullException(nameof(ecPrivateKeyBytes));
+
+            ECPrivateKeyParameters ecPrivateKeyParams = ParseECPrivateKeyToParameters(ecPrivateKeyBytes);
+            return Decrypt(ecPrivateKeyParams, cipherBytes, asn1Encoding);
+        }
+
+        /// <summary>
+        /// 使用 EC 私钥解密数据。
+        /// </summary>
+        /// <param name="encodingECPrivateKey">经过编码后的（通常为十六进制）EC 私钥。</param>
+        /// <param name="cipherBytes">待解密的数据字节数组。</param>
+        /// <param name="asn1Encoding">指示加密结果是否为 ASN.1 编码的形式。（默认值：true）</param>
+        /// <returns>解密后的数据。</returns>
+        public static byte[] DecryptByECPrivateKey(EncodedString encodingECPrivateKey, byte[] cipherBytes, bool asn1Encoding = true)
+        {
+            if (encodingECPrivateKey.Value is null) throw new ArgumentNullException(nameof(encodingECPrivateKey));
 
             return DecryptByECPrivateKey(
-                ecPrivateKeyHex: Hex.ToHexString(ecPrivateKeyBytes),
+                ecPrivateKeyBytes: EncodedString.FromString(encodingECPrivateKey, fallbackEncodingKind: EncodingKinds.Hex),
                 cipherBytes: cipherBytes,
                 asn1Encoding: asn1Encoding
             );
         }
 
         /// <summary>
-        /// 使用 EC 十六进制私钥解密数据。
-        /// </summary>
-        /// <param name="ecPrivateKeyHex">EC 私钥（十六进制格式）。</param>
-        /// <param name="cipherBytes">待解密的数据字节数据。</param>
-        /// <param name="asn1Encoding">指示加密结果是否为 ASN.1 编码的形式。（默认值：true）</param>
-        /// <returns>解密后的文本数据。</returns>
-        public static byte[] DecryptByECPrivateKey(string ecPrivateKeyHex, byte[] cipherBytes, bool asn1Encoding = true)
-        {
-            if (ecPrivateKeyHex == null) throw new ArgumentNullException(nameof(ecPrivateKeyHex));
-            
-            ECPrivateKeyParameters ecPrivateKeyParams = ParseECPrivateKeyToPrivateKeyParameters(ecPrivateKeyHex);
-            return Decrypt(ecPrivateKeyParams, cipherBytes, asn1Encoding);
-        }
-
-        /// <summary>
         /// 使用公钥加密数据。
         /// </summary>
-        /// <param name="publicKeyBytes">PKCS#8 公钥字节数据。</param>
-        /// <param name="plainBytes">待加密的数据字节数据。</param>
+        /// <param name="publicKeyBytes">PKCS#8 公钥字节数组。</param>
+        /// <param name="plainBytes">待加密的数据字节数组。</param>
         /// <param name="asn1Encoding">指示加密结果是否为 ASN.1 编码的形式。（默认值：true）</param>
         /// <returns>加密后的数据字节数组。</returns>
         public static byte[] Encrypt(byte[] publicKeyBytes, byte[] plainBytes, bool asn1Encoding = true)
         {
-            if (publicKeyBytes == null) throw new ArgumentNullException(nameof(publicKeyBytes));
-            if (plainBytes == null) throw new ArgumentNullException(nameof(plainBytes));
+            if (publicKeyBytes is null) throw new ArgumentNullException(nameof(publicKeyBytes));
+            if (plainBytes is null) throw new ArgumentNullException(nameof(plainBytes));
 
-            ECPublicKeyParameters sm2PublicKeyParams = ParsePublicKeyPemToPublicKeyParameters(publicKeyBytes);
+            ECPublicKeyParameters sm2PublicKeyParams = ParsePublicKeyToParameters(publicKeyBytes);
             return Encrypt(sm2PublicKeyParams, plainBytes, asn1Encoding);
         }
 
         /// <summary>
         /// 使用公钥加密数据。
         /// </summary>
-        /// <param name="publicKey">PKCS#8 公钥（PEM 格式）。</param>
-        /// <param name="plainText">待加密的文本数据。</param>
+        /// <param name="publicKeyPem">PKCS#8 公钥（PEM 格式）。</param>
+        /// <param name="plainData">待加密的数据。</param>
         /// <param name="asn1Encoding">指示加密结果是否为 ASN.1 编码的形式。（默认值：true）</param>
-        /// <returns>经 Base64 编码的加密数据。</returns>
-        public static string Encrypt(string publicKey, string plainText, bool asn1Encoding = true)
+        /// <returns>经过 Base64 编码的加密数据。</returns>
+        public static EncodedString Encrypt(string publicKeyPem, string plainData, bool asn1Encoding = true)
         {
-            if (publicKey == null) throw new ArgumentNullException(nameof(publicKey));
-            if (plainText == null) throw new ArgumentNullException(nameof(plainText));
+            if (publicKeyPem is null) throw new ArgumentNullException(nameof(publicKeyPem));
+            if (plainData is null) throw new ArgumentNullException(nameof(plainData));
 
             byte[] cipherBytes = Encrypt(
-                publicKeyBytes: ConvertPublicKeyPkcs8PemToByteArray(publicKey),
-                plainBytes: Encoding.UTF8.GetBytes(plainText),
+                publicKeyBytes: ConvertPublicKeyPemToByteArray(publicKeyPem),
+                plainBytes: EncodedString.FromLiteralString(plainData),
                 asn1Encoding: asn1Encoding
             );
-            return Convert.ToBase64String(cipherBytes);
+            return EncodedString.ToBase64String(cipherBytes);
         }
 
         /// <summary>
         /// 使用证书加密数据。
         /// </summary>
-        /// <param name="certificate">证书（PEM 格式）。</param>
-        /// <param name="plainText">待加密的文本数据。</param>
+        /// <param name="certificatePem">证书内容（PEM 格式）。</param>
+        /// <param name="plainData">待加密的数据。</param>
         /// <param name="asn1Encoding">指示加密结果是否为 ASN.1 编码的形式。（默认值：true）</param>
-        /// <returns>经 Base64 编码的加密数据。</returns>
-        public static string EncryptByCertificate(string certificate, string plainText, bool asn1Encoding = true)
+        /// <returns>经过 Base64 编码的加密数据。</returns>
+        public static EncodedString EncryptByCertificate(string certificatePem, string plainData, bool asn1Encoding = true)
         {
-            if (certificate == null) throw new ArgumentNullException(nameof(certificate));
+            if (certificatePem is null) throw new ArgumentNullException(nameof(certificatePem));
 
             return Encrypt(
-                publicKey: ExportPublicKeyFromCertificate(certificate),
-                plainText: plainText,
+                publicKeyPem: ExportPublicKeyFromCertificate(certificatePem),
+                plainData: plainData,
                 asn1Encoding: asn1Encoding
             );
         }
 
         /// <summary>
-        /// 使用 EC 十六进制公钥加密数据。
+        /// 使用 EC 公钥加密数据。
         /// </summary>
-        /// <param name="ecPublicKeyBytes">EC 公钥字节数据。</param>
-        /// <param name="plainBytes">待加密的数据字节数据。</param>
+        /// <param name="ecPublicKeyBytes">EC 公钥字节数组。</param>
+        /// <param name="plainBytes">待加密的数据字节数组。</param>
         /// <param name="asn1Encoding">指示加密结果是否为 ASN.1 编码的形式。（默认值：true）</param>
         /// <returns>加密后的数据字节数组。</returns>
         public static byte[] EncryptByECPublicKey(byte[] ecPublicKeyBytes, byte[] plainBytes, bool asn1Encoding = true)
         {
-            return EncryptByECPublicKey(
-                ecPublicKeyHex: Hex.ToHexString(ecPublicKeyBytes),
-                plainBytes: plainBytes,
-                asn1Encoding: asn1Encoding
-            );
+            ECPublicKeyParameters ecPublicKeyParams = ParseECPublicKeyToParameters(ecPublicKeyBytes);
+            return Encrypt(ecPublicKeyParams, plainBytes, asn1Encoding);
         }
 
         /// <summary>
-        /// 使用 EC 十六进制公钥加密数据。
+        /// 使用 EC 公钥加密数据。
         /// </summary>
-        /// <param name="ecPublicKeyHex">EC 公钥（十六进制格式）。</param>
-        /// <param name="plainBytes">待加密的数据字节数据。</param>
+        /// <param name="encodingECPublicKey">EC 公钥（十六进制格式）。</param>
+        /// <param name="plainBytes">待加密的数据字节数组。</param>
         /// <param name="asn1Encoding">指示加密结果是否为 ASN.1 编码的形式。（默认值：true）</param>
         /// <returns>加密后的数据字节数组。</returns>
-        public static byte[] EncryptByECPublicKey(string ecPublicKeyHex, byte[] plainBytes, bool asn1Encoding = true)
+        public static byte[] EncryptByECPublicKey(EncodedString encodingECPublicKey, byte[] plainBytes, bool asn1Encoding = true)
         {
-            if (ecPublicKeyHex == null) throw new ArgumentNullException(nameof(ecPublicKeyHex));
+            if (encodingECPublicKey.Value is null) throw new ArgumentNullException(nameof(encodingECPublicKey));
 
-            ECPublicKeyParameters ecPublicKeyParams = ParseECPublicKeyToPublicKeyParameters(ecPublicKeyHex);
-            return Encrypt(ecPublicKeyParams, plainBytes, asn1Encoding);
+            return EncryptByECPublicKey(
+                ecPublicKeyBytes: EncodedString.FromString(encodingECPublicKey, fallbackEncodingKind: EncodingKinds.Hex),
+                plainBytes: plainBytes,
+                asn1Encoding: asn1Encoding
+            );
         }
 
         /// <summary>
@@ -726,15 +718,15 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Utilities
         ///     转为 -----BEGIN PUBLIC KEY----- ..... -----END PUBLIC KEY-----
         /// </para>
         /// </summary>
-        /// <param name="certificate">证书（PEM 格式）。</param>
+        /// <param name="certificatePem">证书内容（PEM 格式）。</param>
         /// <returns>PKCS#8 公钥（PEM 格式）。</returns>
-        public static string ExportPublicKeyFromCertificate(string certificate)
+        public static string ExportPublicKeyFromCertificate(string certificatePem)
         {
-            if (certificate == null) throw new ArgumentNullException(nameof(certificate));
+            if (certificatePem is null) throw new ArgumentNullException(nameof(certificatePem));
 
             using (TextWriter swriter = new StringWriter())
             {
-                X509Certificate x509cert = ConvertCertificatePemToX509(certificate);
+                X509Certificate x509cert = ParseCertificatePemToX509(certificatePem);
                 ECPublicKeyParameters exPublicKeyParams = (ECPublicKeyParameters)x509cert.GetPublicKey();
                 PemWriter pemWriter = new PemWriter(swriter);
                 pemWriter.WriteObject(exPublicKeyParams);
@@ -746,39 +738,39 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Utilities
         /// <summary>
         /// <para>从 CRT/CER 证书中导出证书序列号。</para>
         /// </summary>
-        /// <param name="certificate">证书（PEM 格式）。</param>
+        /// <param name="certificatePem">证书内容（PEM 格式）。</param>
         /// <returns>证书序列号。</returns>
-        public static string ExportSerialNumberFromCertificate(string certificate)
+        public static string ExportSerialNumberFromCertificate(string certificatePem)
         {
-            if (certificate == null) throw new ArgumentNullException(nameof(certificate));
+            if (certificatePem is null) throw new ArgumentNullException(nameof(certificatePem));
 
-            X509Certificate x509cert = ConvertCertificatePemToX509(certificate);
+            X509Certificate x509cert = ParseCertificatePemToX509(certificatePem);
             return x509cert.SerialNumber.ToString(16);
         }
 
         /// <summary>
-        /// <para>从 CRT/CER 证书中导出证书颁发时间。</para>
+        /// <para>从 CRT/CER 证书中导出证书有效期的开始时间。</para>
         /// </summary>
-        /// <param name="certificate">证书（PEM 格式）。</param>
-        /// <returns>证书颁发时间。</returns>
-        public static DateTimeOffset ExportEffectiveTimeFromCertificate(string certificate)
+        /// <param name="certificatePem">证书内容（PEM 格式）。</param>
+        /// <returns>证书有效期的开始时间。</returns>
+        public static DateTimeOffset ExportValidFromDateFromCertificate(string certificatePem)
         {
-            if (certificate == null) throw new ArgumentNullException(nameof(certificate));
+            if (certificatePem is null) throw new ArgumentNullException(nameof(certificatePem));
 
-            X509Certificate x509cert = ConvertCertificatePemToX509(certificate);
+            X509Certificate x509cert = ParseCertificatePemToX509(certificatePem);
             return new DateTimeOffset(x509cert.NotBefore);
         }
 
         /// <summary>
-        /// <para>从 CRT/CER 证书中导出证书过期时间。</para>
+        /// <para>从 CRT/CER 证书中导出证书有效期的结束时间。</para>
         /// </summary>
-        /// <param name="certificate">证书（PEM 格式）。</param>
-        /// <returns>证书过期时间。</returns>
-        public static DateTimeOffset ExportExpireTimeFromCertificate(string certificate)
+        /// <param name="certificatePem">证书内容（PEM 格式）。</param>
+        /// <returns>证书有效期的结束时间。</returns>
+        public static DateTimeOffset ExportValidToDateFromCertificate(string certificatePem)
         {
-            if (certificate == null) throw new ArgumentNullException(nameof(certificate));
+            if (certificatePem is null) throw new ArgumentNullException(nameof(certificatePem));
 
-            X509Certificate x509cert = ConvertCertificatePemToX509(certificate);
+            X509Certificate x509cert = ParseCertificatePemToX509(certificatePem);
             return new DateTimeOffset(x509cert.NotAfter);
         }
 
@@ -789,12 +781,12 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Utilities
         ///     转为 04+X|Y 结构的十六进制字符串。
         /// </para>
         /// </summary>
-        /// <param name="certificate">证书（PEM 格式）。</param>
+        /// <param name="certificatePem">证书内容（PEM 格式）。</param>
         /// <returns>EC 公钥（十六进制格式）。</returns>
-        public static string ExportECPublicKeyFromCertificate(string certificate)
+        public static string ExportECPublicKeyFromCertificate(string certificatePem)
         {
-            string publicKey = ExportPublicKeyFromCertificate(certificate);
-            return ExportECPublicKeyFromPublicKey(publicKey);
+            string publicKeyPem = ExportPublicKeyFromCertificate(certificatePem);
+            return ExportECPublicKeyFromPublicKey(publicKeyPem);
         }
 
         /// <summary>
@@ -804,12 +796,12 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Utilities
         ///     转为 04+X|Y 结构的 130(128+2) 位的十六进制字符串。
         /// </para>
         /// </summary>
-        /// <param name="publicKey">PKCS#8 公钥（PEM 格式）。</param>
+        /// <param name="publicKeyPem">PKCS#8 公钥（PEM 格式）。</param>
         /// <returns>EC 公钥（十六进制格式）。</returns>
-        public static string ExportECPublicKeyFromPublicKey(string publicKey)
+        public static string ExportECPublicKeyFromPublicKey(string publicKeyPem)
         {
-            byte[] publicKeyBytes = ConvertPublicKeyPkcs8PemToByteArray(publicKey);
-            ECPublicKeyParameters sm2PublicKeyParams = ParsePublicKeyPemToPublicKeyParameters(publicKeyBytes);
+            byte[] publicKeyBytes = ConvertPublicKeyPemToByteArray(publicKeyPem);
+            ECPublicKeyParameters sm2PublicKeyParams = ParsePublicKeyToParameters(publicKeyBytes);
             ECPoint ecPublicKeyPoint = sm2PublicKeyParams.Q;
             string ecPublicKeyX = ecPublicKeyPoint.XCoord.ToBigInteger().ToString(16);
             string ecPublicKeyY = ecPublicKeyPoint.YCoord.ToBigInteger().ToString(16);
@@ -823,11 +815,12 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV3.Utilities
         ///     转为 64 位的十六进制字符串。
         /// </para>
         /// </summary>
-        /// <param name="privateKey">PKCS#8 私钥（PEM 格式）。</param>
+        /// <param name="privateKeyPem">PKCS#8 私钥（PEM 格式）。</param>
         /// <returns>EC 私钥（十六进制格式）。</returns>
-        public static string ExportECPrivateKeyFromPrivateKey(string privateKey)
+        public static string ExportECPrivateKeyFromPrivateKey(string privateKeyPem)
         {
-            ECPrivateKeyParameters sm2PrivateKeyParams = ParsePrivateKeyPemToPrivateKeyParameters(privateKey);
+            byte[] privateKeyBytes = ConvertPrivateKeyPemToByteArray(privateKeyPem);
+            ECPrivateKeyParameters sm2PrivateKeyParams = ParsePrivateKeyToParameters(privateKeyBytes);
             return sm2PrivateKeyParams.D.ToString(16);
         }
     }

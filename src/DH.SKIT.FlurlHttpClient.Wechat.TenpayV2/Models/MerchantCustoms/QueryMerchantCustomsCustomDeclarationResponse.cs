@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 
 namespace SKIT.FlurlHttpClient.Wechat.TenpayV2.Models
 {
@@ -90,9 +91,9 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV2.Models
                 /// 获取或设置最后更新时间。
                 /// </summary>
                 [Newtonsoft.Json.JsonProperty("modify_time_$n")]
-                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.PureDigitalTextDateTimeOffsetConverter))]
+                [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.Common.DigitalDateTimeOffsetConverter))]
                 [System.Text.Json.Serialization.JsonPropertyName("modify_time_$n")]
-                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Converters.PureDigitalTextDateTimeOffsetConverter))]
+                [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Common.DigitalDateTimeOffsetConverter))]
                 public DateTimeOffset ModifyTime { get; set; }
 
                 /// <summary>
@@ -113,14 +114,18 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV2.Models
 
         internal static class Converters
         {
-            internal class ResponseClassNewtonsoftJsonConverter : Newtonsoft.Json.Converters.FlattenNArrayObjectConverterBase<QueryMerchantCustomsCustomDeclarationResponse>
+            internal class ResponseClassNewtonsoftJsonConverter : Newtonsoft.Json.Converters.Internal.FlattenNArrayObjectConverterBase<QueryMerchantCustomsCustomDeclarationResponse, Types.Record>
             {
+                protected override PropertyInfo FlattenProperty => QueryMerchantCustomsCustomDeclarationResponse._flattenProperty;
             }
 
-            internal class ResponseClassSystemTextJsonConverter : System.Text.Json.Converters.FlattenNArrayObjectConverterBase<QueryMerchantCustomsCustomDeclarationResponse>
+            internal class ResponseClassSystemTextJsonConverter : System.Text.Json.Serialization.Internal.FlattenNArrayObjectConverterBase<QueryMerchantCustomsCustomDeclarationResponse, Types.Record>
             {
+                protected override PropertyInfo FlattenProperty => QueryMerchantCustomsCustomDeclarationResponse._flattenProperty;
             }
         }
+
+        private readonly static PropertyInfo _flattenProperty = typeof(QueryMerchantCustomsCustomDeclarationResponse).GetProperty(nameof(RecordList), BindingFlags.Instance | BindingFlags.Public)!;
 
         /// <summary>
         /// <inheritdoc/>
@@ -154,8 +159,8 @@ namespace SKIT.FlurlHttpClient.Wechat.TenpayV2.Models
         /// <summary>
         /// 获取或设置记录列表。
         /// </summary>
-        [Newtonsoft.Json.JsonProperty(Newtonsoft.Json.Converters.FlattenNArrayObjectConverterBase.PROPERTY_NAME_NARRAY)]
-        [System.Text.Json.Serialization.JsonPropertyName(System.Text.Json.Converters.FlattenNArrayObjectConverterBase.PROPERTY_NAME_NARRAY)]
+        [Newtonsoft.Json.JsonProperty(Converters.ResponseClassNewtonsoftJsonConverter.FLATTEN_PROPERTY_JSON_NAME)]
+        [System.Text.Json.Serialization.JsonPropertyName(Converters.ResponseClassSystemTextJsonConverter.FLATTEN_PROPERTY_JSON_NAME)]
         public Types.Record[] RecordList { get; set; } = default!;
 
         /// <summary>

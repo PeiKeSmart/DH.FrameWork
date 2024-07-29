@@ -66,13 +66,13 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
     [BindColumn("TenantId", "用户所属租户Id", "")]
     public Int32 TenantId { get => _TenantId; set { if (OnPropertyChanging("TenantId", value)) { _TenantId = value; OnPropertyChanged("TenantId"); } } }
 
-    private Int16 _UType;
+    private UserKinds _UType;
     /// <summary>用户类型。类型自定义</summary>
     [DisplayName("用户类型")]
     [Description("用户类型。类型自定义")]
     [DataObjectField(false, false, false, 0)]
     [BindColumn("UType", "用户类型。类型自定义", "")]
-    public Int16 UType { get => _UType; set { if (OnPropertyChanging("UType", value)) { _UType = value; OnPropertyChanged("UType"); } } }
+    public UserKinds UType { get => _UType; set { if (OnPropertyChanging("UType", value)) { _UType = value; OnPropertyChanged("UType"); } } }
 
     private String _RoleExIds;
     /// <summary>会员前台权限</summary>
@@ -736,7 +736,7 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
                 case "IsSuper": _IsSuper = value.ToBoolean(); break;
                 case "SId": _SId = value.ToLong(); break;
                 case "TenantId": _TenantId = value.ToInt(); break;
-                case "UType": _UType = Convert.ToInt16(value); break;
+                case "UType": _UType = (UserKinds)value.ToInt(); break;
                 case "RoleExIds": _RoleExIds = Convert.ToString(value); break;
                 case "OtherPermissions": _OtherPermissions = Convert.ToString(value); break;
                 case "DepartmentIds": _DepartmentIds = Convert.ToString(value); break;
@@ -806,6 +806,21 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
     #endregion
 
     #region 关联映射
+    #endregion
+
+    #region 扩展查询
+    /// <summary>根据用户类型查找</summary>
+    /// <param name="uType">用户类型</param>
+    /// <returns>实体列表</returns>
+    public static IList<UserDetail> FindAllByUType(UserKinds uType)
+    {
+        if (uType < 0) return [];
+
+        // 实体缓存
+        if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => e.UType == uType);
+
+        return FindAll(_.UType == uType);
+    }
     #endregion
 
     #region 字段名

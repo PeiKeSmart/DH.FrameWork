@@ -60,7 +60,7 @@ public class NetServer : DisposeBase, IServer, IExtend, ILogFeature
     public AddressFamily AddressFamily { get; set; }
 
     /// <summary>服务器集合</summary>
-    public IList<ISocketServer> Servers { get; private set; } = new List<ISocketServer>();
+    public IList<ISocketServer> Servers { get; private set; } = [];
 
     /// <summary>服务器。返回服务器集合中的第一个服务器</summary>
     public ISocketServer? Server
@@ -110,11 +110,17 @@ public class NetServer : DisposeBase, IServer, IExtend, ILogFeature
     /// </remarks>
     public Boolean ReuseAddress { get; set; }
 
-    /// <summary>SSL协议。默认None，服务端Default，客户端不启用</summary>
+    /// <summary>SSL协议。默认None</summary>
     public SslProtocols SslProtocol { get; set; } = SslProtocols.None;
 
-    /// <summary>SSL证书。服务端使用</summary>
-    /// <remarks>var cert = new X509Certificate2("file", "pass");</remarks>
+    /// <summary>X509证书。用于SSL连接时验证证书指纹，可以直接加载pem证书文件，未指定时不验证证书</summary>
+    /// <remarks>
+    /// 可以使用pfx证书文件，也可以使用pem证书文件。
+    /// 服务端必须指定证书。
+    /// </remarks>
+    /// <example>
+    /// var cert = new X509Certificate2("file", "pass");
+    /// </example>
     public X509Certificate? Certificate { get; set; }
 
     /// <summary>APM性能追踪器</summary>
@@ -344,6 +350,15 @@ public class NetServer : DisposeBase, IServer, IExtend, ILogFeature
             WriteLog("开始监听 {0}", item);
         }
 
+        if (Pipeline is Pipeline pipe && pipe.Handlers.Count > 0)
+        {
+            WriteLog("初始化管道：");
+            foreach (var handler in pipe.Handlers)
+            {
+                WriteLog("    {0}", handler);
+            }
+        }
+
         if (StatPeriod > 0) _Timer = new TimerX(ShowStat, null, 10_000, StatPeriod * 1000);
     }
 
@@ -516,6 +531,11 @@ public class NetServer : DisposeBase, IServer, IExtend, ILogFeature
 
         return Sessions.TryGetValue(sessionid, out var ns) ? ns : null;
     }
+
+    /// <summary>为会话创建网络数据处理器。可作为业务处理实现，也可以作为前置协议解析</summary>
+    /// <param name="session"></param>
+    /// <returns></returns>
+    public virtual INetHandler? CreateHandler(INetSession session) => null;
     #endregion
 
     #region 群发
@@ -639,7 +659,8 @@ public class NetServer : DisposeBase, IServer, IExtend, ILogFeature
                 // 兼容Linux
                 //if (Socket.OSSupportsIPv4)
                 list.AddRange(CreateServer<TServer>(address, port, AddressFamily.InterNetwork));
-                if (Socket.OSSupportsIPv6) list.AddRange(CreateServer<TServer>(address, port, AddressFamily.InterNetworkV6));
+                if (Socket.OSSupportsIPv6 && !Runtime.Mono)
+                    list.AddRange(CreateServer<TServer>(address, port, AddressFamily.InterNetworkV6));
                 break;
         }
 

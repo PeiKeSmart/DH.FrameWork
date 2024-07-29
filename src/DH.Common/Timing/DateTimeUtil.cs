@@ -7,6 +7,10 @@ namespace DH.Timing;
 /// </summary>
 public static class DateTimeUtil
 {
+    public static readonly DateTime MinValue = new(1900, 1, 1);
+
+    public static readonly DateTime MaxValue = DateTime.MaxValue;
+
     #region GetDays(获取总天数)
 
     /// <summary>

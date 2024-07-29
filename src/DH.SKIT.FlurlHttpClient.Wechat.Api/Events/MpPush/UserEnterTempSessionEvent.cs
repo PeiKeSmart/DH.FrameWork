@@ -2,9 +2,12 @@ namespace SKIT.FlurlHttpClient.Wechat.Api.Events
 {
     /// <summary>
     /// <para>表示 EVENT.user_enter_tempsession 事件的数据。</para>
-    /// <para>REF: https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/customer-message/receive.html </para>
+    /// <para>
+    /// REF: <br/>
+    /// <![CDATA[ https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/customer-message/receive.html ]]>
+    /// </para>
     /// </summary>
-    public class UserEnterTempSessionEvent : WechatApiEvent, WechatApiEvent.Serialization.IJsonSerializable, WechatApiEvent.Serialization.IXmlSerializable
+    public class UserEnterTempSessionEvent : WechatApiEvent
     {
         /// <summary>
         /// 获取或设置会话来源。

@@ -1,10 +1,17 @@
-﻿namespace SKIT.FlurlHttpClient.Wechat.Api.Models
+namespace SKIT.FlurlHttpClient.Wechat.Api.Models
 {
     /// <summary>
     /// <para>表示 [POST] /wxa/media_check_async 接口的请求。</para>
     /// </summary>
     public class WxaMediaCheckRequest : WechatApiRequest, IInferable<WxaMediaCheckRequest, WxaMediaCheckResponse>
     {
+        /// <summary>
+        /// 获取或设置用户 OpenId。
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("openid")]
+        [System.Text.Json.Serialization.JsonPropertyName("openid")]
+        public string? OpenId { get; set; }
+
         /// <summary>
         /// 获取或设置多媒体 URL。
         /// </summary>
@@ -32,12 +39,5 @@
         [Newtonsoft.Json.JsonProperty("scene")]
         [System.Text.Json.Serialization.JsonPropertyName("scene")]
         public int? Scene { get; set; }
-
-        /// <summary>
-        /// 获取或设置用户 OpenId。
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("openid")]
-        [System.Text.Json.Serialization.JsonPropertyName("openid")]
-        public string? OpenId { get; set; }
     }
 }

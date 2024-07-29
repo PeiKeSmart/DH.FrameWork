@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics;
+using NewLife;
 using NewLife.Log;
 using NewLife.Security;
 
@@ -18,7 +19,7 @@ public class DataSimulation
 {
     #region 属性
     /// <summary>实体工厂</summary>
-    public IEntityFactory Factory { get; set; }
+    public IEntityFactory Factory { get; set; } = null!;
 
     /// <summary>事务提交的批大小</summary>
     public Int32 BatchSize { get; set; } = 1000;
@@ -102,7 +103,7 @@ public class DataSimulation
                 lock (list)
                 {
                     list.Add(e);
-                    if (UseSql) qs.Add(sql);
+                    if (UseSql && !sql.IsNullOrEmpty()) qs.Add(sql);
                 }
             }
         });

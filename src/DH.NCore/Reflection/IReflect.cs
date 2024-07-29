@@ -424,10 +424,40 @@ public class DefaultReflect : IReflect
     {
         try
         {
+            var code = type.GetTypeCode();
+
+            // 列表
+            if (code == TypeCode.Object && (type.As<IList>() || type.As(typeof(IList<>))))
+            {
+                var type2 = type;
+                if (type2.IsInterface)
+                {
+                    if (type2.IsGenericType)
+                        type2 = typeof(List<>).MakeGenericType(type2.GetGenericArguments());
+                    else if (type2 == typeof(IList))
+                        type2 = typeof(List<Object>);
+                }
+                return Activator.CreateInstance(type2);
+            }
+
+            // 字典
+            if (code == TypeCode.Object && (type.As<IDictionary>() || type.As(typeof(IDictionary<,>))))
+            {
+                var type2 = type;
+                if (type2.IsInterface)
+                {
+                    if (type2.IsGenericType)
+                        type2 = typeof(Dictionary<,>).MakeGenericType(type2.GetGenericArguments());
+                    else if (type2 == typeof(IDictionary))
+                        type2 = typeof(Dictionary<Object, Object>);
+                }
+                return Activator.CreateInstance(type2);
+            }
+
             if (parameters == null || parameters.Length == 0)
             {
                 // 基元类型
-                return type.GetTypeCode() switch
+                return code switch
                 {
                     //TypeCode.Empty or TypeCode.DBNull => null,
                     TypeCode.Boolean => false,
@@ -453,7 +483,6 @@ public class DefaultReflect : IReflect
         }
         catch (Exception ex)
         {
-            //throw new Exception("创建对象失败 type={0} parameters={1}".F(type.FullName, parameters.Join()), ex);
             throw new Exception($"Fail to create object type={type.FullName} parameters={parameters?.Join()} {ex.GetTrue()?.Message}", ex);
         }
     }
@@ -514,6 +543,7 @@ public class DefaultReflect : IReflect
     #endregion
 
     #region 对象拷贝
+    private static Dictionary<Type, IDictionary<String, PropertyInfo>> _properties = [];
     /// <summary>从源对象拷贝数据到目标对象</summary>
     /// <param name="target">目标对象</param>
     /// <param name="source">源对象</param>
@@ -525,40 +555,35 @@ public class DefaultReflect : IReflect
 
         var targetType = target.GetType();
         // 基础类型无法拷贝
-        if (targetType.GetTypeCode() != TypeCode.Object) throw new XException("The underlying type {0} cannot be copied", targetType.FullName);
+        if (targetType.IsBaseType()) throw new XException("The base type {0} cannot be copied", targetType.FullName);
+
+        var sourceType = source.GetType();
+        if (!_properties.TryGetValue(sourceType, out var sourceProperties))
+            _properties[sourceType] = sourceProperties = sourceType.GetProperties(true).ToDictionary(e => e.Name, e => e);
 
         // 不是深度拷贝时，直接复制引用
         if (!deep)
         {
-            var sourceType = source.GetType();
-
             // 借助 IModel 优化取值赋值，有 IExtend 扩展属性的实体类过于复杂而不支持，例如IEntity就有脏数据问题
             if (target is IModel dst && target is not IExtend)
             {
-                var pis = sourceType.GetProperties(true);
                 foreach (var pi in targetType.GetProperties(true))
                 {
                     if (!pi.CanWrite) continue;
                     if (excludes != null && excludes.Contains(pi.Name)) continue;
 
-                    var pi2 = pis.FirstOrDefault(e => e.Name == pi.Name);
-                    if (pi2 != null && pi2.CanRead)
+                    if (sourceProperties.TryGetValue(pi.Name, out var pi2) && pi2.CanRead)
                         dst[pi.Name] = source is IModel src ? src[pi2.Name] : GetValue(source, pi2);
                 }
             }
             else
             {
-                var pis = sourceType.GetProperties(true);
                 foreach (var pi in targetType.GetProperties(true))
                 {
                     if (!pi.CanWrite) continue;
                     if (excludes != null && excludes.Contains(pi.Name)) continue;
-                    //if (pi.GetIndexParameters().Length > 0) continue;
-                    //if (pi.GetCustomAttribute<IgnoreDataMemberAttribute>(false) != null) continue;
-                    //if (pi.GetCustomAttribute<XmlIgnoreAttribute>() != null) continue;
 
-                    var pi2 = pis.FirstOrDefault(e => e.Name == pi.Name);
-                    if (pi2 != null && pi2.CanRead)
+                    if (sourceProperties.TryGetValue(pi.Name, out var pi2) && pi2.CanRead)
                         SetValue(target, pi, source is IModel src ? src[pi2.Name] : GetValue(source, pi2));
                 }
             }
@@ -567,12 +592,10 @@ public class DefaultReflect : IReflect
 
         // 来源对象转为字典
         var dic = new Dictionary<String, Object?>();
-        foreach (var pi in source.GetType().GetProperties(true))
+        foreach (var pi in sourceProperties.Values)
         {
             if (!pi.CanRead) continue;
             if (excludes != null && excludes.Contains(pi.Name)) continue;
-            //if (pi.GetIndexParameters().Length > 0) continue;
-            //if (pi.GetCustomAttribute<XmlIgnoreAttribute>() != null) continue;
 
             dic[pi.Name] = GetValue(source, pi);
         }
@@ -591,13 +614,13 @@ public class DefaultReflect : IReflect
         foreach (var pi in target.GetType().GetProperties(true))
         {
             if (!pi.CanWrite) continue;
-            //if (pi.GetIndexParameters().Length > 0) continue;
-            //if (pi.GetCustomAttribute<XmlIgnoreAttribute>() != null) continue;
 
             if (source.TryGetValue(pi.Name, out var obj))
             {
                 // 基础类型直接拷贝，不考虑深拷贝
-                if (deep && pi.PropertyType.GetTypeCode() == TypeCode.Object)
+                if (!deep || pi.PropertyType.IsBaseType())
+                    SetValue(target, pi, obj);
+                else
                 {
                     var v = GetValue(target, pi);
 
@@ -609,8 +632,6 @@ public class DefaultReflect : IReflect
                     }
                     if (v != null && obj != null) Copy(v, obj, deep);
                 }
-                else
-                    SetValue(target, pi, obj);
             }
         }
     }
@@ -629,7 +650,8 @@ public class DefaultReflect : IReflect
             // 如果实现了IEnumerable<>接口，那么取泛型参数
             foreach (var item in type.GetInterfaces())
             {
-                if (item.IsGenericType && item.GetGenericTypeDefinition() == typeof(IEnumerable<>)) return item.GetGenericArguments()[0];
+                if (item.IsGenericType && item.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+                    return item.GetGenericArguments()[0];
             }
             //// 通过索引器猜测元素类型
             //var pi = type.GetProperty("Item", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
@@ -645,6 +667,7 @@ public class DefaultReflect : IReflect
     /// <returns></returns>
     public virtual Object? ChangeType(Object? value, Type conversionType)
     {
+        // 值类型就是目标类型
         Type? vtype = null;
         if (value != null) vtype = value.GetType();
         if (vtype == conversionType) return value;
@@ -661,6 +684,7 @@ public class DefaultReflect : IReflect
             conversionType = utype;
         }
 
+        var code = Type.GetTypeCode(conversionType);
         //conversionType = Nullable.GetUnderlyingType(conversionType) ?? conversionType;
         if (conversionType.IsEnum)
         {
@@ -674,7 +698,7 @@ public class DefaultReflect : IReflect
         if (vtype == typeof(String))
         {
             var str = (String)(value ?? String.Empty);
-            if (Type.GetTypeCode(conversionType) == TypeCode.Decimal)
+            if (code == TypeCode.Decimal)
             {
                 value = str.TrimStart(['$', '￥']);
             }
@@ -684,14 +708,14 @@ public class DefaultReflect : IReflect
             }
 
             // 字符串转为简单整型，如果长度比较小，满足32位整型要求，则先转为32位再改变类型
-            var code = Type.GetTypeCode(conversionType);
-            if (code >= TypeCode.Int16 && code <= TypeCode.UInt64 && str.Length <= 10) return Convert.ChangeType(value.ToLong(), conversionType);
+            if (code >= TypeCode.Int16 && code <= TypeCode.UInt64 && str.Length <= 10)
+                return Convert.ChangeType(value.ToLong(), conversionType);
         }
 
         if (value != null)
         {
             // 尝试基础类型转换
-            switch (Type.GetTypeCode(conversionType))
+            switch (code)
             {
                 case TypeCode.Boolean:
                     return value.ToBoolean();
@@ -713,6 +737,31 @@ public class DefaultReflect : IReflect
 
             // 支持DateTimeOffset转换
             if (conversionType == typeof(DateTimeOffset)) return value.ToDateTimeOffset();
+
+            if (value is String str)
+            {
+                // 特殊处理几种类型，避免后续反射影响性能
+                if (conversionType == typeof(Guid)) return Guid.Parse(str);
+                if (conversionType == typeof(TimeSpan)) return TimeSpan.Parse(str);
+#if NET5_0_OR_GREATER
+                if (conversionType == typeof(IntPtr)) return IntPtr.Parse(str);
+                if (conversionType == typeof(UIntPtr)) return UIntPtr.Parse(str);
+                if (conversionType == typeof(Half)) return Half.Parse(str);
+#endif
+#if NET6_0_OR_GREATER
+                if (conversionType == typeof(DateOnly)) return DateOnly.Parse(str);
+                if (conversionType == typeof(TimeOnly)) return TimeOnly.Parse(str);
+#endif
+
+#if NET7_0_OR_GREATER
+                // 支持IParsable<TSelf>接口
+                if (conversionType.GetInterfaces().Any(e => e.IsGenericType && e.GetGenericTypeDefinition() == typeof(IParsable<>)))
+                {
+                    var mi = conversionType.GetMethod("Parse", [typeof(String), typeof(IFormatProvider)]);
+                    if (mi != null) return mi.Invoke(null, [value, null]);
+                }
+#endif
+            }
 
             if (value is IConvertible) value = Convert.ChangeType(value, conversionType);
         }

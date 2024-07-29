@@ -9,7 +9,7 @@ using System.Collections.Specialized;
 using System.Reflection;
 using System.Text;
 
-namespace DH.Data;
+namespace DH;
 
 internal class MemoryDB
 {
@@ -529,7 +529,7 @@ internal class MemoryDB
 
     private static String GetCacheFileName(String name)
     {
-        return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"App_Data/Data/{name}{fileExt}");
+        return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"Data/{name}{fileExt}");
     }
 
     private static readonly String fileExt = ".json";
