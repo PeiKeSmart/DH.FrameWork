@@ -186,21 +186,26 @@ public partial class Entity<TEntity>
         /// <summary>分表分库策略</summary>
         public static IShardPolicy? ShardPolicy { get; set; }
 
+        [ThreadStatic]
+        private static Boolean _InShard;
+        /// <summary>是否正处于分表操作中</summary>
+        public static Boolean InShard => _InShard;
+
         /// <summary>创建分库会话，using结束时自动还原</summary>
         /// <param name="connName">连接名</param>
         /// <param name="tableName">表名</param>
         /// <returns></returns>
         public static IDisposable CreateSplit(String connName, String tableName) => new SplitPackge(connName, tableName);
 
-        /// <summary>针对实体对象自动分库分表</summary>
-        /// <param name="entity"></param>
-        /// <returns></returns>
-        public static IDisposable? CreateShard(TEntity entity)
-        {
-            // 使用自动分表分库策略
-            var model = ShardPolicy?.Shard(entity);
-            return model != null ? new SplitPackge(model.ConnName, model.TableName) : null;
-        }
+        ///// <summary>针对实体对象自动分库分表</summary>
+        ///// <param name="entity"></param>
+        ///// <returns></returns>
+        //public static IDisposable? CreateShard(TEntity entity)
+        //{
+        //    // 使用自动分表分库策略
+        //    var model = ShardPolicy?.Shard(entity);
+        //    return model != null ? new SplitPackge(model.ConnName, model.TableName) : null;
+        //}
 
         /// <summary>为实体对象、时间、雪花Id等计算分表分库</summary>
         /// <param name="value"></param>
@@ -252,6 +257,7 @@ public partial class Entity<TEntity>
 
                 Meta.ConnName = connName;
                 Meta.TableName = tableName;
+                _InShard = true;
             }
 
             public void Dispose()
@@ -259,8 +265,9 @@ public partial class Entity<TEntity>
 #if DEBUG
                 XTrace.WriteLine("RestoreSplit: {0}, {1}", ConnName, TableName);
 #endif
-                Meta.ConnName = ConnName;
-                Meta.TableName = TableName;
+                Meta.ConnName = ConnName!;
+                Meta.TableName = TableName!;
+                _InShard = false;
             }
         }
 

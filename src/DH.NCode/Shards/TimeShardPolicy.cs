@@ -1,11 +1,13 @@
 ﻿using NewLife;
-
+using NewLife.Data;
 using XCode.Configuration;
+using XCode.Statistics;
 
 namespace XCode.Shards;
 
 /// <summary>时间分表策略</summary>
-public class TimeShardPolicy : IShardPolicy {
+public class TimeShardPolicy : IShardPolicy
+{
     #region 属性
     /// <summary>实体工厂</summary>
     public IEntityFactory? Factory { get; set; }
@@ -21,6 +23,9 @@ public class TimeShardPolicy : IShardPolicy {
 
     /// <summary>时间区间步进。遇到时间区间需要扫描多张表时的时间步进，默认1天</summary>
     public TimeSpan Step { get; set; } = TimeSpan.FromDays(1);
+
+    /// <summary>日期级别。年月日</summary>
+    public StatLevels Level { get; set; }
 
     private readonly String? _fieldName;
     #endregion
@@ -45,6 +50,9 @@ public class TimeShardPolicy : IShardPolicy {
     {
         _fieldName = fieldName;
         Factory = factory;
+
+        // 异步加载字段
+        Task.Run(GetField);
     }
 
     private FieldItem? GetField() => Field ??= _fieldName == null ? null : Factory?.Table.FindByName(_fieldName);
@@ -55,7 +63,7 @@ public class TimeShardPolicy : IShardPolicy {
     /// <returns></returns>
     public virtual ShardModel? Shard(Object value)
     {
-        if (value is IEntity entity) return Shard(entity);
+        if (value is IModel entity) return Shard(entity);
         if (value is DateTime dt) return Shard(dt);
         if (value is Int64 id)
         {
@@ -73,7 +81,7 @@ public class TimeShardPolicy : IShardPolicy {
     /// <summary>为实体对象计算分表分库</summary>
     /// <param name="entity"></param>
     /// <returns></returns>
-    public virtual ShardModel? Shard(IEntity entity)
+    public virtual ShardModel? Shard(IModel entity)
     {
         var fi = GetField();
         if (fi == null) throw new XCodeException("分表策略要求指定时间字段！");
@@ -227,14 +235,29 @@ public class TimeShardPolicy : IShardPolicy {
     {
         var models = new List<ShardModel>();
 
+        // 猜测时间步进级别
+        var st = Step;
+        var level = Level;
+        if (level <= 0)
+        {
+            if (st.TotalDays >= 360)
+                level = StatLevels.Year;
+            else if (st.TotalDays >= 28 && st.TotalDays <= 31)
+                level = StatLevels.Month;
+            else if (st.TotalDays == 1)
+                level = StatLevels.Day;
+            else if (st.TotalHours == 1)
+                level = StatLevels.Hour;
+        }
+
         // 根据不仅，把start调整到整点
-        if (Step.TotalDays >= 1)
+        if (st.TotalDays >= 1)
             start = start.Date;
         else if (start.Hour >= 1)
             start = start.Date.AddHours(start.Hour);
 
         var hash = new HashSet<String>();
-        for (var dt = start; dt < end; dt = dt.Add(Step))
+        for (var dt = start; dt < end;)
         {
             var model = Shard(dt);
             if (model != null)
@@ -246,6 +269,18 @@ public class TimeShardPolicy : IShardPolicy {
                     hash.Add(key);
                 }
             }
+
+            // 根据时间步进级别调整时间，解决每月每年时间不固定的问题
+            if (level == StatLevels.Year)
+                dt = dt.AddYears(1);
+            else if (level == StatLevels.Month)
+                dt = dt.AddMonths(1);
+            else if (level == StatLevels.Day)
+                dt = dt.AddDays(1);
+            else if (level == StatLevels.Hour)
+                dt = dt.AddHours(1);
+            else
+                dt = dt.Add(st);
         }
 
         //// 标准时间区间 start <= @fi < end ，但是要考虑到end有一部分落入新的分片，减一秒判断
