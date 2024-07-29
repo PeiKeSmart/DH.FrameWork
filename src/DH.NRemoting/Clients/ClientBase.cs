@@ -66,8 +66,11 @@ public abstract class ClientBase : DisposeBase, IApiClient, ICommandClient, IEve
 
     String? IApiClient.Token { get => _client?.Token; set { if (_client != null) _client.Token = value; } }
 
+    /// <summary>登录状态</summary>
+    public LoginStatus Status { get; set; }
+
     /// <summary>是否已登录</summary>
-    public Boolean Logined { get; set; }
+    public Boolean Logined => Status == LoginStatus.LoggedIn;
 
     /// <summary>登录完成后触发</summary>
     public event EventHandler<LoginEventArgs>? OnLogined;
@@ -146,7 +149,7 @@ public abstract class ClientBase : DisposeBase, IApiClient, ICommandClient, IEve
 
         StopTimer();
 
-        Logined = false;
+        Status = LoginStatus.LoggedOut;
 
         _timerLogin.TryDispose();
         _timerLogin = null;
@@ -326,7 +329,7 @@ public abstract class ClientBase : DisposeBase, IApiClient, ICommandClient, IEve
     {
         // 验证登录。如果该接口需要登录，且未登录，则先登录
         var needLogin = !Actions[Features.Login].EqualIgnoreCase(action);
-        if (!Logined && needLogin && Features.HasFlag(Features.Login)) await Login(cancellationToken);
+        if (needLogin && !Logined && Features.HasFlag(Features.Login)) await Login(cancellationToken);
 
         try
         {
@@ -338,14 +341,18 @@ public abstract class ClientBase : DisposeBase, IApiClient, ICommandClient, IEve
             if (ex2 is ApiException aex)
             {
                 // 在客户端已登录状态下，服务端返回未授权，可能是令牌过期，尝试重新登录
-                if (Logined && aex.Code == ApiCode.Unauthorized && needLogin && Features.HasFlag(Features.Login))
+                if (Logined && aex.Code == ApiCode.Unauthorized)
                 {
-                    Log?.Debug("{0}", ex);
-                    WriteLog("重新登录！");
-                    await Login(cancellationToken);
+                    Status = LoginStatus.Ready;
+                    if (needLogin && Features.HasFlag(Features.Login))
+                    {
+                        Log?.Debug("{0}", ex);
+                        WriteLog("重新登录，因调用[{0}]失败：{1}", action, ex.Message);
+                        await Login(cancellationToken);
 
-                    // 再次执行当前请求
-                    return await OnInvokeAsync<TResult>(action, args, cancellationToken);
+                        // 再次执行当前请求
+                        return await OnInvokeAsync<TResult>(action, args, cancellationToken);
+                    }
                 }
 
                 throw new ApiException(aex.Code, $"[{action}]{aex.Message}");
@@ -394,7 +401,7 @@ public abstract class ClientBase : DisposeBase, IApiClient, ICommandClient, IEve
         var timer = _timerLogin;
         try
         {
-            await Login();
+            if (!Logined) await Login();
         }
         catch (Exception ex)
         {
@@ -419,6 +426,21 @@ public abstract class ClientBase : DisposeBase, IApiClient, ICommandClient, IEve
     /// <returns></returns>
     public virtual async Task<ILoginResponse?> Login(CancellationToken cancellationToken = default)
     {
+        if (Status >= LoginStatus.LoggedOut) return null;
+
+        // 如果已登录，直接返回。如果正在登录，则稍等一会，避免重复登录。
+        if (Status == LoginStatus.LoggedIn) return null;
+        if (Status == LoginStatus.LoggingIn)
+        {
+            for (var i = 0; i < 10; i++)
+            {
+                await TaskEx.Delay(100);
+                if (Status == LoginStatus.LoggedIn) return null;
+            }
+        }
+
+        if (Status != LoginStatus.LoggedIn) Status = LoginStatus.LoggingIn;
+
         Init();
 
         ILoginRequest? request = null;
@@ -432,7 +454,6 @@ public abstract class ClientBase : DisposeBase, IApiClient, ICommandClient, IEve
 
             // 登录前清空令牌，避免服务端使用上一次信息
             SetToken(null);
-            Logined = false;
 
             response = await LoginAsync(request, cancellationToken);
             if (response == null) return null;
@@ -441,7 +462,8 @@ public abstract class ClientBase : DisposeBase, IApiClient, ICommandClient, IEve
 
             // 登录后设置用于用户认证的token
             SetToken(response.Token);
-            Logined = true;
+
+            Status = LoginStatus.LoggedIn;
         }
         catch (Exception ex)
         {
@@ -465,7 +487,7 @@ public abstract class ClientBase : DisposeBase, IApiClient, ICommandClient, IEve
             }
         }
 
-        FixTime(response.Time, response.Time);
+        FixTime(response.Time, response.ServerTime);
 
         OnLogined?.Invoke(this, new(request, response));
 
@@ -560,7 +582,7 @@ public abstract class ClientBase : DisposeBase, IApiClient, ICommandClient, IEve
 
             StopTimer();
 
-            Logined = false;
+            Status = LoginStatus.LoggedOut;
 
             return rs;
         }
@@ -615,24 +637,24 @@ public abstract class ClientBase : DisposeBase, IApiClient, ICommandClient, IEve
                 return null;
             }
 
-            IPingResponse? rs = null;
+            IPingResponse? response = null;
             try
             {
-                rs = await PingAsync(request, cancellationToken);
-                if (rs != null)
+                response = await PingAsync(request, cancellationToken);
+                if (response != null)
                 {
                     // 由服务器改变采样频率
-                    if (rs.Period > 0 && _timerPing != null) _timerPing.Period = rs.Period * 1000;
+                    if (response.Period > 0 && _timerPing != null) _timerPing.Period = response.Period * 1000;
 
-                    FixTime(rs.Time, rs.ServerTime);
+                    FixTime(response.Time, response.ServerTime);
 
                     // 更新令牌。即将过期时，服务端会返回新令牌
-                    if (!rs.Token.IsNullOrEmpty()) SetToken(rs.Token);
+                    if (!response.Token.IsNullOrEmpty()) SetToken(response.Token);
 
                     // 心跳响应携带的命令，推送到队列
-                    if (rs.Commands != null && rs.Commands.Length > 0)
+                    if (response.Commands != null && response.Commands.Length > 0)
                     {
-                        foreach (var model in rs.Commands)
+                        foreach (var model in response.Commands)
                         {
                             await ReceiveCommand(model, "Pong", cancellationToken);
                         }
@@ -654,18 +676,19 @@ public abstract class ClientBase : DisposeBase, IApiClient, ICommandClient, IEve
                 await PingAsync(info, cancellationToken);
             }
 
-            return rs;
+            return response;
         }
         catch (Exception ex)
         {
             span?.SetError(ex, null);
 
             var ex2 = ex.GetTrue();
-            if (ex2 is ApiException aex && (aex.Code == ApiCode.Unauthorized || aex.Code == ApiCode.Forbidden) && Features.HasFlag(Features.Login))
+            if (ex2 is ApiException aex && (aex.Code == ApiCode.Unauthorized || aex.Code == ApiCode.Forbidden))
             {
+                Status = LoginStatus.Ready;
                 if (Features.HasFlag(Features.Login))
                 {
-                    WriteLog("重新登录");
+                    WriteLog("重新登录，因心跳失败：{0}", ex.Message);
                     await Login(cancellationToken);
                 }
 
