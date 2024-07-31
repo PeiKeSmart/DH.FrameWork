@@ -29,7 +29,7 @@ namespace DH.Core.Domain.Localization
         /// <summary>
         /// 一个值，指示是否启用具有多种语言的SEO友好URL
         /// </summary>
-        public bool SeoFriendlyUrlsForLanguagesEnabled { get; set; }
+        public bool SeoFriendlyUrlsForLanguagesEnabled { get; set; } = true;
 
         /// <summary>
         /// 指示是否应按客户区域检测当前语言的值（浏览器设置）
