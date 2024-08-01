@@ -19,6 +19,9 @@ public class LoginViewModel {
     /// <summary>允许注册</summary>
     public Boolean AllowRegister { get; set; }
 
+    ///// <summary>自动注册</summary>
+    //public Boolean AutoRegister { get; set; }
+
     /// <summary>登录提示</summary>
     public String LoginTip { get; set; }
 

@@ -16,20 +16,15 @@ public class DbItem : ICubeModel {
     /// <summary>数据驱动版本</summary>
     public String Version { get; set; }
 
+    /// <summary>实体数</summary>
+    public Int32 Entities { get; set; }
+
+    /// <summary>数据表数</summary>
+    public Int32 Tables { get; set; }
+
     /// <summary>是否动态</summary>
     public Boolean Dynamic { get; set; }
 
     /// <summary>备份数</summary>
     public Int32 Backups { get; set; }
-
-    /// <summary>表集合</summary>
-    public IList<IDataTable> Tables { get; set; }
-
-    /// <summary>库大小</summary>
-    public Double Size { get; set; }
-
-    /// <summary>
-    /// 数据库名
-    /// </summary>
-    public String DataBase { get; set; }
 }
