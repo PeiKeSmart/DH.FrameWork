@@ -27,4 +27,15 @@ public class DbItem : ICubeModel {
 
     /// <summary>备份数</summary>
     public Int32 Backups { get; set; }
+
+    /// <summary>表集合</summary>
+    public IList<IDataTable> TableList { get; set; }
+
+    /// <summary>库大小</summary>
+    public Double Size { get; set; }
+
+    /// <summary>
+    /// 数据库名
+    /// </summary>
+    public String DataBase { get; set; }
 }
