@@ -366,7 +366,11 @@ public class MachineInfo : IExtend
         //        OSVersion = GetInfo("Win32_OperatingSystem", "Version");
 #else
         var os = ReadWmic("os", "Caption", "Version");
-        if (os != null)
+        if (os == null || os.Count == 0)
+        {
+            os = ReadPowerShell("Get-WmiObject Win32_OperatingSystem | Select-Object Caption, Version | ConvertTo-Json");
+        }
+        if (os is { Count: > 0 })
         {
             if (os.TryGetValue("Caption", out str)) OSName = str.TrimStart("Microsoft").Trim();
             if (os.TryGetValue("Version", out str)) OSVersion = str;
@@ -912,6 +916,25 @@ public class MachineInfo : IExtend
         if (str.IsNullOrEmpty()) return null;
 
         return str.SplitAsDictionary(":", "\n", true);
+    }
+
+    /// <summary>
+    /// 通过 PowerShell 命令读取信息
+    /// </summary>
+    public static IDictionary<String, String> ReadPowerShell(String command)
+    {
+        var dic = new Dictionary<String, String>(StringComparer.OrdinalIgnoreCase);
+
+        var args = $"-Command \"{command}\"";
+        var str = "powershell.exe".Execute(args, 3_000) ?? String.Empty;
+        if (!String.IsNullOrWhiteSpace(str))
+        {
+            foreach (var item in str.DecodeJson()!)
+            {
+                dic[item.Key] = item.Value?.ToString() ?? String.Empty;
+            }
+        }
+        return dic;
     }
 
     /// <summary>通过WMIC命令读取信息</summary>

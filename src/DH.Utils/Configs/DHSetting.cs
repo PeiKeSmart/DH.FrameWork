@@ -392,6 +392,11 @@ public class DHSetting : Config<DHSetting>
     [Description("版权。留空表示不显示版权信息")]
     [Category("界面配置")]
     public String Copyright { get; set; }
+
+    /// <summary>在Cookie中存储令牌。读取令牌时，如果请求头没有携带令牌，则从Cookie读取，默认false</summary>
+    [Description("在Cookie中存储令牌。读取令牌时，如果请求头没有携带令牌，则从Cookie读取，默认false")]
+    [Category("用户登录")]
+    public Boolean TokenCookie { get; set; } = false;
     #endregion
 
     #region 方法
