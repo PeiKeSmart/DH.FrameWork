@@ -441,7 +441,7 @@ public class DHSetting : Config<DHSetting>
         }
 
         if (PaswordStrength.IsNullOrEmpty()) PaswordStrength = @"^(?=.*\d.*)(?=.*[a-z].*)(?=.*[A-Z].*)(?=.*[^(0-9a-zA-Z)].*).{8,32}$";
-        if (MaxLoginError <= 0) MaxLoginError = 6;
+        if (MaxLoginError <= 0) MaxLoginError = 5;
         if (LoginForbiddenTime <= 0) LoginForbiddenTime = 300;
 
         base.OnLoaded();
@@ -454,6 +454,13 @@ public class DHSetting : Config<DHSetting>
         var cr = Copyright;
         if (cr.IsNullOrEmpty()) return null;
 
+        // 处理运行时
+        if (cr.Contains("{framework}"))
+        {
+            cr = cr.Replace("{framework}", RuntimeInformation.FrameworkDescription);
+        }
+
+        // 处理今年时间
         var p1 = cr.IndexOf("{now");
         if (p1 < 0) return cr;
 
