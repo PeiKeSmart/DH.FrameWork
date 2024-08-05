@@ -1,4 +1,8 @@
-﻿using AutoMapper;
+﻿using System.Collections.Concurrent;
+using System.Net;
+using System.Net.Sockets;
+
+using AutoMapper;
 
 using DH.Core.Infrastructure;
 using DH.Entity;
@@ -22,10 +26,6 @@ using NewLife;
 using Polly;
 
 using StackExchange.Profiling.Internal;
-
-using System.Collections.Concurrent;
-using System.Net;
-using System.Net.Sockets;
 
 using TimeZoneConverter;
 
@@ -277,6 +277,40 @@ public static class CommonHelpers
                 var cityResp = Policy<CityResponse>.Handle<AddressNotFoundException>().Fallback(new CityResponse()).Execute(() => MaxmindReader.City(ip));
                 var asnResp = GetIPAsn(ip);
                 return (cityResp.Country.Names.GetValueOrDefault("zh-CN") + JoinString + cityResp.City.Names.GetValueOrDefault("zh-CN"), asnResp.AutonomousSystemOrganization + $"(AS{asnResp.AutonomousSystemNumber})");
+        }
+    }
+
+    public static (IEnumerable<String> regions, String location, String network, String number) DHGetIPLocations(this IPAddress ip, String JoinString = "")
+    {
+        switch (ip.AddressFamily)
+        {
+            case AddressFamily.InterNetwork when ip.IsPrivateIP():
+            case AddressFamily.InterNetworkV6 when ip.IsPrivateIP():
+                return (new List<String> { "内网" }, "内网", "内网IP", "");
+            case AddressFamily.InterNetworkV6 when ip.IsIPv4MappedToIPv6:
+                ip = ip.MapToIPv4();
+                goto case AddressFamily.InterNetwork;
+            case AddressFamily.InterNetwork:
+                var parts = IPSearcher.Search(ip.ToString())?.Split('|');
+                if (parts != null)
+                {
+                    var asn = GetIPAsn(ip);
+                    var network = parts[^1] == "0" ? asn.AutonomousSystemOrganization : parts[^1];
+                    var regions = parts[..^1].Where(s => s != "0").Distinct();
+                    var location = regions.Join(JoinString);
+                    return (regions, location, network, $"(AS{asn.AutonomousSystemNumber})");
+                }
+
+                goto default;
+            default:
+                {
+                    var cityResp = Policy<CityResponse>.Handle<AddressNotFoundException>().Fallback(new CityResponse()).Execute(() => MaxmindReader.City(ip));
+                    var asnResp = GetIPAsn(ip);
+
+                    var regions = new List<String> { cityResp.Country.Names.GetValueOrDefault("zh-CN"), cityResp.City.Names.GetValueOrDefault("zh-CN") };
+
+                    return (regions, regions.Join(JoinString), asnResp.AutonomousSystemOrganization, $"(AS{asnResp.AutonomousSystemNumber})");
+                }
         }
     }
 
