@@ -79,6 +79,22 @@ public partial class SysOnlineUsers : ISysOnlineUsers, IEntity<ISysOnlineUsers>
     [BindColumn("Region", "用户所在区域", "")]
     public String Region { get => _Region; set { if (OnPropertyChanging("Region", value)) { _Region = value; OnPropertyChanged("Region"); } } }
 
+    private String _Network;
+    /// <summary>运营商</summary>
+    [DisplayName("运营商")]
+    [Description("运营商")]
+    [DataObjectField(false, false, true, 50)]
+    [BindColumn("network", "运营商", "")]
+    public String Network { get => _Network; set { if (OnPropertyChanging("Network", value)) { _Network = value; OnPropertyChanged("Network"); } } }
+
+    private String _Numbers;
+    /// <summary>代号</summary>
+    [DisplayName("代号")]
+    [Description("代号")]
+    [DataObjectField(false, false, true, 50)]
+    [BindColumn("numbers", "代号", "")]
+    public String Numbers { get => _Numbers; set { if (OnPropertyChanging("Numbers", value)) { _Numbers = value; OnPropertyChanged("Numbers"); } } }
+
     private Int32 _Clicks;
     /// <summary>请求次数</summary>
     [DisplayName("请求次数")]
@@ -116,6 +132,8 @@ public partial class SysOnlineUsers : ISysOnlineUsers, IEntity<ISysOnlineUsers>
         Name = model.Name;
         Ip = model.Ip;
         Region = model.Region;
+        Network = model.Network;
+        Numbers = model.Numbers;
         Clicks = model.Clicks;
         UserAgent = model.UserAgent;
         Updatetime = model.Updatetime;
@@ -137,6 +155,8 @@ public partial class SysOnlineUsers : ISysOnlineUsers, IEntity<ISysOnlineUsers>
             "Name" => _Name,
             "Ip" => _Ip,
             "Region" => _Region,
+            "Network" => _Network,
+            "Numbers" => _Numbers,
             "Clicks" => _Clicks,
             "UserAgent" => _UserAgent,
             "Updatetime" => _Updatetime,
@@ -153,6 +173,8 @@ public partial class SysOnlineUsers : ISysOnlineUsers, IEntity<ISysOnlineUsers>
                 case "Name": _Name = Convert.ToString(value); break;
                 case "Ip": _Ip = Convert.ToString(value); break;
                 case "Region": _Region = Convert.ToString(value); break;
+                case "Network": _Network = Convert.ToString(value); break;
+                case "Numbers": _Numbers = Convert.ToString(value); break;
                 case "Clicks": _Clicks = value.ToInt(); break;
                 case "UserAgent": _UserAgent = Convert.ToString(value); break;
                 case "Updatetime": _Updatetime = value.ToDateTime(); break;
@@ -193,6 +215,12 @@ public partial class SysOnlineUsers : ISysOnlineUsers, IEntity<ISysOnlineUsers>
         /// <summary>用户所在区域</summary>
         public static readonly Field Region = FindByName("Region");
 
+        /// <summary>运营商</summary>
+        public static readonly Field Network = FindByName("Network");
+
+        /// <summary>代号</summary>
+        public static readonly Field Numbers = FindByName("Numbers");
+
         /// <summary>请求次数</summary>
         public static readonly Field Clicks = FindByName("Clicks");
 
@@ -228,6 +256,12 @@ public partial class SysOnlineUsers : ISysOnlineUsers, IEntity<ISysOnlineUsers>
 
         /// <summary>用户所在区域</summary>
         public const String Region = "Region";
+
+        /// <summary>运营商</summary>
+        public const String Network = "Network";
+
+        /// <summary>代号</summary>
+        public const String Numbers = "Numbers";
 
         /// <summary>请求次数</summary>
         public const String Clicks = "Clicks";

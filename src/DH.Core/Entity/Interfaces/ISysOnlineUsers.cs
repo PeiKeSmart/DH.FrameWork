@@ -32,6 +32,12 @@ public partial interface ISysOnlineUsers
     /// <summary>用户所在区域</summary>
     String Region { get; set; }
 
+    /// <summary>运营商</summary>
+    String Network { get; set; }
+
+    /// <summary>代号</summary>
+    String Numbers { get; set; }
+
     /// <summary>请求次数</summary>
     Int32 Clicks { get; set; }
 

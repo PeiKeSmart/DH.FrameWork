@@ -727,6 +727,8 @@
         <Column Name="Name" DataType="String" Master="True" Length="100" Nullable="False" Description="用户名" />
         <Column Name="Ip" DataType="String" Length="30" Nullable="False" Description="用户ip" />
         <Column Name="Region" DataType="String" Length="150" Description="用户所在区域" />
+        <Column Name="Network" DataType="String" Description="运营商" />
+        <Column Name="Numbers" DataType="String" Description="代号" />
         <Column Name="Clicks" DataType="Int32" Description="请求次数" />
         <Column Name="UserAgent" DataType="String" Length="1000" Description="特征字符串" />
         <Column Name="Updatetime" DataType="DateTime" Nullable="False" Description="最后更新时间" />

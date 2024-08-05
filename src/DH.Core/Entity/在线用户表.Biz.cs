@@ -230,7 +230,9 @@ public partial class SysOnlineUsers : DHEntityBase<SysOnlineUsers> {
     /// <param name="ip">Ip地址</param>
     /// <param name="region">区域</param>
     /// <param name="userAgent">特征字符串</param>
-    public static void UpdateOnlineUser(Int32 uid, Int64 sid, string nickName, String Name, string ip, String region, String userAgent)
+    /// <param name="network">运营商</param>
+    /// <param name="numbers">代号</param>
+    public static void UpdateOnlineUser(Int32 uid, Int64 sid, string nickName, String Name, string ip, String region, String userAgent, String network = "", String numbers = "")
     {
         using var span = DefaultTracer.Instance?.NewSpan(nameof(UpdateOnlineUser));
 
@@ -246,6 +248,8 @@ public partial class SysOnlineUsers : DHEntityBase<SysOnlineUsers> {
                 onlineUserInfo.NickName = nickName;
                 onlineUserInfo.Ip = ip;
                 onlineUserInfo.Region = region;
+                onlineUserInfo.Network = network;
+                onlineUserInfo.Numbers = numbers;
                 onlineUserInfo.UserAgent = userAgent;
                 onlineUserInfo.Name = Name;
                 onlineUserInfo.Clicks++;
@@ -261,6 +265,8 @@ public partial class SysOnlineUsers : DHEntityBase<SysOnlineUsers> {
                 onlineUserInfo.NickName = nickName;
                 onlineUserInfo.Ip = ip;
                 onlineUserInfo.Region = region;
+                onlineUserInfo.Network = network;
+                onlineUserInfo.Numbers = numbers;
                 onlineUserInfo.UserAgent = userAgent;
                 onlineUserInfo.Name = Name;
                 onlineUserInfo.Clicks = 1;
@@ -277,6 +283,8 @@ public partial class SysOnlineUsers : DHEntityBase<SysOnlineUsers> {
                 onlineUserInfo.NickName = nickName;
                 onlineUserInfo.Ip = ip;
                 onlineUserInfo.Region = region;
+                onlineUserInfo.Network = network;
+                onlineUserInfo.Numbers = numbers;
                 onlineUserInfo.UserAgent = userAgent;
                 onlineUserInfo.Name = Name;
                 onlineUserInfo.Clicks = 1;
@@ -294,6 +302,8 @@ public partial class SysOnlineUsers : DHEntityBase<SysOnlineUsers> {
                     onlineUserInfo.NickName = nickName;
                     onlineUserInfo.Ip = ip;
                     onlineUserInfo.Region = region;
+                    onlineUserInfo.Network = network;
+                    onlineUserInfo.Numbers = numbers;
                     onlineUserInfo.UserAgent = userAgent;
                     onlineUserInfo.Name = Name;
                     onlineUserInfo.Clicks++;

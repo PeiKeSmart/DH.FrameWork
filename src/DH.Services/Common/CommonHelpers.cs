@@ -280,13 +280,13 @@ public static class CommonHelpers
         }
     }
 
-    public static (IEnumerable<String> regions, String location, String network, String number) DHGetIPLocations(this IPAddress ip, String JoinString = "")
+    public static (String location, String network, String number) DHGetIPLocations(this IPAddress ip, String JoinString = "")
     {
         switch (ip.AddressFamily)
         {
             case AddressFamily.InterNetwork when ip.IsPrivateIP():
             case AddressFamily.InterNetworkV6 when ip.IsPrivateIP():
-                return (new List<String> { "内网" }, "内网", "内网IP", "");
+                return ("内网", "内网IP", "");
             case AddressFamily.InterNetworkV6 when ip.IsIPv4MappedToIPv6:
                 ip = ip.MapToIPv4();
                 goto case AddressFamily.InterNetwork;
@@ -298,7 +298,7 @@ public static class CommonHelpers
                     var network = parts[^1] == "0" ? asn.AutonomousSystemOrganization : parts[^1];
                     var regions = parts[..^1].Where(s => s != "0").Distinct();
                     var location = regions.Join(JoinString);
-                    return (regions, location, network, $"(AS{asn.AutonomousSystemNumber})");
+                    return (location, network, $"(AS{asn.AutonomousSystemNumber})");
                 }
 
                 goto default;
@@ -309,7 +309,7 @@ public static class CommonHelpers
 
                     var regions = new List<String> { cityResp.Country.Names.GetValueOrDefault("zh-CN"), cityResp.City.Names.GetValueOrDefault("zh-CN") };
 
-                    return (regions, regions.Join(JoinString), asnResp.AutonomousSystemOrganization, $"(AS{asnResp.AutonomousSystemNumber})");
+                    return (regions.Join(JoinString), asnResp.AutonomousSystemOrganization, $"(AS{asnResp.AutonomousSystemNumber})");
                 }
         }
     }
