@@ -10,9 +10,9 @@ public enum ApiVersions
     /// </summary>
     V1 = 1,
     /// <summary>
-    /// V1.1 版本
+    /// V1.01 版本
     /// </summary>
-    V1_1,
+    V1_01,
     /// <summary>
     /// V2 版本
     /// </summary>
