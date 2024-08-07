@@ -1,13 +1,13 @@
 ﻿using NewLife;
 using NewLife.Data;
-
 using XCode.Configuration;
 using XCode.Statistics;
 
 namespace XCode.Shards;
 
 /// <summary>时间分表策略</summary>
-public class TimeShardPolicy : IShardPolicy {
+public class TimeShardPolicy : IShardPolicy
+{
     #region 属性
     /// <summary>实体工厂</summary>
     public IEntityFactory? Factory { get; set; }

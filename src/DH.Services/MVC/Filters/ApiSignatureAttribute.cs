@@ -54,9 +54,23 @@ public class ApiSignatureAttribute : ActionFilterAttribute {
 
             var Token = DHSetting.Current.ServerToken;  // 获取与客户端协定的密钥
 
-            if (!headers.ContainsKey("Signature") || !headers.ContainsKey("TimeStamp") || !headers.ContainsKey("Nonce"))
+            if (!headers.ContainsKey("Signature"))
             {
-                result.Message = LocaleStringResource.GetResource("传入的检验值不能为空");
+                result.Message = LocaleStringResource.GetResource("传入的Signature不能为空");
+                context.Result = result;
+                return;
+            }
+
+            if (!headers.ContainsKey("TimeStamp") || !headers.ContainsKey("Nonce"))
+            {
+                result.Message = LocaleStringResource.GetResource("传入的TimeStamp不能为空");
+                context.Result = result;
+                return;
+            }
+
+            if (!headers.ContainsKey("Nonce"))
+            {
+                result.Message = LocaleStringResource.GetResource("传入的Nonce不能为空");
                 context.Result = result;
                 return;
             }
