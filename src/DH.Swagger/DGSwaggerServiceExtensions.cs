@@ -56,6 +56,7 @@ namespace DH.Swagger {
                 // 遍历出全部的版本，做文档信息展示
                 typeof(ApiVersions).GetEnumNames().ToList().ForEach(version =>
                 {
+                    version = version.Replace('_', '.');
                     var infos = new OpenApiInfo
                     {
                         Version = version,
@@ -145,6 +146,7 @@ namespace DH.Swagger {
                     //自定义右上角版本切换
                     typeof(ApiVersions).GetEnumNames().ToList().ForEach(version =>
                     {
+                        version = version.Replace('_', '.');
                         c.SwaggerEndpoint($"/{configuration.GetValue<string>("SwaggerOption:DescEndpoint", "")}docs/{version}/docs.json", $"{version}");//此处配置要和UseSwagger的RouteTemplate匹配
                     });
                     //c.SwaggerEndpoint("https://petstore.swagger.io/v2/swagger.json", "petstore.swagger");//远程swagger示例   
