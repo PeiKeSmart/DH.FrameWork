@@ -27,7 +27,7 @@ public class CustomRouteAttribute : RouteAttribute, IApiDescriptionGroupNameProv
     /// </summary>
     /// <param name="actionName"></param>
     /// <param name="version"></param>
-    public CustomRouteAttribute(ApiVersions version, string actionName = "") : base($"/Api/{version}/[controller]/{actionName}")
+    public CustomRouteAttribute(ApiVersions version, string actionName = "") : base($"/Api/{version.SafeString().Replace('_', '.')}/[controller]/{actionName}")
     {
         GroupName = version.SafeString().Replace('_', '.');
     }
@@ -38,7 +38,7 @@ public class CustomRouteAttribute : RouteAttribute, IApiDescriptionGroupNameProv
     /// <param name="actionName"></param>
     /// <param name="version"></param>
     /// <param name="PrefixName"></param>
-    public CustomRouteAttribute(ApiVersions version, string PrefixName, string actionName = "") : base($"/Api/{PrefixName}/{version}/[controller]/{actionName}")
+    public CustomRouteAttribute(ApiVersions version, string PrefixName, string actionName = "") : base($"/Api/{PrefixName}/{version.SafeString().Replace('_', '.')}/[controller]/{actionName}")
     {
         GroupName = version.SafeString().Replace('_', '.');
     }
