@@ -46,6 +46,7 @@
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageReadmeFile>Readme.MD</PackageReadmeFile>
+		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
