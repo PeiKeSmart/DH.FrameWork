@@ -43,7 +43,7 @@ public class Ip
 
             // 如果本地没有IP数据库，则从网络下载
             var fi = ip.IsNullOrWhiteSpace() ? null : ip.AsFile();
-            if (fi == null || !fi.Exists || fi.Length < 3 * 1024 * 1024 || fi.LastWriteTime < new DateTime(2024, 03, 09))
+            if (fi == null || !fi.Exists || fi.Length < 3 * 1024 * 1024 || fi.LastWriteTime < new DateTime(2024, 08, 05))
             {
                 var task = Task.Run(() => Download(ip));
                 // 静态构造函数里不能等待，否则异步函数也无法执行
@@ -120,21 +120,20 @@ public class Ip
         return false;
     }
 
-    /// <summary>获取IP地址</summary>
+    /// <summary>获取IP地址所映射的物理地址</summary>
     /// <param name="ip"></param>
     /// <returns></returns>
-    public String GetAddress(String ip)
+    public (String area, String addr) GetAddress(String ip)
     {
-        if (String.IsNullOrEmpty(ip)) return "";
+        if (String.IsNullOrEmpty(ip)) return ("", "");
 
-        if (!Init() || _zip == null) return "";
+        if (!Init() || _zip == null) return ("", "");
 
-        var (addr, area) = _zip.GetAddress(ip.Trim().ToUInt32IP());
-        return addr + " " + area;
+        return _zip.GetAddress(ip.Trim().ToUInt32IP());
     }
 
-    /// <summary>获取IP地址</summary>
-    /// <param name="addr"></param>
+    /// <summary>获取IP地址所映射的物理地址</summary>
+    /// <param name="ip"></param>
     /// <returns></returns>
     public String GetAddress(IPAddress ip)
     {
@@ -142,7 +141,8 @@ public class Ip
 
         if (!Init() || _zip == null) return "";
 
-        var (addr, area) = _zip.GetAddress(ip.ToUInt32());
-        return addr + " " + area;
+        var (area, addr) = _zip.GetAddress(ip.ToUInt32());
+        //return area.TrimStart("中国\u2013").Replace("\u2013", null) + " " + addr;
+        return area + " " + addr;
     }
 }
