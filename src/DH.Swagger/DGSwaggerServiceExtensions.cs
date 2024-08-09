@@ -99,6 +99,8 @@ namespace DH.Swagger {
 
                 // 在header中添加token，传递到后台
                 c.OperationFilter<SecurityRequirementsOperationFilter>();
+
+                c.EnableAnnotations(); // 启用 Swagger 注释
             });
             services.AddSwaggerGenNewtonsoftSupport();
 
