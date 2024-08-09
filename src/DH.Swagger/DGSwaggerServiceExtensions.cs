@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 
+using NewLife;
 using NewLife.Log;
 
 using Swashbuckle.AspNetCore.Filters;
@@ -64,7 +65,7 @@ namespace DH.Swagger {
                 {
                     version = version.Replace('_', '.');
 
-                    var swagger = list.FirstOrDefault(r => r.ApiVersions.ToString().Replace('_', '.') == version);
+                    var swagger = list.FirstOrDefault(r => r.ApiVersions.ToString().Replace('_', '.').EqualIgnoreCase(version));
 
                     var infos = new OpenApiInfo
                     {
@@ -75,6 +76,7 @@ namespace DH.Swagger {
                         Contact = info.Contact,// new OpenApiContact { Email = "Email", Name = "Name", Url = new Uri("http://www.github.com") },
                         License = info.License,//new OpenApiLicense { Url = new Uri("http://www.github.com"), Name = "LicenseName" },
                     };
+
                     c.SwaggerDoc(version, infos);
                     c.OrderActionsBy(o => o.RelativePath);
                     c.DocumentFilter<HiddenApiFilter>();
