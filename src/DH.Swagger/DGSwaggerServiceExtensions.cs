@@ -1,4 +1,7 @@
-﻿using DH.AspNetCore;
+﻿using System.Reflection;
+
+using DH.AspNetCore;
+using DH.Core.Infrastructure;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -11,8 +14,6 @@ using NewLife.Log;
 
 using Swashbuckle.AspNetCore.Filters;
 using Swashbuckle.AspNetCore.SwaggerUI;
-
-using System.Reflection;
 
 namespace DH.Swagger {
     public static class NetProSwaggerServiceExtensions
@@ -53,15 +54,23 @@ namespace DH.Swagger {
                     }
                 });
 
+                var typeFinder = EngineContext.Current.Resolve<ITypeFinder>();
+                var DHSwaggers = typeFinder.FindClassesOfType<IDHSwagger>();
+                var list = DHSwaggers
+                .Select(swagger => (IDHSwagger)Activator.CreateInstance(swagger));
+
                 // 遍历出全部的版本，做文档信息展示
                 typeof(ApiVersions).GetEnumNames().ToList().ForEach(version =>
                 {
                     version = version.Replace('_', '.');
+
+                    var swagger = list.FirstOrDefault(r => r.ApiVersions.ToString().Replace('_', '.') == version);
+
                     var infos = new OpenApiInfo
                     {
                         Version = version,
                         Title = info.Title,
-                        Description = info.Description,
+                        Description = info.Description + swagger?.Description,
                         //TermsOfService = "None",
                         Contact = info.Contact,// new OpenApiContact { Email = "Email", Name = "Name", Url = new Uri("http://www.github.com") },
                         License = info.License,//new OpenApiLicense { Url = new Uri("http://www.github.com"), Name = "LicenseName" },
