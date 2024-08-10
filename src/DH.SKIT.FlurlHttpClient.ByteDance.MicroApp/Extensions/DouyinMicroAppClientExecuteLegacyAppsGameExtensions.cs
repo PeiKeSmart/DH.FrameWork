@@ -9,7 +9,8 @@ using Flurl.Http;
 
 namespace SKIT.FlurlHttpClient.ByteDance.MicroApp
 {
-    public static class DouyinMicroAppClientExecuteLegacyAppsGameExtensions {
+    public static class DouyinMicroAppClientExecuteLegacyAppsGameExtensions
+    {
         private static T PreprocessRequest<T>(DouyinMicroAppClient client, ref T request)
             where T : Models.AppsGameWalletRequestBase, new()
         {
