@@ -115,25 +115,25 @@ public partial class CheckSignature {
     /// <param name="token">通讯密钥</param>
     /// <param name="retusnsignature">检验值</param>
     /// <returns></returns>
-    public static bool CheckSign(IDictionary<String, String> dic, string token, out string retusnsignature)
+    public static Int32 CheckSign(IDictionary<String, String> dic, string token, out string retusnsignature)
     {
         retusnsignature = "";
 
-        if (dic == null) return false;
-        if (!dic.ContainsKey("timeStamp")) return false;
-        if (!dic.ContainsKey("sign")) return false;
+        if (dic == null) return 4;
+        if (!dic.ContainsKey("timeStamp")) return 4;
+        if (!dic.ContainsKey("sign")) return 4;
 
         var timestamp = dic["timeStamp"];
         var signature = dic["sign"];
 
         var time = UnixTime.ToDateTime(timestamp.ToDGLong());
-        if (time > DateTime.Now.AddSeconds(DHSetting.Current.SignatureExpire)) return false;
-        if (time < DateTime.Now.AddSeconds(-DHSetting.Current.SignatureExpire)) return false;
+        if (time > DateTime.Now.AddSeconds(DHSetting.Current.SignatureExpire)) return 2;
+        if (time < DateTime.Now.AddSeconds(-DHSetting.Current.SignatureExpire)) return 3;
 
         var _cache = EngineContext.Current.Resolve<ICache>();
         if (_cache.ContainsKey(signature))
         {
-            return false;
+            return 5;
         }
         else
         {
@@ -144,6 +144,6 @@ public partial class CheckSignature {
 
         retusnsignature = DH.Security.CheckSignature.CreateSign(dic, token);
 
-        return signature == retusnsignature;
+        return signature == retusnsignature ? 1 : 0;
     }
 }
