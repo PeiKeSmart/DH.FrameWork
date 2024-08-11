@@ -371,7 +371,7 @@ public abstract class ServiceBase : DisposeBase
         }
         catch { }
 
-        ReleaseMemory();
+        FreeMemory();
     }
 
     /// <summary>开始工作</summary>
@@ -422,33 +422,24 @@ public abstract class ServiceBase : DisposeBase
     /// <returns>是否超标重启</returns>
     protected virtual Boolean CheckMemory()
     {
-        var max = Setting.Current.MaxMemory;
-        if (max <= 0) return false;
-
-        if (_nextCollect < DateTime.Now)
+        var set = Setting.Current;
+        if (set.FreeMemoryInterval > 0 && _nextCollect < DateTime.Now)
         {
-            _nextCollect = DateTime.Now.AddSeconds(600);
+            _nextCollect = DateTime.Now.AddSeconds(set.FreeMemoryInterval);
 
-            ReleaseMemory();
+            FreeMemory();
         }
 
-        var cur = GC.GetTotalMemory(false);
-        cur = cur / 1024 / 1024;
-        if (cur < max) return false;
+        var max = set.MaxMemory;
+        if (max <= 0) return false;
 
-        //        // 执行一次GC回收
-        //#if NETFRAMEWORK
-        //        GC.Collect(2, GCCollectionMode.Forced);
-        //#else
-        //        GC.Collect(2, GCCollectionMode.Forced, false);
-        //#endif
+        //var memory = GC.GetTotalMemory(false);
+        var p = Process.GetCurrentProcess();
+        var memory = p.WorkingSet64;
+        memory = memory / 1024 / 1024;
+        if (memory < max) return false;
 
-        //        // 再次判断内存
-        //        cur = GC.GetTotalMemory(true);
-        //        cur = cur / 1024 / 1024;
-        //        if (cur < max) return false;
-
-        WriteLog("当前进程占用内存 {0:n0}M，超过阀值 {1:n0}M，准备重新启动！", cur, max);
+        WriteLog("当前进程占用内存 {0:n0}M，超过阀值 {1:n0}M，准备重新启动！", memory, max);
 
         Host.Restart(ServiceName);
 
@@ -456,7 +447,7 @@ public abstract class ServiceBase : DisposeBase
     }
 
     /// <summary>释放内存。GC回收后再释放虚拟内存</summary>
-    public void ReleaseMemory()
+    public void FreeMemory()
     {
         var max = GC.MaxGeneration;
         var mode = GCCollectionMode.Forced;
