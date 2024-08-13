@@ -10,7 +10,7 @@ namespace DH.Systems;
 /// </summary>
 public class NativeHelper {
     /// <summary>释放内存。GC回收后再释放虚拟内存</summary>
-    public static void ReleaseMemory()
+    public void FreeMemory()
     {
         var max = GC.MaxGeneration;
         var mode = GCCollectionMode.Forced;
