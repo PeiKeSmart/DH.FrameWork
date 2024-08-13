@@ -24,7 +24,6 @@ public partial class WebWorkContext : IWorkContext {
     #region 字段
 
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly LocalizationSettings _localizationSettings;
     private readonly IStoreContext _storeContext;
     private readonly IUserAgentHelper _userAgentHelper;
     private readonly ICookie _cookie;
@@ -85,7 +84,7 @@ public partial class WebWorkContext : IWorkContext {
             return null;
 
         // 我们是否应该通过客户设置检测当前语言
-        if (requestCultureFeature.Provider is not DHSeoUrlCultureProvider && !_localizationSettings.AutomaticallyDetectLanguage)
+        if (requestCultureFeature.Provider is not DHSeoUrlCultureProvider && !LocalizationSettings.Current.AutomaticallyDetectLanguage)
             return null;
 
         // 获取请求区域性
@@ -161,7 +160,7 @@ public partial class WebWorkContext : IWorkContext {
             Language detectedLanguage = null;
 
             // 尝试从请求的页面URL获取语言
-            if (_localizationSettings.SeoFriendlyUrlsForLanguagesEnabled)
+            if (LocalizationSettings.Current.SeoFriendlyUrlsForLanguagesEnabled)
             {
                 var (isLocalized, language) = _httpContextAccessor.HttpContext.Request.Path.Value.IsLocalizedUrlAsync(_httpContextAccessor.HttpContext.Request.PathBase, false);
                 if (isLocalized && language != null)
