@@ -4,7 +4,6 @@ using DH.Core.Domain.Localization;
 using DH.Core.Http;
 using DH.Core.Infrastructure;
 using DH.Entity;
-using DH.Services.Configuration;
 using DH.Services.Helpers;
 using DH.Services.Localization;
 using DH.Services.ScheduleTasks;
@@ -13,8 +12,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 
 using NewLife;
-using NewLife.Log;
-using NewLife.Serialization;
 
 using XCode.Membership;
 
@@ -28,7 +25,6 @@ public partial class WebWorkContext : IWorkContext {
 
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly LocalizationSettings _localizationSettings;
-    protected readonly ISettingService _settingService;
     private readonly IStoreContext _storeContext;
     private readonly IUserAgentHelper _userAgentHelper;
     private readonly ICookie _cookie;
@@ -41,16 +37,12 @@ public partial class WebWorkContext : IWorkContext {
 
     public WebWorkContext(IHttpContextAccessor httpContextAccessor,
         IUserAgentHelper userAgentHelper,
-        ISettingService settingService,
         ICookie cookie)
     {
         _httpContextAccessor = httpContextAccessor;
         _storeContext = EngineContext.Current.Resolve<IStoreContext>();
         _userAgentHelper = userAgentHelper;
         _cookie = cookie;
-        _settingService = settingService;
-
-        _localizationSettings = _settingService.LoadSetting<LocalizationSettings>(1);
     }
 
     #endregion

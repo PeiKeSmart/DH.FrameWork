@@ -1,11 +1,22 @@
-﻿using DH.Core.Configuration;
+﻿using System.ComponentModel;
+
+using NewLife.Configuration;
+
+using XCode.Configuration;
 
 namespace DH.Domain.Blogs;
 
-/// <summary>
-/// 博客设置
-/// </summary>
-public partial class BlogSettings : ISettings {
+/// <summary>博客设置</summary>
+[DisplayName("博客设置")]
+//[XmlConfigFile("Config/DHSetting.config", 10000)]
+[Config("BlogSettings")]
+public class BlogSettings : Config<BlogSettings> {
+
+    #region 静态
+    /// <summary>指向数据库参数字典表</summary>
+    static BlogSettings() => Provider = new DbConfigProvider { UserId = 0, Category = "Blog" };
+    #endregion
+
     /// <summary>
     /// 获取或设置一个值，该值指示是否启用博客
     /// </summary>

@@ -1,11 +1,21 @@
-﻿using DH.Core.Configuration;
+﻿using System.ComponentModel;
+
+using NewLife.Configuration;
+
+using XCode.Configuration;
 
 namespace DH.Domain.News;
 
-/// <summary>
-/// 新闻设置
-/// </summary>
-public partial class NewsSettings : ISettings {
+/// <summary>新闻设置</summary>
+[DisplayName("新闻设置")]
+//[XmlConfigFile("Config/DHSetting.config", 10000)]
+[Config("NewsSettings")]
+public class NewsSettings : Config<NewsSettings> {
+    #region 静态
+    /// <summary>指向数据库参数字典表</summary>
+    static NewsSettings() => Provider = new DbConfigProvider { UserId = 0, Category = "News" };
+    #endregion
+
     /// <summary>
     /// 获取或设置一个值，该值指示是否启用新闻
     /// </summary>

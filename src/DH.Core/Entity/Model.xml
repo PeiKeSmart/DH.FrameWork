@@ -169,17 +169,6 @@
         <Index Columns="LanKey,CultureId" Unique="True" />
       </Indexes>
     </Table>
-    <Table Name="Setting" TableName="DH_Setting" Description="站点配置">
-      <Columns>
-        <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
-        <Column Name="Name" DataType="String" Master="True" Length="200" Description="键名称" />
-        <Column Name="Value" DataType="String" Length="6000" Description="值" />
-        <Column Name="StoreId" DataType="Int32" Description="站点Id" />
-      </Columns>
-      <Indexes>
-        <Index Columns="Name,StoreId" Unique="True" />
-      </Indexes>
-    </Table>
     <Table Name="UrlRecord" TableName="DG_UrlRecord" Description="SlugURL记录">
       <Columns>
         <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
