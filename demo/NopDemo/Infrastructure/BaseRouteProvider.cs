@@ -18,7 +18,7 @@ public partial class BaseRouteProvider
     {
         if (DHSetting.Current.IsInstalled)
         {
-            var localizationSettings = EngineContext.Current.Resolve<LocalizationSettings>();
+            var localizationSettings = LocalizationSettings.Current;
             if (localizationSettings.SeoFriendlyUrlsForLanguagesEnabled)
             {
                 // 当我们还没有选定的语言时，这个模式在应用程序启动时设置一次

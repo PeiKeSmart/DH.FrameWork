@@ -9,7 +9,8 @@ namespace DH.Services.Localization;
 /// <summary>
 /// 通过URL确定请求的区域性信息
 /// </summary>
-public partial class DHSeoUrlCultureProvider : RequestCultureProvider {
+public partial class DHSeoUrlCultureProvider : RequestCultureProvider
+{
     /// <summary>
     /// 实现提供程序以确定给定请求的区域性
     /// </summary>
@@ -20,7 +21,7 @@ public partial class DHSeoUrlCultureProvider : RequestCultureProvider {
     /// </returns>
     public override async Task<ProviderCultureResult> DetermineProviderCultureResult(HttpContext httpContext)
     {
-        var localizationSettings = EngineContext.Current.Resolve<LocalizationSettings>();
+        var localizationSettings = LocalizationSettings.Current;
 
         if (!localizationSettings.SeoFriendlyUrlsForLanguagesEnabled)
             return await NullProviderCultureResult;

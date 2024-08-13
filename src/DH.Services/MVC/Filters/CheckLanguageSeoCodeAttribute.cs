@@ -19,7 +19,8 @@ namespace DH.Services.MVC.Filters;
 /// <summary>
 /// 表示用于检查多种语言的SEO友好URL的过滤器属性，并在必要时正确重定向
 /// </summary>
-public sealed class CheckLanguageSeoCodeAttribute : TypeFilterAttribute {
+public sealed class CheckLanguageSeoCodeAttribute : TypeFilterAttribute
+{
     /// <summary>
     /// 创建过滤器属性的实例
     /// </summary>
@@ -37,7 +38,8 @@ public sealed class CheckLanguageSeoCodeAttribute : TypeFilterAttribute {
     /// <summary>
     /// 表示一个过滤器，用于检查多种语言的SEO友好URL并在必要时正确重定向
     /// </summary>
-    private class CheckLanguageSeoCodeFilter : IAsyncActionFilter {
+    private class CheckLanguageSeoCodeFilter : IAsyncActionFilter
+    {
         private readonly bool _ignoreFilter;
         private readonly IWorkContext _workContext;
         private readonly ICookie DGCookies;
@@ -104,7 +106,7 @@ public sealed class CheckLanguageSeoCodeAttribute : TypeFilterAttribute {
             if (actionFilter?.IgnoreFilter ?? _ignoreFilter)
                 return;
 
-            var localizationSettings = EngineContext.Current.Resolve<LocalizationSettings>();
+            var localizationSettings = LocalizationSettings.Current;
 
             // 是否启用SEO友好URL
             if (!localizationSettings.SeoFriendlyUrlsForLanguagesEnabled)

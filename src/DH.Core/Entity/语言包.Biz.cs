@@ -16,7 +16,8 @@ using XCode.Cache;
 namespace DH.Entity;
 
 /// <summary>语言包</summary>
-public partial class LocaleStringResource : DHEntityBase<LocaleStringResource> {
+public partial class LocaleStringResource : DHEntityBase<LocaleStringResource>
+{
     #region 对象操作
     static LocaleStringResource()
     {
@@ -284,7 +285,7 @@ public partial class LocaleStringResource : DHEntityBase<LocaleStringResource> {
 
         if (result.IsNullOrWhiteSpace())
         {
-            var localizationSettings = EngineContext.Current.Resolve<LocalizationSettings>();
+            var localizationSettings = LocalizationSettings.Current;
 
             model = FindByLanKeyAndCultureId(resourceKey, localizationSettings.DefaultCountry);
 

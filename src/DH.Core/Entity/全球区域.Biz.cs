@@ -17,7 +17,8 @@ using XCode;
 namespace DH.Entity;
 
 /// <summary>全球区域</summary>
-public partial class Regions : DHEntityBase<Regions> {
+public partial class Regions : DHEntityBase<Regions>
+{
     #region 对象操作
     static Regions()
     {
@@ -235,7 +236,7 @@ public partial class Regions : DHEntityBase<Regions> {
     /// <returns></returns>
     public static IList<RegionsTree> FindProvinceTrees(Int64 parentCode = 0, Int32 Level = -1)
     {
-        var localizationSettings = EngineContext.Current.Resolve<LocalizationSettings>();
+        var localizationSettings = LocalizationSettings.Current;
 
         if (localizationSettings.IsEnable)
         {
