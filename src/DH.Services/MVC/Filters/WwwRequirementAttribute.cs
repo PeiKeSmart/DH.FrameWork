@@ -33,17 +33,14 @@ public sealed class WwwRequirementAttribute : TypeFilterAttribute {
         #region Fields
 
         protected readonly IWebHelper _webHelper;
-        protected readonly SeoSettings _seoSettings;
 
         #endregion
 
         #region Ctor
 
-        public WwwRequirementFilter(IWebHelper webHelper,
-            SeoSettings seoSettings)
+        public WwwRequirementFilter(IWebHelper webHelper)
         {
             _webHelper = webHelper;
-            _seoSettings = seoSettings;
         }
 
         #endregion
@@ -98,7 +95,7 @@ public sealed class WwwRequirementAttribute : TypeFilterAttribute {
             if (_webHelper.IsLocalRequest(context.HttpContext.Request))
                 return;
 
-            switch (_seoSettings.WwwRequirement)
+            switch (SeoSettings.Current.WwwRequirement)
             {
                 case WwwRequirement.WithWww:
                     // 重定向至带有起始 WWW 的网址
