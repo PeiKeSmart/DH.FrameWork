@@ -1,4 +1,7 @@
 ﻿using System.Text;
+#if NETCOREAPP || NETSTANDARD2_1_OR_GREATER
+using System.Buffers;
+#endif
 
 namespace NewLife.Collections;
 
@@ -112,6 +115,7 @@ public static class Pool
     #endregion
 
     #region MemoryStream
+    private static Byte[] _empty = [];
     /// <summary>内存流池</summary>
     public static IPool<MemoryStream> MemoryStream { get; set; } = new MemoryStreamPool();
 
@@ -124,7 +128,7 @@ public static class Pool
     {
         //if (ms == null) return null;
 
-        var buf = requireResult ? ms.ToArray() : new Byte[0];
+        var buf = requireResult ? ms.ToArray() : _empty;
 
         Pool.MemoryStream.Put(ms);
 
@@ -139,7 +143,7 @@ public static class Pool
     {
         //if (ms == null) return null;
 
-        var buf = returnResult ? ms.ToArray() : new Byte[0];
+        var buf = returnResult ? ms.ToArray() : _empty;
 
         Pool.MemoryStream.Put(ms);
 
@@ -185,5 +189,24 @@ public static class Pool
             return base.Return(value);
         }
     }
+    #endregion
+
+    #region ByteArray
+#if NETFRAMEWORK || NETSTANDARD2_0
+    /// <summary>字节数组共享存储</summary>
+    public static IArrayPool<Byte> Shared { get; set; } = ArrayPool<Byte>.Shared;
+#else
+    /// <summary>字节数组共享存储</summary>
+    public static IArrayPool<Byte> Shared { get; set; } = new MyArrayPool(ArrayPool<Byte>.Shared);
+
+    class MyArrayPool(ArrayPool<Byte> pool) : ArrayPool<Byte>, IArrayPool<Byte>
+    {
+        public ArrayPool<Byte> Pool { get; set; } = pool;
+
+        public override Byte[] Rent(Int32 minimumLength) => Pool.Rent(minimumLength);
+
+        public override void Return(Byte[] array, Boolean clearArray = false) => Pool.Return(array, clearArray);
+    }
+#endif
     #endregion
 }
