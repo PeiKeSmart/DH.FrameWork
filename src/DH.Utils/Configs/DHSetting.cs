@@ -398,6 +398,11 @@ public class DHSetting : Config<DHSetting>
     [Description("在Cookie中存储令牌。读取令牌时，如果请求头没有携带令牌，则从Cookie读取，默认false")]
     [Category("用户登录")]
     public Boolean TokenCookie { get; set; } = false;
+
+    /// <summary>星尘平台中目标应用的名称集合，以逗号分隔</summary>
+    [Description("星尘平台中目标应用的名称集合，以逗号分隔")]
+    [Category("系统功能")]
+    public String StarAppIds { get; set; }
     #endregion
 
     #region 方法
