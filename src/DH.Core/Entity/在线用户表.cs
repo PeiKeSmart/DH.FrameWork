@@ -84,7 +84,7 @@ public partial class SysOnlineUsers : ISysOnlineUsers, IEntity<ISysOnlineUsers>
     [DisplayName("运营商")]
     [Description("运营商")]
     [DataObjectField(false, false, true, 50)]
-    [BindColumn("network", "运营商", "")]
+    [BindColumn("Network", "运营商", "")]
     public String Network { get => _Network; set { if (OnPropertyChanging("Network", value)) { _Network = value; OnPropertyChanged("Network"); } } }
 
     private String _Numbers;
@@ -92,7 +92,7 @@ public partial class SysOnlineUsers : ISysOnlineUsers, IEntity<ISysOnlineUsers>
     [DisplayName("代号")]
     [Description("代号")]
     [DataObjectField(false, false, true, 50)]
-    [BindColumn("numbers", "代号", "")]
+    [BindColumn("Numbers", "代号", "")]
     public String Numbers { get => _Numbers; set { if (OnPropertyChanging("Numbers", value)) { _Numbers = value; OnPropertyChanged("Numbers"); } } }
 
     private Int32 _Clicks;
