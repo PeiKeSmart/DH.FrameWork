@@ -61,6 +61,7 @@ public class MailKitEmailSender : EmailSenderBase, IMailKitEmailSender
         catch(Exception ex)
         {
             XTrace.WriteException(ex);
+            result = ex.Message;
         }
         finally
         {
