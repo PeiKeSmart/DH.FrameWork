@@ -2,6 +2,8 @@
 using DH.Mail.Core;
 using DH.MailKit.Extensions;
 
+using NewLife.Log;
+
 using System.Net.Mail;
 
 using SmtpClient = MailKit.Net.Smtp.SmtpClient;
@@ -50,8 +52,20 @@ public class MailKitEmailSender : EmailSenderBase, IMailKitEmailSender
     {
         using var client = BuildSmtpClient();
         var message = mail.ToMimeMessage();
-        var result = await client.SendAsync(message);
-        await client.DisconnectAsync(true);
+        var result = String.Empty;
+
+        try
+        {
+            result = await client.SendAsync(message);
+        }
+        catch(Exception ex)
+        {
+            XTrace.WriteException(ex);
+        }
+        finally
+        {
+            await client.DisconnectAsync(true);
+        }
 
         return result;
     }
