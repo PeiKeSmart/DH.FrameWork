@@ -78,7 +78,6 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\DH.Magicodes.IE.Core\DH.Magicodes.IE.Core.csproj" />
 	  <ProjectReference Include="..\DH.Magicodes.IE.EPPlus\DH.Magicodes.IE.EPPlus.csproj" />
-	  <ProjectReference Include="..\DH.NCore\DH.NCore.csproj" />
 	</ItemGroup>
 
 </Project>

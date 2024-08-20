@@ -74,6 +74,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="DH.NCode" Version="3.7.2024.820" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -90,11 +91,6 @@
 		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
 		<PackageReference Include="TinyPinyin.Net" Version="1.0.2" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<!--<ProjectReference Include="..\DH.Jieba.Segmenter\DH.Jieba.Segmenter.csproj" />-->
-		<ProjectReference Include="..\DH.NCode\DH.NCode.csproj" />
 	</ItemGroup>
 
 </Project>

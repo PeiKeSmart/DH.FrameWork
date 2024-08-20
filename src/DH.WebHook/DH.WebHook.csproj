@@ -56,6 +56,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="DH.NCore" Version="3.7.2024.8190001" />
 		<PackageReference Include="WebApiClient.Extensions.DependencyInjection" Version="2.0.3" />
 		<PackageReference Include="WebApiClient.JIT" Version="1.1.4" />
 	</ItemGroup>
@@ -75,10 +76,6 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-	</ItemGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\DH.NCore\DH.NCore.csproj" />
 	</ItemGroup>
 
 </Project>

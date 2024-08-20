@@ -70,6 +70,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="DH.NRedis" Version="3.7.2024.820" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -83,7 +84,6 @@
 	<ItemGroup>
 		<ProjectReference Include="..\DH.AspNetCore\DH.AspNetCore.csproj" />
 		<ProjectReference Include="..\DH.Core\DH.Core.csproj" />
-		<ProjectReference Include="..\DH.NRedis\DH.NRedis.csproj" />
 		<ProjectReference Include="..\DH.VirtualFileSystem\DH.VirtualFileSystem.csproj" />
 	</ItemGroup>
 
