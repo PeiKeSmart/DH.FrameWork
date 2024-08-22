@@ -5,6 +5,8 @@ using Flurl.Http;
 
 using NewLife.Collections;
 
+using Pek;
+
 namespace DH.FlurlHttpClient.KeRuYun.Api.Extensions;
 
 public static class KeRuYunApiClientExecuteGetTokenExtensions
