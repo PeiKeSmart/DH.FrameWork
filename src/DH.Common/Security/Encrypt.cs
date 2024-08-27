@@ -1,9 +1,12 @@
-﻿using DH.Helpers;
-
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace DH.Security {
+using DH.Helpers;
+
+using Pek;
+
+namespace DH.Security
+{
     /// <summary>
     /// 加密操作
     /// 说明：

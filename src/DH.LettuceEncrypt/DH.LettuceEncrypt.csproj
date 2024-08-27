@@ -1,84 +1,85 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
-	<Import Project="../../version.props" />
+  <Import Project="../../version.props" />
 
-	<PropertyGroup>
-		<LangVersion>latest</LangVersion>
-		<OutputType>Library</OutputType>
-		<TargetFramework>net8.0</TargetFramework>
-		<Nullable>enable</Nullable>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<RootNamespace>LettuceEncrypt</RootNamespace>
-		<AssemblyTitle>DH框架基础类</AssemblyTitle>
-		<Description>用于DH框架的Let's Encrypt生成库。参考https://github.com/natemcmaster/LettuceEncrypt</Description>
-		<Company>湖北登灏科技有限公司</Company>
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>LettuceEncrypt</RootNamespace>
+    <AssemblyTitle>DH框架基础类</AssemblyTitle>
+    <Description>用于DH框架的Let's Encrypt生成库。参考https://github.com/natemcmaster/LettuceEncrypt</Description>
+    <Company>湖北登灏科技有限公司</Company>
 
-		<OutputPath>..\Bin</OutputPath>
-		<DocumentationFile>$(OutputPath)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-		<GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
+    <OutputPath>..\Bin</OutputPath>
+    <DocumentationFile>$(OutputPath)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+    <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
 
-		<!--将此参数设置为true，以获取从NuGet缓存复制到项目输出的dll。
+    <!--将此参数设置为true，以获取从NuGet缓存复制到项目输出的dll。
             如果您的插件具有nuget包，则需要将此参数设置为true
             确保从NuGet缓存复制的dll到项目的输出-->
-		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-		<!-- 对控制器/操作/方法没有阻止注释禁用警告 -->
-		<NoWarn>1701;1702;1705;1591</NoWarn>
-		<GenerateDocumentationFile>true</GenerateDocumentationFile>
-		<!--禁止生成launchSettings.json-->
-		<NoDefaultLaunchSettingsFile>True</NoDefaultLaunchSettingsFile>
-	</PropertyGroup>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <!-- 对控制器/操作/方法没有阻止注释禁用警告 -->
+    <NoWarn>1701;1702;1705;1591</NoWarn>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <!--禁止生成launchSettings.json-->
+    <NoDefaultLaunchSettingsFile>True</NoDefaultLaunchSettingsFile>
+  </PropertyGroup>
 
-	<PropertyGroup>
-		<IsPackable>true</IsPackable>
-		<PackageId>$(AssemblyName)</PackageId>
-		<Authors>$(Company)</Authors>
-		<PackageProjectUrl>https://www.haocoding.com/</PackageProjectUrl>
-		<PackageIcon>DH.png</PackageIcon>
-		<RepositoryUrl>https://gitee.com/dengho/DH.FrameWork</RepositoryUrl>
-		<RepositoryType>Git</RepositoryType>
-		<PackageTags>湖北登灏科技有限公司;DH组件;DH;$(AssemblyName)</PackageTags>
-		<PackageReleaseNotes>用于DH框架的Let's Encrypt生成库。</PackageReleaseNotes>
-		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-		<PublishRepositoryUrl>true</PublishRepositoryUrl>
-		<EmbedUntrackedSources>true</EmbedUntrackedSources>
-		<IncludeSymbols>true</IncludeSymbols>
-		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<GenerateDocumentationFile>true</GenerateDocumentationFile>
-		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<PackageReadmeFile>Readme.MD</PackageReadmeFile>
-	</PropertyGroup>
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <PackageId>$(AssemblyName)</PackageId>
+    <Authors>$(Company)</Authors>
+    <PackageProjectUrl>https://www.haocoding.com/</PackageProjectUrl>
+    <PackageIcon>DH.png</PackageIcon>
+    <RepositoryUrl>https://gitee.com/dengho/DH.FrameWork</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
+    <PackageTags>湖北登灏科技有限公司;DH组件;DH;$(AssemblyName)</PackageTags>
+    <PackageReleaseNotes>用于DH框架的Let's Encrypt生成库。</PackageReleaseNotes>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>Readme.MD</PackageReadmeFile>
+  </PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
-		<DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
-		<DebugType>full</DebugType>
-		<Optimize>false</Optimize>
-		<WarningLevel>3</WarningLevel>
-	</PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <WarningLevel>3</WarningLevel>
+  </PropertyGroup>
 
-	<ItemGroup>
-		<Content Include="..\..\Doc\DH.png" Link="DH.png" PackagePath="\" />
-	</ItemGroup>
-	<ItemGroup>
-		<None Include="..\..\Readme.MD">
-			<Pack>True</Pack>
-			<PackagePath>\</PackagePath>
-		</None>
-	</ItemGroup>
+  <ItemGroup>
+    <Content Include="..\..\Doc\DH.png" Link="DH.png" PackagePath="\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Readme.MD">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-	</ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="DH.NCore" Version="3.7.2024.826-beta0131" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Certes" Version="3.0.4" />
-	</ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Certes" Version="3.0.4" />
+  </ItemGroup>
 
-	<ItemGroup>
-		<ProjectReference Include="..\DH.AspNetCore.Kestrel.Certificates\DH.AspNetCore.Kestrel.Certificates.csproj" />
-		<ProjectReference Include="..\DH.Ftp\DH.Ftp.csproj" />
-	</ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DH.AspNetCore.Kestrel.Certificates\DH.AspNetCore.Kestrel.Certificates.csproj" />
+    <ProjectReference Include="..\DH.Ftp\DH.Ftp.csproj" />
+  </ItemGroup>
 
 </Project>

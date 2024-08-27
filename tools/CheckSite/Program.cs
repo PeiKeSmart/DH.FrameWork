@@ -57,7 +57,7 @@ class MyService : ServiceBase
 
     /// <summary>开始服务</summary>
     /// <param name="reason"></param>
-    protected override void StartWork(string reason)
+    public override void StartWork(string reason)
     {
         _timer = new TimerX(DoSchedule, null, 1_000, 60_000, "CheckSite") { Async = true };
         _timer1 = new TimerX(DoSchedule1, null, 10_000, 60_000, "CheckState") { Async = false };
@@ -139,7 +139,7 @@ class MyService : ServiceBase
 
     /// <summary>停止服务</summary>
     /// <param name="reason"></param>
-    protected override void StopWork(string reason)
+    public override void StopWork(string reason)
     {
         _timer = null;
         _timer?.Dispose();
