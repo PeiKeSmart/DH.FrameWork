@@ -67,7 +67,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="DH.NRedis" Version="3.7.2024.826-beta0225" />
+		<PackageReference Include="DH.NRedis" Version="3.8.2024.828-beta0135" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
