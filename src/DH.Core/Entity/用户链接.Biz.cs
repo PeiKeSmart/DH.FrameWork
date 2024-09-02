@@ -1,4 +1,4 @@
-using DH.AspNetCore.Webs;
+﻿using DH.AspNetCore.Webs;
 using DH.Core.Webs;
 
 using NewLife;
@@ -14,7 +14,6 @@ using XCode.Cache;
 using XCode.Membership;
 
 namespace DH.Entity;
-
 
 /// <summary>用户链接。第三方绑定</summary>
 public partial class UserConnect : DHEntityBase<UserConnect> {
