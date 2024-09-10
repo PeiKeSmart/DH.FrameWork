@@ -26,8 +26,4 @@
     <EmbeddedResource Include="wwwroot\css\toastr.css" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\DH.VirtualFileSystem\DH.VirtualFileSystem.csproj" />
-  </ItemGroup>
-
 </Project>
