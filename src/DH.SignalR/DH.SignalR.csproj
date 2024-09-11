@@ -84,7 +84,6 @@
 	<ItemGroup>
 		<ProjectReference Include="..\DH.AspNetCore\DH.AspNetCore.csproj" />
 		<ProjectReference Include="..\DH.Core\DH.Core.csproj" />
-		<ProjectReference Include="..\DH.VirtualFileSystem\DH.VirtualFileSystem.csproj" />
 	</ItemGroup>
 
 </Project>
