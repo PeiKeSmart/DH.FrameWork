@@ -86,6 +86,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DH.Core\DH.Core.csproj" />
+    <ProjectReference Include="..\DH.VirtualFileSystem\DH.VirtualFileSystem.csproj" />
   </ItemGroup>
 
   <ItemGroup>
