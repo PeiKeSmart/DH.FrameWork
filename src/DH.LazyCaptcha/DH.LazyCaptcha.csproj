@@ -75,6 +75,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="MathExpressions" Version="1.1.2" />
+		<PackageReference Include="Pek.VirtualFileSystem" Version="3.7.2024.913-beta0723" />
 		<PackageReference Include="SixLabors.ImageSharp.Drawing" Version="2.1.4" />
 	</ItemGroup>
 
@@ -89,7 +90,6 @@
 	<ItemGroup>
 		<ProjectReference Include="..\DH.Core\DH.Core.csproj" />
 		<ProjectReference Include="..\DH.RateLimter\DH.RateLimter.csproj" />
-		<ProjectReference Include="..\DH.VirtualFileSystem\DH.VirtualFileSystem.csproj" />
 	</ItemGroup>
 
 </Project>

@@ -71,6 +71,7 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+		<PackageReference Include="Pek.VirtualFileSystem" Version="3.7.2024.913-beta0723" />
 		<PackageReference Include="SkiaSharp" Version="2.88.8" />
 	</ItemGroup>
 
@@ -84,7 +85,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\DH.RateLimter\DH.RateLimter.csproj" />
-		<ProjectReference Include="..\DH.VirtualFileSystem\DH.VirtualFileSystem.csproj" />
 	</ItemGroup>
 
 </Project>
