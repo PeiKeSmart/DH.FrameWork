@@ -1,8 +1,11 @@
-﻿using NewLife.Reflection;
+﻿using System.Runtime.CompilerServices;
 
-using System.Runtime.CompilerServices;
+using NewLife.Reflection;
 
-namespace DH.Core.Infrastructure {
+using Pek.Infrastructure;
+
+namespace DH.Core.Infrastructure
+{
     /// <summary>
     /// 提供对DH引擎的单例实例的访问。
     /// </summary>

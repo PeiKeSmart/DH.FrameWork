@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using System.Text;
+using Pek.Infrastructure;
 
 namespace DH.Core.Configuration
 {

@@ -1,11 +1,12 @@
-﻿using DH.Core.Configuration;
-using DH.Core.Infrastructure;
+﻿using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
+
+using DH.Core.Configuration;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.Net.Http.Headers;
 
-using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
+using Pek.Infrastructure;
 
 namespace DH.Services.Helpers
 {

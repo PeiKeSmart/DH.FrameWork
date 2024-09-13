@@ -1,6 +1,6 @@
 ﻿using Autofac;
 
-using DH.Core.Infrastructure;
+using Pek.Infrastructure;
 
 namespace DH.Infrastructure.DependencyManagement;
 
