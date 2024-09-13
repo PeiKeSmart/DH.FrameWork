@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 
 using DH.Exceptions;
 
+using Pek.Exceptions;
 using Pek.Infrastructure;
 
 namespace DH.Core;
@@ -361,12 +362,4 @@ public partial class CommonHelper
 
     #endregion
 
-    #region Properties
-
-    /// <summary>
-    /// 获取或设置默认文件提供程序
-    /// </summary>
-    public static IDHFileProvider DefaultFileProvider { get; set; }
-
-    #endregion
 }

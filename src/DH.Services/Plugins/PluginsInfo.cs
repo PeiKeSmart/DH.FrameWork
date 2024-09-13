@@ -1,10 +1,9 @@
 ﻿using System.Reflection;
 using System.Text;
 
-using DH.Core;
-
 using Newtonsoft.Json;
 
+using Pek;
 using Pek.Infrastructure;
 
 namespace DH.Services.Plugins;
@@ -208,7 +207,7 @@ public partial class PluginsInfo : IPluginsInfo
                 continue;
 
             // 确保插件与当前版本兼容
-            if (!pluginDescriptor.SupportedVersions.Contains(DHVersion.CURRENT_VERSION, StringComparer.InvariantCultureIgnoreCase))
+            if (!pluginDescriptor.SupportedVersions.Contains(Core.DHVersion.CURRENT_VERSION, StringComparer.InvariantCultureIgnoreCase))
             {
                 incompatiblePlugins.Add(pluginDescriptor.SystemName);
                 continue;

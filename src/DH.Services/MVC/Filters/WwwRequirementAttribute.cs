@@ -5,6 +5,8 @@ using DH.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
+using Pek.Exceptions;
+
 using System.Net;
 
 namespace DH.Services.MVC.Filters;

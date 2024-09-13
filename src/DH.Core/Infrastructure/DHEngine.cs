@@ -5,7 +5,6 @@ using Autofac;
 using AutoMapper;
 
 using DH.Core.Infrastructure.Mapper;
-using DH.Exceptions;
 using DH.Infrastructure.DependencyManagement;
 
 using Microsoft.AspNetCore.Builder;
@@ -16,6 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 using NewLife.Log;
 
+using Pek.Exceptions;
 using Pek.Infrastructure;
 
 namespace DH.Core.Infrastructure;
