@@ -23,7 +23,7 @@ public static class DHWebHelper {
     {
         get
         {
-            var ctx = HttpContext.Current;
+            var ctx = Pek.Webs.HttpContext.Current;
             if (ctx.Items["Params"] is IDictionary<String, String> dic) return dic;
 
             dic = GetParams(ctx, false, true, true, true, false);

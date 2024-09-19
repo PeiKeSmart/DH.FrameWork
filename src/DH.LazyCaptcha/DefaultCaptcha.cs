@@ -61,7 +61,7 @@ namespace DH.LazyCaptcha
             var (renderText, code) = _captchaCodeGenerator.Generate(_options.CodeLength);
             var image = _captchaImageGenerator.Generate(renderText, _options.ImageOption);
 
-            Webs.HttpContext.Current.Session.SetString(captchaId, code);
+            Pek.Webs.HttpContext.Current.Session.SetString(captchaId, code);
 
             return new CaptchaData(captchaId, code, image);
         }

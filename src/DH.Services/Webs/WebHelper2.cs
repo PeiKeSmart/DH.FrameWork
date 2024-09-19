@@ -19,7 +19,6 @@ using Microsoft.Net.Http.Headers;
 
 using NewLife;
 using NewLife.Collections;
-using NewLife.Log;
 using NewLife.Serialization;
 
 using XCode;
@@ -114,7 +113,7 @@ public static class WebHelper2 {
     {
         get
         {
-            var ctx = DH.Webs.HttpContext.Current;
+            var ctx = Pek.Webs.HttpContext.Current;
             if (ctx.Items["Params"] is IDictionary<String, String> dic) return dic;
 
             var req = ctx.Request;

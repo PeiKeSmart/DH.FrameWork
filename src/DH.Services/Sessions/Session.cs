@@ -1,5 +1,4 @@
 ﻿using DH.Extensions;
-using DH.Helpers;
 
 using IdentityModel;
 
@@ -16,9 +15,9 @@ public class Session : ISession {
     {
         get
         {
-            var result = DHWeb.Identity.GetValue(JwtClaimTypes.Subject);
+            var result = Pek.Helpers.DHWeb.Identity.GetValue(JwtClaimTypes.Subject);
             return string.IsNullOrWhiteSpace(result)
-                ? DHWeb.Identity.GetValue(System.Security.Claims.ClaimTypes.NameIdentifier)
+                ? Pek.Helpers.DHWeb.Identity.GetValue(System.Security.Claims.ClaimTypes.NameIdentifier)
                 : result;
         }
     }
@@ -26,7 +25,7 @@ public class Session : ISession {
     /// <summary>
     /// 是否认证
     /// </summary>
-    public bool IsAuthenticated => DHWeb.Identity.IsAuthenticated;
+    public bool IsAuthenticated => Pek.Helpers.DHWeb.Identity.IsAuthenticated;
 
     /// <summary>
     /// 用户会话

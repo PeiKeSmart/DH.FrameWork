@@ -1,12 +1,10 @@
 ﻿using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
-using System.Security.Claims;
 using System.Text;
 using System.Web;
 
 using DH.IO;
-using DH.Security.Principals;
 
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -22,15 +20,6 @@ namespace DH.Helpers;
 /// </summary>
 public static partial class DHWeb
 {
-    #region HttpContext(当前Http上下文)
-
-    /// <summary>
-    /// 当前Http上下文
-    /// </summary>
-    public static HttpContext HttpContext => DH.Webs.HttpContext.Current;
-
-    #endregion
-
     #region Environment(宿主环境)
 
     /// <summary>
@@ -45,7 +34,7 @@ public static partial class DHWeb
     /// <summary>
     /// 当前Http请求
     /// </summary>
-    public static HttpRequest Request => HttpContext?.Request;
+    public static HttpRequest Request => Pek.Webs.HttpContext.Current?.Request;
 
     #endregion
 
@@ -54,7 +43,7 @@ public static partial class DHWeb
     /// <summary>
     /// 当前Http响应
     /// </summary>
-    public static HttpResponse Response => HttpContext?.Response;
+    public static HttpResponse Response => Pek.Webs.HttpContext.Current?.Response;
 
     #endregion
 
@@ -69,7 +58,7 @@ public static partial class DHWeb
         {
             try
             {
-                var ipAddress = HttpContext.Connection.LocalIpAddress;
+                var ipAddress = Pek.Webs.HttpContext.Current.Connection.LocalIpAddress;
                 return IPAddress.IsLoopback(ipAddress)
                     ? IPAddress.Loopback.ToString()
                     : ipAddress.MapToIPv4().ToString();
@@ -88,7 +77,7 @@ public static partial class DHWeb
     /// <summary>
     /// 请求类型
     /// </summary>
-    public static string RequestType => HttpContext?.Request?.Method;
+    public static string RequestType => Pek.Webs.HttpContext.Current?.Request?.Method;
 
     #endregion
 
@@ -97,43 +86,7 @@ public static partial class DHWeb
     /// <summary>
     /// Form表单
     /// </summary>
-    public static IFormCollection Form => HttpContext?.Request?.Form;
-
-    #endregion
-
-    #region User(当前用户安全主体)
-
-    /// <summary>
-    /// 当前用户安全主体
-    /// </summary>
-    public static ClaimsPrincipal User
-    {
-        get
-        {
-            if (HttpContext == null)
-                return UnauthenticatedPrincipal.Instance;
-            if (HttpContext.User is ClaimsPrincipal principal)
-                return principal;
-            return UnauthenticatedPrincipal.Instance;
-        }
-    }
-
-    #endregion
-
-    #region Identity(当前用户身份)
-
-    /// <summary>
-    /// 当前用户身份
-    /// </summary>
-    public static ClaimsIdentity Identity
-    {
-        get
-        {
-            if (User.Identity is ClaimsIdentity identity)
-                return identity;
-            return UnauthenticatedIdentity.Instance;
-        }
-    }
+    public static IFormCollection Form => Pek.Webs.HttpContext.Current?.Request?.Form;
 
     #endregion
 
@@ -230,7 +183,7 @@ public static partial class DHWeb
                 return _ip;
             }
             var list = new[] { "127.0.0.1", "::1" };
-            var result = HttpContext?.Connection?.RemoteIpAddress.SafeString();
+            var result = Pek.Webs.HttpContext.Current?.Connection?.RemoteIpAddress.SafeString();
             if (string.IsNullOrWhiteSpace(result) || list.Contains(result))
             {
                 result = Sys.IsWindows ? GetLanIP() : GetLanIP(NetworkInterfaceType.Ethernet);
@@ -307,7 +260,7 @@ public static partial class DHWeb
     /// <summary>
     /// 主机
     /// </summary>
-    public static string Host => HttpContext == null ? Dns.GetHostName() : GetClientHostName();
+    public static string Host => Pek.Webs.HttpContext.Current == null ? Dns.GetHostName() : GetClientHostName();
 
     /// <summary>
     /// 获取Web客户端主机名
@@ -334,8 +287,8 @@ public static partial class DHWeb
     /// <returns></returns>
     private static string GetRemoteAddress()
     {
-        return HttpContext?.Request?.Headers["HTTP_X_FORWARDED_FOR"] ??
-               HttpContext?.Request?.Headers["REMOTE_ADDR"];
+        return Pek.Webs.HttpContext.Current?.Request?.Headers["HTTP_X_FORWARDED_FOR"] ??
+               Pek.Webs.HttpContext.Current?.Request?.Headers["REMOTE_ADDR"];
     }
 
     #endregion
@@ -372,7 +325,7 @@ public static partial class DHWeb
     /// <summary>
     /// 内容类型
     /// </summary>
-    public static string ContentType => HttpContext?.Request?.ContentType;
+    public static string ContentType => Pek.Webs.HttpContext.Current?.Request?.ContentType;
 
     #endregion
 
@@ -381,7 +334,7 @@ public static partial class DHWeb
     /// <summary>
     /// 参数
     /// </summary>
-    public static string QueryString => HttpContext?.Request?.QueryString.ToString();
+    public static string QueryString => Pek.Webs.HttpContext.Current?.Request?.QueryString.ToString();
 
     #endregion
 
@@ -394,7 +347,7 @@ public static partial class DHWeb
     {
         get
         {
-            var connection = HttpContext?.Request?.HttpContext?.Connection;
+            var connection = Pek.Webs.HttpContext.Current?.Request?.HttpContext?.Connection;
             if (connection == null)
             {
                 throw new ArgumentNullException(nameof(connection));
@@ -433,7 +386,7 @@ public static partial class DHWeb
     {
         try
         {
-            Environment = DH.Webs.HttpContext.Current.RequestServices.GetService<IWebHostEnvironment>();
+            Environment = Pek.Webs.HttpContext.Current.RequestServices.GetService<IWebHostEnvironment>();
             ServicePointManager.DefaultConnectionLimit = 200;
         }
         catch
@@ -475,7 +428,7 @@ public static partial class DHWeb
     public static List<IFormFile> GetFiles()
     {
         var result = new List<IFormFile>();
-        var files = HttpContext.Request.Form.Files;
+        var files = Pek.Webs.HttpContext.Current.Request.Form.Files;
         if (files == null || files.Count == 0)
         {
             return result;

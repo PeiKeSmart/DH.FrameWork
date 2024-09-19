@@ -105,7 +105,7 @@ public class JsonWebTokenAuthorizationHandler : AuthorizationHandler<JsonWebToke
         var httpContext = _accessor.HttpContext;
 
         if (httpContext == null)
-            httpContext = DH.Webs.HttpContext.Current;
+            httpContext = Pek.Webs.HttpContext.Current;
         if (httpContext == null)
             return;
 
