@@ -30,6 +30,12 @@ public class MenuTree
     /// <summary>是否新窗口打开</summary>
     public Boolean NewWindow { get; set; }
 
+    /// <summary>
+    /// 自定义样式类
+    /// </summary>
+    /// <value></value>
+    public String Class { get; set; }
+
     /// <summary>可选权限子项</summary>
     public Dictionary<Int32, String> Permissions { get; set; }
 
