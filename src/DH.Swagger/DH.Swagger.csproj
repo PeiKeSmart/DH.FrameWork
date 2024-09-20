@@ -77,7 +77,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Pek.VirtualFileSystem" Version="3.7.2024.919-beta0136" />
+    <PackageReference Include="Pek.VirtualFileSystem" Version="3.7.2024.920-beta0209" />
     <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="8.0.2" />
     <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.7.3" />
     <PackageReference Include="Swashbuckle.AspNetCore.ReDoc" Version="6.7.3" />

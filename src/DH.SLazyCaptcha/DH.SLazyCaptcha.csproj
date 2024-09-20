@@ -71,7 +71,7 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Pek.VirtualFileSystem" Version="3.7.2024.919-beta0136" />
+		<PackageReference Include="Pek.VirtualFileSystem" Version="3.7.2024.920-beta0209" />
 		<PackageReference Include="SkiaSharp" Version="2.88.8" />
 	</ItemGroup>
 
