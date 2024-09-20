@@ -82,7 +82,6 @@ public static class NetProSwaggerServiceExtensions
 
                 c.SwaggerDoc(version, infos);
                 c.OrderActionsBy(o => o.RelativePath);
-                c.DocumentFilter<HiddenApiFilter>();
             });
 
             c.IgnoreObsoleteActions();

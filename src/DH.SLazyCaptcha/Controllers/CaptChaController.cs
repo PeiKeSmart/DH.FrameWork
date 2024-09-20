@@ -1,5 +1,4 @@
-﻿using DH.AspNetCore.Attributes;
-using DH.Core.Infrastructure;
+﻿using DH.Core.Infrastructure;
 using DH.RateLimter;
 
 using Microsoft.AspNetCore.Mvc;
@@ -9,7 +8,7 @@ namespace DH.SLazyCaptcha.Controllers;
 /// <summary>
 /// 验证码控制器
 /// </summary>
-[HiddenApi]
+[ApiExplorerSettings(IgnoreApi = true)]
 public partial class CaptChaController : Controller {
     /// <summary>
     /// 验证码，适用于跨平台。

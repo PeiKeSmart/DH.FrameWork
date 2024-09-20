@@ -2,6 +2,7 @@
 using System.Reflection;
 
 using Pek;
+using Pek.Helpers;
 
 namespace DH.Helpers;
 
@@ -14,27 +15,6 @@ public static partial class Enum
     /// 枚举值字段
     /// </summary>
     private const string EnumValueField = "value__";
-
-    #region Parse(获取实例)
-
-    /// <summary>
-    /// 获取实例
-    /// </summary>
-    /// <typeparam name="TEnum">枚举类型</typeparam>
-    /// <param name="member">成员名或值，范例：Enum1枚举有成员A=0，则传入"A"或"0"获取 Enum1.A</param>
-    public static TEnum Parse<TEnum>(object member)
-    {
-        var value = member.SafeString();
-        if (value.IsEmpty())
-        {
-            if (typeof(TEnum).IsGenericType)
-                return default;
-            throw new ArgumentNullException(nameof(member));
-        }
-        return (TEnum)System.Enum.Parse(Common.GetType<TEnum>(), value, true);
-    }
-
-    #endregion
 
     #region ParseByDescription(通过描述获取实例)
 
@@ -107,31 +87,7 @@ public static partial class Enum
 
     #endregion
 
-    #region GetValue(获取成员值)
-
-    /// <summary>
-    /// 获取成员值
-    /// </summary>
-    /// <typeparam name="TEnum">枚举类型</typeparam>
-    /// <param name="member">成员名、值、实例均可，范例:Enum1枚举有成员A=0,可传入"A"、0、Enum1.A，获取值0</param>
-    /// <exception cref="ArgumentNullException">成员为空</exception>
-    public static int GetValue<TEnum>(object member) => GetValue(Common.GetType<TEnum>(), member);
-
-    /// <summary>
-    /// 获取成员值
-    /// </summary>
-    /// <param name="type">枚举类型</param>
-    /// <param name="member">成员名、值、实例均可，范例:Enum1枚举有成员A=0,可传入"A"、0、Enum1.A，获取值0</param>
-    /// <exception cref="ArgumentNullException">成员为空</exception>
-    public static int GetValue(Type type, object member)
-    {
-        string value = member.SafeString();
-        if (value.IsEmpty())
-            throw new ArgumentNullException(nameof(member));
-        return (int)System.Enum.Parse(type, member.ToString(), true);
-    }
-
-    #endregion
+    
 
     #region GetDescription(获取描述)
 
@@ -194,7 +150,7 @@ public static partial class Enum
     {
         if (!field.FieldType.IsEnum)
             return;
-        var value = GetValue(type, field.Name);
+        var value = Pek.Helpers.Enum.GetValue(type, field.Name);
         var description = Reflection.GetDescription(field);
         result.Add(new Item(description, value, value));
     }
@@ -227,7 +183,7 @@ public static partial class Enum
     {
         if (!field.FieldType.GetTypeInfo().IsEnum)
             return;
-        var value = GetValue<TEnum>(field.Name);
+        var value = Pek.Helpers.Enum.GetValue<TEnum>(field.Name);
         var description = Reflection.GetDescription(field);
         result.Add(value, description);
     }
@@ -248,7 +204,7 @@ public static partial class Enum
         ICollection<Tuple<int, string, string>> collection = new HashSet<Tuple<int, string, string>>();
         foreach (var field in fields.Where(x => x.Name != EnumValueField))
         {
-            var value = GetValue<TEnum>(field.Name);
+            var value = Pek.Helpers.Enum.GetValue<TEnum>(field.Name);
             var description = Reflection.GetDescription(field);
             collection.Add(new Tuple<int, string, string>(value, field.Name,
                 string.IsNullOrWhiteSpace(description) ? field.Name : description));

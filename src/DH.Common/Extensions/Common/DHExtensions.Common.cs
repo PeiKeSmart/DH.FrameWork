@@ -1,6 +1,8 @@
 ﻿using System.ComponentModel;
 using System.Text.RegularExpressions;
 
+using Pek;
+
 namespace DH;
 
 /// <summary>
@@ -25,14 +27,14 @@ public static partial class DHExtensions
     /// 获取枚举值
     /// </summary>
     /// <param name="instance">枚举实例</param>
-    public static int Value(this Enum instance) => Helpers.Enum.GetValue(instance.GetType(), instance);
+    public static int Value(this Enum instance) => Pek.Helpers.Enum.GetValue(instance.GetType(), instance);
 
     /// <summary>
     /// 获取枚举值
     /// </summary>
     /// <typeparam name="TResult">返回值类型</typeparam>
     /// <param name="instance">枚举实例</param>
-    public static TResult Value<TResult>(this Enum instance) => Helpers.Conv.To<TResult>(instance.Value());
+    public static TResult Value<TResult>(this Enum instance) => Pek.Helpers.Conv.To<TResult>(instance.Value());
 
     #endregion
 

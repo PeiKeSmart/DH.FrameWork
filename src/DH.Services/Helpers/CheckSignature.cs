@@ -4,6 +4,8 @@ using DH.Timing;
 
 using NewLife.Caching;
 
+using Pek.Helpers;
+
 namespace DH.Helpers;
 
 /// <summary>
