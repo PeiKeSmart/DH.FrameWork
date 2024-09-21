@@ -113,7 +113,7 @@ public class AntiDuplicateRequestAttribute : ActionFilterAttribute {
 
             userId = $"{UserId}_";
         }
-        return string.IsNullOrWhiteSpace(Key) ? $"{userId}{DHWeb.Request.Path}" : $"{userId}{Key}";
+        return string.IsNullOrWhiteSpace(Key) ? $"{userId}{Pek.Helpers.DHWeb.Request.Path}" : $"{userId}{Key}";
     }
 
     /// <summary>

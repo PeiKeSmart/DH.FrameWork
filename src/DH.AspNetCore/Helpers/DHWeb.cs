@@ -1,15 +1,11 @@
 ﻿using System.Net;
-using System.Net.NetworkInformation;
-using System.Net.Sockets;
 using System.Text;
 using System.Web;
 
 using DH.IO;
 
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.Extensions.DependencyInjection;
 
 using Pek;
 
@@ -20,24 +16,6 @@ namespace DH.Helpers;
 /// </summary>
 public static partial class DHWeb
 {
-    #region Environment(宿主环境)
-
-    /// <summary>
-    /// 宿主环境
-    /// </summary>
-    public static IWebHostEnvironment Environment { get; set; }
-
-    #endregion
-
-    #region Request(当前Http请求)
-
-    /// <summary>
-    /// 当前Http请求
-    /// </summary>
-    public static HttpRequest Request => Pek.Webs.HttpContext.Current?.Request;
-
-    #endregion
-
     #region Response(当前Http响应)
 
     /// <summary>
@@ -47,30 +25,7 @@ public static partial class DHWeb
 
     #endregion
 
-    #region LocalIpAddress(本地IP)
-
-    /// <summary>
-    /// 本地IP
-    /// </summary>
-    public static string LocalIpAddress
-    {
-        get
-        {
-            try
-            {
-                var ipAddress = Pek.Webs.HttpContext.Current.Connection.LocalIpAddress;
-                return IPAddress.IsLoopback(ipAddress)
-                    ? IPAddress.Loopback.ToString()
-                    : ipAddress.MapToIPv4().ToString();
-            }
-            catch
-            {
-                return IPAddress.Loopback.ToString();
-            }
-        }
-    }
-
-    #endregion
+    
 
     #region RequestType(请求类型)
 
@@ -99,7 +54,7 @@ public static partial class DHWeb
     {
         get
         {
-            var authorization = Request?.Headers["Authorization"].SafeString();
+            var authorization = Pek.Helpers.DHWeb.Request?.Headers["Authorization"].SafeString();
             if (string.IsNullOrWhiteSpace(authorization))
                 return null;
             var list = authorization.Split(' ');
@@ -120,8 +75,8 @@ public static partial class DHWeb
     {
         get
         {
-            Request.EnableBuffering();
-            return FileHelper.ToString(Request.Body, isCloseStream: false);
+            Pek.Helpers.DHWeb.Request.EnableBuffering();
+            return FileHelper.ToString(Pek.Helpers.DHWeb.Request.Body, isCloseStream: false);
         }
     }
 
@@ -132,128 +87,19 @@ public static partial class DHWeb
     /// <summary>
     /// 获得请求的原始url(未转义)
     /// </summary>
-    public static string Url => Request?.GetDisplayUrl();
+    public static string Url => Pek.Helpers.DHWeb.Request?.GetDisplayUrl();
 
     /// <summary>
     /// 获得请求的原始url(转义)
     /// </summary>
-    public static string EncodedUrl => Request?.GetEncodedUrl();
+    public static string EncodedUrl => Pek.Helpers.DHWeb.Request?.GetEncodedUrl();
 
     #endregion
 
     /// <summary>
     /// 引用地址
     /// </summary>
-    public static string RefererUrl => Request.Headers["Referer"].FirstOrDefault();
-
-    #region IP(客户端IP地址)
-
-    /// <summary>
-    /// IP地址
-    /// </summary>
-    private static string _ip;
-
-    /// <summary>
-    /// 设置IP地址
-    /// </summary>
-    /// <param name="ip">IP地址</param>
-    public static void SetIp(string ip)
-    {
-        _ip = ip;
-    }
-
-    /// <summary>
-    /// 重置IP地址
-    /// </summary>
-    public static void ResetIp()
-    {
-        _ip = null;
-    }
-
-    /// <summary>
-    /// 客户端IP地址
-    /// </summary>
-    // ReSharper disable once InconsistentNaming
-    public static string IP
-    {
-        get
-        {
-            if (string.IsNullOrWhiteSpace(_ip) == false)
-            {
-                return _ip;
-            }
-            var list = new[] { "127.0.0.1", "::1" };
-            var result = Pek.Webs.HttpContext.Current?.Connection?.RemoteIpAddress.SafeString();
-            if (string.IsNullOrWhiteSpace(result) || list.Contains(result))
-            {
-                result = Sys.IsWindows ? GetLanIP() : GetLanIP(NetworkInterfaceType.Ethernet);
-            }
-            if (result.Contains("::ffff:127.0.0.1"))
-            {
-                return "127.0.0.1";
-            }
-            return result;
-        }
-    }
-
-    /// <summary>
-    /// 获取局域网IP
-    /// </summary>
-    /// <returns></returns>
-    // ReSharper disable once InconsistentNaming
-    private static string GetLanIP()
-    {
-        foreach (var hostAddress in Dns.GetHostAddresses(Dns.GetHostName()))
-        {
-            if (hostAddress.AddressFamily == AddressFamily.InterNetwork)
-            {
-                return hostAddress.ToString();
-            }
-        }
-        return string.Empty;
-    }
-
-    /// <summary>
-    /// 获取局域网IP。
-    /// 参考地址：https://stackoverflow.com/questions/6803073/get-local-ip-address/28621250#28621250
-    /// 解决OSX下获取IP地址产生"Device not configured"的问题
-    /// </summary>
-    /// <param name="type">网络接口类型</param>
-    /// <returns></returns>
-    // ReSharper disable once InconsistentNaming
-    private static string GetLanIP(NetworkInterfaceType type)
-    {
-        try
-        {
-            foreach (var item in NetworkInterface.GetAllNetworkInterfaces())
-            {
-                if (item.NetworkInterfaceType != type || item.OperationalStatus != OperationalStatus.Up)
-                {
-                    continue;
-                }
-                var ipProperties = item.GetIPProperties();
-                if (ipProperties.GatewayAddresses.FirstOrDefault() == null)
-                {
-                    continue;
-                }
-                foreach (var ip in ipProperties.UnicastAddresses)
-                {
-                    if (ip.Address.AddressFamily == AddressFamily.InterNetwork)
-                    {
-                        return ip.Address.ToString();
-                    }
-                }
-            }
-        }
-        catch
-        {
-            return string.Empty;
-        }
-
-        return string.Empty;
-    }
-
-    #endregion
+    public static string RefererUrl => Pek.Helpers.DHWeb.Request.Headers["Referer"].FirstOrDefault();
 
     #region Host(主机)
 
@@ -298,7 +144,7 @@ public static partial class DHWeb
     /// <summary>
     /// 用户代理
     /// </summary>
-    public static string UserAgent => Request?.Headers["User-Agent"].SafeString();
+    public static string UserAgent => Pek.Helpers.DHWeb.Request?.Headers["User-Agent"].SafeString();
 
     #endregion
 
@@ -307,7 +153,7 @@ public static partial class DHWeb
     /// <summary>
     /// 根路径
     /// </summary>
-    public static string RootPath => Environment?.ContentRootPath;
+    public static string RootPath => Pek.Helpers.DHWeb.Environment?.ContentRootPath;
 
     #endregion
 
@@ -316,7 +162,7 @@ public static partial class DHWeb
     /// <summary>
     /// Web根路径，即wwwroot
     /// </summary>
-    public static string WebRootPath => Environment?.WebRootPath;
+    public static string WebRootPath => Pek.Helpers.DHWeb.Environment?.WebRootPath;
 
     #endregion
 
@@ -374,25 +220,6 @@ public static partial class DHWeb
     /// </summary>
     /// <param name="address">IP地址</param>
     private static bool IsSet(this IPAddress address) => address != null && address.ToString() != NullIpAddress;
-
-    #endregion
-
-    #region 构造函数
-
-    /// <summary>
-    /// 静态构造函数
-    /// </summary>
-    static DHWeb()
-    {
-        try
-        {
-            Environment = Pek.Webs.HttpContext.Current.RequestServices.GetService<IWebHostEnvironment>();
-            ServicePointManager.DefaultConnectionLimit = 200;
-        }
-        catch
-        {
-        }
-    }
 
     #endregion
 
@@ -464,19 +291,19 @@ public static partial class DHWeb
     {
         if (string.IsNullOrWhiteSpace(name))
             return string.Empty;
-        if (Request == null)
+        if (Pek.Helpers.DHWeb.Request == null)
             return string.Empty;
         var result = string.Empty;
-        if (Request.Query != null)
-            result = Request.Query[name];
+        if (Pek.Helpers.DHWeb.Request.Query != null)
+            result = Pek.Helpers.DHWeb.Request.Query[name];
         if (string.IsNullOrWhiteSpace(result) == false)
             return result;
-        if (Request.Form != null)
-            result = Request.Form[name];
+        if (Pek.Helpers.DHWeb.Request.Form != null)
+            result = Pek.Helpers.DHWeb.Request.Form[name];
         if (string.IsNullOrWhiteSpace(result) == false)
             return result;
-        if (Request.Headers != null)
-            result = Request.Headers[name];
+        if (Pek.Helpers.DHWeb.Request.Headers != null)
+            result = Pek.Helpers.DHWeb.Request.Headers[name];
         return result;
     }
 
@@ -637,8 +464,8 @@ public static partial class DHWeb
     /// <returns></returns>
     public static async Task<string> GetBodyAsync()
     {
-        Request.EnableBuffering();
-        return await FileHelper.ToStringAsync(Request.Body, isCloseStream: false);
+        Pek.Helpers.DHWeb.Request.EnableBuffering();
+        return await FileHelper.ToStringAsync(Pek.Helpers.DHWeb.Request.Body, isCloseStream: false);
     }
 
     #endregion
@@ -667,7 +494,7 @@ public static partial class DHWeb
     /// <returns></returns>
     public static string GetSiteUrl()
     {
-        return Request.Scheme + "://" + Request.Host;
+        return Pek.Helpers.DHWeb.Request.Scheme + "://" + Pek.Helpers.DHWeb.Request.Host;
     }
 
     public enum AgentType
