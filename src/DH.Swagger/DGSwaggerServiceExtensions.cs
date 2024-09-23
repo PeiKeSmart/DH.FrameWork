@@ -1,8 +1,5 @@
 ﻿using System.Reflection;
 
-using DH.AspNetCore;
-using DH.Core.Infrastructure;
-
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -59,7 +56,7 @@ public static class NetProSwaggerServiceExtensions
                 }
             });
 
-            var typeFinder = EngineContext.Current.Resolve<ITypeFinder>();
+            var typeFinder = Singleton<ITypeFinder>.Instance;
             var DHSwaggers = typeFinder.FindClassesOfType<IDHSwagger>();
             var list = DHSwaggers
             .Select(swagger => (IDHSwagger)Activator.CreateInstance(swagger));
@@ -135,6 +132,8 @@ public static class NetProSwaggerMiddlewareExtensions
      this IApplicationBuilder application)
     {
         var configuration = application.ApplicationServices.GetService(typeof(IConfiguration)) as IConfiguration;
+
+        XTrace.WriteLine($"DH Swagger Middleware:{configuration.GetValue<bool>("SwaggerOption:Enabled", false)}");
 
         if (configuration.GetValue<bool>("SwaggerOption:Enabled", false))
         {
