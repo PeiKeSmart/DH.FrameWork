@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 
 using Pek;
+using Pek.Swagger;
 
 namespace DH.AspNetCore.MVC;
 

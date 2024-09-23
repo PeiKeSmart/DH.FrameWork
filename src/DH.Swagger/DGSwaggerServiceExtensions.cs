@@ -14,6 +14,7 @@ using NewLife;
 using NewLife.Log;
 
 using Pek.Infrastructure;
+using Pek.Swagger;
 
 using Swashbuckle.AspNetCore.Filters;
 using Swashbuckle.AspNetCore.SwaggerUI;
