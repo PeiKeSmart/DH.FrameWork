@@ -69,7 +69,7 @@ internal sealed class JsonWebTokenBuilder : IJsonWebTokenBuilder
     /// <param name="payload">负载</param>
     /// <param name="AccessExpireMinutes">访问令牌有效期分钟数</param>
     /// <param name="RefreshExpireMinutes">刷新令牌有效期分钟数</param>
-    public async Task<JsonWebToken> Create(IDictionary<string, string> payload, Double RefreshExpireMinutes, Double AccessExpireMinutes = 0)
+    public JsonWebToken Create(IDictionary<string, string> payload, Double RefreshExpireMinutes, Double AccessExpireMinutes = 0)
     {
         var options = _options.DeepClone();
 
@@ -163,7 +163,7 @@ internal sealed class JsonWebTokenBuilder : IJsonWebTokenBuilder
     /// </summary>
     /// <param name="refreshToken">刷新令牌</param>
     /// <param name="RefreshExpireMinutes">刷新令牌有效期分钟数</param>
-    public async Task<JsonWebToken> Refresh(string refreshToken, Double RefreshExpireMinutes)
+    public JsonWebToken Refresh(string refreshToken, Double RefreshExpireMinutes)
     {
         var options = _options.DeepClone();
 
@@ -179,6 +179,7 @@ internal sealed class JsonWebTokenBuilder : IJsonWebTokenBuilder
     /// 刷新令牌
     /// </summary>
     /// <param name="refreshToken">刷新令牌</param>
+    /// <param name="options"></param>
     public JsonWebToken Refresh(string refreshToken, JwtOptions options)
     {
         if (string.IsNullOrWhiteSpace(refreshToken))
@@ -225,7 +226,7 @@ internal sealed class JsonWebTokenBuilder : IJsonWebTokenBuilder
     /// <param name="refreshToken">刷新令牌</param>
     /// <param name="expire">延时时间。秒</param>
     /// <param name="RefreshExpireMinutes">刷新令牌有效期分钟数</param>
-    public async Task<JsonWebToken> Refresh(string refreshToken, Int32 expire, Double RefreshExpireMinutes)
+    public JsonWebToken Refresh(string refreshToken, Int32 expire, Double RefreshExpireMinutes)
     {
         var options = _options.DeepClone();
 
@@ -242,6 +243,7 @@ internal sealed class JsonWebTokenBuilder : IJsonWebTokenBuilder
     /// </summary>
     /// <param name="refreshToken">刷新令牌</param>
     /// <param name="expire">延时时间。秒</param>
+    /// <param name="options"></param>
     public JsonWebToken Refresh(String refreshToken, Int32 expire, JwtOptions options)
     {
         if (string.IsNullOrWhiteSpace(refreshToken))

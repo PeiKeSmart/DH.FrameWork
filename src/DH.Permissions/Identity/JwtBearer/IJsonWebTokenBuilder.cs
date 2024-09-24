@@ -20,7 +20,7 @@ public interface IJsonWebTokenBuilder
     /// <param name="payload">负载</param>
     /// <param name="AccessExpireMinutes">访问令牌有效期分钟数</param>
     /// <param name="RefreshExpireMinutes">刷新令牌有效期分钟数</param>
-    Task<JsonWebToken> Create(IDictionary<string, string> payload, Double RefreshExpireMinutes, Double AccessExpireMinutes = 0);
+    JsonWebToken Create(IDictionary<string, string> payload, Double RefreshExpireMinutes, Double AccessExpireMinutes = 0);
 
     /// <summary>
     /// 创建令牌
@@ -46,7 +46,7 @@ public interface IJsonWebTokenBuilder
     /// </summary>
     /// <param name="refreshToken">刷新令牌</param>
     /// <param name="RefreshExpireMinutes">刷新令牌有效期分钟数</param>
-    Task<JsonWebToken> Refresh(string refreshToken, Double RefreshExpireMinutes);
+    JsonWebToken Refresh(string refreshToken, Double RefreshExpireMinutes);
 
     /// <summary>
     /// 刷新令牌，延时清理数据
@@ -61,5 +61,5 @@ public interface IJsonWebTokenBuilder
     /// <param name="refreshToken">刷新令牌</param>
     /// <param name="expire">延时时间。秒</param>
     /// <param name="RefreshExpireMinutes">刷新令牌有效期分钟数</param>
-    Task<JsonWebToken> Refresh(string refreshToken, Int32 expire, Double RefreshExpireMinutes);
+    JsonWebToken Refresh(string refreshToken, Int32 expire, Double RefreshExpireMinutes);
 }
