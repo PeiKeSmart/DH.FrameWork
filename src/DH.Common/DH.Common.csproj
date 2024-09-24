@@ -71,7 +71,7 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Pek.Common" Version="3.91.2024.923-beta0937" />
+		<PackageReference Include="Pek.Common" Version="3.91.2024.924-beta1051" />
 		<PackageReference Include="System.Text.Json" Version="8.0.4" />
 	</ItemGroup>
 
