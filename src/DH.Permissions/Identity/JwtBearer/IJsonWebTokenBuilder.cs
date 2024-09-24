@@ -1,5 +1,6 @@
-﻿using DH.Models;
-using DH.Security;
+﻿using DH.Security;
+
+using Pek.Security;
 
 namespace DH.Permissions.Identity.JwtBearer;
 
@@ -39,6 +40,7 @@ public interface IJsonWebTokenBuilder
     /// 刷新令牌
     /// </summary>
     /// <param name="refreshToken">刷新令牌</param>
+    /// <param name="options"></param>
     JsonWebToken Refresh(string refreshToken, JwtOptions options);
 
     /// <summary>
