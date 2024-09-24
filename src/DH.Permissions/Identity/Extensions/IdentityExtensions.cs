@@ -1,8 +1,7 @@
 ﻿using System.Security.Claims;
 using System.Security.Principal;
 
-using DH.Extensions;
-
+using Pek;
 using Pek.Helpers;
 
 namespace DH.Permissions.Identity.Extensions;
@@ -20,7 +19,8 @@ public static class IdentityExtensions
     /// <param name="identity">标识</param>
     public static string GetUserId(this IIdentity identity)
     {
-        Check.NotNull(identity, nameof(identity));
+        if (identity == null) throw new ArgumentNullException(nameof(identity));
+
         if (!(identity is ClaimsIdentity claimsIdentity))
             return null;
         var result = claimsIdentity.GetValue(IdentityModel.JwtClaimTypes.Subject);
@@ -36,7 +36,8 @@ public static class IdentityExtensions
     /// <param name="identity">标识</param>
     public static T GetUserId<T>(this IIdentity identity)
     {
-        Check.NotNull(identity, nameof(identity));
+        if (identity == null) throw new ArgumentNullException(nameof(identity));
+
         if (!(identity is ClaimsIdentity claimsIdentity))
             return default;
         var result = claimsIdentity.GetValue(IdentityModel.JwtClaimTypes.Subject);
@@ -57,7 +58,8 @@ public static class IdentityExtensions
     /// <param name="identity">标识</param>
     public static string GetUserName(this IIdentity identity)
     {
-        Check.NotNull(identity, nameof(identity));
+        if (identity == null) throw new ArgumentNullException(nameof(identity));
+
         if (!(identity is ClaimsIdentity claimsIdentity))
             return null;
         var result = claimsIdentity.GetValue(IdentityModel.JwtClaimTypes.Name);
@@ -76,7 +78,8 @@ public static class IdentityExtensions
     /// <param name="identity">标识</param>
     public static string GetEmail(this IIdentity identity)
     {
-        Check.NotNull(identity, nameof(identity));
+        if (identity == null) throw new ArgumentNullException(nameof(identity));
+
         if (!(identity is ClaimsIdentity claimsIdentity))
             return null;
         var result = claimsIdentity.GetValue(IdentityModel.JwtClaimTypes.Email);
@@ -95,7 +98,8 @@ public static class IdentityExtensions
     /// <param name="identity">标识</param>
     public static string GetNickName(this IIdentity identity)
     {
-        Check.NotNull(identity, nameof(identity));
+        if (identity == null) throw new ArgumentNullException(nameof(identity));
+
         if (!(identity is ClaimsIdentity claimsIdentity))
             return null;
         var result = claimsIdentity.GetValue(IdentityModel.JwtClaimTypes.GivenName);
@@ -114,7 +118,8 @@ public static class IdentityExtensions
     /// <param name="identity">标识</param>
     public static string[] GetRoles(this IIdentity identity)
     {
-        Check.NotNull(identity, nameof(identity));
+        if (identity == null) throw new ArgumentNullException(nameof(identity));
+
         if (!(identity is ClaimsIdentity claimsIdentity))
             return new string[0];
         var result = GetRoles(claimsIdentity, IdentityModel.JwtClaimTypes.Role);

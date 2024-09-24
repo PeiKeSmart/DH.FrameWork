@@ -1,6 +1,4 @@
-﻿using DH.Core.Infrastructure;
-
-using NewLife.Caching;
+﻿using NewLife.Caching;
 using NewLife.Log;
 
 using Pek.Configs;
