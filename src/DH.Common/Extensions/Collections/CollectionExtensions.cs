@@ -1,4 +1,6 @@
-﻿namespace DH.Extensions;
+﻿using Pek;
+
+namespace DH.Extensions;
 
 /// <summary>
 /// 集合(<see cref="ICollection{T}"/>) 扩展

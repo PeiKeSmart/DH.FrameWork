@@ -1,13 +1,12 @@
-﻿using DH.Core;
+﻿using System.Net;
+
+using DH.Core;
 using DH.Core.Domain.Seo;
-using DH.Exceptions;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 using Pek.Exceptions;
-
-using System.Net;
 
 namespace DH.Services.MVC.Filters;
 
