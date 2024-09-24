@@ -1,5 +1,6 @@
 ﻿using DH.Extensions;
-using DH.Security;
+
+using Pek.Security;
 
 namespace DH.Permissions.Authorization.Middlewares;
 

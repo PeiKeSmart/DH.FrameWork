@@ -1,5 +1,4 @@
 ﻿using DH.Permissions.Identity.JwtBearer;
-using DH.Security;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -7,6 +6,8 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 using NewLife.Serialization;
+
+using Pek.Security;
 
 namespace DH.Permissions.Authorization.Policies;
 

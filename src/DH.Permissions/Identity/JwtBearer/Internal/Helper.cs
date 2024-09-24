@@ -1,10 +1,10 @@
-﻿using DH.Security;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 using Microsoft.IdentityModel.Tokens;
 
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+using Pek.Security;
 
 namespace DH.Permissions.Identity.JwtBearer.Internal;
 

@@ -1,16 +1,16 @@
-﻿using DH.Permissions.Authorization.Middlewares;
+﻿using System.Text;
+
+using DH.Permissions.Authorization.Middlewares;
 using DH.Permissions.Authorization.Policies;
 using DH.Permissions.Identity.JwtBearer;
 using DH.Permissions.Identity.JwtBearer.Internal;
-
-using DH.Security;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Tokens;
 
-using System.Text;
+using Pek.Security;
 
 namespace DH.Permissions.Extensions;
 

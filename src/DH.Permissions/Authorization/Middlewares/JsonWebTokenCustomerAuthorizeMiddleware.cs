@@ -4,6 +4,8 @@ using DH.Security;
 
 using Microsoft.Extensions.Options;
 
+using Pek.Security;
+
 namespace DH.Permissions.Authorization.Middlewares;
 
 /// <summary>

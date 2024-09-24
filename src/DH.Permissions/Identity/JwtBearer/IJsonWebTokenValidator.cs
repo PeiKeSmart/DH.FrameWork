@@ -1,4 +1,4 @@
-﻿using DH.Security;
+﻿using Pek.Security;
 
 namespace DH.Permissions.Identity.JwtBearer;
 
