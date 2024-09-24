@@ -2317,23 +2317,23 @@ public static class CoreExtension
         return @this;
     }
 
-    /// <summary>
-    ///     A T extension method that makes a deep copy of '@this' object.
-    /// </summary>
-    /// <typeparam name="T">Generic type parameter. It should be <c>Serializable</c></typeparam>
-    /// <param name="this">The @this to act on.</param>
-    /// <returns>the copied object.</returns>
-    public static async Task<T> DeepClone<T>([NotNull] this T @this)
-    {
-        using (var stream = new MemoryStream())
-        {
-            //IFormatter formatter = new BinaryFormatter();
-            await Xfrogcn.BinaryFormatter.BinarySerializer.SerializeAsync(stream, @this);
-            //formatter.Context = new StreamingContext(StreamingContextStates.Clone);
-            stream.Seek(0, SeekOrigin.Begin);
-            return (T)await Xfrogcn.BinaryFormatter.BinarySerializer.DeserializeAsync(stream);
-        }
-    }
+    ///// <summary>
+    /////     A T extension method that makes a deep copy of '@this' object.
+    ///// </summary>
+    ///// <typeparam name="T">Generic type parameter. It should be <c>Serializable</c></typeparam>
+    ///// <param name="this">The @this to act on.</param>
+    ///// <returns>the copied object.</returns>
+    //public static async Task<T> DeepClone<T>([NotNull] this T @this)
+    //{
+    //    using (var stream = new MemoryStream())
+    //    {
+    //        //IFormatter formatter = new BinaryFormatter();
+    //        await Xfrogcn.BinaryFormatter.BinarySerializer.SerializeAsync(stream, @this);
+    //        //formatter.Context = new StreamingContext(StreamingContextStates.Clone);
+    //        stream.Seek(0, SeekOrigin.Begin);
+    //        return (T)await Xfrogcn.BinaryFormatter.BinarySerializer.DeserializeAsync(stream);
+    //    }
+    //}
 
     /// <summary>
     ///     A T extension method that null if.

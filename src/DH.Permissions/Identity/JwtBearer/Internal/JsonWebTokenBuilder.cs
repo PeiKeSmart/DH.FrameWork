@@ -71,7 +71,7 @@ internal sealed class JsonWebTokenBuilder : IJsonWebTokenBuilder
     /// <param name="RefreshExpireMinutes">刷新令牌有效期分钟数</param>
     public async Task<JsonWebToken> Create(IDictionary<string, string> payload, Double RefreshExpireMinutes, Double AccessExpireMinutes = 0)
     {
-        var options = await _options.DeepClone();
+        var options = _options.DeepClone();
 
         if (AccessExpireMinutes > 0)
         {
@@ -165,7 +165,7 @@ internal sealed class JsonWebTokenBuilder : IJsonWebTokenBuilder
     /// <param name="RefreshExpireMinutes">刷新令牌有效期分钟数</param>
     public async Task<JsonWebToken> Refresh(string refreshToken, Double RefreshExpireMinutes)
     {
-        var options = await _options.DeepClone();
+        var options = _options.DeepClone();
 
         if (RefreshExpireMinutes > 0)
         {
@@ -227,7 +227,7 @@ internal sealed class JsonWebTokenBuilder : IJsonWebTokenBuilder
     /// <param name="RefreshExpireMinutes">刷新令牌有效期分钟数</param>
     public async Task<JsonWebToken> Refresh(string refreshToken, Int32 expire, Double RefreshExpireMinutes)
     {
-        var options = await _options.DeepClone();
+        var options = _options.DeepClone();
 
         if (RefreshExpireMinutes > 0)
         {
