@@ -153,7 +153,7 @@ public partial class DHEngine : IEngine
         XTrace.WriteLine($"添加和配置服务顺序：ConfigureServices");
 
         // 配置服务
-        foreach (var instance in DHConast.DHStartups)
+        foreach (var instance in DHConast.DHStartups.OrderBy(e => e.StartupOrder))
         {
             XTrace.WriteLine($"{instance.GetType().Name}:{instance.StartupOrder}");
             instance.ConfigureServices(services, configuration, webHostEnvironment);
@@ -183,7 +183,7 @@ public partial class DHEngine : IEngine
         XTrace.WriteLine($"配置HTTP请求管道：Configure");
 
         // 配置请求管道
-        foreach (var instance in DHConast.DHStartups)
+        foreach (var instance in DHConast.DHStartups.OrderBy(e => e.StartupOrder))
         {
             XTrace.WriteLine($"{instance.GetType().Name}:{instance.StartupOrder}");
             instance.Configure(application);
