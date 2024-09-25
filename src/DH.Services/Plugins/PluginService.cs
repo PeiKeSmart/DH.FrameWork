@@ -21,29 +21,24 @@ namespace DH.Services.Plugins;
 /// </summary>
 public partial class PluginService : IPluginService
 {
-    private readonly CatalogSettings _catalogSettings;
     private readonly ICustomerService _customerService;
     private readonly IDHFileProvider _fileProvider;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IWebHelper _webHelper;
-    private readonly MediaSettings _mediaSettings;
 
     private readonly IPluginsInfo _pluginsInfo;
 
-    public PluginService(CatalogSettings catalogSettings,
+    public PluginService(
         IDHFileProvider fileProvider,
         IHttpContextAccessor httpContextAccessor,
         IWebHelper webHelper,
-        MediaSettings mediaSettings,
         ICustomerService customerService)
     {
-        _catalogSettings = catalogSettings;
         _pluginsInfo = Singleton<IPluginsInfo>.Instance;
         _customerService = customerService;
         _fileProvider = fileProvider;
         _httpContextAccessor = httpContextAccessor;
         _webHelper = webHelper;
-        _mediaSettings = mediaSettings;
     }
 
     #region Utilities
@@ -102,7 +97,7 @@ public partial class PluginService : IPluginService
         if (customer == null || !pluginDescriptor.LimitedToCustomerRoles.Any())
             return true;
 
-        if (_catalogSettings.IgnoreAcl)
+        if (CatalogSettings.Current.IgnoreAcl)
             return true;
 
         return pluginDescriptor.LimitedToCustomerRoles.Intersect(_customerService.GetCustomerRoleIds(customer)).Any();
@@ -314,7 +309,7 @@ public partial class PluginService : IPluginService
             return Task.FromResult<string>(null);
 
         var pathBase = _httpContextAccessor.HttpContext.Request.PathBase.Value ?? string.Empty;
-        var logoPathUrl = _mediaSettings.UseAbsoluteImagePath ? _webHelper.GetStoreLocation() : $"{pathBase}/";
+        var logoPathUrl = MediaSettings.Current.UseAbsoluteImagePath ? _webHelper.GetStoreLocation() : $"{pathBase}/";
 
         var logoUrl = $"{logoPathUrl}{DHPluginDefaults.PathName}/" +
             $"{_fileProvider.GetDirectoryNameOnly(pluginDirectory)}/{DHPluginDefaults.LogoFileName}.{logoExtension}";
