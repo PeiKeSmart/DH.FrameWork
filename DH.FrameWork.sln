@@ -318,6 +318,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DH.Sprache", "src\DH.Sprach
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DH.OneOf", "src\DH.OneOf\DH.OneOf.csproj", "{4EAB22A5-99D6-49B7-944B-D9364C1314B9}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DH.Permissions", "src\DH.Permissions\DH.Permissions.csproj", "{DAEFDADB-D878-4F92-A2D8-9DC8C9A76676}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -792,6 +794,10 @@ Global
 		{4EAB22A5-99D6-49B7-944B-D9364C1314B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4EAB22A5-99D6-49B7-944B-D9364C1314B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4EAB22A5-99D6-49B7-944B-D9364C1314B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DAEFDADB-D878-4F92-A2D8-9DC8C9A76676}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DAEFDADB-D878-4F92-A2D8-9DC8C9A76676}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DAEFDADB-D878-4F92-A2D8-9DC8C9A76676}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DAEFDADB-D878-4F92-A2D8-9DC8C9A76676}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -946,6 +952,7 @@ Global
 		{412C8B00-5CC9-4A19-BBD8-4A9EDDB00617} = {AD7AB001-3AF0-48C7-B277-513A2A2D6275}
 		{56D56548-54CC-4B0A-95A7-82B13078ABB3} = {8ED504DD-57C1-47D3-82E7-9F7E4CDE4137}
 		{4EAB22A5-99D6-49B7-944B-D9364C1314B9} = {8ED504DD-57C1-47D3-82E7-9F7E4CDE4137}
+		{DAEFDADB-D878-4F92-A2D8-9DC8C9A76676} = {AD7AB001-3AF0-48C7-B277-513A2A2D6275}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8C334959-AE8C-42FF-B144-7B36F5C1B16A}
