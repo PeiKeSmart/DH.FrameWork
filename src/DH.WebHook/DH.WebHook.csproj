@@ -56,7 +56,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DH.NCore" Version="3.91.2024.925-beta0627" />
+    <PackageReference Include="DH.NCore" Version="3.91.2024.1008-beta0713" />
     <PackageReference Include="WebApiClient.Extensions.DependencyInjection" Version="2.0.3" />
     <PackageReference Include="WebApiClient.JIT" Version="1.1.4" />
   </ItemGroup>
