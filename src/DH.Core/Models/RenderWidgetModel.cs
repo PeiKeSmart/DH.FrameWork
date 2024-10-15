@@ -1,4 +1,6 @@
-﻿namespace DH.Models;
+﻿using Pek;
+
+namespace DH.Models;
 
 public partial class RenderWidgetModel : BaseDHModel {
     public string WidgetViewComponentName { get; set; }
