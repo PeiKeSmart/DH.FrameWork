@@ -66,7 +66,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="DH.NRedis" Version="3.91.2024.1008-beta0919" />
+		<PackageReference Include="DH.NRedis" Version="3.91.2024.1015-beta1006" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -78,10 +78,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.1.1" />
-		<PackageReference Include="Pek.AspNetCore" Version="3.91.2024.1008-beta0736" />
-		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.1.1" />
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" />
+		<PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.1.2" />
+		<PackageReference Include="Pek.AspNetCore" Version="3.91.2024.1013-beta0919" />
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.1.2" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" />
 	</ItemGroup>
 
 	<ItemGroup>
