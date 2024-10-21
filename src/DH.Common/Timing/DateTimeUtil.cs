@@ -1,5 +1,7 @@
 ﻿using System.Globalization;
 
+using Pek;
+
 namespace DH.Timing;
 
 /// <summary>
@@ -913,12 +915,12 @@ public static class DateTimeUtil
     /// <returns></returns>
     public static int GetWeekLen(string iYear, string iMonth)
     {
-        int days = GetMonthLen(iYear, iMonth);
+        var days = GetMonthLen(iYear, iMonth);
         int i;
-        int num1 = 0;
+        var num1 = 0;
         for (i = 1; i < days + 1; i++)
         {
-            int num = (int)(iYear + "-" + iMonth + "-" + i).ToDate().DayOfWeek;
+            var num = (int)(iYear + "-" + iMonth + "-" + i).ToDate().DayOfWeek;
             if (num == 0 | num == 6)
             {
                 num1 += 1;
