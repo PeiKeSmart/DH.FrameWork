@@ -63,7 +63,7 @@ public class ApiSignatureAttribute : ActionFilterAttribute {
                 return;
             }
 
-            if (!headers.ContainsKey("TimeStamp") || !headers.ContainsKey("Nonce"))
+            if (!headers.ContainsKey("TimeStamp"))
             {
                 result.Message = LocaleStringResource.GetResource("传入的TimeStamp不能为空");
                 context.Result = result;
@@ -88,7 +88,7 @@ public class ApiSignatureAttribute : ActionFilterAttribute {
                 return;
             }
 
-            var m = DH.Helpers.CheckSignature.Check(Signature, TimeStamp.ToLong(), Nonce, Token, CheckType, CacheTime, CheckTimeStamp, out String sign);
+            var m = DH.Helpers.CheckSignature.Check(Signature, TimeStamp.ToLong(), Nonce, Token, CheckType, CacheTime, CheckTimeStamp, out var sign);
 
             if (m != 1)
             {
