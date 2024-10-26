@@ -79,7 +79,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.1.2" />
-		<PackageReference Include="Pek.AspNetCore" Version="3.91.2024.1021-beta0919" />
+		<PackageReference Include="Pek.AspNetCore" Version="3.91.2024.1023-beta1438" />
 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.1.2" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" />
 	</ItemGroup>

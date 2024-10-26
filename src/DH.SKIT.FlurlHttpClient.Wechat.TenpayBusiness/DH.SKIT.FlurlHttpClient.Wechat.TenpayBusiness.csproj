@@ -61,10 +61,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\DH.SKIT.FlurlHttpClient.Common\DH.SKIT.FlurlHttpClient.Common.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<Content Include="..\..\Doc\DH.png" Link="DH.png" PackagePath="\" />
 	</ItemGroup>
 	<ItemGroup>
