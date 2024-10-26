@@ -64,6 +64,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="ViewModels\**" />
+	  <EmbeddedResource Remove="ViewModels\**" />
+	  <None Remove="ViewModels\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<ProjectReference Include="..\DH.Core\DH.Core.csproj" />
 		<ProjectReference Include="..\DH.MDB\DH.MDB.csproj" />
 	</ItemGroup>
@@ -93,10 +99,6 @@
 		<PackageReference Include="Polly" Version="8.4.2" />
 		<PackageReference Include="TimeZoneConverter" Version="6.1.0" />
 		<PackageReference Include="ToolGood.Words" Version="3.1.0" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="ViewModels\" />
 	</ItemGroup>
 
 </Project>
