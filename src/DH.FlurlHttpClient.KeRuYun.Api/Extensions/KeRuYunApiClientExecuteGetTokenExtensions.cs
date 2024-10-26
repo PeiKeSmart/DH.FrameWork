@@ -1,11 +1,10 @@
-﻿using DH.Security;
-using DH.Timing;
-
-using Flurl.Http;
+﻿using Flurl.Http;
 
 using NewLife.Collections;
 
 using Pek;
+using Pek.Security;
+using Pek.Timing;
 
 namespace DH.FlurlHttpClient.KeRuYun.Api.Extensions;
 
@@ -24,7 +23,7 @@ public static class KeRuYunApiClientExecuteGetTokenExtensions
         if (client is null) throw new ArgumentNullException(nameof(client));
         if (request is null) throw new ArgumentNullException(nameof(request));
 
-        IFlurlRequest flurlReq = client
+        var flurlReq = client
             .CreateFlurlRequest(request, HttpMethod.Get, "open", "v1", "token", "get")
             ;
 
@@ -39,7 +38,7 @@ public static class KeRuYunApiClientExecuteGetTokenExtensions
         {
             build.Append($"{item.Key}{item.Value}");
         }
-        var signBuild = build.Put(true) + client.Credentials.APPSecret;
+        var signBuild = build.Return(true) + client.Credentials.APPSecret;
         var sign = Encrypt.Sha256(signBuild);
         queryDic.Add("sign", sign);
 

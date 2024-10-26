@@ -6,6 +6,7 @@ using System.Text;
 using DH.Helpers;
 
 using Pek;
+using Pek.Security;
 
 namespace DH.Security;
 
