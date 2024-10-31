@@ -97,4 +97,10 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="**\*.Biz.cs">
+      <DependentUpon>$([System.String]::Copy(%(Filename)).Replace('.Biz', '.cs'))</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
 </Project>
