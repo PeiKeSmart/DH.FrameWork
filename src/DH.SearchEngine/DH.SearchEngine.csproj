@@ -83,7 +83,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Lucene.JIEba.Segment.NetCore" Version="1.0.0" />
-		<PackageReference Include="Lucene.Net.QueryParser" Version="4.8.0-beta00016" />
+		<PackageReference Include="Lucene.Net.QueryParser" Version="4.8.0-beta00017" />
 	</ItemGroup>
 
 	<ItemGroup>
