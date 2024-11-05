@@ -100,7 +100,7 @@ public class AntiDuplicateRequestAttribute : ActionFilterAttribute {
 
             if (UserId.IsNullOrWhiteSpace())
             {
-                var _cookie = EngineContext.Current.Resolve<DH.Cookies.ICookie>();
+                var _cookie = EngineContext.Current.Resolve<Pek.Cookies.ICookie>();
                 var Sid = _cookie.GetValue<Int64>(DHSetting.Current.SidName);
                 if (Sid <= 0)
                 {
