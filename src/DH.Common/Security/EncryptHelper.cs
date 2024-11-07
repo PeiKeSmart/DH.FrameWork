@@ -124,19 +124,6 @@ public class EncryptHelper
     }
 
     /// <summary>
-    /// 获取大写的MD5签名结果
-    /// </summary>
-    /// <param name="encypStr"></param>
-    /// <returns></returns>
-    public static string Md5Upper(string encypStr)
-    {
-        MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
-        byte[] bs = Encoding.GetEncoding("utf-8").GetBytes(encypStr);
-        bs = md5.ComputeHash(bs);
-        return BytesToHexString(bs);
-    }
-
-    /// <summary>
     /// Md5加密，返回32位结果
     /// </summary>
     /// <param name="value">值</param>
