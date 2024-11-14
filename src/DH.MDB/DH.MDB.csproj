@@ -4,7 +4,7 @@
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
     <OutputType>Library</OutputType>
-    <TargetFrameworks>net461;net8.0</TargetFrameworks>
+    <TargetFrameworks>net461;net9.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>DH</RootNamespace>
     <AssemblyName>DH.MDB</AssemblyName>
