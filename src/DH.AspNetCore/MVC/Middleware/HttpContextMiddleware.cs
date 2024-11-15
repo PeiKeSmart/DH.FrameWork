@@ -1,4 +1,7 @@
-﻿using DH.AspNetCore.Models;
+﻿using System.Diagnostics;
+using System.Text;
+
+using DH.AspNetCore.Models;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -9,25 +12,21 @@ using NewLife.Log;
 
 using Newtonsoft.Json;
 
-using System.Diagnostics;
-
 namespace DH.AspNetCore.Middleware;
 
 /// <summary>
 ///  Http 请求中间件
 /// </summary>
-public class HttpContextMiddleware {
+public class HttpContextMiddleware
+{
     private readonly RequestDelegate _next;
-
     private Stopwatch _stopwatch;
 
     /// <summary>
     /// 构造 Http 请求中间件
     /// </summary>
     /// <param name="next"></param>
-    public HttpContextMiddleware(
-        RequestDelegate next
-        )
+    public HttpContextMiddleware(RequestDelegate next)
     {
         _next = next;
     }
@@ -50,20 +49,17 @@ public class HttpContextMiddleware {
 
             if (!DHSetting.Current.ExcludeUrl.IsNullOrWhiteSpace())  // 过滤指定路径
             {
-                foreach(var item in DHSetting.Current.ExcludeUrl.Split(','))
+                foreach (var item in DHSetting.Current.ExcludeUrl.Split(','))
                 {
                     if (context.Request.Path.Value.Contains(item, StringComparison.OrdinalIgnoreCase))
                     {
-                        // 或请求管道中调用下一个中间件
                         await _next(context);
                         return;
                     }
                 }
             }
 
-            //context.Request.EnableRewind();
             context.Request.EnableBuffering();  // 可以实现多次读取Body
-
             _stopwatch = new Stopwatch();
             _stopwatch.Start();
 
@@ -85,51 +81,39 @@ public class HttpContextMiddleware {
             }
             if (header.Length > 0)
             {
-                header = header.Remove(0, 1);
+                header = header.Remove(0, 1); // 移除开头的逗号
             }
-            api.RequestHeader = header.Put(true);
+            api.RequestHeader = header.Return(true);
 
-            var reqOrigin = context.Request.Body;
-            var resOrigin = context.Response.Body;
-            try
+            using (var newReq = new MemoryStream())
             {
-                using (var newReq = new MemoryStream())
+                context.Request.Body.Position = 0; // 确保位置在开始
+                await context.Request.Body.CopyToAsync(newReq); // 复制请求体到新流
+                newReq.Position = 0; // 重置新请求流的位置
+                context.Request.Body = newReq; // 替换请求流
+
+                using (var newRes = new MemoryStream())
                 {
-                    //替换request流
-                    context.Request.Body = newReq;
-                    using (var newRes = new MemoryStream())
-                    {
-                        //替换response流
-                        context.Response.Body = newRes;
-                        using (var reader = new StreamReader(reqOrigin))
-                        {
-                            //读取原始请求流的内容
-                            api.Body = reader.ReadToEnd();
-                        }
-                        using (var writer = new StreamWriter(newReq))
-                        {
-                            writer.Write(api.Body);
-                            writer.Flush();
-                            newReq.Position = 0;
-                            await _next(context);
-                        }
+                    context.Response.Body = newRes; // 替换响应流
 
-                        using (var reader = new StreamReader(newRes))
-                        {
-                            newRes.Position = 0;
-                            api.ResponseBody = reader.ReadToEnd();
-                        }
-                        using (var writer = new StreamWriter(resOrigin))
-                        {
-                            writer.Write(api.ResponseBody);
-                        }
+                    using (var reader = new StreamReader(context.Request.Body))
+                    {
+                        api.Body = await reader.ReadToEndAsync();
+                        newReq.Position = 0; // 重置新请求流的位置
                     }
+
+                    // 继续管道处理
+                    await _next(context);
+
+                    newRes.Position = 0; // 确保位置在开始
+                    using (var reader = new StreamReader(newRes))
+                    {
+                        api.ResponseBody = await reader.ReadToEndAsync();
+                    }
+
+                    newRes.Position = 0; // 确保位置在开始
+                    await newRes.CopyToAsync(context.Response.Body); // 将响应写回原始响应流
                 }
-            }
-            finally
-            {
-                context.Request.Body = reqOrigin;
-                context.Response.Body = resOrigin;
             }
 
             // 响应完成时存入缓存
@@ -137,17 +121,8 @@ public class HttpContextMiddleware {
             {
                 _stopwatch.Stop();
                 api.ElapsedTime = _stopwatch.ElapsedMilliseconds;
-                //api.LogType = ApiRequestInputViewModel.LOG_TYPE.BD;
-                //api.LogResult = ApiRequestInputViewModel.LOG_RESULT.S;
-                //if (api.ResponseBody.ToLower().Contains("errmsg"))
-                //    api.LogBusiResult = ApiRequestInputViewModel.LOG_BUSI_RESULT.F;
-                //else
-                //    api.LogBusiResult = ApiRequestInputViewModel.LOG_BUSI_RESULT.S;
 
-                //if (!((bool)api.RequestUrl?.Contains("PushApiLogger")))
-                //    _cacheService.Set<string>($"RequestLog:{DateTime.Now.ToString("yyyyMMddHHmmssfff") + (new Random()).Next(0, 10000)}-{api.ElapsedTime}ms", $"{JsonConvert.SerializeObject(api)}");
-
-                XTrace.WriteLine($"RequestLog:{DateTime.Now.ToString("yyyyMMddHHmmssfff") + (new Random()).Next(0, 10000)}-{api.ElapsedTime}ms-{JsonConvert.SerializeObject(api)}");
+                XTrace.WriteLine($"RequestLog:{DateTime.Now:yyyyMMddHHmmssfff}-{new Random().Next(0, 10000)}-{api.ElapsedTime}ms-{JsonConvert.SerializeObject(api)}");
 
                 return Task.CompletedTask;
             });
