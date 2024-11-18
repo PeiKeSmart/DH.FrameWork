@@ -1,9 +1,8 @@
-﻿using DH.IdGenerators;
-using DH.IdGenerators.Abstractions;
+﻿using DH.IdGenerators.Abstractions;
 using DH.IdGenerators.Core;
 using DH.IdGenerators.MongoId;
 
-using NewLife.Data;
+using Pek.Ids;
 
 namespace DH.Helpers;
 
@@ -106,7 +105,7 @@ public static class Id
     /// <returns></returns>
     public static String GetStringI32()
     {
-        return CompresTo.IntToi32(GetIdString().ToLong());
+        return CompresTo.IntToi32(IdHelper.GetIdString().ToLong());
     }
 
     /// <summary>
@@ -116,7 +115,7 @@ public static class Id
     /// <returns></returns>
     public static String GetStringI64()
     {
-        return CompresTo.IntToi64(GetIdString().ToLong());
+        return CompresTo.IntToi64(IdHelper.GetIdString().ToLong());
     }
 
     /// <summary>

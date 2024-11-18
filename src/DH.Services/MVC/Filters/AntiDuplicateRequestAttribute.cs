@@ -1,6 +1,5 @@
 ﻿using DH.Core.Infrastructure;
 using DH.Entity;
-using DH.Helpers;
 using DH.Services.Locks;
 
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 using NewLife;
 
+using Pek.Ids;
 using Pek.Models;
 
 namespace DH.Services.MVC.Filters;
@@ -105,7 +105,7 @@ public class AntiDuplicateRequestAttribute : ActionFilterAttribute {
                 if (Sid <= 0)
                 {
                     // 生成Sid
-                    Sid = Id.GetSId();
+                    Sid = IdHelper.GetSId();
                     _cookie.SetValue(DHSetting.Current.SidName, Sid);
                 }
                 UserId = Sid.ToString();
