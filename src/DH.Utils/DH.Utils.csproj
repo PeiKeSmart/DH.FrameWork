@@ -67,7 +67,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\DH.Common\DH.Common.csproj" />
-		<PackageReference Include="DH.NCode" Version="4.0.2024.1113-beta0750" />
+		<PackageReference Include="DH.NCode" Version="4.0.2024.1119-beta0609" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Options" Version="9.0.0" />
 		<PackageReference Include="murmurhash" Version="1.0.3" />

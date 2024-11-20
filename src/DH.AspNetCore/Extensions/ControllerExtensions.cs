@@ -1,7 +1,8 @@
-﻿using DH.AspNetCore.Mime;
-using DH.AspNetCore.ResumeFileResult;
+﻿using DH.AspNetCore.ResumeFileResult;
 
 using Microsoft.AspNetCore.Mvc;
+
+using Pek.Mime;
 
 namespace DH.AspNetCore.Extensions;
 
