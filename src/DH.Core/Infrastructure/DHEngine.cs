@@ -14,9 +14,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 using NewLife.Log;
+using NewLife.Model;
 
 using Pek.Exceptions;
 using Pek.Infrastructure;
+
+using IServiceScope = Microsoft.Extensions.DependencyInjection.IServiceScope;
 
 namespace DH.Core.Infrastructure;
 
@@ -41,7 +44,7 @@ public partial class DHEngine : IEngine
     {
         if (scope == null)
         {
-            var accessor = ServiceProvider?.GetService<IHttpContextAccessor>();
+            var accessor = ServiceProviderServiceExtensions.GetService<IHttpContextAccessor>(ServiceProvider);
             var context = accessor?.HttpContext;
             return context?.RequestServices ?? ServiceProvider;
         }
@@ -54,7 +57,7 @@ public partial class DHEngine : IEngine
     protected virtual void RunStartupTasks()
     {
         // 查找其他程序集提供的启动任务
-        var typeFinder = Singleton<ITypeFinder>.Instance;
+        var typeFinder = ObjectContainer.Provider.GetPekService<ITypeFinder>();
         var startupTasks = typeFinder.FindClassesOfType<IStartupTask>();
 
         // 创建和排序启动任务的实例
@@ -100,7 +103,7 @@ public partial class DHEngine : IEngine
     protected virtual void AddAutoMapper()
     {
         // 查找其他程序集提供的映射器配置
-        var typeFinder = Singleton<ITypeFinder>.Instance;
+        var typeFinder = ObjectContainer.Provider.GetPekService<ITypeFinder>();
         var mapperConfigurations = typeFinder.FindClassesOfType<IOrderedMapperProfile>();
 
         // 创建和排序映射器配置的实例
@@ -129,7 +132,7 @@ public partial class DHEngine : IEngine
             return assembly;
 
         // 从TypeFinder获取程序集
-        var typeFinder = Singleton<ITypeFinder>.Instance;
+        var typeFinder = ObjectContainer.Provider.GetPekService<ITypeFinder>();
         assembly = typeFinder?.GetAssemblies().FirstOrDefault(a => a.FullName == args.Name);
         return assembly;
     }
@@ -207,10 +210,7 @@ public partial class DHEngine : IEngine
     /// <param name="type">已解决服务的类型</param>
     /// <param name="scope">范围</param>
     /// <returns>已解决的服务</returns>
-    public object Resolve(Type type, IServiceScope scope = null)
-    {
-        return GetServiceProvider(scope)?.GetService(type);
-    }
+    public object Resolve(Type type, IServiceScope scope = null) => GetServiceProvider(scope)?.GetService(type);
 
     /// <summary>
     /// 解析依赖项
@@ -219,7 +219,7 @@ public partial class DHEngine : IEngine
     /// <returns>已解析服务的集合</returns>
     public virtual IEnumerable<T> ResolveAll<T>()
     {
-        return (IEnumerable<T>)GetServiceProvider().GetServices(typeof(T));
+        return (IEnumerable<T>)ServiceProviderServiceExtensions.GetServices(GetServiceProvider(), typeof(T));
     }
 
     /// <summary>

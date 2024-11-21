@@ -8,6 +8,7 @@ using DH.Services.Localization;
 using Microsoft.AspNetCore.Http;
 
 using NewLife.Log;
+using NewLife.Model;
 
 using Pek.Exceptions;
 using Pek.Infrastructure;
@@ -34,7 +35,7 @@ public partial class PluginService : IPluginService
         IWebHelper webHelper,
         ICustomerService customerService)
     {
-        _pluginsInfo = Singleton<IPluginsInfo>.Instance;
+        _pluginsInfo = ObjectContainer.Provider.GetPekService<IPluginsInfo>();
         _customerService = customerService;
         _fileProvider = fileProvider;
         _httpContextAccessor = httpContextAccessor;

@@ -1,5 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 
+using NewLife.Model;
 using NewLife.Reflection;
 
 using Pek.Infrastructure;
@@ -22,7 +23,7 @@ namespace DH.Core.Infrastructure
             //创建DHEngine作为引擎
             //return Singleton<IEngine>.Instance ?? (Singleton<IEngine>.Instance = new DHEngine());
 
-            var s = Singleton<IEngine>.Instance;
+            var s = ObjectContainer.Provider.GetPekService<IEngine>();
             if (s == null)
             {
                 var cs = typeof(IEngine).GetAllSubclasses().ToArray();
@@ -30,11 +31,13 @@ namespace DH.Core.Infrastructure
                 {
                     if (item.FullName?.Contains("DGEngine", StringComparison.OrdinalIgnoreCase) == true)
                     {
-                        return Singleton<IEngine>.Instance = (IEngine)item.Assembly.CreateInstance(item.FullName);
+                        ObjectContainer.Current.AddSingleton((IEngine)item.Assembly.CreateInstance(item.FullName));
+                        return ObjectContainer.Provider.GetPekService<IEngine>();
                     }
                 }
 
-                return Singleton<IEngine>.Instance = new DHEngine();
+                ObjectContainer.Current.AddSingleton(new DHEngine());
+                return ObjectContainer.Provider.GetPekService<IEngine>();
             }
 
             return s;
@@ -47,7 +50,7 @@ namespace DH.Core.Infrastructure
         /// <remarks>只有当你知道自己在做什么时，才使用这种方法。</remarks>
         public static void Replace(IEngine engine)
         {
-            Singleton<IEngine>.Instance = engine;
+            ObjectContainer.Current.AddSingleton(engine);
         }
 
         #endregion
@@ -61,12 +64,12 @@ namespace DH.Core.Infrastructure
         {
             get
             {
-                if (Singleton<IEngine>.Instance == null)
+                if (ObjectContainer.Provider.GetPekService<IEngine>() == null)
                 {
                     Create();
                 }
 
-                return Singleton<IEngine>.Instance;
+                return ObjectContainer.Provider.GetPekService<IEngine>();
             }
         }
 

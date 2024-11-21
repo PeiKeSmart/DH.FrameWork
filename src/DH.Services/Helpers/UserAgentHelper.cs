@@ -6,6 +6,8 @@ using DH.Core.Configuration;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Net.Http.Headers;
 
+using NewLife.Model;
+
 using Pek.Infrastructure;
 
 namespace DH.Services.Helpers
@@ -55,8 +57,8 @@ namespace DH.Services.Helpers
         [MethodImpl(MethodImplOptions.Synchronized)]
         protected virtual BrowscapXmlHelper GetBrowscapXmlHelper()
         {
-            if (Singleton<BrowscapXmlHelper>.Instance != null)
-                return Singleton<BrowscapXmlHelper>.Instance;
+            if (ObjectContainer.Provider.GetPekService<BrowscapXmlHelper>() != null)
+                return ObjectContainer.Provider.GetPekService<BrowscapXmlHelper>();
 
             // 未创建数据库
             if (string.IsNullOrEmpty(_appSettings.Get<CommonConfig>().UserAgentStringsPath))
@@ -66,8 +68,8 @@ namespace DH.Services.Helpers
             lock (_locker)
             {
                 // 我们等待时可以加载数据
-                if (Singleton<BrowscapXmlHelper>.Instance != null)
-                    return Singleton<BrowscapXmlHelper>.Instance;
+                if (ObjectContainer.Provider.GetPekService<BrowscapXmlHelper>() != null)
+                    return ObjectContainer.Provider.GetPekService<BrowscapXmlHelper>();
 
                 var userAgentStringsPath = _fileProvider.MapPath(_appSettings.Get<CommonConfig>().UserAgentStringsPath);
                 var crawlerOnlyUserAgentStringsPath = !string.IsNullOrEmpty(_appSettings.Get<CommonConfig>().CrawlerOnlyUserAgentStringsPath)
@@ -75,9 +77,9 @@ namespace DH.Services.Helpers
                     : string.Empty;
 
                 var browscapXmlHelper = new BrowscapXmlHelper(userAgentStringsPath, crawlerOnlyUserAgentStringsPath, _fileProvider);
-                Singleton<BrowscapXmlHelper>.Instance = browscapXmlHelper;
+                ObjectContainer.Current.AddSingleton(browscapXmlHelper);
 
-                return Singleton<BrowscapXmlHelper>.Instance;
+                return ObjectContainer.Provider.GetPekService<BrowscapXmlHelper>();
             }
         }
 
