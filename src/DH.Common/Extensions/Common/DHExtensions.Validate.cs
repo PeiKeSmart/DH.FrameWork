@@ -13,22 +13,7 @@ namespace DH;
 /// </summary>
 public static partial class DHExtensions
 {
-    #region IsNull(是否为空)
-
-    /// <summary>
-    /// 判断目标对象是否为空
-    /// </summary>
-    /// <param name="target">目标对象</param>
-    public static bool IsNull(this object target) => target.IsNull<object>();
-
-    /// <summary>
-    /// 判断目标对象是否为空
-    /// </summary>
-    /// <typeparam name="T">目标对象类型</typeparam>
-    /// <param name="target">目标对象</param>
-    public static bool IsNull<T>(this T target) => ReferenceEquals(target, null);
-
-    #endregion
+    
 
     #region NotEmpty(是否非空)
 

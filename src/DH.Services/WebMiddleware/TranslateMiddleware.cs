@@ -1,6 +1,5 @@
 ﻿using System.Text;
 
-using DH.AspNetCore.Mime;
 using DH.Core;
 using DH.Core.Infrastructure;
 using DH.Core.Webs;
@@ -10,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using NewLife;
 
 using Pek;
+using Pek.Mime;
 
 using ToolGood.Words;
 
@@ -91,7 +91,7 @@ public class TranslateMiddleware
         else
         {
             var accept = context.Request.Headers["Accept"][0];
-            if (accept.StartsWith("text") || accept.Contains(ContentType.Json))
+            if (accept.StartsWith("text") || accept.Contains(MimeTypes.ApplicationJson))
             {
                 //设置stream存放ResponseBody
                 var responseOriginalBody = context.Response.Body;

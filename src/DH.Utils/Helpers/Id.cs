@@ -1,9 +1,8 @@
-﻿using DH.IdGenerators;
-using DH.IdGenerators.Abstractions;
+﻿using DH.IdGenerators.Abstractions;
 using DH.IdGenerators.Core;
 using DH.IdGenerators.MongoId;
 
-using NewLife.Data;
+using Pek.Ids;
 
 namespace DH.Helpers;
 
@@ -45,8 +44,6 @@ public static class Id
     /// </summary>
     public static void Reset() => _id = null;
 
-    public static readonly Snowflake snowflake = new Snowflake();
-
     /// <summary>
     /// 创建标识
     /// </summary>
@@ -87,19 +84,6 @@ public static class Id
     public static string GetString() => StringGenerator.Create();
 
     /// <summary>
-    /// 微软获取新的13位Id字符串
-    /// </summary>
-    /// <example>0HLV413GIHKK5</example>
-    /// <returns></returns>
-    public static String GetNextId() => CorrelationIdGenerator.GetNextId();
-
-    /// <summary>
-    /// 微软获取Id的字符串方法
-    /// </summary>
-    /// <returns></returns>
-    public static String GetIdString() => FastGuid.NewGuid().IdString;
-
-    /// <summary>
     /// 生成sessionid
     /// </summary>
     /// <example>62acfda11f5a4b3c</example>
@@ -121,7 +105,7 @@ public static class Id
     /// <returns></returns>
     public static String GetStringI32()
     {
-        return CompresTo.IntToi32(GetIdString().ToLong());
+        return CompresTo.IntToi32(IdHelper.GetIdString().ToLong());
     }
 
     /// <summary>
@@ -131,7 +115,7 @@ public static class Id
     /// <returns></returns>
     public static String GetStringI64()
     {
-        return CompresTo.IntToi64(GetIdString().ToLong());
+        return CompresTo.IntToi64(IdHelper.GetIdString().ToLong());
     }
 
     /// <summary>
@@ -171,14 +155,5 @@ public static class Id
     public static String GetMObjectId()
     {
         return MObjectId.NewId();
-    }
-
-    /// <summary>
-    /// 获取NewLife的改进雪花算法
-    /// </summary>
-    /// <returns></returns>
-    public static Int64 GetSId()
-    {
-        return snowflake.NewId();
     }
 }

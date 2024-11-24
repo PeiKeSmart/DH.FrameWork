@@ -3,7 +3,7 @@
 
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyName>DG.PluginCore</AssemblyName>
     <RootNamespace>PluginCore</RootNamespace>

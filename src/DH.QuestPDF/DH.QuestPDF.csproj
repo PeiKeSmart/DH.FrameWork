@@ -4,7 +4,7 @@
 	<PropertyGroup>
 		<LangVersion>latest</LangVersion>
 		<OutputType>Library</OutputType>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net9.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<RootNamespace>QuestPDF</RootNamespace>
 		<AssemblyName>DH.QuestPDF</AssemblyName>
@@ -73,7 +73,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="QuestPDF" Version="2024.10.2" />
+		<PackageReference Include="QuestPDF" Version="2024.10.3" />
 	</ItemGroup>
 
 </Project>

@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using System.Text;
 using Pek.Infrastructure;
+using NewLife.Model;
 
 namespace DH.Core.Configuration
 {
@@ -35,9 +36,9 @@ namespace DH.Core.Configuration
                 _configurationOrder = configurations.ToDictionary(config => config.Name, config => config.GetOrder());
 
             // 创建应用设置
-            var appSettings = Singleton<AppSettings>.Instance ?? new AppSettings();
+            var appSettings = ObjectContainer.Provider.GetPekService<AppSettings>() ?? new AppSettings();
             appSettings.Update(configurations);
-            Singleton<AppSettings>.Instance = appSettings;
+            ObjectContainer.Current.AddSingleton(appSettings);
 
             // 创建文件（如果不存在）
             var filePath = fileProvider.MapPath(DHConfigurationDefaults.AppSettingsFilePath);

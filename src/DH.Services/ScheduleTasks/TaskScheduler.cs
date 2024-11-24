@@ -1,6 +1,5 @@
 ﻿using DH.Core;
 using DH.Core.Configuration;
-using DH.Core.Http;
 using DH.Core.Infrastructure;
 using DH.Entity;
 using DH.Services.Localization;
@@ -9,9 +8,12 @@ using Microsoft.Extensions.DependencyInjection;
 
 using NewLife.Log;
 
+using Pek.Http;
+
 using XCode.Membership;
 
-namespace DH.Services.ScheduleTasks {
+namespace DH.Services.ScheduleTasks
+{
     /// <summary>
     /// 表示任务管理器
     /// </summary>

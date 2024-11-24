@@ -1,13 +1,15 @@
-﻿using DH.Entity;
+﻿using System.Collections.Concurrent;
+using System.IO.Compression;
+using System.Text;
+using System.Text.RegularExpressions;
+
+using DH.Entity;
 using DH.Extensions;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-using System.Collections.Concurrent;
-using System.IO.Compression;
-using System.Text;
-using System.Text.RegularExpressions;
+using Pek;
 
 namespace DH.Services.MVC;
 
@@ -158,7 +160,7 @@ public class HtmlStaticFileAttribute : ActionFilterAttribute, IPageFilter {
         // 从内存获取文件
         if (UseMemoryCache)
         {
-            if (MemoryCache.TryGetValue(filePath, out PageCache page))
+            if (MemoryCache.TryGetValue(filePath, out var page))
             {
                 var etag = page.LastWriteTimeUtc.Ticks.ToString();
                 if (context.HttpContext.Request.Headers["If-None-Match"] == etag)
@@ -313,8 +315,8 @@ public class HtmlStaticFileAttribute : ActionFilterAttribute, IPageFilter {
 
         if (UseGzipCompress || UseBrCompress || UseMemoryCache)
         {
-            byte[] gzip = new byte[0];
-            byte[] br = new byte[0];
+            var gzip = new byte[0];
+            var br = new byte[0];
 
             var htmlbs = Encoding.UTF8.GetBytes(responseContent);
             if (UseGzipCompress)
@@ -342,9 +344,9 @@ public class HtmlStaticFileAttribute : ActionFilterAttribute, IPageFilter {
     /// <param name="html"></param>
     private void SaveHtmlResultToMemoryCache(string filePath, string html)
     {
-        byte[] htmlbs = Encoding.UTF8.GetBytes(html);
-        byte[] gzip = new byte[0];
-        byte[] br = new byte[0];
+        var htmlbs = Encoding.UTF8.GetBytes(html);
+        var gzip = new byte[0];
+        var br = new byte[0];
         if (UseGzipCompress)
         {
             gzip = GzipCompress(htmlbs, false);
@@ -382,7 +384,7 @@ public class HtmlStaticFileAttribute : ActionFilterAttribute, IPageFilter {
     /// <returns></returns>
     private string GetOutputFilePath(FilterContext context)
     {
-        string dir = OutputFolder;
+        var dir = OutputFolder;
         if (string.IsNullOrEmpty(dir))
         {
             dir = Path.Combine(Path.GetDirectoryName(typeof(HtmlStaticFileAttribute).Assembly.Location), "html");
@@ -445,7 +447,7 @@ public class HtmlStaticFileAttribute : ActionFilterAttribute, IPageFilter {
             return data;
         try
         {
-            using (MemoryStream stream = new MemoryStream())
+            using (var stream = new MemoryStream())
             {
                 var level = fastest ? CompressionLevel.Fastest : CompressionLevel.Optimal;
                 using (GZipStream zStream = new(stream, level))
@@ -473,10 +475,10 @@ public class HtmlStaticFileAttribute : ActionFilterAttribute, IPageFilter {
             return data;
         try
         {
-            using (MemoryStream stream = new MemoryStream())
+            using (var stream = new MemoryStream())
             {
                 var level = fastest ? CompressionLevel.Fastest : CompressionLevel.Optimal;
-                using (BrotliStream zStream = new BrotliStream(stream, level))
+                using (var zStream = new BrotliStream(stream, level))
                 {
                     zStream.Write(data, 0, data.Length);
                 }

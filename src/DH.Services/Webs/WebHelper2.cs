@@ -2,7 +2,6 @@
 
 using DH.AspNetCore.Webs;
 using DH.Core.Domain;
-using DH.Core.Http;
 using DH.Core.Infrastructure;
 using DH.Helpers;
 
@@ -20,6 +19,9 @@ using Microsoft.Net.Http.Headers;
 using NewLife;
 using NewLife.Collections;
 using NewLife.Serialization;
+
+using Pek;
+using Pek.Http;
 
 using XCode;
 using XCode.Membership;

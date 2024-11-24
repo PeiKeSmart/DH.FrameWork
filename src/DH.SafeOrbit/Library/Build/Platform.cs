@@ -19,6 +19,7 @@
         Net50,
         Net60,
         Net70,
-        Net80
+        Net80,
+        Net90
     }
 }

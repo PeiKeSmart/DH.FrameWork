@@ -71,8 +71,8 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Pek.Common" Version="3.91.2024.1026-beta0940" />
-		<PackageReference Include="System.Text.Json" Version="8.0.5" />
+		<PackageReference Include="Pek.Common" Version="4.0.2024.1121-beta0139" />
+		<PackageReference Include="System.Text.Json" Version="9.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -80,7 +80,7 @@
 		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
-		<PackageReference Include="System.Drawing.Common" Version="8.0.10" />
+		<PackageReference Include="System.Drawing.Common" Version="9.0.0" />
 		<PackageReference Include="Xfrogcn.BinaryFormatter" Version="1.0.0" />
 	</ItemGroup>
 

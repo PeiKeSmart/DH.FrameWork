@@ -4,7 +4,7 @@
 	<PropertyGroup>
 		<LangVersion>latest</LangVersion>
 		<OutputType>Library</OutputType>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net9.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<RootNamespace>DH.Schedulers</RootNamespace>
 		<AssemblyName>DH.Schedulers</AssemblyName>
@@ -71,7 +71,7 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Quartz" Version="3.13.0" />
+		<PackageReference Include="Quartz" Version="3.13.1" />
 	</ItemGroup>
 
 	<ItemGroup>

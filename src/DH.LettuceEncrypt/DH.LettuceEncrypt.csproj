@@ -4,7 +4,7 @@
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
     <OutputType>Library</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>LettuceEncrypt</RootNamespace>
@@ -66,7 +66,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DH.NCore" Version="3.91.2024.1013-beta0805" />
+    <PackageReference Include="DH.NCore" Version="4.0.2024.1119-beta0422" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
