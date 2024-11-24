@@ -1,32 +1,31 @@
 ﻿using System.Globalization;
 
-using DH.Timing;
-
 using Pek.Helpers;
+using Pek.Timing;
 
 namespace DH.Helpers;
 
 public class ConvertHelper {
-    public static T ToType<T>(string value)
+    public static T ToType<T>(String value)
     {
-        object obj = default(T);
+        Object obj = default(T);
         T result;
-        if (string.IsNullOrEmpty(value))
+        if (String.IsNullOrEmpty(value))
         {
-            result = (T)((object)obj);
+            result = (T)((Object)obj);
         }
         else
         {
             obj = ToType(value, typeof(T));
-            result = (T)((object)obj);
+            result = (T)((Object)obj);
         }
         return result;
     }
 
-    public static T ToType<T>(string value, T defaultValue)
+    public static T ToType<T>(String value, T defaultValue)
     {
         T result;
-        if (string.IsNullOrEmpty(value))
+        if (String.IsNullOrEmpty(value))
         {
             result = defaultValue;
         }
@@ -44,10 +43,10 @@ public class ConvertHelper {
         return result;
     }
 
-    private static object ToType(string value, Type conversionType)
+    private static Object ToType(String value, Type conversionType)
     {
-        object result;
-        if (conversionType == typeof(string))
+        Object result;
+        if (conversionType == typeof(String))
         {
             result = value;
         }

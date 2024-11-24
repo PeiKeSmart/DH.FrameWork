@@ -4,7 +4,6 @@ using System.Xml.Serialization;
 
 using DH.Extensions;
 using DH.Helpers;
-using DH.Timing;
 
 using NewLife;
 using NewLife.Data;
@@ -12,6 +11,7 @@ using NewLife.Log;
 using NewLife.Serialization;
 
 using Pek.Helpers;
+using Pek.Timing;
 
 using XCode;
 using XCode.Membership;
