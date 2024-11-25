@@ -1,5 +1,4 @@
 ﻿using DH.Core;
-using DH.Core.Configuration;
 using DH.Core.Domain.Customers;
 using DH.Core.Infrastructure;
 
@@ -7,6 +6,8 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 
 using NewLife.Log;
+
+using Pek.Webs;
 
 using XCode.Membership;
 
@@ -49,7 +50,7 @@ public class AuthenticationMiddleware
     /// </summary>
     /// <param name="context">HTTP上下文</param>
     /// <returns>表示异步操作的任务</returns>
-    public async Task InvokeAsync(HttpContext context)
+    public async Task InvokeAsync(Microsoft.AspNetCore.Http.HttpContext context)
     {
         context.Features.Set<IAuthenticationFeature>(new AuthenticationFeature
         {

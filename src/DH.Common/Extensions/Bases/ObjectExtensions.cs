@@ -1,6 +1,8 @@
 ﻿using System.ComponentModel;
 using System.Dynamic;
 
+using Pek;
+
 namespace DH.Extension;
 
 /// <summary>
@@ -27,7 +29,7 @@ public static partial class ObjectExtensions
         {
             throw new NotSupportedException($"当前对象未标记特性“{typeof(SerializableAttribute)}”，无法进行DeepClone操作");
         }
-        using (MemoryStream ms = new MemoryStream())
+        using (var ms = new MemoryStream())
         {
             await Xfrogcn.BinaryFormatter.BinarySerializer.SerializeAsync(ms, obj);
             ms.Seek(0, SeekOrigin.Begin);

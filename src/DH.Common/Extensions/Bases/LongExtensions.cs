@@ -261,7 +261,7 @@ public static class LongExtensions
     public static DateTime ToDateTime(this long unixTimeStamp)
     {
         long value = (unixTimeStamp + 8 * 60 * 60) * 10000000;
-        return DH.Timing.DateTimeExtensions.Date1970.AddTicks(value);
+        return Pek.Timing.DateTimeExtensions.Date1970.AddTicks(value);
     }
 
     #endregion
