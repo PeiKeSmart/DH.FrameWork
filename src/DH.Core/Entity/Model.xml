@@ -579,7 +579,7 @@
         <Column Name="SeoKey" DataType="String" Length="500" Description="网站SEO关键字" />
         <Column Name="SeoDescribe" DataType="String" Length="2000" Description="网站SEO描述" />
         <Column Name="SiteCopyright" DataType="String" Length="2000" Description="网站版权等信息" />
-        <Column Name="Status" DataType="Byte" Nullable="True" Description="网站开启关闭状态" />
+        <Column Name="Status" DataType="Int16" Nullable="True" Description="网站开启关闭状态" />
         <Column Name="CloseInfo" DataType="String" Length="2000" Description="如果状态关闭，请输入关闭网站原因" />
         <Column Name="Registration" DataType="String" Description="备案号" />
         <Column Name="CreateUser" DataType="String" Description="创建者" />

@@ -229,13 +229,13 @@ public partial class SiteInfo : ISiteInfo, IEntity<ISiteInfo>
     [BindColumn("SiteCopyright", "网站版权等信息", "")]
     public String SiteCopyright { get => _SiteCopyright; set { if (OnPropertyChanging("SiteCopyright", value)) { _SiteCopyright = value; OnPropertyChanged("SiteCopyright"); } } }
 
-    private Byte _Status;
+    private Int16 _Status;
     /// <summary>网站开启关闭状态</summary>
     [DisplayName("网站开启关闭状态")]
     [Description("网站开启关闭状态")]
     [DataObjectField(false, false, true, 0)]
     [BindColumn("Status", "网站开启关闭状态", "")]
-    public Byte Status { get => _Status; set { if (OnPropertyChanging("Status", value)) { _Status = value; OnPropertyChanged("Status"); } } }
+    public Int16 Status { get => _Status; set { if (OnPropertyChanging("Status", value)) { _Status = value; OnPropertyChanged("Status"); } } }
 
     private String _CloseInfo;
     /// <summary>如果状态关闭，请输入关闭网站原因</summary>
@@ -440,7 +440,7 @@ public partial class SiteInfo : ISiteInfo, IEntity<ISiteInfo>
                 case "SeoKey": _SeoKey = Convert.ToString(value); break;
                 case "SeoDescribe": _SeoDescribe = Convert.ToString(value); break;
                 case "SiteCopyright": _SiteCopyright = Convert.ToString(value); break;
-                case "Status": _Status = Convert.ToByte(value); break;
+                case "Status": _Status = Convert.ToInt16(value); break;
                 case "CloseInfo": _CloseInfo = Convert.ToString(value); break;
                 case "Registration": _Registration = Convert.ToString(value); break;
                 case "CreateUser": _CreateUser = Convert.ToString(value); break;
