@@ -488,15 +488,6 @@ public static partial class DHWeb
         return absoluteUri;
     }
 
-    /// <summary>
-    /// 获取当前站点Url
-    /// </summary>
-    /// <returns></returns>
-    public static string GetSiteUrl()
-    {
-        return Pek.Helpers.DHWeb.Request.Scheme + "://" + Pek.Helpers.DHWeb.Request.Host;
-    }
-
     public enum AgentType
     {
         Android = 0,
