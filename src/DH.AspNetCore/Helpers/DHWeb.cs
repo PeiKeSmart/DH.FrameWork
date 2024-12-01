@@ -146,25 +146,7 @@ public static partial class DHWeb
     /// </summary>
     public static string UserAgent => Pek.Helpers.DHWeb.Request?.Headers["User-Agent"].SafeString();
 
-    #endregion
-
-    #region RootPath(根路径)
-
-    /// <summary>
-    /// 根路径
-    /// </summary>
-    public static string RootPath => Pek.Helpers.DHWeb.Environment?.ContentRootPath;
-
-    #endregion
-
-    #region WebRootPath(Web根路径)
-
-    /// <summary>
-    /// Web根路径，即wwwroot
-    /// </summary>
-    public static string WebRootPath => Pek.Helpers.DHWeb.Environment?.WebRootPath;
-
-    #endregion
+    #endregion   
 
     #region ContentType(内容类型)
 
