@@ -2,12 +2,11 @@
 using System.Text;
 using System.Web;
 
-using DH.IO;
-
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 
 using Pek;
+using Pek.IO;
 
 namespace DH.Helpers;
 
@@ -76,7 +75,7 @@ public static partial class DHWeb
         get
         {
             Pek.Helpers.DHWeb.Request.EnableBuffering();
-            return FileHelper.ToString(Pek.Helpers.DHWeb.Request.Body, isCloseStream: false);
+            return FileUtil.ToString(Pek.Helpers.DHWeb.Request.Body, isCloseStream: false);
         }
     }
 
@@ -447,7 +446,7 @@ public static partial class DHWeb
     public static async Task<string> GetBodyAsync()
     {
         Pek.Helpers.DHWeb.Request.EnableBuffering();
-        return await FileHelper.ToStringAsync(Pek.Helpers.DHWeb.Request.Body, isCloseStream: false);
+        return await FileUtil.ToStringAsync(Pek.Helpers.DHWeb.Request.Body, isCloseStream: false);
     }
 
     #endregion
@@ -529,7 +528,7 @@ public static partial class DHWeb
     /// <param name="encoding">字符编码</param>
     public static async Task DownloadFileAsync(string filePath, string fileName, Encoding encoding)
     {
-        var bytes = FileHelper.ReadToBytes(filePath);
+        var bytes = FileUtil.ReadToBytes(filePath);
         await DownloadAsync(bytes, fileName, encoding);
     }
 
@@ -551,7 +550,7 @@ public static partial class DHWeb
     /// <param name="encoding">字符编码</param>
     public static async Task DownloadAsync(Stream stream, string fileName, Encoding encoding)
     {
-        await DownloadAsync(await FileHelper.ToBytesAsync(stream), fileName, encoding);
+        await DownloadAsync(await FileUtil.ToBytesAsync(stream), fileName, encoding);
     }
 
     /// <summary>
