@@ -1,5 +1,4 @@
-﻿using DH.Helpers;
-using DH.Security;
+﻿using DH.Security;
 
 using Microsoft.Extensions.Options;
 
@@ -54,7 +53,7 @@ public class SmsService : ISmsService
         var ts = UnixTime.ToTimestamp();
         var sign = EncryptHelper.GetMD5($"{_options.AccessKeyId}{ts}{_options.AccessKeySecret}").ToLower();
 
-        var result = await DHWeb.Client().Post(sendaction)
+        var result = await Pek.Helpers.DHWeb.Client().Post(sendaction)
             .Data("userid", _options.AccessKeyId)
             .Data("ts", ts)
             .Data("sign", sign)

@@ -73,7 +73,7 @@ public class SmsService : ISmsService
         var token = GetToken(seed);
         var sendaction = _options.Url + "send";
 
-        var result = await DHWeb.Client().Post(sendaction)
+        var result = await Pek.Helpers.DHWeb.Client().Post(sendaction)
             .Data("account", _options.AccessKeyId)
             .Data("token", token)
             .Data("ts", seed)
@@ -117,7 +117,7 @@ public class SmsService : ISmsService
         var _cookie = EngineContext.Current.Resolve<ICookie>();
         var Sid = _cookie.GetValue<Int64>(DHSetting.Current.SidName);
 
-        var irequest = DHWeb.Client().Post(sendaction)
+        var irequest = Pek.Helpers.DHWeb.Client().Post(sendaction)
             .Data("account", _options.AccessKeyId)
             .Data("token", token)
             .Data("ts", seed)
