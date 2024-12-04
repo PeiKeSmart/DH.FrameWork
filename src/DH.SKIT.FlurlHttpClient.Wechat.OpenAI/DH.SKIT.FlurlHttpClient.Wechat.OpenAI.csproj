@@ -57,7 +57,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="JWT" Version="10.1.1" />
+		<PackageReference Include="JWT" Version="11.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
