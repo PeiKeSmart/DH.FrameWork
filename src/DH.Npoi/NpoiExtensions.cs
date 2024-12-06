@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Globalization;
 
-using DH.Extensions;
 using DH.Helpers;
 using DH.Npoi.Settings;
 
@@ -11,6 +10,7 @@ using NPOI.SS.UserModel;
 using NPOI.XSSF.Streaming;
 using NPOI.XSSF.UserModel;
 
+using Pek;
 using Pek.Helpers;
 
 namespace DH.Npoi

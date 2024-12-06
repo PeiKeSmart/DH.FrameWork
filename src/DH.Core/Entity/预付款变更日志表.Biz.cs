@@ -1,6 +1,4 @@
-﻿using DH.Extension;
-
-using NewLife;
+﻿using NewLife;
 using NewLife.Data;
 
 using Pek;
