@@ -1,9 +1,9 @@
 ﻿using DH.Core.Infrastructure;
-using DH.Helpers;
 
 using Microsoft.Extensions.Options;
 
 using Pek.Cookies;
+using Pek.Helpers;
 using Pek.Security;
 
 namespace DH.Sms.FengHuo;
@@ -47,27 +47,21 @@ public class SmsService : ISmsService
     /// 获取YYYYMMDDHHMISS格式当前时间
     /// </summary>
     /// <returns></returns>
-    private string GetSeed()
-    {
-        return DateTime.Now.ToString("yyyyMMddHHmmss");
-    }
+    private static String GetSeed() => DateTime.Now.ToString("yyyyMMddHHmmss");
 
     /// <summary>
     /// 获取加密数据
     /// </summary>
     /// <param name="seed">时间</param>
     /// <returns></returns>
-    private string GetToken(string seed)
-    {
-        return Encrypt.Sha1("account=" + _options.AccessKeyId + "&ts=" + seed + "&secret=" + _options.AccessKeySecret).ToLower();
-    }
+    private String GetToken(String seed) => Encrypt.Sha1("account=" + _options.AccessKeyId + "&ts=" + seed + "&secret=" + _options.AccessKeySecret).ToLower();
 
     /// <summary>
     /// 发送短信
     /// </summary>
     /// <param name="mobile">手机号,可批量，用逗号分隔开，上限为1000个</param>
     /// <param name="content">内容</param>
-    public async Task<SmsResult> SendAsync(string mobile, string content)
+    public async Task<SmsResult> SendAsync(String mobile, String content)
     {
         var seed = GetSeed();
         var token = GetToken(seed);
@@ -101,7 +95,7 @@ public class SmsService : ISmsService
     /// <param name="templateId">对应的模板ID</param>
     /// <param name="paramValues">对应的参数</param>
     /// <returns></returns>
-    public async Task<SmsResult> SendTemplateParamd(String AccessKeyId, String AccessKeySecret, String passKey, string mobiles, String templateId, String[] paramValues) 
+    public async Task<SmsResult> SendTemplateParamd(String AccessKeyId, String AccessKeySecret, String passKey, String mobiles, String templateId, String[] paramValues) 
     {
         _options = new FengHuoSms()
         {
