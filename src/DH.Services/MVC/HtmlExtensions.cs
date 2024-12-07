@@ -1,5 +1,5 @@
 ﻿using DH.Extensions;
-using DH.SyntaxHighlighing;
+using Pek.SyntaxHighlighing;
 
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
