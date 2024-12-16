@@ -1,4 +1,6 @@
-﻿using DH.AspNetCore.Models;
+﻿using System.Diagnostics;
+
+using DH.AspNetCore.Models;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -8,8 +10,6 @@ using NewLife.Collections;
 using NewLife.Log;
 
 using Newtonsoft.Json;
-
-using System.Diagnostics;
 
 namespace DH.AspNetCore.Middleware;
 
@@ -61,6 +61,13 @@ public class HttpContextMiddleware {
                 }
             }
 
+            if (context.Request.ContentType.Contains("application/octet-stream"))
+            {
+                // 或请求管道中调用下一个中间件
+                await _next(context);
+                return;
+            }
+
             //context.Request.EnableRewind();
             context.Request.EnableBuffering();  // 可以实现多次读取Body
 
@@ -87,7 +94,7 @@ public class HttpContextMiddleware {
             {
                 header = header.Remove(0, 1);
             }
-            api.RequestHeader = header.Put(true);
+            api.RequestHeader = header.Return(true);
 
             var reqOrigin = context.Request.Body;
             var resOrigin = context.Response.Body;
