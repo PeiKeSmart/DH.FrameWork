@@ -27,11 +27,9 @@ public partial class EngineContext
 
         var s = ObjectContainer.Provider.GetPekService<IEngine>();
 
-        XTrace.WriteLine($"到这里了么？EngineContext");
         if (s == null)
         {
             var cs = typeof(IEngine).GetAllSubclasses().ToArray();
-            XTrace.WriteLine($"到这里了么1？EngineContext:{cs.Select(e => e.FullName).Join()}");
             foreach (var item in cs)
             {
                 if (item.FullName?.Contains("DGEngine", StringComparison.OrdinalIgnoreCase) == true)
@@ -41,8 +39,7 @@ public partial class EngineContext
                 }
             }
 
-            ObjectContainer.Current.AddSingleton(new DHEngine());
-            XTrace.WriteLine($"到这里了么2？EngineContext:{ObjectContainer.Provider.GetPekService<IEngine>() == null}");
+            ObjectContainer.Current.AddSingleton<IEngine>(new DHEngine());
             return ObjectContainer.Provider.GetPekService<IEngine>();
         }
 
