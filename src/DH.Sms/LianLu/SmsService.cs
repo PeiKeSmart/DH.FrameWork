@@ -1,7 +1,6 @@
-﻿using DH.Security;
+﻿using Microsoft.Extensions.Options;
 
-using Microsoft.Extensions.Options;
-
+using Pek.Security;
 using Pek.Timing;
 
 namespace DH.Sms.LianLu;
@@ -51,7 +50,7 @@ public class SmsService : ISmsService
         var sendaction = _options.Url + "/api/sms/send";
 
         var ts = UnixTime.ToTimestamp();
-        var sign = EncryptHelper.GetMD5($"{_options.AccessKeyId}{ts}{_options.AccessKeySecret}").ToLower();
+        var sign = Encrypt.GetMD5($"{_options.AccessKeyId}{ts}{_options.AccessKeySecret}").ToLower();
 
         var result = await Pek.Helpers.DHWeb.Client().Post(sendaction)
             .Data("userid", _options.AccessKeyId)
@@ -63,7 +62,7 @@ public class SmsService : ISmsService
             .Data("extnum", "")
             .Data("time", "")
             .Data("messageid", "")
-            .ResultAsync();
+            .ResultStringAsync();
 
         if (result.Contains("提交成功"))
         {

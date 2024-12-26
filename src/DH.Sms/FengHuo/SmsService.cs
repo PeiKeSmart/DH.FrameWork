@@ -74,7 +74,7 @@ public class SmsService : ISmsService
             .Data("mobiles", mobile)
             .Data("content", content.UrlEncode())
             .Data("ext", "")
-            .ResultAsync();
+            .ResultStringAsync();
         if (result.Contains("提交成功"))
         {
             return new SmsResult(true, result);
@@ -125,7 +125,7 @@ public class SmsService : ISmsService
             irequest.Data($"param{i + 1}", paramValues[i]);
         }
 
-        var result = await irequest.ResultAsync();
+        var result = await irequest.ResultStringAsync();
         if (result.Contains("提交成功"))
         {
             return new SmsResult(true, result);

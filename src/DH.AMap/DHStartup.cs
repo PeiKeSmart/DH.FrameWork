@@ -17,7 +17,7 @@ namespace DH.AMap;
 /// <summary>
 /// 代表用于在应用程序启动时配置框架的对象
 /// </summary>
-public class DHStartup : IDHStartup {
+public class DHStartup : IPekStartup {
     /// <summary>
     /// 添加并配置任何中间件
     /// </summary>
@@ -174,6 +174,14 @@ public class DHStartup : IDHStartup {
     /// </summary>
     /// <param name="application"></param>
     public void AfterAuth(IApplicationBuilder application)
+    {
+
+    }
+
+    /// <summary>
+    /// 处理数据
+    /// </summary>
+    public void ProcessData()
     {
 
     }
