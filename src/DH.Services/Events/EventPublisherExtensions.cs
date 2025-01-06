@@ -17,7 +17,7 @@ public static class EventPublisherExtensions {
     /// <returns>表示异步操作的任务</returns>
     public static async Task ModelPreparedAsync<T>(this IEventPublisher eventPublisher, T model)
     {
-        await eventPublisher.PublishAsync(new ModelPreparedEvent<T>(model));
+        await eventPublisher.PublishAsync(new ModelPreparedEvent<T>(model)).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -30,6 +30,6 @@ public static class EventPublisherExtensions {
     /// <returns>表示异步操作的任务</returns>
     public static async Task ModelReceivedAsync<T>(this IEventPublisher eventPublisher, T model, ModelStateDictionary modelState)
     {
-        await eventPublisher.PublishAsync(new ModelReceivedEvent<T>(model, modelState));
+        await eventPublisher.PublishAsync(new ModelReceivedEvent<T>(model, modelState)).ConfigureAwait(false);
     }
 }

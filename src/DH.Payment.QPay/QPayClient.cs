@@ -49,7 +49,7 @@ namespace DH.Payment.QPay
             request.PrimaryHandler(options, sortedTxtParams);
 
             var client = _httpClientFactory.CreateClient(nameof(QPayClient));
-            var body = await client.PostAsync(request.GetRequestUrl(), sortedTxtParams);
+            var body = await client.PostAsync(request.GetRequestUrl(), sortedTxtParams).ConfigureAwait(false);
             var parser = new QPayXmlParser<T>();
             var rsp = parser.Parse(body);
 
@@ -101,7 +101,7 @@ namespace DH.Payment.QPay
             }
 
             var client = _httpClientFactory.CreateClient(Prefix + options.CertificateHash);
-            var body = await client.PostAsync(request.GetRequestUrl(), sortedTxtParams);
+            var body = await client.PostAsync(request.GetRequestUrl(), sortedTxtParams).ConfigureAwait(false);
             var parser = new QPayXmlParser<T>();
             var rsp = parser.Parse(body);
 

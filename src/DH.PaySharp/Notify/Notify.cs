@@ -75,7 +75,7 @@ namespace DH.PaySharp
         /// </summary>
         public async Task ReceivedAsync()
         {
-            var gateway = await NotifyProcess.GetGatewayAsync(_gateways);
+            var gateway = await NotifyProcess.GetGatewayAsync(_gateways).ConfigureAwait(false);
             if (gateway is NullGateway)
             {
                 OnUnknownGateway(new UnknownGatewayEventArgs(gateway));
@@ -84,7 +84,7 @@ namespace DH.PaySharp
 
             try
             {
-                if (!await gateway.ValidateNotifyAsync())
+                if (!await gateway.ValidateNotifyAsync().ConfigureAwait(false))
                 {
                     OnUnknownNotify(new UnKnownNotifyEventArgs(gateway)
                     {

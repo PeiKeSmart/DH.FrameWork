@@ -9,7 +9,7 @@ public class IntervalHelper {
     {
         if (intervalSecond <= 0 || string.IsNullOrEmpty(code))
         {
-            return await func();
+            return await func().ConfigureAwait(false);
         }
 
         if (_keyValuePairs.TryGetValue(code, out var time) && (DateTimeOffset.Now - time).TotalSeconds < intervalSecond)
@@ -18,7 +18,7 @@ public class IntervalHelper {
         }
 
         _keyValuePairs.AddOrUpdate(code, x => DateTimeOffset.Now, (_, __) => DateTimeOffset.Now);
-        return await func();
+        return await func().ConfigureAwait(false);
     }
 
 
@@ -26,7 +26,7 @@ public class IntervalHelper {
     {
         if (intervalSecond <= 0 || string.IsNullOrEmpty(code))
         {
-            await func();
+            await func().ConfigureAwait(false);
             return;
         }
 
@@ -36,6 +36,6 @@ public class IntervalHelper {
         }
 
         _keyValuePairs.AddOrUpdate(code, x => DateTimeOffset.Now, (_, __) => DateTimeOffset.Now);
-        await func();
+        await func().ConfigureAwait(false);
     }
 }

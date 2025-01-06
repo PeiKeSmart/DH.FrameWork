@@ -47,7 +47,7 @@ public class SmtpEmailSender : EmailSenderBase, ISmtpEmailSender
     {
         using (var smtpClient = BuildClient())
         {
-            await smtpClient.SendMailAsync(mail);
+            await smtpClient.SendMailAsync(mail).ConfigureAwait(false);
 
             return "Smtp方法无返回";
         }

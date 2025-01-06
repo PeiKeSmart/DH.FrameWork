@@ -153,14 +153,14 @@ internal class TencentSms : ISmsProvider {
     public async Task<(bool, String)> SendAsync(string templateParam, params string[] phoneNums)
     {
         HttpClientExt client = GenHttpClient(mSignName, mTemplateCode, templateParam, phoneNums);
-        HttpResponseExt res = await client.PostAsync(sUrl);
+        HttpResponseExt res = await client.PostAsync(sUrl).ConfigureAwait(false);
         return (ParseResult(res), res.ToJson());
     }
 
     public async Task<(bool, String)> Send2Async(string signName, string templateCode, string templateParam, params string[] phoneNums)
     {
         HttpClientExt client = GenHttpClient(signName, templateCode, templateParam, phoneNums);
-        HttpResponseExt res = await client.PostAsync(sUrl);
+        HttpResponseExt res = await client.PostAsync(sUrl).ConfigureAwait(false);
         return (ParseResult(res), res.ToJson());
     }
 }

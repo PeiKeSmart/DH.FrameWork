@@ -44,7 +44,7 @@ public class KeepAliveMiddleware
         }
 
         // 或者调用请求管道中的下一个中间件
-        await _next(context);
+        await _next(context).ConfigureAwait(false);
     }
 
     #endregion

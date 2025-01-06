@@ -53,7 +53,7 @@ namespace Baidu.Yingyan.Track
             if (string.IsNullOrWhiteSpace(point.object_name) == false)
                 args["object_name"] = point.object_name;
 
-            return await framework.post<CommonResult>(url + "addpoint", args);
+            return await framework.post<CommonResult>(url + "addpoint", args).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace Baidu.Yingyan.Track
             if (points?.Any() == true)
                 args["point_list"] = Newtonsoft.Json.JsonConvert.SerializeObject(points, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
 
-            return await framework.post<BatchAddPointResult>(url + "addpoints", args);
+            return await framework.post<BatchAddPointResult>(url + "addpoints", args).ConfigureAwait(false);
         }
 
         #endregion 上传轨迹点

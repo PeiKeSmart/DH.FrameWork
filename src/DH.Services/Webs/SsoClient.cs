@@ -75,7 +75,7 @@ public class SsoClient
             client_secret = Secret,
             username,
             password
-        });
+        }).ConfigureAwait(false);
     }
 
     /// <summary>凭证式，为指定设备办法令牌</summary>
@@ -91,7 +91,7 @@ public class SsoClient
             client_id = AppId,
             client_secret = Secret,
             username = deviceId,
-        });
+        }).ConfigureAwait(false);
     }
 
     /// <summary>刷新令牌</summary>
@@ -107,7 +107,7 @@ public class SsoClient
             client_id = AppId,
             client_secret = Secret,
             refresh_token = accessToken,
-        });
+        }).ConfigureAwait(false);
     }
 
     /// <summary>通过令牌获取用户信息</summary>
@@ -117,7 +117,7 @@ public class SsoClient
     {
         var client = GetClient();
 
-        return await client.GetAsync<IDictionary<String, Object>>("sso/userinfo", new { access_token = accessToken });
+        return await client.GetAsync<IDictionary<String, Object>>("sso/userinfo", new { access_token = accessToken }).ConfigureAwait(false);
     }
 
     /// <summary>通过令牌获取用户信息</summary>
@@ -125,7 +125,7 @@ public class SsoClient
     /// <returns></returns>
     public async Task<IManageUser> GetUser(String accessToken)
     {
-        var dic = await GetUserInfo(accessToken);
+        var dic = await GetUserInfo(accessToken).ConfigureAwait(false);
 
         var code = dic["errcode"].ToInt(-1);
         var error = dic["error"] as String;
@@ -172,7 +172,7 @@ public class SsoClient
             //client_secret = Secret,
             username,
             password
-        });
+        }).ConfigureAwait(false);
     }
 
     /// <summary>获取应用公钥，用于验证令牌</summary>
@@ -183,6 +183,6 @@ public class SsoClient
     {
         var client = GetClient();
 
-        return await client.GetAsync<IDictionary<String, Object>>("sso/getkey", new { client_id, client_secret });
+        return await client.GetAsync<IDictionary<String, Object>>("sso/getkey", new { client_id, client_secret }).ConfigureAwait(false);
     }
 }

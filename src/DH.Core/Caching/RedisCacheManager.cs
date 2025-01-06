@@ -70,7 +70,7 @@ namespace DH.Core.Caching
                 _db.KeyDelete(keys.ToArray());
             }
 
-            await RemoveByPrefixInstanceDataAsync(prefix);
+            await RemoveByPrefixInstanceDataAsync(prefix).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace DH.Core.Caching
         /// <returns>A task that represents the asynchronous operation</returns>
         public override async Task ClearAsync()
         {
-            await _connectionWrapper.FlushDatabaseAsync();
+            await _connectionWrapper.FlushDatabaseAsync().ConfigureAwait(false);
 
             ClearInstanceData();
         }
@@ -176,7 +176,7 @@ namespace DH.Core.Caching
                 var endPoints = GetEndPoints();
 
                 foreach (var endPoint in endPoints)
-                    await GetServer(endPoint).FlushDatabaseAsync();
+                    await GetServer(endPoint).FlushDatabaseAsync().ConfigureAwait(false);
             }
 
 

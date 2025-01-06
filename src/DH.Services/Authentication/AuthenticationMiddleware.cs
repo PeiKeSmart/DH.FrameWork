@@ -60,11 +60,11 @@ public class AuthenticationMiddleware
 
         // 给任何IAuthenticationRequestHandler方案一个处理请求的机会
         var handlers = EngineContext.Current.Resolve<IAuthenticationHandlerProvider>();
-        foreach (var scheme in await Schemes.GetRequestHandlerSchemesAsync())
+        foreach (var scheme in await Schemes.GetRequestHandlerSchemesAsync().ConfigureAwait(false))
         {
             try
             {
-                if (await handlers.GetHandlerAsync(context, scheme.Name) is IAuthenticationRequestHandler handler && await handler.HandleRequestAsync())
+                if (await handlers.GetHandlerAsync(context, scheme.Name).ConfigureAwait(false) is IAuthenticationRequestHandler handler && await handler.HandleRequestAsync().ConfigureAwait(false))
                     return;
             }
             catch (Exception ex)
@@ -88,17 +88,17 @@ public class AuthenticationMiddleware
             }
         }
 
-        var defaultAuthenticate = await Schemes.GetDefaultAuthenticateSchemeAsync();
+        var defaultAuthenticate = await Schemes.GetDefaultAuthenticateSchemeAsync().ConfigureAwait(false);
         if (defaultAuthenticate != null)
         {
-            var result = await context.AuthenticateAsync(defaultAuthenticate.Name);
+            var result = await context.AuthenticateAsync(defaultAuthenticate.Name).ConfigureAwait(false);
             if (result?.Principal != null)
             {
                 context.User = result.Principal;
             }
         }
 
-        await _next(context);
+        await _next(context).ConfigureAwait(false);
     }
 
     #endregion

@@ -30,7 +30,7 @@ public abstract class CubeJobBase<TArgument> : CubeJobBase where TArgument : cla
             arg = argument.ToJsonEntity(typeof(TArgument)) as TArgument;
         }
 
-        return await OnExecute(arg);
+        return await OnExecute(arg).ConfigureAwait(false);
     }
 
     /// <summary>执行</summary>

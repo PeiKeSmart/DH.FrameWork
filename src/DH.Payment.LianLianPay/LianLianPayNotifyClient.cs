@@ -24,14 +24,14 @@ namespace DH.Payment.LianLianPay
 
         public async Task<T> ExecuteAsync<T>(HttpRequest request) where T : LianLianPayNotify
         {
-            return await ExecuteAsync<T>(request, null);
+            return await ExecuteAsync<T>(request, null).ConfigureAwait(false);
         }
 
         public async Task<T> ExecuteAsync<T>(HttpRequest request, LianLianPayOptions options) where T : LianLianPayNotify
         {
             if (request.HasFormContentType)
             {
-                var parameters = await GetParametersAsync(request);
+                var parameters = await GetParametersAsync(request).ConfigureAwait(false);
                 var parser = new LianLianPayDictionaryParser<T>();
                 var rsp = parser.Parse(parameters);
                 CheckNotifySign(parameters, options);
@@ -40,7 +40,7 @@ namespace DH.Payment.LianLianPay
 
             if (request.HasTextJsonContentType())
             {
-                var body = await new StreamReader(request.Body).ReadToEndAsync();
+                var body = await new StreamReader(request.Body).ReadToEndAsync().ConfigureAwait(false);
 
                 var parser = new LianLianPayJsonParser<T>();
                 var rsp = parser.Parse(body);
@@ -58,7 +58,7 @@ namespace DH.Payment.LianLianPay
         private async Task<LianLianPayDictionary> GetParametersAsync(HttpRequest request)
         {
             var dictionary = new LianLianPayDictionary();
-            var formCollection = await request.ReadFormAsync();
+            var formCollection = await request.ReadFormAsync().ConfigureAwait(false);
             foreach (var iter in formCollection)
             {
                 dictionary.Add(iter.Key, iter.Value);

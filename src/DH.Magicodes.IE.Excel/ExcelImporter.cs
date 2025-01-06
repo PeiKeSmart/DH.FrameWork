@@ -244,7 +244,7 @@ namespace Magicodes.ExporterAndImporter.Excel
                     //}
                     bool isSaveLabelingError = i == sheetProperties.Length - 1;
                     //最后一个属性才保存标注的错误,避免多次保存
-                    var result = await importer.Import(importerAttribute.SheetName, importerAttribute.SheetIndex,sheetProperty.PropertyType, isSaveLabelingError);
+                    var result = await importer.Import(importerAttribute.SheetName, importerAttribute.SheetIndex,sheetProperty.PropertyType, isSaveLabelingError).ConfigureAwait(false);
                     resultList.Add(importerAttribute.SheetName ??
                         importerAttribute.SheetIndex.ToString(), result);
                 }
@@ -280,7 +280,7 @@ namespace Magicodes.ExporterAndImporter.Excel
                     //}
                     bool isSaveLabelingError = i == sheetProperties.Length - 1;
                     //最后一个属性才保存标注的错误,避免多次保存
-                    var result = await importer.Import(importerAttribute.SheetName, importerAttribute.SheetIndex, sheetProperty.PropertyType, isSaveLabelingError);
+                    var result = await importer.Import(importerAttribute.SheetName, importerAttribute.SheetIndex, sheetProperty.PropertyType, isSaveLabelingError).ConfigureAwait(false);
                     resultList.Add(importerAttribute.SheetName ??
                         importerAttribute.SheetIndex.ToString(), result);
                 }
@@ -324,7 +324,7 @@ namespace Magicodes.ExporterAndImporter.Excel
                     //}
                     bool isSaveLabelingError = i == sheetProperties.Length - 1;
                     //最后一个属性才保存标注的错误,避免多次保存
-                    var result = await importer.Import(importerAttribute.SheetName, importerAttribute.SheetIndex, sheetProperty.PropertyType, isSaveLabelingError);
+                    var result = await importer.Import(importerAttribute.SheetName, importerAttribute.SheetIndex, sheetProperty.PropertyType, isSaveLabelingError).ConfigureAwait(false);
                     var tResult = new ImportResult<TSheet>();
                     tResult.Data = new List<TSheet>();
                     if (result.Data.Count > 0)

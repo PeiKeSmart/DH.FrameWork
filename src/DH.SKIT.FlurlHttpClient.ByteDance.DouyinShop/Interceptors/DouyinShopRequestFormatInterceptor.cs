@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -22,7 +22,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Interceptors
                     HttpContent? oldParamHttpContent = oldFormdataContent.SingleOrDefault(e => Constants.FormDataFields.FORMDATA_PARAM_JSON.Equals(e.Headers.ContentDisposition?.Name?.Trim('\"')));
                     if (oldParamHttpContent != null)
                     {
-                        string paramJson = Utilities.JsonUtility.Format(await oldParamHttpContent.ReadAsStringAsync());
+                        string paramJson = Utilities.JsonUtility.Format(await oldParamHttpContent.ReadAsStringAsync().ConfigureAwait(false));
 
                         MultipartFormDataContent newFormdataContent = new MultipartFormDataContent("--BOUNDARY--" + DateTimeOffset.Now.Ticks.ToString("x"));
                         foreach (HttpContent formdataItem in oldFormdataContent)

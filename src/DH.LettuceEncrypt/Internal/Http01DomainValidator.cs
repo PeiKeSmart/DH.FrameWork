@@ -30,8 +30,8 @@ internal class Http01DomainValidator : DomainOwnershipValidator {
 
     public override async Task ValidateOwnershipAsync(IAuthorizationContext authzContext, CancellationToken cancellationToken)
     {
-        await PrepareHttpChallengeResponseAsync(authzContext, cancellationToken);
-        await WaitForChallengeResultAsync(authzContext, cancellationToken);
+        await PrepareHttpChallengeResponseAsync(authzContext, cancellationToken).ConfigureAwait(false);
+        await WaitForChallengeResultAsync(authzContext, cancellationToken).ConfigureAwait(false);
     }
 
     private async Task PrepareHttpChallengeResponseAsync(
@@ -44,7 +44,7 @@ internal class Http01DomainValidator : DomainOwnershipValidator {
             throw new InvalidOperationException();
         }
 
-        var httpChallenge = await _client.CreateChallengeAsync(authorizationContext, ChallengeTypes.Http01);
+        var httpChallenge = await _client.CreateChallengeAsync(authorizationContext, ChallengeTypes.Http01).ConfigureAwait(false);
         if (httpChallenge == null)
         {
             var ex = new InvalidOperationException(
@@ -87,9 +87,9 @@ internal class Http01DomainValidator : DomainOwnershipValidator {
         _challengeStore.AddChallengeResponse(httpChallenge.Token, keyAuth);
 
         XTrace.WriteLine("正在等待服务器开始接受HTTP请求");
-        await _appStarted.Task;
+        await _appStarted.Task.ConfigureAwait(false);
 
         XTrace.WriteLine("正在请求服务器验证HTTP质询");
-        await _client.ValidateChallengeAsync(httpChallenge);
+        await _client.ValidateChallengeAsync(httpChallenge).ConfigureAwait(false);
     }
 }

@@ -67,14 +67,14 @@ public class SmsService : ISmsService
         var token = GetToken(seed);
         var sendaction = _options.Url + "send";
 
-        var result = await Pek.Helpers.DHWeb.Client().Post(sendaction)
+        var result = await DHWeb.Client().Post(sendaction)
             .Data("account", _options.AccessKeyId)
             .Data("token", token)
             .Data("ts", seed)
             .Data("mobiles", mobile)
             .Data("content", content.UrlEncode())
             .Data("ext", "")
-            .ResultStringAsync();
+            .ResultStringAsync().ConfigureAwait(false);
         if (result.Contains("提交成功"))
         {
             return new SmsResult(true, result);
@@ -125,7 +125,7 @@ public class SmsService : ISmsService
             irequest.Data($"param{i + 1}", paramValues[i]);
         }
 
-        var result = await irequest.ResultStringAsync();
+        var result = await irequest.ResultStringAsync().ConfigureAwait(false);
         if (result.Contains("提交成功"))
         {
             return new SmsResult(true, result);

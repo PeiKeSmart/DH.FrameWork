@@ -142,7 +142,7 @@ public class HtmlStaticFileAttribute : ActionFilterAttribute, IPageFilter {
                 return;
             }
         }
-        await base.OnActionExecutionAsync(context, next);
+        await base.OnActionExecutionAsync(context, next).ConfigureAwait(false);
     }
 
     #endregion
@@ -232,7 +232,7 @@ public class HtmlStaticFileAttribute : ActionFilterAttribute, IPageFilter {
         // 开发模式，已处理的，测试，不用保存到本地目录
         if (IsDevelopmentMode || context.Result is StatusCodeResult || context.Result is FileResult || IsTest(context))
         {
-            await base.OnResultExecutionAsync(context, next);
+            await base.OnResultExecutionAsync(context, next).ConfigureAwait(false);
             return;
         }
 
@@ -246,11 +246,11 @@ public class HtmlStaticFileAttribute : ActionFilterAttribute, IPageFilter {
                 var old = response.Body;
                 response.Body = ms;
 
-                await base.OnResultExecutionAsync(context, next);
+                await base.OnResultExecutionAsync(context, next).ConfigureAwait(false);
 
                 if (response.StatusCode == 200)
                 {
-                    await SaveHtmlResult(response.Body, filePath);
+                    await SaveHtmlResult(response.Body, filePath).ConfigureAwait(false);
                 }
 
                 //更新时，不添加页面缓存
@@ -265,17 +265,17 @@ public class HtmlStaticFileAttribute : ActionFilterAttribute, IPageFilter {
                 }
 
                 ms.Position = 0;
-                await ms.CopyToAsync(old);
+                await ms.CopyToAsync(old).ConfigureAwait(false);
                 response.Body = old;
             }
         }
         else
         {
-            await base.OnResultExecutionAsync(context, next);
+            await base.OnResultExecutionAsync(context, next).ConfigureAwait(false);
             var old = response.Body.Position;
             if (response.StatusCode == 200)
             {
-                await SaveHtmlResult(response.Body, filePath);
+                await SaveHtmlResult(response.Body, filePath).ConfigureAwait(false);
             }
 
             //更新时，不添加页面缓存
@@ -303,14 +303,14 @@ public class HtmlStaticFileAttribute : ActionFilterAttribute, IPageFilter {
     {
         stream.Position = 0;
         var responseReader = new StreamReader(stream);
-        var responseContent = await responseReader.ReadToEndAsync();
+        var responseContent = await responseReader.ReadToEndAsync().ConfigureAwait(false);
         if (MiniFunc != null)
         {//进行最小化处理
             responseContent = MiniFunc(responseContent);
         }
         Directory.CreateDirectory(Path.GetDirectoryName(filePath));
 
-        await File.WriteAllTextAsync(filePath, responseContent);
+        await File.WriteAllTextAsync(filePath, responseContent).ConfigureAwait(false);
 
 
         if (UseGzipCompress || UseBrCompress || UseMemoryCache)
@@ -322,12 +322,12 @@ public class HtmlStaticFileAttribute : ActionFilterAttribute, IPageFilter {
             if (UseGzipCompress)
             {
                 gzip = GzipCompress(htmlbs, false);
-                await File.WriteAllBytesAsync(filePath + ".gzip", gzip);
+                await File.WriteAllBytesAsync(filePath + ".gzip", gzip).ConfigureAwait(false);
             }
             if (UseBrCompress)
             {
                 br = BrCompress(htmlbs, false);
-                await File.WriteAllBytesAsync(filePath + ".br", br);
+                await File.WriteAllBytesAsync(filePath + ".br", br).ConfigureAwait(false);
             }
             if (UseMemoryCache)
             {

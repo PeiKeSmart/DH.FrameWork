@@ -1,8 +1,5 @@
-using System;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
-using System.Web;
+﻿using System.Web;
+
 using Flurl;
 using Flurl.Http;
 
@@ -45,7 +42,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop.Interceptors
                     var httpContent = formdataContent.SingleOrDefault(e => Constants.FormDataFields.FORMDATA_PARAM_JSON.Equals(e.Headers.ContentDisposition?.Name?.Trim('\"')));
                     if (httpContent != null)
                     {
-                        body = await httpContent.ReadAsStringAsync();
+                        body = await httpContent.ReadAsStringAsync().ConfigureAwait(false);
                     }
                 }
                 else

@@ -153,10 +153,10 @@ public class PospalApiClient : CommonClientBase, ICommonClient
                 flurlRequest.Verb == HttpMethod.Head ||
                 flurlRequest.Verb == HttpMethod.Options;
             using IFlurlResponse flurlResponse = isSimpleRequest ?
-                await base.SendFlurlRequestAsync(flurlRequest, header, null, cancellationToken) :
-                await base.SendFlurlRequestAsJsonAsync(flurlRequest, header, data, cancellationToken);
+                await base.SendFlurlRequestAsync(flurlRequest, header, null, cancellationToken).ConfigureAwait(false) :
+                await base.SendFlurlRequestAsJsonAsync(flurlRequest, header, data, cancellationToken).ConfigureAwait(false);
 
-            return await WrapFlurlResponseAsJsonAsync<T>(flurlResponse, cancellationToken);
+            return await WrapFlurlResponseAsJsonAsync<T>(flurlResponse, cancellationToken).ConfigureAwait(false);
         }
         catch (FlurlHttpTimeoutException ex)
         {

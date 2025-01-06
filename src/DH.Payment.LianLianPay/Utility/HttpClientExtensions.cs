@@ -19,10 +19,10 @@ namespace DH.Payment.LianLianPay.Utility
         public static async Task<string> DoPostAsync(this HttpClient client, string url, string content)
         {
             using (var requestContent = new StringContent(content, Encoding.UTF8, "application/json"))
-            using (var response = await client.PostAsync(url, requestContent))
+            using (var response = await client.PostAsync(url, requestContent).ConfigureAwait(false))
             using (var responseContent = response.Content)
             {
-                return await responseContent.ReadAsStringAsync();
+                return await responseContent.ReadAsStringAsync().ConfigureAwait(false);
             }
         }
     }

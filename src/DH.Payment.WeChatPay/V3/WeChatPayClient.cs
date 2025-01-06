@@ -83,7 +83,7 @@ public class WeChatPayClient : IWeChatPayClient
         }
 
         var client = _httpClientFactory.CreateClient(Name);
-        var (headers, body, statusCode) = await client.GetAsync(request, options);
+        var (headers, body, statusCode) = await client.GetAsync(request, options).ConfigureAwait(false);
         var parser = new WeChatPayResponseJsonParser<T>();
         var response = parser.Parse(body, statusCode);
 
@@ -91,7 +91,7 @@ public class WeChatPayClient : IWeChatPayClient
         {
             if (!response.IsError)
             {
-                await CheckResponseSignAsync(headers, body, options);
+                await CheckResponseSignAsync(headers, body, options).ConfigureAwait(false);
             }
         }
 
@@ -120,13 +120,13 @@ public class WeChatPayClient : IWeChatPayClient
         }
 
         var client = _httpClientFactory.CreateClient(Name);
-        var (headers, body, statusCode) = await client.PostAsync(request, options);
+        var (headers, body, statusCode) = await client.PostAsync(request, options).ConfigureAwait(false);
         var parser = new WeChatPayResponseJsonParser<T>();
         var response = parser.Parse(body, statusCode);
 
         if (!response.IsError)
         {
-            await CheckResponseSignAsync(headers, body, options);
+            await CheckResponseSignAsync(headers, body, options).ConfigureAwait(false);
         }
 
         return response;
@@ -158,13 +158,13 @@ public class WeChatPayClient : IWeChatPayClient
             throw new WeChatPayException($"options.{nameof(WeChatPayOptions.APIv3Key)} is Empty!");
         }
 
-        var cert = await _platformCertificateManager.GetCertificateAsync(this, options);
+        var cert = await _platformCertificateManager.GetCertificateAsync(this, options).ConfigureAwait(false);
 
         // 加密敏感信息
         EncryptPrivacyProperty(request.GetQueryModel(), cert.Certificate.GetRSAPublicKey());
 
         var client = _httpClientFactory.CreateClient(Name);
-        var (headers, body, statusCode) = await client.GetAsync(request, options, cert.SerialNo);
+        var (headers, body, statusCode) = await client.GetAsync(request, options, cert.SerialNo).ConfigureAwait(false);
         var parser = new WeChatPayResponseJsonParser<T>();
         var response = parser.Parse(body, statusCode);
 
@@ -172,7 +172,7 @@ public class WeChatPayClient : IWeChatPayClient
         {
             if (!response.IsError)
             {
-                await CheckResponseSignAsync(headers, body, options);
+                await CheckResponseSignAsync(headers, body, options).ConfigureAwait(false);
             }
         }
 
@@ -203,19 +203,19 @@ public class WeChatPayClient : IWeChatPayClient
             throw new WeChatPayException($"options.{nameof(WeChatPayOptions.Certificate)} is Empty!");
         }
 
-        var cert = await _platformCertificateManager.GetCertificateAsync(this, options);
+        var cert = await _platformCertificateManager.GetCertificateAsync(this, options).ConfigureAwait(false);
 
         // 加密敏感信息
         EncryptPrivacyProperty(request.GetBodyModel(), cert.Certificate.GetRSAPublicKey());
 
         var client = _httpClientFactory.CreateClient(Name);
-        var (headers, body, statusCode) = await client.PostAsync(request, options, cert.SerialNo);
+        var (headers, body, statusCode) = await client.PostAsync(request, options, cert.SerialNo).ConfigureAwait(false);
         var parser = new WeChatPayResponseJsonParser<T>();
         var response = parser.Parse(body, statusCode);
 
         if (!response.IsError)
         {
-            await CheckResponseSignAsync(headers, body, options);
+            await CheckResponseSignAsync(headers, body, options).ConfigureAwait(false);
         }
 
         // 解密敏感信息
@@ -240,7 +240,7 @@ public class WeChatPayClient : IWeChatPayClient
             throw new WeChatPayException($"sign check fail: {nameof(headers.Signature)} is empty!");
         }
 
-        var cert = await _platformCertificateManager.GetCertificateAsync(this, options, headers.Serial);
+        var cert = await _platformCertificateManager.GetCertificateAsync(this, options, headers.Serial).ConfigureAwait(false);
         var signSourceData = WeChatPayUtility.BuildSignatureSourceData(headers.Timestamp, headers.Nonce, body);
         var signCheck = SHA256WithRSA.Verify(cert.Certificate.GetRSAPublicKey(), signSourceData, headers.Signature);
         if (!signCheck)

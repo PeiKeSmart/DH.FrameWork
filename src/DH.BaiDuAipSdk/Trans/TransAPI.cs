@@ -37,7 +37,7 @@ namespace DG.BaiDuAipSdk.Trans
                     salt = salt,
                     sign = sign
                 })
-                .ReceiveString();
+                .ReceiveString().ConfigureAwait(false);
 
             return result;
         }

@@ -34,7 +34,7 @@ public class WeChatPayV3NotifyController : Controller
         {
             Request.Body.Seek(0, SeekOrigin.Begin);
 
-            var notify = await _client.ExecuteAsync<WeChatPayTransactionsNotify>(Request, _optionsAccessor.CurrentValue);
+            var notify = await _client.ExecuteAsync<WeChatPayTransactionsNotify>(Request, _optionsAccessor.CurrentValue).ConfigureAwait(false);
 
             if (notify.TradeState == WeChatPayTradeState.Success)
             {

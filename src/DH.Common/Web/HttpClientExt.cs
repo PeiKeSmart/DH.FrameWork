@@ -290,7 +290,7 @@ public class HttpClientExt {
             mRequest.RequestUri = new Uri(mClient.BaseAddress, requestUri);
         }
 
-        HttpResponseMessage resp = await mClient.SendAsync(mRequest);
+        HttpResponseMessage resp = await mClient.SendAsync(mRequest).ConfigureAwait(false);
 
         mRequest.Headers.Clear();
         mRequest.Content = null;
@@ -298,7 +298,7 @@ public class HttpClientExt {
         string content = string.Empty;
         if (resp.Content != null)
         {
-            content = await resp.Content.ReadAsStringAsync();
+            content = await resp.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
         return new HttpResponseExt(resp.StatusCode, resp.Headers, content);
     }
@@ -307,7 +307,7 @@ public class HttpClientExt {
     {
         InitRequest();
         mRequest.Method = HttpMethod.Get;
-        return await SendJsonAsync(requestUri);
+        return await SendJsonAsync(requestUri).ConfigureAwait(false);
     }
 
     public HttpResponseExt Get(string requestUri)
@@ -319,7 +319,7 @@ public class HttpClientExt {
     {
         InitRequest();
         mRequest.Method = HttpMethod.Post;
-        return await SendJsonAsync(requestUri);
+        return await SendJsonAsync(requestUri).ConfigureAwait(false);
     }
 
     public HttpResponseExt Post(string requestUri)
@@ -331,7 +331,7 @@ public class HttpClientExt {
     {
         InitRequest();
         mRequest.Method = HttpMethod.Put;
-        return await SendJsonAsync(requestUri);
+        return await SendJsonAsync(requestUri).ConfigureAwait(false);
     }
 
     public HttpResponseExt Put(string requestUri)
@@ -343,7 +343,7 @@ public class HttpClientExt {
     {
         InitRequest();
         mRequest.Method = HttpMethod.Delete;
-        return await SendJsonAsync(requestUri);
+        return await SendJsonAsync(requestUri).ConfigureAwait(false);
     }
 
     public HttpResponseExt Delete(string requestUri)
@@ -355,7 +355,7 @@ public class HttpClientExt {
     {
         InitRequest();
         mRequest.Method = HttpMethod.Patch;
-        return await SendJsonAsync(requestUri);
+        return await SendJsonAsync(requestUri).ConfigureAwait(false);
     }
 
     public HttpResponseExt Patch(string requestUri)
@@ -367,7 +367,7 @@ public class HttpClientExt {
     {
         InitRequest();
         mRequest.Method = HttpMethod.Head;
-        return await SendJsonAsync(requestUri);
+        return await SendJsonAsync(requestUri).ConfigureAwait(false);
     }
 
     public HttpResponseExt Head(string requestUri)
@@ -379,7 +379,7 @@ public class HttpClientExt {
     {
         InitRequest();
         mRequest.Method = HttpMethod.Options;
-        return await SendJsonAsync(requestUri);
+        return await SendJsonAsync(requestUri).ConfigureAwait(false);
     }
 
     public HttpResponseExt Options(string requestUri)

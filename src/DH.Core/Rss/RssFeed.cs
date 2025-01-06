@@ -88,7 +88,7 @@ namespace DH.Core.Rss
         {
             try
             {
-                var document = await XDocument.LoadAsync(stream, LoadOptions.None, default);
+                var document = await XDocument.LoadAsync(stream, LoadOptions.None, default).ConfigureAwait(false);
 
                 var channel = document.Root?.Element(DHRssDefaults.Channel);
 

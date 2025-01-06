@@ -27,7 +27,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
                 .CreateRequest(request, HttpMethod.Post, "buyin", "applyActivities")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendRequestWithJsonAsync<Models.BuyinApplyActivitiesResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.BuyinApplyActivitiesResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
                 .CreateRequest(request, HttpMethod.Post, "buyin", "activitySearch")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendRequestWithJsonAsync<Models.BuyinActivitySearchResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.BuyinActivitySearchResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
         #endregion
 
@@ -69,7 +69,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
                 .CreateRequest(request, HttpMethod.Post, "buyin", "simplePlan")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendRequestWithJsonAsync<Models.BuyinSimplePlanResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.BuyinSimplePlanResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
                 .CreateRequest(request, HttpMethod.Post, "buyin", "exclusivePlan")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendRequestWithJsonAsync<Models.BuyinExclusivePlanResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.BuyinExclusivePlanResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
         #endregion
 
@@ -111,7 +111,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
                 .CreateRequest(request, HttpMethod.Post, "buyin", "orienPlanList")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendRequestWithJsonAsync<Models.BuyinOrientPlanListResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.BuyinOrientPlanListResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -131,7 +131,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
                 .CreateRequest(request, HttpMethod.Post, "buyin", "createOrUpdateOrienPlan")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendRequestWithJsonAsync<Models.BuyinCreateOrUpdateOrientPlanResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.BuyinCreateOrUpdateOrientPlanResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -151,7 +151,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
                 .CreateRequest(request, HttpMethod.Post, "buyin", "orienPlanCtrl")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendRequestWithJsonAsync<Models.BuyinOrientPlanControlResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.BuyinOrientPlanControlResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -171,7 +171,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
                 .CreateRequest(request, HttpMethod.Post, "buyin", "orienPlanAuthors")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendRequestWithJsonAsync<Models.BuyinOrientPlanAuthorsResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.BuyinOrientPlanAuthorsResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -191,7 +191,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
                 .CreateRequest(request, HttpMethod.Post, "buyin", "orienPlanAudit")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendRequestWithJsonAsync<Models.BuyinOrientPlanAuditResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.BuyinOrientPlanAuditResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -211,7 +211,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
                 .CreateRequest(request, HttpMethod.Post, "buyin", "orienPlanAuthorsAdd")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendRequestWithJsonAsync<Models.BuyinOrientPlanAuthorsAddResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.BuyinOrientPlanAuthorsAddResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
         #endregion
 
@@ -232,7 +232,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
                 .CreateRequest(request, HttpMethod.Post, "buyin", "instituteOrderAds")
                 .SetQueryParam("access_token", request.AccessToken);
 
-            return await client.SendRequestWithJsonAsync<Models.BuyinInstituteOrderAdsResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+            return await client.SendRequestWithJsonAsync<Models.BuyinInstituteOrderAdsResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
     }
 }

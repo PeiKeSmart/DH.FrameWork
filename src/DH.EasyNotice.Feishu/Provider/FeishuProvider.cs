@@ -60,10 +60,10 @@ internal class FeishuProvider : IFeishuProvider {
             {
                 message.timestamp = DateTimeHelper.GetTimestamp.ToString();
                 message.sign = FeishuHelper.GetSign(message.timestamp, _feishuOptions.Secret);
-                var response = await _httpClient.PostAsync(_feishuOptions.WebHook, new StringContent(message.ToString(), Encoding.UTF8, "application/json"));
-                var html = await response.Content.ReadAsStringAsync();
+                var response = await _httpClient.PostAsync(_feishuOptions.WebHook, new StringContent(message.ToString(), Encoding.UTF8, "application/json")).ConfigureAwait(false);
+                var html = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 return JsonConvert.DeserializeObject<EasyNoticeSendResponse>(html);
-            }, title, _noticeOptions.IntervalSeconds);
+            }, title, _noticeOptions.IntervalSeconds).ConfigureAwait(false);
         }
         catch (Exception ex)
         {

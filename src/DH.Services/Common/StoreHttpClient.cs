@@ -37,7 +37,7 @@ public partial class StoreHttpClient
     /// </returns>
     public virtual async Task KeepAliveAsync()
     {
-        await _httpClient.GetStringAsync(DHCommonDefaults.KeepAlivePath);
+        await _httpClient.GetStringAsync(DHCommonDefaults.KeepAlivePath).ConfigureAwait(false);
     }
 
     #endregion

@@ -56,7 +56,7 @@ public class MailKitEmailSender : EmailSenderBase, IMailKitEmailSender
 
         try
         {
-            result = await client.SendAsync(message);
+            result = await client.SendAsync(message).ConfigureAwait(false);
         }
         catch(Exception ex)
         {
@@ -65,7 +65,7 @@ public class MailKitEmailSender : EmailSenderBase, IMailKitEmailSender
         }
         finally
         {
-            await client.DisconnectAsync(true);
+            await client.DisconnectAsync(true).ConfigureAwait(false);
         }
 
         return result;

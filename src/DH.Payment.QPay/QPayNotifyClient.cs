@@ -32,7 +32,7 @@ namespace DH.Payment.QPay
                 throw new ArgumentNullException(nameof(options.Key));
             }
 
-            var body = await new StreamReader(request.Body, Encoding.UTF8).ReadToEndAsync();
+            var body = await new StreamReader(request.Body, Encoding.UTF8).ReadToEndAsync().ConfigureAwait(false);
 
             var parser = new QPayXmlParser<T>();
             var rsp = parser.Parse(body);

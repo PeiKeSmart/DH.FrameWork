@@ -48,7 +48,7 @@ public static class BufferedCommandExtensions
             {
                 try
                 {
-                    var result = await task;
+                    var result = await task.ConfigureAwait(false);
 
                     return new BufferedCommandResult(
                         result.ExitCode,

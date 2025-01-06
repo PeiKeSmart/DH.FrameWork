@@ -17,10 +17,10 @@ namespace DH.Payment.QPay.Utility
         public static async Task<string> PostAsync(this HttpClient client, string url, IDictionary<string, string> textParams)
         {
             using (var reqContent = new StringContent(QPayUtility.BuildContent(textParams), Encoding.UTF8, "application/xml"))
-            using (var resp = await client.PostAsync(url, reqContent))
+            using (var resp = await client.PostAsync(url, reqContent).ConfigureAwait(false))
             using (var respContent = resp.Content)
             {
-                return await respContent.ReadAsStringAsync();
+                return await respContent.ReadAsStringAsync().ConfigureAwait(false);
             }
         }
     }

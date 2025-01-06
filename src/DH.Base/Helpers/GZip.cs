@@ -19,7 +19,7 @@ public static partial class GZip {
     /// 压缩
     /// </summary>
     /// <param name="content">内容</param>
-    public static async Task<string> CompressAsync(string content) => await CompressAsync(content, Encoding.UTF8);
+    public static async Task<string> CompressAsync(string content) => await CompressAsync(content, Encoding.UTF8).ConfigureAwait(false);
 
     /// <summary>
     /// 压缩
@@ -44,7 +44,7 @@ public static partial class GZip {
         if (string.IsNullOrWhiteSpace(content))
             return string.Empty;
         var buffer = encoding.GetBytes(content);
-        return Convert.ToBase64String(await CompressAsync(buffer));
+        return Convert.ToBase64String(await CompressAsync(buffer).ConfigureAwait(false));
     }
 
     /// <summary>
@@ -74,7 +74,7 @@ public static partial class GZip {
         using (var ms = new MemoryStream())
         {
             using (var zip = new GZipStream(ms, CompressionMode.Compress, true))
-                await zip.WriteAsync(buffer, 0, buffer.Length);
+                await zip.WriteAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
             return ms.ToArray();
         }
     }
@@ -98,7 +98,7 @@ public static partial class GZip {
     {
         if (stream == null || stream.Length == 0)
             return null;
-        return await CompressAsync(await StreamToBytesAsync(stream));
+        return await CompressAsync(await StreamToBytesAsync(stream).ConfigureAwait(false)).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -121,7 +121,7 @@ public static partial class GZip {
     {
         stream.Seek(0, SeekOrigin.Begin);
         var buffer = new byte[stream.Length];
-        await stream.ReadAsync(buffer, 0, buffer.Length);
+        await stream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
         return buffer;
     }
 
@@ -162,7 +162,7 @@ public static partial class GZip {
             using (var zip = new GZipStream(ms, CompressionMode.Decompress))
             {
                 using (var reader = new StreamReader(zip))
-                    return await reader.ReadToEndAsync();
+                    return await reader.ReadToEndAsync().ConfigureAwait(false);
             }
         }
     }

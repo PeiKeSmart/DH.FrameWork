@@ -62,7 +62,7 @@ public class SmsService : ISmsService
             .Data("extnum", "")
             .Data("time", "")
             .Data("messageid", "")
-            .ResultStringAsync();
+            .ResultStringAsync().ConfigureAwait(false);
 
         if (result.Contains("提交成功"))
         {

@@ -139,9 +139,9 @@ namespace Baidu.Yingyan
                 XTrace.WriteLine($"百度鹰眼：{requestUri}");
             }
 
-            var response = await client.GetAsync(requestUri);
+            var response = await client.GetAsync(requestUri).ConfigureAwait(false);
             if (response.IsSuccessStatusCode)
-                return await response.Content.JsonReadAsAsync<TResult>();
+                return await response.Content.JsonReadAsAsync<TResult>().ConfigureAwait(false);
 
             var r = new TResult();
             r.status = StatusCodeEnums.error999;
@@ -180,9 +180,9 @@ namespace Baidu.Yingyan
 
             var content = new FormUrlEncodedContent(args);
 
-            var response = await client.PostAsync(requestUri, content);
+            var response = await client.PostAsync(requestUri, content).ConfigureAwait(false);
             if (response.IsSuccessStatusCode)
-                return await response.Content.JsonReadAsAsync<TResult>();
+                return await response.Content.JsonReadAsAsync<TResult>().ConfigureAwait(false);
             var r = new TResult();
             r.status = StatusCodeEnums.error999;
             r.message = $"http 请求错误：StatusCode={response.StatusCode}, ReasonPhrase={response.ReasonPhrase}";

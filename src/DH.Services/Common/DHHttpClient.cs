@@ -63,7 +63,7 @@ public partial class DHHttpClient
     /// </returns>
     public virtual async Task PingAsync()
     {
-        await _httpClient.GetStringAsync("/");
+        await _httpClient.GetStringAsync("/").ConfigureAwait(false);
     }
 
     /// <summary>
@@ -84,7 +84,7 @@ public partial class DHHttpClient
             language).ToLowerInvariant();
 
         // 获取消息
-        return await _httpClient.GetStringAsync(url);
+        return await _httpClient.GetStringAsync(url).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -106,8 +106,8 @@ public partial class DHHttpClient
             language).ToLowerInvariant();
 
         // 获取新闻源
-        await using var stream = await _httpClient.GetStreamAsync(url);
-        return await RssFeed.LoadAsync(stream);
+        using var stream = await _httpClient.GetStreamAsync(url).ConfigureAwait(false);
+        return await RssFeed.LoadAsync(stream).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -135,7 +135,7 @@ public partial class DHHttpClient
         // 这个请求需要更多的时间
         _httpClient.Timeout = TimeSpan.FromSeconds(30);
 
-        return await _httpClient.GetStringAsync(url);
+        return await _httpClient.GetStringAsync(url).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -152,7 +152,7 @@ public partial class DHHttpClient
         var url = string.Format(DHCommonDefaults.DHExtensionsCategoriesPath, language).ToLowerInvariant();
 
         // 获取XML响应
-        return await _httpClient.GetStringAsync(url);
+        return await _httpClient.GetStringAsync(url).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -169,7 +169,7 @@ public partial class DHHttpClient
         var url = string.Format(DHCommonDefaults.DHExtensionsVersionsPath, language).ToLowerInvariant();
 
         // 获取XML响应
-        return await _httpClient.GetStringAsync(url);
+        return await _httpClient.GetStringAsync(url).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -195,7 +195,7 @@ public partial class DHHttpClient
             categoryId, versionId, price, WebUtility.UrlEncode(searchTerm), pageIndex, pageSize, language).ToLowerInvariant();
 
         // 获取XML响应
-        return await _httpClient.GetStringAsync(url);
+        return await _httpClient.GetStringAsync(url).ConfigureAwait(false);
     }
 
     #endregion

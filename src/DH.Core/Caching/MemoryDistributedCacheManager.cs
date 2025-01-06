@@ -53,12 +53,12 @@ namespace DH.Core.Caching
                              .Where(key => key.StartsWith(prefix, StringComparison.InvariantCultureIgnoreCase))
                              .ToList())
                 {
-                    await _distributedCache.RemoveAsync(key);
+                    await _distributedCache.RemoveAsync(key).ConfigureAwait(false);
                     _keysList.Remove(key);
                 }
             }
 
-            await RemoveByPrefixInstanceDataAsync(prefix);
+            await RemoveByPrefixInstanceDataAsync(prefix).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace DH.Core.Caching
             using (var _ = _locker.Lock())
             {
                 foreach (var key in _keysList)
-                    await _distributedCache.RemoveAsync(key);
+                    await _distributedCache.RemoveAsync(key).ConfigureAwait(false);
 
                 _keysList.Clear();
             }

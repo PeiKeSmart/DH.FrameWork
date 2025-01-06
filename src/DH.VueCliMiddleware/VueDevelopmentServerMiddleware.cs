@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
@@ -104,7 +104,7 @@ namespace VueCliMiddleware
                     // it doesn't do so until it's finished compiling, and even then only if there were
                     // no compiler warnings. So instead of waiting for that, consider it ready as soon
                     // as it starts listening for requests.
-                    await npmScriptRunner.StdOut.WaitForMatch(new Regex(!string.IsNullOrWhiteSpace(regex) ? regex : DefaultRegex, RegexOptions.None, RegexMatchTimeout));
+                    await npmScriptRunner.StdOut.WaitForMatch(new Regex(!string.IsNullOrWhiteSpace(regex) ? regex : DefaultRegex, RegexOptions.None, RegexMatchTimeout)).ConfigureAwait(false);
                 }
                 catch (EndOfStreamException ex)
                 {

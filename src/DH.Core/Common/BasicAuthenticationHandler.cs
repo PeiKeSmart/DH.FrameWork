@@ -41,7 +41,7 @@ public class BasicAuthenticationHandler : AuthenticationHandler<BasicAuthenticat
         if (credentials.Length != 2)
             return AuthenticateResult.Fail("More than two strings seperated by colons found");
 
-        ClaimsPrincipal principal = await Task.Run(() => Options.SignIn(credentials[0], credentials[1]));
+        ClaimsPrincipal principal = await Task.Run(() => Options.SignIn(credentials[0], credentials[1])).ConfigureAwait(false);
 
         if (principal != null)
         {

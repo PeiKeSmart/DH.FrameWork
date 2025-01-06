@@ -55,17 +55,17 @@ public class DHStartup : IPekStartup {
         // 高德密钥反向代码
         endpoints.Map("/_AMapService/v4/map/styles", async context =>
         {
-            await ProxyRequest(context, "https://webapi.amap.com/v4/map/styles", "/_AMapService/");
+            await ProxyRequest(context, "https://webapi.amap.com/v4/map/styles", "/_AMapService/").ConfigureAwait(false);
         });
 
         endpoints.Map("/_AMapService/v3/vectormap", async context =>
         {
-            await ProxyRequest(context, "https://fmap01.amap.com/v3/vectormap", "/_AMapService/");
+            await ProxyRequest(context, "https://fmap01.amap.com/v3/vectormap", "/_AMapService/").ConfigureAwait(false);
         });
 
         endpoints.Map("/_AMapService/{**path}", async context =>
         {
-            await ProxyRequest(context, "https://restapi.amap.com/", "/_AMapService/");
+            await ProxyRequest(context, "https://restapi.amap.com/", "/_AMapService/").ConfigureAwait(false);
         });
     }
 
@@ -82,12 +82,12 @@ public class DHStartup : IPekStartup {
 
             if (method.EqualIgnoreCase("GET"))
             {
-                var response = await client.GetAsync(targetUrlWithQueryString);
+                var response = await client.GetAsync(targetUrlWithQueryString).ConfigureAwait(false);
                 if (response.IsSuccessStatusCode)
                 {
-                    var content = await response.Content.ReadAsStringAsync();
+                    var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                     context.Response.ContentType = response.Content.Headers.ContentType?.ToString();
-                    await context.Response.WriteAsync(content);
+                    await context.Response.WriteAsync(content).ConfigureAwait(false);
                 }
                 else
                 {
@@ -98,19 +98,19 @@ public class DHStartup : IPekStartup {
             {
                 using (var reader = new StreamReader(context.Request.Body, Encoding.UTF8))
                 {
-                    var requestBody = await reader.ReadToEndAsync();
+                    var requestBody = await reader.ReadToEndAsync().ConfigureAwait(false);
 
                     // 使用 HttpClient 发送 POST 请求
                     using (var httpClient = new HttpClient())
                     {
                         var content = new StringContent(requestBody, Encoding.UTF8, "application/json");
-                        var response = await httpClient.PostAsync(targetUrlWithQueryString, content);
+                        var response = await httpClient.PostAsync(targetUrlWithQueryString, content).ConfigureAwait(false);
 
                         if (response.IsSuccessStatusCode)
                         {
-                            var content1 = await response.Content.ReadAsStringAsync();
+                            var content1 = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                             context.Response.ContentType = response.Content.Headers.ContentType?.ToString();
-                            await context.Response.WriteAsync(content1);
+                            await context.Response.WriteAsync(content1).ConfigureAwait(false);
                         }
                         else
                         {

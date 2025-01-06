@@ -65,7 +65,7 @@ public class DeviceClient
             throw new ArgumentNullException(nameof(devicePayload));
 
         var json = devicePayload.ToString();
-        return await UpdateDeviceInfoAsync(registrationId, json);
+        return await UpdateDeviceInfoAsync(registrationId, json).ConfigureAwait(false);
     }
 
     /// <summary>

@@ -27,7 +27,7 @@ namespace DH.Services.Events {
                 try
                 {
                     // 尝试处理已发布事件
-                    await consumer.HandleEventAsync(@event);
+                    await consumer.HandleEventAsync(@event).ConfigureAwait(false);
                 }
                 catch (Exception exception)
                 {

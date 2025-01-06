@@ -44,6 +44,6 @@ public static class KeRuYunApiClientExecuteGetTokenExtensions
 
         flurlReq.SetQueryParams(queryDic);
 
-        return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.TokenGetResponse>(flurlReq, data: request, cancellationToken: cancellationToken);
+        return await client.SendFlurlRequestAsFormUrlEncodedAsync<Models.TokenGetResponse>(flurlReq, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 }

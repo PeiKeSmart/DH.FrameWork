@@ -30,8 +30,8 @@ namespace DH.Payment.WeChatPay.V2
 
             using (var reader = new StreamReader(request.Body, Encoding.UTF8, true, 1024, true))
             {
-                var body = await reader.ReadToEndAsync();
-                return await ExecuteAsync<T>(body, options);
+                var body = await reader.ReadToEndAsync().ConfigureAwait(false);
+                return await ExecuteAsync<T>(body, options).ConfigureAwait(false);
             }
         }
 

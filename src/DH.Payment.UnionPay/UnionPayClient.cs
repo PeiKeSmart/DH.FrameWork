@@ -75,7 +75,7 @@ namespace DH.Payment.UnionPay
 
             using (var client = _httpClientFactory.CreateClient(nameof(UnionPayClient)))
             {
-                var body = await client.DoPostAsync(request.GetRequestUrl(options.TestMode), query);
+                var body = await client.DoPostAsync(request.GetRequestUrl(options.TestMode), query).ConfigureAwait(false);
 
                 var dictionary = ParseQueryString(body);
 

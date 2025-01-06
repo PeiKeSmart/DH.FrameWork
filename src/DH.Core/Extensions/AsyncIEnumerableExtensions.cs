@@ -81,7 +81,7 @@ namespace System.Linq
         {
             async ValueTask<IAsyncEnumerable<TResult>> getAsyncEnumerable(TSource items)
             {
-                var rez = await predicate(items);
+                var rez = await predicate(items).ConfigureAwait(false);
                 return rez.ToAsyncEnumerable();
             }
 
@@ -106,7 +106,7 @@ namespace System.Linq
         {
             async ValueTask<IAsyncEnumerable<TResult>> getAsyncEnumerable(TSource items)
             {
-                var rez = await predicate(items);
+                var rez = await predicate(items).ConfigureAwait(false);
                 return rez.ToAsyncEnumerable();
             }
 

@@ -36,8 +36,8 @@ namespace DH.Payment.WeChatPay.V3
             var headers = GetWeChatPayHeadersFromRequest(request);
             using (var reader = new StreamReader(request.Body, Encoding.UTF8, true, 1024, true))
             {
-                var body = await reader.ReadToEndAsync();
-                return await ExecuteAsync<T>(headers, body, options);
+                var body = await reader.ReadToEndAsync().ConfigureAwait(false);
+                return await ExecuteAsync<T>(headers, body, options).ConfigureAwait(false);
             }
         }
 
@@ -84,7 +84,7 @@ namespace DH.Payment.WeChatPay.V3
                 throw new WeChatPayException($"options.{nameof(options.APIv3Key)} is Empty!");
             }
 
-            await CheckNotifySignAsync(headers, body, options);
+            await CheckNotifySignAsync(headers, body, options).ConfigureAwait(false);
 
             var parser = new WeChatPayNotifyJsonParser<T>();
             var notify = parser.Parse(body, options.APIv3Key);
@@ -113,7 +113,7 @@ namespace DH.Payment.WeChatPay.V3
                 throw new WeChatPayException("sign check fail: body is empty!");
             }
 
-            var cert = await _platformCertificateManager.GetCertificateAsync(_client, options, headers.Serial);
+            var cert = await _platformCertificateManager.GetCertificateAsync(_client, options, headers.Serial).ConfigureAwait(false);
             var signSourceData = WeChatPayUtility.BuildSignatureSourceData(headers.Timestamp, headers.Nonce, body);
             var signCheck = SHA256WithRSA.Verify(cert.Certificate.GetRSAPublicKey(), signSourceData, headers.Signature);
             if (!signCheck)

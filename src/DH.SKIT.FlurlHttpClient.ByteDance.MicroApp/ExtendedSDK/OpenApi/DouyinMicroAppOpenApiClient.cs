@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -103,7 +103,7 @@ namespace SKIT.FlurlHttpClient.ByteDance.MicroApp.ExtendedSDK.OpenApi
                 flurlRequest.WithHeader(HttpHeaders.ContentType, MimeTypes.Json); // NOTICE: Content-Type 中不能包含 charset 等其他段
 
             using IFlurlResponse flurlResponse = isSimpleRequest ?
-                await base.SendFlurlRequestAsync(flurlRequest, null, cancellationToken) :
+                await base.SendFlurlRequestAsync(flurlRequest, null, cancellationToken).ConfigureAwait(false) :
                 await base.SendFlurlRequestAsJsonAsync(flurlRequest, data, cancellationToken).ConfigureAwait(false);
             return await WrapFlurlResponseAsJsonAsync<T>(flurlResponse, cancellationToken).ConfigureAwait(false);
         }

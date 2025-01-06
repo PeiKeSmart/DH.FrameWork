@@ -93,7 +93,7 @@ public class JPushClient
             throw new ArgumentNullException(nameof(payload));
 
         string body = payload.ToString();
-        return await SendPushAsync(body);
+        return await SendPushAsync(body).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -129,7 +129,7 @@ public class JPushClient
             throw new ArgumentNullException(nameof(payload));
 
         var body = payload.ToString();
-        return await IsPushValidAsync(body);
+        return await IsPushValidAsync(body).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -188,7 +188,7 @@ public class JPushClient
     public async Task<HttpResponse> BatchPushByRegidAsync(List<SinglePayload> singlePayLoadList)
     {
         var url = BASE_URL + "/batch/regid/single";
-        return await BatchPushAsync(url, singlePayLoadList);
+        return await BatchPushAsync(url, singlePayLoadList).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -213,7 +213,7 @@ public class JPushClient
     public async Task<HttpResponse> BatchPushByAliasAsync(List<SinglePayload> singlePayLoadList)
     {
         var url = BASE_URL + "/batch/alias/single";
-        return await BatchPushAsync(url, singlePayLoadList);
+        return await BatchPushAsync(url, singlePayLoadList).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -231,7 +231,7 @@ public class JPushClient
 
     private async Task<HttpResponse> BatchPushAsync(String url, List<SinglePayload> singlePayLoadList)
     {
-        HttpResponse cidResponse = await this.GetCIdListAsync(singlePayLoadList.Count, "push");
+        HttpResponse cidResponse = await GetCIdListAsync(singlePayLoadList.Count, "push").ConfigureAwait(false);
         JObject jObject = (JObject)JsonConvert.DeserializeObject(cidResponse.Content);
         JArray jArray = ((JArray)jObject["cidlist"]);
         BatchPushPayload batchPushPayload = new BatchPushPayload();

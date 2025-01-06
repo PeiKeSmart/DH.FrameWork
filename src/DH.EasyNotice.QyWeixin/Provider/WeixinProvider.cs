@@ -90,7 +90,7 @@ internal class WeixinProvider : IWeixinProvider {
         var response = new EasyNoticeSendResponse();
         if (news != null && news.Count > 1 && news.Count <= 8)
         {
-            return await SendBaseAsync(title, new NewsMessage(news));
+            return await SendBaseAsync(title, new NewsMessage(news)).ConfigureAwait(false);
         }
         else
         {
@@ -111,10 +111,10 @@ internal class WeixinProvider : IWeixinProvider {
         {
             return await IntervalHelper.IntervalExcuteAsync(async () =>
             {
-                var response = await _httpClient.PostAsync(_WeixinOptions.WebHook, new StringContent(message.ToString(), Encoding.UTF8, "application/json"));
-                var html = await response.Content.ReadAsStringAsync();
+                var response = await _httpClient.PostAsync(_WeixinOptions.WebHook, new StringContent(message.ToString(), Encoding.UTF8, "application/json")).ConfigureAwait(false);
+                var html = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 return JsonConvert.DeserializeObject<EasyNoticeSendResponse>(html);
-            }, title, _noticeOptions.IntervalSeconds);
+            }, title, _noticeOptions.IntervalSeconds).ConfigureAwait(false);
         }
         catch (Exception ex)
         {

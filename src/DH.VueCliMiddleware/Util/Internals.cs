@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -37,7 +37,7 @@ namespace VueCliMiddleware
     {
         public static async Task WithTimeout(this Task task, TimeSpan timeoutDelay, string message)
         {
-            if (task == await Task.WhenAny(task, Task.Delay(timeoutDelay)))
+            if (task == await Task.WhenAny(task, Task.Delay(timeoutDelay)).ConfigureAwait(false))
             {
                 task.Wait(); // Allow any errors to propagate
             }
@@ -49,7 +49,7 @@ namespace VueCliMiddleware
 
         public static async Task<T> WithTimeout<T>(this Task<T> task, TimeSpan timeoutDelay, string message)
         {
-            if (task == await Task.WhenAny(task, Task.Delay(timeoutDelay)))
+            if (task == await Task.WhenAny(task, Task.Delay(timeoutDelay)).ConfigureAwait(false))
             {
                 return task.Result;
             }
@@ -147,7 +147,7 @@ namespace VueCliMiddleware
             var buf = new char[8 * 1024];
             while (true)
             {
-                var chunkLength = await _streamReader.ReadAsync(buf, 0, buf.Length);
+                var chunkLength = await _streamReader.ReadAsync(buf, 0, buf.Length).ConfigureAwait(false);
                 if (chunkLength == 0)
                 {
                     OnClosed();

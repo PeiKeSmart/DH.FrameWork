@@ -73,7 +73,7 @@ public class AntiDuplicateRequestAttribute : ActionFilterAttribute {
                 return;
             }
 
-            var executedContext = await next();
+            var executedContext = await next().ConfigureAwait(false);
             OnActionExecuted(executedContext);
         }
         finally

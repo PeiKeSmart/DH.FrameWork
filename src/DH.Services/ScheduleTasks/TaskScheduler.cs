@@ -107,7 +107,7 @@ public partial class TaskScheduler : ITaskScheduler
             _taskThreads.Add(taskThread);
         }
 
-        await Task.CompletedTask;
+        await Task.CompletedTask.ConfigureAwait(false);
     }
 
     /// <summary>
@@ -184,7 +184,7 @@ public partial class TaskScheduler : ITaskScheduler
 
                 //send post data
                 var data = new FormUrlEncodedContent(new[] { new KeyValuePair<string, string>("taskType", _scheduleTask.Type) });
-                await client.PostAsync(_scheduleTaskUrl, data);
+                await client.PostAsync(_scheduleTaskUrl, data).ConfigureAwait(false);
             }
             catch (Exception ex)
             {

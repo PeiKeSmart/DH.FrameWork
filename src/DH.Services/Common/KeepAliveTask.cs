@@ -29,7 +29,7 @@ namespace DH.Services.Common
         /// </summary>
         public async System.Threading.Tasks.Task ExecuteAsync()
         {
-            await _storeHttpClient.KeepAliveAsync();
+            await _storeHttpClient.KeepAliveAsync().ConfigureAwait(false);
         }
 
         #endregion

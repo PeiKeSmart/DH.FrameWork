@@ -38,7 +38,7 @@ internal abstract class DomainOwnershipValidator
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            var authorization = await _client.GetAuthorizationAsync(authorizationContext);
+            var authorization = await _client.GetAuthorizationAsync(authorizationContext).ConfigureAwait(false);
 
             _logger.LogAcmeAction("GetAuthorization");
 
@@ -47,7 +47,7 @@ internal abstract class DomainOwnershipValidator
                 case AuthorizationStatus.Valid:
                     return;
                 case AuthorizationStatus.Pending:
-                    await Task.Delay(delay, cancellationToken);
+                    await Task.Delay(delay, cancellationToken).ConfigureAwait(false);
                     continue;
                 case AuthorizationStatus.Invalid:
                     throw InvalidAuthorizationError(authorization);

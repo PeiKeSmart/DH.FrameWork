@@ -49,11 +49,11 @@ public class DHVueMiddleware
 
         if (httpMethod == "GET" && Regex.IsMatch(path, $"^/{Regex.Escape(_options.RoutePrefix)}/?index.html$", RegexOptions.IgnoreCase))
         {
-            await RespondWithIndexHtml(httpContext.Response);
+            await RespondWithIndexHtml(httpContext.Response).ConfigureAwait(false);
             return;
         }
 
-        await _staticFileMiddleware.Invoke(httpContext);
+        await _staticFileMiddleware.Invoke(httpContext).ConfigureAwait(false);
     }
 
     private StaticFileMiddleware CreateStaticFileMiddleware(
@@ -109,7 +109,7 @@ public class DHVueMiddleware
                 htmlBuilder.Replace(entry.Key, entry.Value);
             }
 
-            await response.WriteAsync(htmlBuilder.ToString(), Encoding.UTF8);
+            await response.WriteAsync(htmlBuilder.ToString(), Encoding.UTF8).ConfigureAwait(false);
         }
     }
 

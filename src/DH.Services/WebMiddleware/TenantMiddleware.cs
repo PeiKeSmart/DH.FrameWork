@@ -35,7 +35,7 @@ public class TenantMiddleware {
                 }
             }
 
-            await _next.Invoke(ctx);
+            await _next.Invoke(ctx).ConfigureAwait(false);
         }
         finally
         {

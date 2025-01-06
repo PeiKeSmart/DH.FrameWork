@@ -66,11 +66,11 @@ internal class EmailProvider : IEmailProvider {
                     client.CheckCertificateRevocation = false;
                     client.ServerCertificateValidationCallback = (s, c, h, e) => true;
                     client.Timeout = 10 * 1000;
-                    await client.ConnectAsync(_emailOptions.Host, _emailOptions.Port, SecureSocketOptions.Auto);
-                    await client.AuthenticateAsync(_emailOptions.FromAddress, _emailOptions.Password);
-                    await client.SendAsync(message);
+                    await client.ConnectAsync(_emailOptions.Host, _emailOptions.Port, SecureSocketOptions.Auto).ConfigureAwait(false);
+                    await client.AuthenticateAsync(_emailOptions.FromAddress, _emailOptions.Password).ConfigureAwait(false);
+                    await client.SendAsync(message).ConfigureAwait(false);
                 }
-            }, input.Subject, _noticeOptions.IntervalSeconds);
+            }, input.Subject, _noticeOptions.IntervalSeconds).ConfigureAwait(false);
 
         }
         catch (Exception ex)

@@ -97,18 +97,18 @@ namespace DH.Payment.Alipay
             var client = _httpClientFactory.CreateClient(nameof(AlipayMobilePublicMultiMediaClient));
 
             T response = null;
-            var rsp = await client.GetAsync(url);
+            var rsp = await client.GetAsync(url).ConfigureAwait(false);
             if (rsp.StatusCode == HttpStatusCode.OK)
             {
                 if (rsp.Content.Headers.ContentType.ToString().ToLower().Contains("text/plain"))
                 {
-                    var body = await rsp.Content.ReadAsStringAsync();
+                    var body = await rsp.Content.ReadAsStringAsync().ConfigureAwait(false);
                     var tp = new AlipayJsonParser<T>();
                     response = tp.Parse(body);
                 }
                 else
                 {
-                    multiMediaDownloadRequest.Stream = await rsp.Content.ReadAsStreamAsync();
+                    multiMediaDownloadRequest.Stream = await rsp.Content.ReadAsStreamAsync().ConfigureAwait(false);
                     response = Activator.CreateInstance<T>();
                 }
             }

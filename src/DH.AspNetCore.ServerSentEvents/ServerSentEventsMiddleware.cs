@@ -68,7 +68,7 @@ public class ServerSentEventsMiddleware<TServerSentEventsService> where TServerS
     {
         if (CheckAcceptHeader(context.Request.Headers))
         {
-            if (!await AuthorizeAsync(context, policyEvaluator))
+            if (!await AuthorizeAsync(context, policyEvaluator).ConfigureAwait(false))
             {
                 return;
             }
@@ -80,7 +80,7 @@ public class ServerSentEventsMiddleware<TServerSentEventsService> where TServerS
                 return;
             }
 
-            if (await PreventReconnectAsync(clientId, context))
+            if (await PreventReconnectAsync(clientId, context).ConfigureAwait(false))
             {
                 return;
             }
@@ -89,24 +89,24 @@ public class ServerSentEventsMiddleware<TServerSentEventsService> where TServerS
 
             HandleContentEncoding(context);
 
-            await context.Response.AcceptAsync(_serverSentEventsOptions.OnPrepareAccept);
+            await context.Response.AcceptAsync(_serverSentEventsOptions.OnPrepareAccept).ConfigureAwait(false);
 
             ServerSentEventsClient client = new ServerSentEventsClient(clientId, context.User, context.Response, _clientDisconnectServicesAvailable);
 
             if (_serverSentEventsService.ReconnectInterval.HasValue)
             {
-                await client.ChangeReconnectIntervalAsync(_serverSentEventsService.ReconnectInterval.Value, CancellationToken.None);
+                await client.ChangeReconnectIntervalAsync(_serverSentEventsService.ReconnectInterval.Value, CancellationToken.None).ConfigureAwait(false);
             }
 
-            await ConnectClientAsync(context.Request, client);
+            await ConnectClientAsync(context.Request, client).ConfigureAwait(false);
 
-            await context.RequestAborted.WaitAsync();
+            await context.RequestAborted.WaitAsync().ConfigureAwait(false);
 
-            await DisconnectClientAsync(context.Request, client);
+            await DisconnectClientAsync(context.Request, client).ConfigureAwait(false);
         }
         else
         {
-            await _next(context);
+            await _next(context).ConfigureAwait(false);
         }
     }
 
@@ -142,19 +142,19 @@ public class ServerSentEventsMiddleware<TServerSentEventsService> where TServerS
         {
             if (_authorizationPolicy is null)
             {
-                _authorizationPolicy = await AuthorizationPolicy.CombineAsync(_policyProvider, new[] { _serverSentEventsOptions.Authorization });
+                _authorizationPolicy = await AuthorizationPolicy.CombineAsync(_policyProvider, new[] { _serverSentEventsOptions.Authorization }).ConfigureAwait(false);
             }
 
-            AuthenticateResult authenticateResult = await policyEvaluator.AuthenticateAsync(_authorizationPolicy, context);
-            PolicyAuthorizationResult authorizeResult = await policyEvaluator.AuthorizeAsync(_authorizationPolicy, authenticateResult, context, null);
+            AuthenticateResult authenticateResult = await policyEvaluator.AuthenticateAsync(_authorizationPolicy, context).ConfigureAwait(false);
+            PolicyAuthorizationResult authorizeResult = await policyEvaluator.AuthorizeAsync(_authorizationPolicy, authenticateResult, context, null).ConfigureAwait(false);
 
             if (authorizeResult.Challenged)
             {
-                await ChallengeAsync(context);
+                await ChallengeAsync(context).ConfigureAwait(false);
             }
             else if (authorizeResult.Forbidden)
             {
-                await ForbidAsync(context);
+                await ForbidAsync(context).ConfigureAwait(false);
             }
             else
             {
@@ -167,7 +167,7 @@ public class ServerSentEventsMiddleware<TServerSentEventsService> where TServerS
 
     private async Task<bool> PreventReconnectAsync(Guid clientId, HttpContext context)
     {
-        if (!await _serverSentEventsNoReconnectClientsIdsStore.ContainsClientIdAsync(clientId))
+        if (!await _serverSentEventsNoReconnectClientsIdsStore.ContainsClientIdAsync(clientId).ConfigureAwait(false))
         {
             return false;
         }
@@ -176,7 +176,7 @@ public class ServerSentEventsMiddleware<TServerSentEventsService> where TServerS
 
         _serverSentEventsClientIdProvider.ReleaseClientId(clientId, context);
 
-        await _serverSentEventsNoReconnectClientsIdsStore.RemoveClientIdAsync(clientId);
+        await _serverSentEventsNoReconnectClientsIdsStore.RemoveClientIdAsync(clientId).ConfigureAwait(false);
 
         return true;
     }
@@ -187,12 +187,12 @@ public class ServerSentEventsMiddleware<TServerSentEventsService> where TServerS
         {
             foreach (string authenticationScheme in _authorizationPolicy.AuthenticationSchemes)
             {
-                await context.ChallengeAsync(authenticationScheme);
+                await context.ChallengeAsync(authenticationScheme).ConfigureAwait(false);
             }
         }
         else
         {
-            await context.ChallengeAsync();
+            await context.ChallengeAsync().ConfigureAwait(false);
         }
     }
 
@@ -202,12 +202,12 @@ public class ServerSentEventsMiddleware<TServerSentEventsService> where TServerS
         {
             foreach (string authenticationScheme in _authorizationPolicy.AuthenticationSchemes)
             {
-                await context.ForbidAsync(authenticationScheme);
+                await context.ForbidAsync(authenticationScheme).ConfigureAwait(false);
             }
         }
         else
         {
-            await context.ForbidAsync();
+            await context.ForbidAsync().ConfigureAwait(false);
         }
     }
 
@@ -250,11 +250,11 @@ public class ServerSentEventsMiddleware<TServerSentEventsService> where TServerS
         string lastEventId = request.Headers[Constants.LAST_EVENT_ID_HTTP_HEADER];
         if (!String.IsNullOrWhiteSpace(lastEventId))
         {
-            await _serverSentEventsService.OnReconnectAsync(request, client, lastEventId);
+            await _serverSentEventsService.OnReconnectAsync(request, client, lastEventId).ConfigureAwait(false);
         }
         else
         {
-            await _serverSentEventsService.OnConnectAsync(request, client);
+            await _serverSentEventsService.OnConnectAsync(request, client).ConfigureAwait(false);
         }
 
         _serverSentEventsService.AddClient(client);
@@ -266,14 +266,14 @@ public class ServerSentEventsMiddleware<TServerSentEventsService> where TServerS
 
         if (client.PreventReconnect)
         {
-            await _serverSentEventsNoReconnectClientsIdsStore.AddClientIdAsync(client.Id);
+            await _serverSentEventsNoReconnectClientsIdsStore.AddClientIdAsync(client.Id).ConfigureAwait(false);
         }
         else
         {
             _serverSentEventsClientIdProvider.ReleaseClientId(client.Id, request.HttpContext);
         }
 
-        await _serverSentEventsService.OnDisconnectAsync(request, client);
+        await _serverSentEventsService.OnDisconnectAsync(request, client).ConfigureAwait(false);
     }
     #endregion
 }

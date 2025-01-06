@@ -20,8 +20,8 @@ internal class TlsAlpn01DomainValidator : DomainOwnershipValidator
     {
         try
         {
-            await PrepareTlsAlpnChallengeResponseAsync(authzContext, _domainName, cancellationToken);
-            await WaitForChallengeResultAsync(authzContext, cancellationToken);
+            await PrepareTlsAlpnChallengeResponseAsync(authzContext, _domainName, cancellationToken).ConfigureAwait(false);
+            await WaitForChallengeResultAsync(authzContext, cancellationToken).ConfigureAwait(false);
         }
         finally
         {
@@ -37,14 +37,14 @@ internal class TlsAlpn01DomainValidator : DomainOwnershipValidator
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        var tlsAlpnChallenge = await _client.CreateChallengeAsync(authorizationContext, ChallengeTypes.TlsAlpn01);
+        var tlsAlpnChallenge = await _client.CreateChallengeAsync(authorizationContext, ChallengeTypes.TlsAlpn01).ConfigureAwait(false);
 
         _tlsAlpnChallengeResponder.PrepareChallengeCert(domainName, tlsAlpnChallenge.KeyAuthz);
 
         _logger.LogTrace("Waiting for server to start accepting HTTP requests");
-        await _appStarted.Task;
+        await _appStarted.Task.ConfigureAwait(false);
 
         _logger.LogTrace("Requesting server to validate TLS/ALPN challenge");
-        await _client.ValidateChallengeAsync(tlsAlpnChallenge);
+        await _client.ValidateChallengeAsync(tlsAlpnChallenge).ConfigureAwait(false);
     }
 }

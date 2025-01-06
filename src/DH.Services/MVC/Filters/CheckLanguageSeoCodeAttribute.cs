@@ -62,9 +62,9 @@ public sealed class CheckLanguageSeoCodeAttribute : TypeFilterAttribute
         /// <returns>完成时指示过滤器已执行的任务</returns>
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            await CheckLanguageSeoCodeAsync(context);
+            await CheckLanguageSeoCodeAsync(context).ConfigureAwait(false);
             if (context.Result == null)
-                await next();
+                await next().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -148,7 +148,7 @@ public sealed class CheckLanguageSeoCodeAttribute : TypeFilterAttribute
 
             context.Result = new LocalRedirectResult(pageUrl, false);
 
-            await Task.FromResult(0);
+            await Task.FromResult(0).ConfigureAwait(false);
         }
     }
 }

@@ -335,7 +335,7 @@ internal class MyJob : IDisposable
                 {
                     if (instance is CubeJobBase cubeJob2) cubeJob2.Job = job;
 
-                    message = await cubeJob.Execute(job.Argument);
+                    message = await cubeJob.Execute(job.Argument).ConfigureAwait(false);
                 }
                 else
                 {

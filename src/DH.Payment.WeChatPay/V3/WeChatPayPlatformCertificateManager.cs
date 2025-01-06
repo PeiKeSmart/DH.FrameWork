@@ -28,7 +28,7 @@ namespace DH.Payment.WeChatPay.V3
 
             // 否则重新下载新的微信支付平台证书并更新缓存
             var request = new WeChatPayCertificatesRequest();
-            var response = await client.ExecuteAsync(request, options);
+            var response = await client.ExecuteAsync(request, options).ConfigureAwait(false);
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 foreach (var certificate in response.Certificates)
@@ -93,7 +93,7 @@ namespace DH.Payment.WeChatPay.V3
 
             // 否则重新下载新的微信支付平台证书并更新缓存
             var request = new WeChatPayCertificatesRequest();
-            var response = await client.ExecuteAsync(request, options);
+            var response = await client.ExecuteAsync(request, options).ConfigureAwait(false);
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 foreach (var certificate in response.Certificates)

@@ -24,7 +24,7 @@ internal static class AsyncHelpers {
                 try
                 {
                     task = taskFn(combinedCancellation.Token);
-                    var result = await task;
+                    var result = await task.ConfigureAwait(false);
                     return result;
                 }
                 catch (AggregateException e) when (e.InnerException is OperationCanceledException)

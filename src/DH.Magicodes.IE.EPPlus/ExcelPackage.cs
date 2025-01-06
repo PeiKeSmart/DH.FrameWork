@@ -1,4 +1,4 @@
-/*******************************************************************************
+﻿/*******************************************************************************
  * You may amend and distribute as you like, but don't remove this header!
  *
  * EPPlus provides server-side generation of Excel 2007/2010 spreadsheets.
@@ -1145,7 +1145,7 @@ namespace OfficeOpenXml
             byte[] byRet = new byte[Stream.Length];
             long pos = Stream.Position;
             Stream.Seek(0, SeekOrigin.Begin);
-            await Stream.ReadAsync(byRet, 0, (int)Stream.Length);
+            await Stream.ReadAsync(byRet, 0, (int)Stream.Length).ConfigureAwait(false);
 
             //Encrypt Workbook?
             if (Encryption.IsEncrypted)

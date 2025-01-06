@@ -77,7 +77,7 @@ public partial class ScheduleTaskRunner : IScheduleTaskRunner
         scheduleTask.LastStartUtc = DateTime.UtcNow;
         // 更新适当的日期时间属性
         scheduleTask.Update();
-        await task.ExecuteAsync();
+        await task.ExecuteAsync().ConfigureAwait(false);
         scheduleTask.LastEndUtc = scheduleTask.LastSuccessUtc = DateTime.UtcNow;
         // 更新适当的日期时间属性
         scheduleTask.Update();
@@ -144,7 +144,7 @@ public partial class ScheduleTaskRunner : IScheduleTaskRunner
             var expiration = TimeSpan.FromSeconds(expirationInSeconds);
 
             // 带锁执行任务
-            await _locker.PerformActionWithLockAsync(scheduleTask.Type, expiration, () => PerformTaskAsync(scheduleTask));
+            await _locker.PerformActionWithLockAsync(scheduleTask.Type, expiration, () => PerformTaskAsync(scheduleTask)).ConfigureAwait(false);
         }
         catch (Exception exc)
         {

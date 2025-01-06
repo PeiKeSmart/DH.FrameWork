@@ -20,10 +20,10 @@ namespace DH.Payment.JDPay.Utility
         public static async Task<string> DoPostAsync(this HttpClient client, string url, string content, string mediaType = "application/xml")
         {
             using (var requestContent = new StringContent(content, Encoding.UTF8, mediaType))
-            using (var response = await client.PostAsync(url, requestContent))
+            using (var response = await client.PostAsync(url, requestContent).ConfigureAwait(false))
             using (var resContent = response.Content)
             {
-                return await resContent.ReadAsStringAsync();
+                return await resContent.ReadAsStringAsync().ConfigureAwait(false);
             }
         }
     }

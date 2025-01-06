@@ -62,7 +62,7 @@ public partial class OfficialFeedManager
         var xml = new XmlDocument();
         try
         {
-            xml.LoadXml(await _dhHttpClient.GetExtensionsCategoriesAsync());
+            xml.LoadXml(await _dhHttpClient.GetExtensionsCategoriesAsync().ConfigureAwait(false));
         }
         catch (Exception ex)
         {
@@ -100,7 +100,7 @@ public partial class OfficialFeedManager
         var xml = new XmlDocument();
         try
         {
-            xml.LoadXml(await _dhHttpClient.GetExtensionsVersionsAsync());
+            xml.LoadXml(await _dhHttpClient.GetExtensionsVersionsAsync().ConfigureAwait(false));
         }
         catch (Exception ex)
         {

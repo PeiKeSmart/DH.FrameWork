@@ -69,7 +69,7 @@ internal class AcmeCertificateFactory
 
     public async Task<AccountModel> GetOrCreateAccountAsync(CancellationToken cancellationToken)
     {
-        var account = await _accountRepository.GetAccountAsync(cancellationToken);
+        var account = await _accountRepository.GetAccountAsync(cancellationToken).ConfigureAwait(false);
 
         _acmeAccountKey = account != null
             ? KeyFactory.FromDer(account.PrivateKey)
@@ -77,12 +77,12 @@ internal class AcmeCertificateFactory
 
         _client = _acmeClientFactory.Create(_acmeAccountKey);
 
-        if (account != null && await ExistingAccountIsValidAsync())
+        if (account != null && await ExistingAccountIsValidAsync().ConfigureAwait(false))
         {
             return account;
         }
 
-        return await CreateAccount(cancellationToken);
+        return await CreateAccount(cancellationToken).ConfigureAwait(false);
     }
 
     private async Task<AccountModel> CreateAccount(CancellationToken cancellationToken)
@@ -93,13 +93,13 @@ internal class AcmeCertificateFactory
             throw new InvalidOperationException();
         }
 
-        var tosUri = await _client.GetTermsOfServiceAsync();
+        var tosUri = await _client.GetTermsOfServiceAsync().ConfigureAwait(false);
 
         _tosChecker.EnsureTermsAreAccepted(tosUri);
 
         var options = _options.Value;
         XTrace.Log.Info($"正在为{options.EmailAddress}创建新帐户");
-        var accountId = await _client.CreateAccountAsync(options.EmailAddress);
+        var accountId = await _client.CreateAccountAsync(options.EmailAddress).ConfigureAwait(false);
 
         var accountModel = new AccountModel
         {
@@ -108,7 +108,7 @@ internal class AcmeCertificateFactory
             PrivateKey = _acmeAccountKey.ToDer(),
         };
 
-        await _accountRepository.SaveAccountAsync(accountModel, cancellationToken);
+        await _accountRepository.SaveAccountAsync(accountModel, cancellationToken).ConfigureAwait(false);
 
         return accountModel;
     }
@@ -124,7 +124,7 @@ internal class AcmeCertificateFactory
         Account existingAccount;
         try
         {
-            existingAccount = await _client.GetAccountAsync();
+            existingAccount = await _client.GetAccountAsync().ConfigureAwait(false);
         }
         catch (AcmeRequestException exception)
         {
@@ -142,9 +142,9 @@ internal class AcmeCertificateFactory
 
         if (existingAccount.TermsOfServiceAgreed != true)
         {
-            var tosUri = await _client.GetTermsOfServiceAsync();
+            var tosUri = await _client.GetTermsOfServiceAsync().ConfigureAwait(false);
             _tosChecker.EnsureTermsAreAccepted(tosUri);
-            await _client.AgreeToTermsOfServiceAsync();
+            await _client.AgreeToTermsOfServiceAsync().ConfigureAwait(false);
         }
 
         return true;
@@ -159,13 +159,13 @@ internal class AcmeCertificateFactory
         }
 
         IOrderContext? orderContext = null;
-        var orders = await _client.GetOrdersAsync();
+        var orders = await _client.GetOrdersAsync().ConfigureAwait(false);
         if (orders.Any())
         {
             var expectedDomains = new HashSet<string>(_options.Value.DomainNames);
             foreach (var order in orders)
             {
-                var orderDetails = await _client.GetOrderDetailsAsync(order);
+                var orderDetails = await _client.GetOrderDetailsAsync(order).ConfigureAwait(false);
                 if (orderDetails.Status != OrderStatus.Pending)
                 {
                     continue;
@@ -188,20 +188,20 @@ internal class AcmeCertificateFactory
         if (orderContext == null)
         {
             XTrace.Log.Debug("为证书创建新订单");
-            orderContext = await _client.CreateOrderAsync(_options.Value.DomainNames);
+            orderContext = await _client.CreateOrderAsync(_options.Value.DomainNames).ConfigureAwait(false);
         }
 
         cancellationToken.ThrowIfCancellationRequested();
-        var authorizations = await _client.GetOrderAuthorizations(orderContext);
+        var authorizations = await _client.GetOrderAuthorizations(orderContext).ConfigureAwait(false);
 
         // 增加休眠来延迟校验，避免因为反向代理或者其他导致的检验失败。
-        await Task.Delay(TimeSpan.FromSeconds(10));
+        await Task.Delay(TimeSpan.FromSeconds(10)).ConfigureAwait(false);
 
         cancellationToken.ThrowIfCancellationRequested();
-        await Task.WhenAll(BeginValidateAllAuthorizations(authorizations, cancellationToken));
+        await Task.WhenAll(BeginValidateAllAuthorizations(authorizations, cancellationToken)).ConfigureAwait(false);
 
         cancellationToken.ThrowIfCancellationRequested();
-        return await CompleteCertificateRequestAsync(orderContext, cancellationToken);
+        return await CompleteCertificateRequestAsync(orderContext, cancellationToken).ConfigureAwait(false);
     }
 
     private IEnumerable<Task> BeginValidateAllAuthorizations(IEnumerable<IAuthorizationContext> authorizations,
@@ -222,7 +222,7 @@ internal class AcmeCertificateFactory
             throw new InvalidOperationException();
         }
 
-        var authorization = await _client.GetAuthorizationAsync(authorizationContext);
+        var authorization = await _client.GetAuthorizationAsync(authorizationContext).ConfigureAwait(false);
         var domainName = authorization.Identifier.Value;
 
         if (authorization.Status == AuthorizationStatus.Valid)
@@ -268,7 +268,7 @@ internal class AcmeCertificateFactory
             cancellationToken.ThrowIfCancellationRequested();
             try
             {
-                await validator.ValidateOwnershipAsync(authorizationContext, cancellationToken);
+                await validator.ValidateOwnershipAsync(authorizationContext, cancellationToken).ConfigureAwait(false);
                 // 如果验证失败，则会引发上面的方法。如果没有出现异常，我们假设验证已成功完成。
                 return;
             }
@@ -298,7 +298,7 @@ internal class AcmeCertificateFactory
             CommonName = commonName,
         };
         var privateKey = KeyFactory.NewKey((Certes.KeyAlgorithm)_options.Value.KeyAlgorithm);
-        var acmeCert = await _client.GetCertificateAsync(csrInfo, privateKey, order);
+        var acmeCert = await _client.GetCertificateAsync(csrInfo, privateKey, order).ConfigureAwait(false);
 
         _logger.LogAcmeAction("NewCertificate");
 

@@ -51,7 +51,7 @@ public static class InvokeHelper
     public static async Task<long> ProfileAsync(Func<Task> action)
     {
         var stopwatch = Stopwatch.StartNew();
-        await action();
+        await action().ConfigureAwait(false);
         stopwatch.Stop();
         return stopwatch.ElapsedMilliseconds;
     }
@@ -59,7 +59,7 @@ public static class InvokeHelper
     public static async Task<long> ProfileAsync<T>(Func<T, Task> func, T t)
     {
         var stopwatch = Stopwatch.StartNew();
-        await func(t);
+        await func(t).ConfigureAwait(false);
         stopwatch.Stop();
         return stopwatch.ElapsedMilliseconds;
     }
@@ -67,7 +67,7 @@ public static class InvokeHelper
     public static async Task<long> ProfileAsync<T1, T2>(Func<T1, T2, Task> func, T1 t1, T2 t2)
     {
         var stopwatch = Stopwatch.StartNew();
-        await func(t1, t2);
+        await func(t1, t2).ConfigureAwait(false);
         stopwatch.Stop();
         return stopwatch.ElapsedMilliseconds;
     }
@@ -75,7 +75,7 @@ public static class InvokeHelper
     public static async Task<long> ProfileAsync<T1, T2, T3>(Func<T1, T2, T3, Task> func, T1 t1, T2 t2, T3 t3)
     {
         var stopwatch = Stopwatch.StartNew();
-        await func(t1, t2, t3);
+        await func(t1, t2, t3).ConfigureAwait(false);
         stopwatch.Stop();
         return stopwatch.ElapsedMilliseconds;
     }
@@ -102,7 +102,7 @@ public static class InvokeHelper
     {
         try
         {
-            await func();
+            await func().ConfigureAwait(false);
         }
         catch (Exception ex)
         {
@@ -126,7 +126,7 @@ public static class InvokeHelper
     {
         try
         {
-            await func(t);
+            await func(t).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
@@ -150,7 +150,7 @@ public static class InvokeHelper
     {
         try
         {
-            await func(t1, t2);
+            await func(t1, t2).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
@@ -174,7 +174,7 @@ public static class InvokeHelper
     {
         try
         {
-            await func(t1, t2, t3);
+            await func(t1, t2, t3).ConfigureAwait(false);
         }
         catch (Exception ex)
         {

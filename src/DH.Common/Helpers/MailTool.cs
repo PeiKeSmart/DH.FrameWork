@@ -192,30 +192,30 @@ public class MailTool {
     {
         MailMessage mm = BuildMailMessage(subject, body, bodyEncoding, isHtmlBody,
             from, fromName, to, replyTo, cc, bcc, attachments);
-        await GetClient().SendMailAsync(mm);
+        await GetClient().SendMailAsync(mm).ConfigureAwait(false);
     }
 
     public async Task SendAsync(string subject, string body, string bodyEncoding,
         string from, string fromName, string to, string replyTo, string cc, string bcc,
         params string[] attachments)
     {
-        await SendAsync(subject, body, bodyEncoding, false, from, fromName, to, replyTo, cc, bcc, attachments);
+        await SendAsync(subject, body, bodyEncoding, false, from, fromName, to, replyTo, cc, bcc, attachments).ConfigureAwait(false);
     }
 
     public async Task SendAsync(string subject, string body, string from, string to, params string[] attachments)
     {
-        await SendAsync(subject, body, null, from, null, to, null, null, null, attachments);
+        await SendAsync(subject, body, null, from, null, to, null, null, null, attachments).ConfigureAwait(false);
     }
 
     public async Task SendHtmlAsync(string subject, string body, string bodyEncoding,
         string from, string fromName, string to, string replyTo, string cc, string bcc,
         params string[] attachments)
     {
-        await SendAsync(subject, body, bodyEncoding, true, from, fromName, to, replyTo, cc, bcc, attachments);
+        await SendAsync(subject, body, bodyEncoding, true, from, fromName, to, replyTo, cc, bcc, attachments).ConfigureAwait(false);
     }
 
     public async Task SendHtmlAsync(string subject, string body, string from, string to, params string[] attachments)
     {
-        await SendHtmlAsync(subject, body, null, from, null, to, null, null, null, attachments);
+        await SendHtmlAsync(subject, body, null, from, null, to, null, null, null, attachments).ConfigureAwait(false);
     }
 }

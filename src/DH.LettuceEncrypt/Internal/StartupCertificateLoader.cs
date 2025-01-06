@@ -28,7 +28,7 @@ internal class StartupCertificateLoader : IHostedService
         foreach (var certSource in _certSources)
         {
             // windows系统要检查系统证书区和项目证书文件夹，从这两个地方判断是否存在证书，如果是linux只需要判断项目下证书文件夹
-            var certs = await certSource.GetCertificatesAsync(cancellationToken);
+            var certs = await certSource.GetCertificatesAsync(cancellationToken).ConfigureAwait(false);
             allCerts.AddRange(certs);
         }
 

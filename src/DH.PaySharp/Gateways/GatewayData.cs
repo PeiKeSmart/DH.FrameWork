@@ -564,7 +564,7 @@ namespace DH.PaySharp
         /// <returns></returns>
         public async Task<T> ToObjectAsync<T>(StringCase stringCase)
         {
-            return await Task.Run(() => ToObject<T>(stringCase));
+            return await Task.Run(() => ToObject<T>(stringCase)).ConfigureAwait(false);
         }
 
         /// <summary>

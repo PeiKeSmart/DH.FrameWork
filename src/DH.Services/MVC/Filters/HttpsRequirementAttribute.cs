@@ -50,7 +50,7 @@ public sealed class HttpsRequirementAttribute : TypeFilterAttribute {
         /// <param name="context">授权过滤器上下文</param>
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
-            await CheckHttpsRequirementAsync(context);
+            await CheckHttpsRequirementAsync(context).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -103,7 +103,7 @@ public sealed class HttpsRequirementAttribute : TypeFilterAttribute {
             if (DHSetting.Current.SslEnabled == 2 && currentConnectionSecured)
                 context.Result = new RedirectResult(_webHelper.GetThisPageUrl(true, false), isPermanent);
 
-            await Task.FromResult(0);
+            await Task.FromResult(0).ConfigureAwait(false);
         }
     }
 }
