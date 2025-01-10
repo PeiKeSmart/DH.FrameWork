@@ -3,6 +3,8 @@ using DH.Core.Caching;
 using DH.Core.Configuration;
 using DH.Core.Infrastructure;
 
+using NewLife;
+
 using System.Globalization;
 using System.Text;
 

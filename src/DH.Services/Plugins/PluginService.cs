@@ -7,6 +7,7 @@ using DH.Services.Localization;
 
 using Microsoft.AspNetCore.Http;
 
+using NewLife;
 using NewLife.Log;
 using NewLife.Model;
 

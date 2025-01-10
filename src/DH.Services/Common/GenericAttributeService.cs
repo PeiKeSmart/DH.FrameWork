@@ -1,5 +1,7 @@
 ﻿using DH.Entity;
 
+using NewLife;
+
 using Pek;
 
 using XCode;

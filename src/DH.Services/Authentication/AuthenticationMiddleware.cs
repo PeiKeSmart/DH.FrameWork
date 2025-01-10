@@ -5,6 +5,7 @@ using DH.Core.Infrastructure;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 
+using NewLife;
 using NewLife.Log;
 
 using Pek.Webs;

@@ -6,6 +6,7 @@ using DH.Services.Localization;
 
 using Microsoft.Extensions.Logging;
 
+using NewLife;
 using NewLife.Log;
 
 using Pek.Webs;

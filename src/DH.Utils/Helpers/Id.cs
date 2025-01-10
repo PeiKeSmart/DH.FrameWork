@@ -2,6 +2,8 @@
 using DH.IdGenerators.Core;
 using DH.IdGenerators.MongoId;
 
+using NewLife;
+
 using Pek;
 using Pek.Ids;
 

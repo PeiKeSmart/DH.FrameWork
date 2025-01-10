@@ -4,6 +4,8 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Xml.Serialization;
 
+using NewLife;
+
 namespace DH.Helpers;
 
 public static class BitmapUtilities {

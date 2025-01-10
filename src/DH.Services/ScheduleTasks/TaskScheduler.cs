@@ -6,6 +6,7 @@ using DH.Services.Localization;
 
 using Microsoft.Extensions.DependencyInjection;
 
+using NewLife;
 using NewLife.Log;
 
 using Pek.Http;
