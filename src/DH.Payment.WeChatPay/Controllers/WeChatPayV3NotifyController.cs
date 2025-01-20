@@ -1,9 +1,10 @@
-﻿using DH.Core.Events;
-using DH.Payment.WeChatPay.V3;
+﻿using DH.Payment.WeChatPay.V3;
 using DH.Payment.WeChatPay.V3.Notify;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+
+using Pek.Events;
 
 namespace DH.Payment.WeChatPay.Controllers;
 

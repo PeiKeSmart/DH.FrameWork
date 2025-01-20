@@ -1,8 +1,9 @@
-﻿using DH.Core.Events;
-using DH.Payment.Alipay.Notify;
+﻿using DH.Payment.Alipay.Notify;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+
+using Pek.Events;
 
 namespace DH.Payment.Alipay.Controllers;
 

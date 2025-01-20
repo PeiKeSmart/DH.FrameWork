@@ -1,82 +1,83 @@
-﻿using DH.Core.Events;
-using DH.Core.Infrastructure;
+﻿using DH.Core.Infrastructure;
 
 using NewLife.Log;
 
-namespace DH.Services.Events {
+using Pek.Events;
+
+namespace DH.Services.Events;
+
+/// <summary>
+/// 表示事件发布者实现
+/// </summary>
+public partial class EventPublisher : IEventPublisher
+{
+    #region Methods
+
     /// <summary>
-    /// 表示事件发布者实现
+    /// 向消费者发布事件
     /// </summary>
-    public partial class EventPublisher : IEventPublisher
+    /// <typeparam name="TEvent">事件类型</typeparam>
+    /// <param name="event">Event对象</param>
+    /// <returns>表示异步操作的任务</returns>
+    public virtual async Task PublishAsync<TEvent>(TEvent @event)
     {
-        #region Methods
+        // 获取所有事件消费者
+        var consumers = EngineContext.Current.ResolveAll<IConsumer<TEvent>>().ToList();
 
-        /// <summary>
-        /// 向消费者发布事件
-        /// </summary>
-        /// <typeparam name="TEvent">事件类型</typeparam>
-        /// <param name="event">Event对象</param>
-        /// <returns>表示异步操作的任务</returns>
-        public virtual async Task PublishAsync<TEvent>(TEvent @event)
+        foreach (var consumer in consumers)
         {
-            // 获取所有事件消费者
-            var consumers = EngineContext.Current.ResolveAll<IConsumer<TEvent>>().ToList();
-
-            foreach (var consumer in consumers)
+            try
             {
+                // 尝试处理已发布事件
+                await consumer.HandleEventAsync(@event).ConfigureAwait(false);
+            }
+            catch (Exception exception)
+            {
+                // 日志错误，我们放入嵌套的try-catch以防止可能的循环（如果发生错误）
                 try
                 {
-                    // 尝试处理已发布事件
-                    await consumer.HandleEventAsync(@event).ConfigureAwait(false);
+                    // 错误日志
+                    XTrace.WriteException(exception);
                 }
-                catch (Exception exception)
+                catch
                 {
-                    // 日志错误，我们放入嵌套的try-catch以防止可能的循环（如果发生错误）
-                    try
-                    {
-                        // 错误日志
-                        XTrace.WriteException(exception);
-                    }
-                    catch
-                    {
-                        // ignored
-                    }
+                    // ignored
                 }
             }
         }
-
-        /// <summary>
-        /// 向消费者发布活动
-        /// </summary>
-        /// <typeparam name="TEvent">事件类型</typeparam>
-        /// <param name="event">事件对象</param>
-        public virtual void Publish<TEvent>(TEvent @event)
-        {
-            //获取所有事件消费者
-            var consumers = EngineContext.Current.ResolveAll<IConsumer<TEvent>>().ToList();
-
-            foreach (var consumer in consumers)
-            {
-                try
-                {
-                    // 尝试处理已发布的事件
-                    consumer.HandleEventAsync(@event).Wait();
-                }
-                catch (Exception exception)
-                {
-                    // 记录错误，我们放入嵌套try-catch以防止可能的循环（如果发生某些错误）
-                    try
-                    {
-                        XTrace.WriteException(exception);
-                    }
-                    catch
-                    {
-                        // 忽略
-                    }
-                }
-            }
-        }
-
-        #endregion
     }
+
+    /// <summary>
+    /// 向消费者发布活动
+    /// </summary>
+    /// <typeparam name="TEvent">事件类型</typeparam>
+    /// <param name="event">事件对象</param>
+    public virtual void Publish<TEvent>(TEvent @event)
+    {
+        //获取所有事件消费者
+        var consumers = EngineContext.Current.ResolveAll<IConsumer<TEvent>>().ToList();
+
+        foreach (var consumer in consumers)
+        {
+            try
+            {
+                // 尝试处理已发布的事件
+                consumer.HandleEventAsync(@event).Wait();
+            }
+            catch (Exception exception)
+            {
+                // 记录错误，我们放入嵌套try-catch以防止可能的循环（如果发生某些错误）
+                try
+                {
+                    XTrace.WriteException(exception);
+                }
+                catch
+                {
+                    // 忽略
+                }
+            }
+        }
+    }
+
+    #endregion
 }

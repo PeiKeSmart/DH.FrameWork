@@ -1,6 +1,6 @@
-﻿using DH.Core.Events;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Pek.Events;
 
 namespace DH.Services.Events;
 
