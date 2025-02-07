@@ -1,4 +1,8 @@
-﻿using NewLife;
+﻿using System.Runtime.Serialization;
+using System.Web.Script.Serialization;
+using System.Xml.Serialization;
+
+using NewLife;
 using NewLife.Data;
 
 using XCode;
@@ -8,6 +12,21 @@ namespace DH.Entity;
 
 /// <summary>部门扩展</summary>
 public class DepartmentE : Department {
+
+    #region 扩展属性
+    /// <summary>
+    /// 获取子集合
+    /// </summary>
+    [XmlIgnore, ScriptIgnore, IgnoreDataMember]
+    public IEnumerable<Department> ChildList => Extends.Get(nameof(ChildList), k => FindAllByParentId(ID).OrderBy(e => e.ID));
+
+    /// <summary>
+    ///是否存在子集
+    /// </summary>
+    [XmlIgnore, ScriptIgnore, IgnoreDataMember]
+    public Boolean subset { get; set; }
+    #endregion
+
     /// <summary>高级搜索</summary>
     /// <param name="parentId"></param>
     /// <param name="enable"></param>
@@ -100,6 +119,17 @@ public class DepartmentE : Department {
         if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => e.Level == level);
 
         return FindAll(_.Level == level);
+    }
+
+    /// <summary>根据所属父级Id查找</summary>
+    /// <param name="parentID">所属父级Id</param>
+    /// <returns>实体列表</returns>
+    public static IList<Department> FindAllByParentId(Int32 parentID)
+    {
+        // 实体缓存
+        if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => e.ParentID == parentID);
+
+        return FindAll(_.ParentID == parentID);
     }
 
 }
