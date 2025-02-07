@@ -1,8 +1,4 @@
-﻿using System.Runtime.Serialization;
-using System.Web.Script.Serialization;
-using System.Xml.Serialization;
-
-using NewLife;
+﻿using NewLife;
 using NewLife.Data;
 
 using XCode;
@@ -12,21 +8,6 @@ namespace DH.Entity;
 
 /// <summary>部门扩展</summary>
 public class DepartmentE : Department {
-
-    #region 扩展属性
-    /// <summary>
-    /// 获取子集合
-    /// </summary>
-    [XmlIgnore, ScriptIgnore, IgnoreDataMember]
-    public IEnumerable<Department> ChildList => Extends.Get(nameof(ChildList), k => FindAllByParentId(ID).OrderBy(e => e.ID));
-
-    /// <summary>
-    ///是否存在子集
-    /// </summary>
-    [XmlIgnore, ScriptIgnore, IgnoreDataMember]
-    public Boolean subset { get; set; }
-    #endregion
-
     /// <summary>高级搜索</summary>
     /// <param name="parentId"></param>
     /// <param name="enable"></param>
@@ -57,17 +38,6 @@ public class DepartmentE : Department {
         return FindAll(exp, page);
     }
 
-    /// <summary>根据父级查找</summary>
-    /// <param name="parentid">父级</param>
-    /// <returns>实体集合</returns>
-    public static IEnumerable<Department> FindAllByParentID(Int32 parentid)
-    {
-        // 实体缓存
-        if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => e.ParentID == parentid);
-
-        return FindAll(_.ParentID == parentid);
-    }
-
     /// <summary>获取全部</summary>
     /// <returns>实体集合</returns>
     public static IEnumerable<Department> GetAll()
@@ -84,7 +54,7 @@ public class DepartmentE : Department {
     /// <returns></returns>
     public static IEnumerable<Department> GetList()
     {
-        var list = DepartmentE.GetAll().Where(e => e.ParentID == 0).OrderBy(e => e.ID);
+        var list = GetAll().Where(e => e.ParentID == 0).OrderBy(e => e.ID);
         IList<Department> listDepartment = [];
         GetChildList(list, listDepartment);
 
@@ -104,7 +74,7 @@ public class DepartmentE : Department {
             {
                 list.Add(item);
 
-                var level = DepartmentE.FindAllByParentID(item.ID).OrderBy(e => e.ID);
+                var level = FindAllByParentId(item.ID).OrderBy(e => e.ID);
                 GetChildList(level, list);
             }
         }
@@ -120,16 +90,4 @@ public class DepartmentE : Department {
 
         return FindAll(_.Level == level);
     }
-
-    /// <summary>根据所属父级Id查找</summary>
-    /// <param name="parentID">所属父级Id</param>
-    /// <returns>实体列表</returns>
-    public static IList<Department> FindAllByParentId(Int32 parentID)
-    {
-        // 实体缓存
-        if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => e.ParentID == parentID);
-
-        return FindAll(_.ParentID == parentID);
-    }
-
 }
