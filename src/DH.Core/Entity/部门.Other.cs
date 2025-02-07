@@ -66,7 +66,7 @@ public class DepartmentE : Department {
     public static IEnumerable<Department> GetList()
     {
         var list = DepartmentE.GetAll().Where(e => e.ParentID == 0).OrderBy(e => e.ID);
-        IList<Department> listDepartment = new List<Department>();
+        IList<Department> listDepartment = [];
         GetChildList(list, listDepartment);
 
         return listDepartment;
@@ -89,6 +89,17 @@ public class DepartmentE : Department {
                 GetChildList(level, list);
             }
         }
+    }
+
+    /// <summary>根据当前层级查找</summary>
+    /// <param name="level">当前层级</param>
+    /// <returns>实体列表</returns>
+    public static IList<Department> FindAllByLevel(Int32 level = 0)
+    {
+        // 实体缓存
+        if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => e.Level == level);
+
+        return FindAll(_.Level == level);
     }
 
 }
