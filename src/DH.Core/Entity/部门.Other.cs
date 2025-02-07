@@ -90,4 +90,14 @@ public class DepartmentE : Department {
 
         return FindAll(_.Level == level);
     }
+
+    /// <summary>
+    /// 根据ID集合删除数据
+    /// </summary>
+    /// <param name="Ids">ID集合</param>
+    public static void DelByIds(String Ids)
+    {
+        if (Delete(_.ID.In(Ids)) > 0)
+            Meta.Cache.Clear("", true);
+    }
 }
