@@ -98,6 +98,9 @@ public partial class UserDetailModel
     /// <summary>所属上级会员ID</summary>
     public Int32 ParentUId { get; set; }
 
+    /// <summary>会员层级集合。从开始到最后一个，以逗号分隔,最前和最后都要有逗号</summary>
+    public Int32 UIds { get; set; }
+
     /// <summary>会员积分</summary>
     public Int32 Points { get; set; }
 
@@ -250,6 +253,7 @@ public partial class UserDetailModel
         ReferrerId = model.ReferrerId;
         KeFuId = model.KeFuId;
         ParentUId = model.ParentUId;
+        UIds = model.UIds;
         Points = model.Points;
         ExpPoints = model.ExpPoints;
         QQ = model.QQ;

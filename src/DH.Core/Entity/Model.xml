@@ -70,6 +70,7 @@
         <Column Name="ReferrerId" DataType="Int32" Description="推荐人ID" />
         <Column Name="KeFuId" DataType="Int32" Description="所属销售ID" />
         <Column Name="ParentUId" DataType="Int32" Description="所属上级会员ID" />
+        <Column Name="UIds" DataType="Int32" Description="会员层级集合。从开始到最后一个，以逗号分隔,最前和最后都要有逗号" />
         <Column Name="Points" DataType="Int32" Description="会员积分" />
         <Column Name="ExpPoints" DataType="Int32" Description="会员经验值" />
         <Column Name="QQ" DataType="String" Description="QQ号码" />
