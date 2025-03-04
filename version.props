@@ -1,12 +1,12 @@
 <Project>
 	<PropertyGroup>
 		<VersionPrefix>4.0</VersionPrefix>
-		<VersionPrefixBeta>00061</VersionPrefixBeta>
+		<VersionPrefixBeta>00062</VersionPrefixBeta>
 		<VersionSuffix>$([System.DateTime]::Now.ToString(`yyyy.MMdd`))</VersionSuffix>
 		<Version>$(VersionPrefix).$(VersionSuffix)$(VersionPrefixBeta)</Version>
 		<FileVersion>$(VersionPrefix).$(VersionSuffix)</FileVersion>
 		<AssemblyVersion>$(VersionPrefix).$([System.DateTime]::Now.ToString(`yyyy.MMdd`))</AssemblyVersion>
 		
-		<Copyright>©2020-2024 湖北登灏科技有限公司</Copyright>
+		<Copyright>©2020-2025 湖北登灏科技有限公司</Copyright>
 	</PropertyGroup>
 </Project>
