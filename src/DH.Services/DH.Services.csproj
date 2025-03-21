@@ -74,7 +74,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\DH.Core\DH.Core.csproj" />
-		<ProjectReference Include="..\DH.MDB\DH.MDB.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -99,6 +98,7 @@
 		<PackageReference Include="IdentityModel" Version="7.0.0" />
 		<PackageReference Include="IP2Region.Net" Version="2.0.2" />
 		<PackageReference Include="MaxMind.GeoIP2" Version="5.2.0" />
+		<PackageReference Include="Pek.MDB" Version="4.11.2025.321-beta1013" />
 		<PackageReference Include="Polly" Version="8.5.2" />
 		<PackageReference Include="TimeZoneConverter" Version="7.0.0" />
 		<PackageReference Include="ToolGood.Words" Version="3.1.0" />

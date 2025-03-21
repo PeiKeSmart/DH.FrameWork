@@ -15,7 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\DH.MDB\DH.MDB.csproj" />
     <ProjectReference Include="..\..\src\DH.WebHook\DH.WebHook.csproj" />
   </ItemGroup>
 
