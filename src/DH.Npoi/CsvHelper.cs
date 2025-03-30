@@ -7,6 +7,7 @@ using DH.Npoi.Configurations;
 using NewLife;
 
 using Pek;
+using Pek.Helpers;
 
 namespace DH.Npoi;
 
@@ -273,7 +274,7 @@ public static class CsvHelper
                 }
                 else
                 {
-                    var entity = DH.Helpers.NewFuncHelper<TEntity>.Instance();
+                    var entity = NewFuncHelper<TEntity>.Instance();
                     if (entityType.IsValueType)
                     {
                         var obj = (object)entity!; // boxing for value types
@@ -298,7 +299,7 @@ public static class CsvHelper
                                     catch (Exception e)
                                     {
                                         Debug.WriteLine(e);
-                                        DH.Helpers.InvokeHelper.OnInvokeException?.Invoke(e);
+                                        InvokeHelper.OnInvokeException?.Invoke(e);
                                     }
                                 }
 
@@ -336,7 +337,7 @@ public static class CsvHelper
                                     catch (Exception e)
                                     {
                                         Debug.WriteLine(e);
-                                        DH.Helpers.InvokeHelper.OnInvokeException?.Invoke(e);
+                                        InvokeHelper.OnInvokeException?.Invoke(e);
                                     }
                                 }
 
@@ -369,7 +370,7 @@ public static class CsvHelper
                                     catch (Exception e)
                                     {
                                         Debug.WriteLine(e);
-                                        DH.Helpers.InvokeHelper.OnInvokeException?.Invoke(e);
+                                        InvokeHelper.OnInvokeException?.Invoke(e);
                                     }
                                 }
                             }
@@ -593,7 +594,7 @@ public static class CsvHelper
                         catch (Exception e)
                         {
                             Debug.WriteLine(e);
-                            DH.Helpers.InvokeHelper.OnInvokeException?.Invoke(e);
+                            InvokeHelper.OnInvokeException?.Invoke(e);
                         }
                     }
 

@@ -78,7 +78,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\DH.Base\DH.Base.csproj" />
+	  <ProjectReference Include="..\DH.Utils\DH.Utils.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

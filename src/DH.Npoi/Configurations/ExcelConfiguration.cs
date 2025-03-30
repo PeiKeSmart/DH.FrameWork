@@ -1,11 +1,10 @@
-﻿using DH.Extensions;
+﻿using System.Linq.Expressions;
+using System.Reflection;
+
 using DH.Npoi.Settings;
 
 using Pek;
 using Pek.Helpers;
-
-using System.Linq.Expressions;
-using System.Reflection;
 
 namespace DH.Npoi.Configurations
 {
