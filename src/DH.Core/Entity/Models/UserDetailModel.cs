@@ -99,7 +99,7 @@ public partial class UserDetailModel
     public Int32 ParentUId { get; set; }
 
     /// <summary>会员层级集合。从开始到最后一个，以逗号分隔,最前和最后都要有逗号</summary>
-    public Int32 UIds { get; set; }
+    public String UIds { get; set; }
 
     /// <summary>会员积分</summary>
     public Int32 Points { get; set; }

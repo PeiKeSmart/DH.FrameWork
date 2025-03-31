@@ -99,7 +99,7 @@ public partial interface IUserDetail
     Int32 ParentUId { get; set; }
 
     /// <summary>会员层级集合。从开始到最后一个，以逗号分隔,最前和最后都要有逗号</summary>
-    Int32 UIds { get; set; }
+    String UIds { get; set; }
 
     /// <summary>会员积分</summary>
     Int32 Points { get; set; }

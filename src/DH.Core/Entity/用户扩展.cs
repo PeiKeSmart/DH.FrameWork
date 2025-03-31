@@ -258,13 +258,13 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
     [BindColumn("ParentUId", "所属上级会员ID", "")]
     public Int32 ParentUId { get => _ParentUId; set { if (OnPropertyChanging("ParentUId", value)) { _ParentUId = value; OnPropertyChanged("ParentUId"); } } }
 
-    private Int32 _UIds;
+    private String _UIds;
     /// <summary>会员层级集合。从开始到最后一个，以逗号分隔,最前和最后都要有逗号</summary>
     [DisplayName("会员层级集合")]
     [Description("会员层级集合。从开始到最后一个，以逗号分隔,最前和最后都要有逗号")]
-    [DataObjectField(false, false, false, 0)]
+    [DataObjectField(false, false, true, 50)]
     [BindColumn("UIds", "会员层级集合。从开始到最后一个，以逗号分隔,最前和最后都要有逗号", "")]
-    public Int32 UIds { get => _UIds; set { if (OnPropertyChanging("UIds", value)) { _UIds = value; OnPropertyChanged("UIds"); } } }
+    public String UIds { get => _UIds; set { if (OnPropertyChanging("UIds", value)) { _UIds = value; OnPropertyChanged("UIds"); } } }
 
     private Int32 _Points;
     /// <summary>会员积分</summary>
@@ -770,7 +770,7 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
                 case "ReferrerId": _ReferrerId = value.ToInt(); break;
                 case "KeFuId": _KeFuId = value.ToInt(); break;
                 case "ParentUId": _ParentUId = value.ToInt(); break;
-                case "UIds": _UIds = value.ToInt(); break;
+                case "UIds": _UIds = Convert.ToString(value); break;
                 case "Points": _Points = value.ToInt(); break;
                 case "ExpPoints": _ExpPoints = value.ToInt(); break;
                 case "QQ": _QQ = Convert.ToString(value); break;
