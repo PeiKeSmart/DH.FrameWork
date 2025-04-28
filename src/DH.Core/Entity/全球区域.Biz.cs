@@ -1,4 +1,8 @@
-﻿using DH.Caching;
+﻿using System.Runtime.Serialization;
+using System.Web.Script.Serialization;
+using System.Xml.Serialization;
+
+using DH.Caching;
 using DH.Core;
 using DH.Core.Domain.Localization;
 using DH.Core.Infrastructure;
@@ -7,10 +11,6 @@ using DH.Models;
 using NewLife;
 using NewLife.Caching;
 using NewLife.Data;
-
-using System.Runtime.Serialization;
-using System.Web.Script.Serialization;
-using System.Xml.Serialization;
 
 using XCode;
 
@@ -282,10 +282,12 @@ public partial class Regions : DHEntityBase<Regions>
         var listTree = new List<RegionsTree>();
         foreach (var item in list)
         {
-            var model = new RegionsTree();
-            model.id = item.AreaCode;
-            model.name = item.Name;
-            model.pId = parentCode;
+            var model = new RegionsTree
+            {
+                id = item.AreaCode,
+                name = item.Name,
+                pId = parentCode
+            };
             if (item.Level + 1 == 2)
             {
                 model.isParent = false;
@@ -322,7 +324,7 @@ public partial class Regions : DHEntityBase<Regions>
     /// <returns></returns>
     public static IList<Regions> FindByIds(String ids)
     {
-        if (ids.IsNullOrWhiteSpace()) return new List<Regions>();
+        if (ids.IsNullOrWhiteSpace()) return [];
 
         ids = ids.Trim(',');
 
@@ -339,7 +341,7 @@ public partial class Regions : DHEntityBase<Regions>
     /// <returns>实体列表</returns>
     public static IList<Regions> FindAllByCityId(Int32 cityId)
     {
-        if (cityId <= 0) return new List<Regions>();
+        if (cityId <= 0) return [];
 
         // 实体缓存
         if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => e.CityId == cityId);
@@ -441,6 +443,22 @@ public partial class Regions : DHEntityBase<Regions>
         if (Meta.Session.Count < 10000) return Meta.Cache.Find(e => e.Name == name);
 
         return Find(_.Name == name);
+    }
+
+    /// <summary>
+    /// 返回指定条件的所有区域
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="parentCode"></param>
+    /// <returns></returns>
+    public static IList<Regions> FindAllByName(String name, Int64 parentCode = 0)
+    {
+        if (Meta.Session.Count < 10000)
+        {
+            return Meta.Cache.FindAll(e => e.Name.Contains(name, StringComparison.OrdinalIgnoreCase) && e.ParentCode == parentCode);
+        }
+
+        return FindAll(_.Name.Contains(name) & _.ParentCode == parentCode);
     }
     #endregion
 }
