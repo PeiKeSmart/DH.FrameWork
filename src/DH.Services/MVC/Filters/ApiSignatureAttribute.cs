@@ -1,5 +1,4 @@
 ﻿using DH.Entity;
-using DH.Helpers;
 
 using Microsoft.AspNetCore.Mvc.Filters;
 
@@ -92,6 +91,8 @@ public class ApiSignatureAttribute : ActionFilterAttribute {
 
             if (m != 1)
             {
+                result.ErrCode = m;
+
                 if (m == 2 || m == 3)
                 {
                     result.Message = LocaleStringResource.GetResource("时间戳有误,请检查并同步时间");
