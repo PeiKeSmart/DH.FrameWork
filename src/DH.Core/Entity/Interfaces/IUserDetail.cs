@@ -59,6 +59,9 @@ public partial interface IUserDetail
     /// <summary>身份证反面照</summary>
     String IdcardImage3 { get; set; }
 
+    /// <summary>公司Id</summary>
+    Int32 CompanyId { get; set; }
+
     /// <summary>公司名称</summary>
     String CompanyName { get; set; }
 

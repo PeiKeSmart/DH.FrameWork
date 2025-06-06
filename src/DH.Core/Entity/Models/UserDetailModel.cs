@@ -59,6 +59,9 @@ public partial class UserDetailModel
     /// <summary>身份证反面照</summary>
     public String IdcardImage3 { get; set; }
 
+    /// <summary>公司Id</summary>
+    public Int32 CompanyId { get; set; }
+
     /// <summary>公司名称</summary>
     public String CompanyName { get; set; }
 
@@ -240,6 +243,7 @@ public partial class UserDetailModel
         IdcardImage1 = model.IdcardImage1;
         IdcardImage2 = model.IdcardImage2;
         IdcardImage3 = model.IdcardImage3;
+        CompanyId = model.CompanyId;
         CompanyName = model.CompanyName;
         CompnayAuthState = model.CompnayAuthState;
         CorporateName = model.CorporateName;

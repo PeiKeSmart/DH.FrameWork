@@ -154,6 +154,14 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
     [BindColumn("IdcardImage3", "身份证反面照", "")]
     public String IdcardImage3 { get => _IdcardImage3; set { if (OnPropertyChanging("IdcardImage3", value)) { _IdcardImage3 = value; OnPropertyChanged("IdcardImage3"); } } }
 
+    private Int32 _CompanyId;
+    /// <summary>公司Id</summary>
+    [DisplayName("公司Id")]
+    [Description("公司Id")]
+    [DataObjectField(false, false, false, 0)]
+    [BindColumn("CompanyId", "公司Id", "")]
+    public Int32 CompanyId { get => _CompanyId; set { if (OnPropertyChanging("CompanyId", value)) { _CompanyId = value; OnPropertyChanged("CompanyId"); } } }
+
     private String _CompanyName;
     /// <summary>公司名称</summary>
     [DisplayName("公司名称")]
@@ -602,6 +610,7 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
         IdcardImage1 = model.IdcardImage1;
         IdcardImage2 = model.IdcardImage2;
         IdcardImage3 = model.IdcardImage3;
+        CompanyId = model.CompanyId;
         CompanyName = model.CompanyName;
         CompnayAuthState = model.CompnayAuthState;
         CorporateName = model.CorporateName;
@@ -682,6 +691,7 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
             "IdcardImage1" => _IdcardImage1,
             "IdcardImage2" => _IdcardImage2,
             "IdcardImage3" => _IdcardImage3,
+            "CompanyId" => _CompanyId,
             "CompanyName" => _CompanyName,
             "CompnayAuthState" => _CompnayAuthState,
             "CorporateName" => _CorporateName,
@@ -757,6 +767,7 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
                 case "IdcardImage1": _IdcardImage1 = Convert.ToString(value); break;
                 case "IdcardImage2": _IdcardImage2 = Convert.ToString(value); break;
                 case "IdcardImage3": _IdcardImage3 = Convert.ToString(value); break;
+                case "CompanyId": _CompanyId = value.ToInt(); break;
                 case "CompanyName": _CompanyName = Convert.ToString(value); break;
                 case "CompnayAuthState": _CompnayAuthState = Convert.ToInt16(value); break;
                 case "CorporateName": _CorporateName = Convert.ToString(value); break;
@@ -885,6 +896,9 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
 
         /// <summary>身份证反面照</summary>
         public static readonly Field IdcardImage3 = FindByName("IdcardImage3");
+
+        /// <summary>公司Id</summary>
+        public static readonly Field CompanyId = FindByName("CompanyId");
 
         /// <summary>公司名称</summary>
         public static readonly Field CompanyName = FindByName("CompanyName");
@@ -1098,6 +1112,9 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
 
         /// <summary>身份证反面照</summary>
         public const String IdcardImage3 = "IdcardImage3";
+
+        /// <summary>公司Id</summary>
+        public const String CompanyId = "CompanyId";
 
         /// <summary>公司名称</summary>
         public const String CompanyName = "CompanyName";

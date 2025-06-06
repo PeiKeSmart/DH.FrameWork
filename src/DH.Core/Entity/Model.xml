@@ -57,6 +57,7 @@
         <Column Name="IdcardImage1" DataType="String" Length="100" Description="手持身份证照" />
         <Column Name="IdcardImage2" DataType="String" Length="100" Description="身份证正面照" />
         <Column Name="IdcardImage3" DataType="String" Length="100" Description="身份证反面照" />
+        <Column Name="CompanyId" DataType="Int32" Description="公司Id" />
         <Column Name="CompanyName" DataType="String" Length="100" Description="公司名称" />
         <Column Name="CompnayAuthState" DataType="Int16" Description="企业实名认证状态（0默认1审核中2未通过3已认证）" />
         <Column Name="CorporateName" DataType="String" Description="法人姓名" />
