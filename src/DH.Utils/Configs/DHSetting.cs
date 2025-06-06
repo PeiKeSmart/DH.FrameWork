@@ -150,6 +150,14 @@ public class DHSetting : Config<DHSetting>
     [Description("Jwt配置")]
     public JwtOptions JwtOptions { get; set; } = new JwtOptions { Secret = "5efefbv1j67uqrono0xdmx4y0il5dn5y7b72tlb3imba677ht1p1xlfcnh36mk5u3xzjktfara25podhy85apfplun7oslbe1m20c148p5d519kja5wvg7lmn5v4a5ou", Issuer = "ding_identity", Audience = "ding_client", AccessExpireMinutes = 120, RefreshExpireMinutes = 43200, ThrowEnabled = false };
 
+    /// <summary>令牌有效期。访问令牌AccessToken的有效期，默认7200秒</summary>
+    [Description("令牌有效期。访问令牌AccessToken的有效期，默认7200秒")]
+    public Int32 TokenExpire { get; set; } = 7200;
+
+    /// <summary>刷新令牌有效期。访问令牌RefreshToken的有效期，默认86400秒</summary>
+    [Description("刷新令牌有效期。访问令牌RefreshToken的有效期，默认86400秒")]
+    public Int32 RefreshTokenExpire { get; set; } = 86400;
+
     ///// <summary>Cookie模式。token的cookies默认模式（ -1 Unspecified，0 None，1 Lax，2 Strict）</summary>
     //[Description("Cookie模式。token的cookies默认模式（ -1 Unspecified，0 None，1 Lax，2 Strict）")]
     //[Category("通用")]
