@@ -75,7 +75,7 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="3.119.0" />
-		<PackageReference Include="System.Linq.Dynamic.Core" Version="1.6.5" />
+		<PackageReference Include="System.Linq.Dynamic.Core" Version="1.6.6" />
 	</ItemGroup>
 
 	<ItemGroup>
