@@ -6,6 +6,7 @@ using NewLife;
 using NewLife.Caching;
 using NewLife.Log;
 
+using Pek.Configs;
 using Pek.Timing;
 
 using XCode;
@@ -113,12 +114,12 @@ public partial class SysOnlineUsers : DHEntityBase<SysOnlineUsers> {
         if (onlineUserExpire == 0)
             return GetOnlineUserCount(0);
 
-        var cacheAllCount = Cache.Default.Get<Int64>($"{DHUtilSetting.Current.CacheKeyPrefix}.OnlineAllUserCount"); // 获取在线人数缓存数据
+        var cacheAllCount = Cache.Default.Get<Int64>($"{RedisSetting.Current.CacheKeyPrefix}.OnlineAllUserCount"); // 获取在线人数缓存数据
 
         if (cacheAllCount == 0)
         {
             cacheAllCount = GetOnlineUserCount(0);
-            Cache.Default.Add($"{DHUtilSetting.Current.CacheKeyPrefix}.OnlineAllUserCount", cacheAllCount);
+            Cache.Default.Add($"{RedisSetting.Current.CacheKeyPrefix}.OnlineAllUserCount", cacheAllCount);
         }
 
         return cacheAllCount;

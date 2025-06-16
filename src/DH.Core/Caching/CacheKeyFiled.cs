@@ -1,5 +1,7 @@
 ﻿using NewLife.Caching;
 
+using Pek.Configs;
+
 namespace DH.Caching;
 
 /// <summary>
@@ -25,6 +27,6 @@ public class CacheKeyFiled {
             throw new ArgumentNullException();
         }
 
-        return DHUtilSetting.Current.CacheKeyPrefix + Key;
+        return RedisSetting.Current.CacheKeyPrefix + Key;
     }
 }
