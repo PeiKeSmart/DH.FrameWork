@@ -12,7 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DH.NCore" Version="4.12.2025.610-beta0731" />
+    <PackageReference Include="DH.NCore" Version="4.12.2025.619-beta1104" />
   </ItemGroup>
 
 </Project>
