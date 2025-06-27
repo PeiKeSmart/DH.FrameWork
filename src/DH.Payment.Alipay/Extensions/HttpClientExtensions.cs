@@ -20,10 +20,10 @@ namespace DH.Payment.Alipay.Extensions
         public static async Task<string> PostAsync(this HttpClient client, string url, IDictionary<string, string> textParams)
         {
             using (var reqContent = new StringContent(AlipayUtility.BuildQuery(textParams), Encoding.UTF8, "application/x-www-form-urlencoded"))
-            using (var resp = await client.PostAsync(url, reqContent))
+            using (var resp = await client.PostAsync(url, reqContent).ConfigureAwait(false))
             using (var respContent = resp.Content)
             {
-                return await respContent.ReadAsStringAsync();
+                return await respContent.ReadAsStringAsync().ConfigureAwait(false);
             }
         }
 
@@ -40,7 +40,7 @@ namespace DH.Payment.Alipay.Extensions
             // 如果没有文件参数，则走普通POST请求
             if (fileParams == null || fileParams.Count == 0)
             {
-                return await PostAsync(client, url, textParams);
+                return await PostAsync(client, url, textParams).ConfigureAwait(false);
             }
 
             // 随机分隔线
@@ -63,10 +63,10 @@ namespace DH.Payment.Alipay.Extensions
                     reqContent.Add(byteArrayContent, $"\"{name}\"", $"\"{fileItem.GetFileName()}\"");
                 }
 
-                using (var resp = await client.PostAsync(url, reqContent))
+                using (var resp = await client.PostAsync(url, reqContent).ConfigureAwait(false))
                 using (var respContent = resp.Content)
                 {
-                    return await respContent.ReadAsStringAsync();
+                    return await respContent.ReadAsStringAsync().ConfigureAwait(false);
                 }
             }
         }

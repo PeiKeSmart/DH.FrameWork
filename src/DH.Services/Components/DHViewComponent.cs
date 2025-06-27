@@ -1,5 +1,4 @@
-﻿using DH.Core.Events;
-using DH.Core.Infrastructure;
+﻿using DH.Core.Infrastructure;
 using DH.Models;
 using DH.Services.Events;
 
@@ -7,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
 
 using Pek;
+using Pek.Events;
 
 using XCode.Membership;
 

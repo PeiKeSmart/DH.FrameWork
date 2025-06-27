@@ -1,13 +1,10 @@
-﻿using System;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 using System.Xml;
+
 using DH.Payment.JDPay.Notify;
 using DH.Payment.JDPay.Parser;
 using DH.Payment.JDPay.Utility;
 using DH.Payment.Security;
-using Microsoft.AspNetCore.Http;
 
 namespace DH.Payment.JDPay
 {
@@ -51,7 +48,7 @@ namespace DH.Payment.JDPay
 
             if (request.HasTextXmlContentType())
             {
-                var body = await new StreamReader(request.Body).ReadToEndAsync();
+                var body = await new StreamReader(request.Body).ReadToEndAsync().ConfigureAwait(false);
                 var parser = new JDPayXmlParser<T>();
                 var rsp = parser.Parse(JDPayUtility.FotmatXmlString(body));
                 if (!string.IsNullOrEmpty(rsp.Encrypt))

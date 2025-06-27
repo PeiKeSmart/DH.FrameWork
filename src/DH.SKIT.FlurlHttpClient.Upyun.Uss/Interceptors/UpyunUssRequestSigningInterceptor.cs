@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Net.Http;
@@ -92,7 +92,7 @@ namespace SKIT.FlurlHttpClient.Upyun.Uss.Interceptors
                                         if ("policy".Equals(key, StringComparison.OrdinalIgnoreCase))
                                             hasFieldPolicy = true;
 
-                                        paramsMap[key!] = await httpContent.ReadAsStringAsync();
+                                        paramsMap[key!] = await httpContent.ReadAsStringAsync().ConfigureAwait(false);
                                     }
 
                                     string policy = Convert.ToBase64String(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(paramsMap, new JsonSerializerOptions() { WriteIndented = false })));

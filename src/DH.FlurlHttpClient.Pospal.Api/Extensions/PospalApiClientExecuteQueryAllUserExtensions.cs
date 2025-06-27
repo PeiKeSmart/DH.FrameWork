@@ -44,6 +44,6 @@ public static class PospalApiClientExecuteQueryAllUserExtensions
             client.Header["data-signature"] = (client.Credentials.AppKey + JsonHelper.ToJson(request)).MD5();
         }
 
-        return await client.SendRequestWithJsonAsync<Models.QueryAllUserResponse>(flurlReq, header: client.Header, data: request, cancellationToken: cancellationToken);
+        return await client.SendRequestWithJsonAsync<Models.QueryAllUserResponse>(flurlReq, header: client.Header, data: request, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 }

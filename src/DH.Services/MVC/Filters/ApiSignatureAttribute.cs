@@ -1,5 +1,4 @@
 ﻿using DH.Entity;
-using DH.Helpers;
 
 using Microsoft.AspNetCore.Mvc.Filters;
 
@@ -94,14 +93,17 @@ public class ApiSignatureAttribute : ActionFilterAttribute {
             {
                 if (m == 2 || m == 3)
                 {
+                    result.ErrCode = 9996;
                     result.Message = LocaleStringResource.GetResource("时间戳有误,请检查并同步时间");
                 }
                 else if (m == 4)
                 {
+                    result.ErrCode = 9997;
                     result.Message = LocaleStringResource.GetResource("签名已使用");
                 }
                 else
                 {
+                    result.ErrCode = 9998;
                     result.Message = LocaleStringResource.GetResource("校验失败");
                 }
                 //result.Data = new { Signature = Signature, TimeStamp = TimeStamp, Nonce = Nonce, Token = Token, Sign = sign };

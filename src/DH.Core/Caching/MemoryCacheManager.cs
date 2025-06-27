@@ -113,15 +113,15 @@ namespace DH.Core.Caching
         public async Task<T> GetAsync<T>(CacheKey key, Func<Task<T>> acquire)
         {
             if ((key?.CacheTime ?? 0) <= 0)
-                return await acquire();
+                return await acquire().ConfigureAwait(false);
 
             if (_memoryCache.TryGetValue(key.Key, out T result))
                 return result;
 
-            result = await acquire();
+            result = await acquire().ConfigureAwait(false);
 
             if (result != null)
-                await SetAsync(key, result);
+                await SetAsync(key, result).ConfigureAwait(false);
 
             return result;
         }
@@ -150,7 +150,7 @@ namespace DH.Core.Caching
 
             //do not cache null value
             if (result == null)
-                await RemoveAsync(key);
+                await RemoveAsync(key).ConfigureAwait(false);
 
             return result;
         }
@@ -234,7 +234,7 @@ namespace DH.Core.Caching
             {
                 cacheEntry.AbsoluteExpiration = DateTimeOffset.Now;
                 return Task.FromResult(false);
-            });
+            }).ConfigureAwait(false);
 
             if (isSet)
                 return false;
@@ -245,10 +245,10 @@ namespace DH.Core.Caching
                 {
                     cacheEntry.AbsoluteExpirationRelativeToNow = expirationTime;
                     return Task.FromResult(true);
-                });
+                }).ConfigureAwait(false);
 
                 //perform action
-                await action();
+                await action().ConfigureAwait(false);
 
                 return true;
             }

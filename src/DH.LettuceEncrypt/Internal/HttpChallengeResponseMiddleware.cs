@@ -51,7 +51,7 @@ internal class HttpChallengeResponseMiddleware : IMiddleware
                 else
                 {
                     XTrace.WriteLine($"未确认{token}的质询请求:{value}");
-                    await next(context);
+                    await next(context).ConfigureAwait(false);
                     return;
                 }
             }
@@ -61,6 +61,6 @@ internal class HttpChallengeResponseMiddleware : IMiddleware
 
         context.Response.ContentLength = value?.Length ?? 0;
         context.Response.ContentType = "application/octet-stream";
-        await context.Response.WriteAsync(value!, context.RequestAborted);
+        await context.Response.WriteAsync(value!, context.RequestAborted).ConfigureAwait(false);
     }
 }

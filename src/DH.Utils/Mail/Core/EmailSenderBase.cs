@@ -60,7 +60,7 @@ public abstract class EmailSenderBase : IEmailSender
             Subject = subject,
             Body = body,
             IsBodyHtml = isBodyHtml
-        });
+        }).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -86,7 +86,7 @@ public abstract class EmailSenderBase : IEmailSender
     /// <param name="isBodyHtml">是否html内容</param>
     public virtual async Task SendAsync(string @from, string to, string subject, string body, bool isBodyHtml = true)
     {
-        await SendAsync(new MailMessage(from, to, subject, body) { IsBodyHtml = isBodyHtml });
+        await SendAsync(new MailMessage(from, to, subject, body) { IsBodyHtml = isBodyHtml }).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -117,7 +117,7 @@ public abstract class EmailSenderBase : IEmailSender
     public virtual async Task<String> SendAsync(EmailBox box)
     {
         var mail = new MailMessage();
-        var config = await ConfigProvider.GetConfigAsync();
+        var config = await ConfigProvider.GetConfigAsync().ConfigureAwait(false);
         mail.From = new MailAddress(config.FromAddress, config.DisplayName);
         PaserMailAddress(box.To, mail.To);
         PaserMailAddress(box.Cc, mail.CC);
@@ -127,7 +127,7 @@ public abstract class EmailSenderBase : IEmailSender
         mail.Body = box.Body;
         mail.IsBodyHtml = box.IsBodyHtml;
         HandlerAttachments(box.Attachments, mail.Attachments);
-        return await SendAsync(mail);
+        return await SendAsync(mail).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -151,7 +151,7 @@ public abstract class EmailSenderBase : IEmailSender
     {
         if (normalize)
             NormalizeMail(mail);
-        return await SendEmailAsync(mail);
+        return await SendEmailAsync(mail).ConfigureAwait(false);
     }
 
     /// <summary>

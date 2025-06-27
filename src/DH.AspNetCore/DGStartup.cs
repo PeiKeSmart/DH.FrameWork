@@ -9,7 +9,7 @@ using Pek.VirtualFileSystem;
 
 namespace DH.AspNetCore;
 
-public class DGStartup : IDHStartup {
+public class DGStartup : IPekStartup {
     public void ChangeMenu()
     {
 
@@ -72,6 +72,14 @@ public class DGStartup : IDHStartup {
     /// </summary>
     /// <param name="application"></param>
     public void AfterAuth(IApplicationBuilder application)
+    {
+
+    }
+
+    /// <summary>
+    /// 处理数据
+    /// </summary>
+    public void ProcessData()
     {
 
     }

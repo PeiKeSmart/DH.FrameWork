@@ -6,7 +6,7 @@ namespace DH.Payment.WeChatPay;
 /// <summary>
 /// 代表用于在应用程序启动时配置框架的对象
 /// </summary>
-public class DGStartup : IDHStartup
+public class DGStartup : IPekStartup
 {
     /// <summary>
     /// 添加并配置任何中间件
@@ -94,6 +94,14 @@ public class DGStartup : IDHStartup
     /// </summary>
     /// <param name="application"></param>
     public void AfterAuth(IApplicationBuilder application)
+    {
+
+    }
+
+    /// <summary>
+    /// 处理数据
+    /// </summary>
+    public void ProcessData()
     {
 
     }

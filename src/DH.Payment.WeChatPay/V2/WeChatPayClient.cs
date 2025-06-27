@@ -53,7 +53,7 @@ namespace DH.Payment.WeChatPay.V2
             request.PrimaryHandler(sortedTxtParams, options);
 
             var client = _httpClientFactory.CreateClient(Name);
-            var body = await client.PostAsync(request, sortedTxtParams);
+            var body = await client.PostAsync(request, sortedTxtParams).ConfigureAwait(false);
             var parser = new WeChatPayResponseXmlParser<T>();
             var response = parser.Parse(body);
 
@@ -150,7 +150,7 @@ namespace DH.Payment.WeChatPay.V2
             }
 
             var client = _httpClientFactory.CreateClient(Prefix + options.CertificateSerialNo);
-            var body = await client.PostAsync(request, sortedTxtParams);
+            var body = await client.PostAsync(request, sortedTxtParams).ConfigureAwait(false);
             var parser = new WeChatPayResponseXmlParser<T>();
             var response = parser.Parse(body);
 

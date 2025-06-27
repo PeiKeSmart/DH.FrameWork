@@ -57,6 +57,7 @@
         <Column Name="IdcardImage1" DataType="String" Length="100" Description="手持身份证照" />
         <Column Name="IdcardImage2" DataType="String" Length="100" Description="身份证正面照" />
         <Column Name="IdcardImage3" DataType="String" Length="100" Description="身份证反面照" />
+        <Column Name="CompanyId" DataType="Int32" Description="公司Id" />
         <Column Name="CompanyName" DataType="String" Length="100" Description="公司名称" />
         <Column Name="CompnayAuthState" DataType="Int16" Description="企业实名认证状态（0默认1审核中2未通过3已认证）" />
         <Column Name="CorporateName" DataType="String" Description="法人姓名" />
@@ -70,6 +71,7 @@
         <Column Name="ReferrerId" DataType="Int32" Description="推荐人ID" />
         <Column Name="KeFuId" DataType="Int32" Description="所属销售ID" />
         <Column Name="ParentUId" DataType="Int32" Description="所属上级会员ID" />
+        <Column Name="UIds" DataType="String" Description="会员层级集合。从开始到最后一个，以逗号分隔,最前和最后都要有逗号" />
         <Column Name="Points" DataType="Int32" Description="会员积分" />
         <Column Name="ExpPoints" DataType="Int32" Description="会员经验值" />
         <Column Name="QQ" DataType="String" Description="QQ号码" />
@@ -579,7 +581,7 @@
         <Column Name="SeoKey" DataType="String" Length="500" Description="网站SEO关键字" />
         <Column Name="SeoDescribe" DataType="String" Length="2000" Description="网站SEO描述" />
         <Column Name="SiteCopyright" DataType="String" Length="2000" Description="网站版权等信息" />
-        <Column Name="Status" DataType="Byte" Nullable="True" Description="网站开启关闭状态" />
+        <Column Name="Status" DataType="Int16" Nullable="True" Description="网站开启关闭状态" />
         <Column Name="CloseInfo" DataType="String" Length="2000" Description="如果状态关闭，请输入关闭网站原因" />
         <Column Name="Registration" DataType="String" Description="备案号" />
         <Column Name="CreateUser" DataType="String" Description="创建者" />

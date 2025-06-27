@@ -37,7 +37,7 @@ internal class AzureKeyVaultAccountStore : IAccountStore {
         {
             var secretClient = _secretClientFactory.Create();
 
-            await secretClient.SetSecretAsync(secretName, secretValue, cancellationToken);
+            await secretClient.SetSecretAsync(secretName, secretValue, cancellationToken).ConfigureAwait(false);
             _logger.LogInformation("Saved account information to Azure Key Vault as {secretName}", secretName);
         }
         catch (Exception ex)
@@ -58,7 +58,7 @@ internal class AzureKeyVaultAccountStore : IAccountStore {
         {
             var secretClient = _secretClientFactory.Create();
 
-            var secret = await secretClient.GetSecretAsync(secretName, version: null, cancellationToken);
+            var secret = await secretClient.GetSecretAsync(secretName, version: null, cancellationToken).ConfigureAwait(false);
 
             _logger.LogInformation("Found account key in {secretName}, version {version}",
                 secret.Value.Name,

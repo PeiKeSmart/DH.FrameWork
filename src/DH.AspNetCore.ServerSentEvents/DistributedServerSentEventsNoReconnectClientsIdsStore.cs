@@ -13,16 +13,16 @@ internal class DistributedServerSentEventsNoReconnectClientsIdsStore : IServerSe
 
     public async Task AddClientIdAsync(Guid clientId)
     {
-        await _cache.SetAsync(clientId.ToString(), _dummyItem);
+        await _cache.SetAsync(clientId.ToString(), _dummyItem).ConfigureAwait(false);
     }
 
     public async Task<bool> ContainsClientIdAsync(Guid clientId)
     {
-        return (await _cache.GetAsync(clientId.ToString())) is null;
+        return (await _cache.GetAsync(clientId.ToString()).ConfigureAwait(false)) is null;
     }
 
     public async Task RemoveClientIdAsync(Guid clientId)
     {
-        await _cache.RemoveAsync(clientId.ToString());
+        await _cache.RemoveAsync(clientId.ToString()).ConfigureAwait(false);
     }
 }

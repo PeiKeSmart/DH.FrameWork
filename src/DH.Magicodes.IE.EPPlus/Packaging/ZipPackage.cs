@@ -339,7 +339,7 @@ namespace OfficeOpenXml.Packaging
             //await os.WriteAsync(b, 0, b.Length);
             os.Write(b, 0, b.Length);
             /**** Top Rels ****/
-            await _rels.WriteZipAsync(os, $"_rels/.rels");
+            await _rels.WriteZipAsync(os, $"_rels/.rels").ConfigureAwait(false);
             //  await _rels.WriteZipAsync(os, $"_rels/.rels");
             ZipPackagePart ssPart = null;
             foreach (var part in Parts.Values)

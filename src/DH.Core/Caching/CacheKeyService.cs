@@ -1,5 +1,7 @@
 ﻿using DH.Core.Configuration;
 
+using NewLife;
+
 using System.Globalization;
 using System.Text;
 

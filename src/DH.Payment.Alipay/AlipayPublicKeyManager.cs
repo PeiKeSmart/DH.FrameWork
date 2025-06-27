@@ -35,7 +35,7 @@ namespace DH.Payment.Alipay
                 BizContent = $"{{\"alipay_cert_sn\":\"{certSN}\"}}"
             };
 
-            var response = await client.CertificateExecuteAsync(request, options);
+            var response = await client.CertificateExecuteAsync(request, options).ConfigureAwait(false);
             if (response.IsError)
             {
                 throw new AlipayException("支付宝公钥证书校验失败，请确认是否为支付宝签发的有效公钥证书");

@@ -1,4 +1,4 @@
-using Certes;
+﻿using Certes;
 using Certes.Acme;
 using Certes.Acme.Resource;
 using Microsoft.Extensions.Logging;
@@ -26,9 +26,9 @@ internal class AcmeClient
     public async Task<Account> GetAccountAsync()
     {
         _logger.LogAcmeAction("FetchAccount");
-        _accountContext = await _context.Account();
+        _accountContext = await _context.Account().ConfigureAwait(false);
         _logger.LogAcmeAction("FetchAccountDetails", _accountContext);
-        return await _accountContext.Resource();
+        return await _accountContext.Resource().ConfigureAwait(false);
     }
 
     public IKey? GetAccountKey()
@@ -41,7 +41,7 @@ internal class AcmeClient
     {
         _logger.LogAcmeAction("NewAccount");
         var eabCredentials = _options.Value.EabCredentials;
-        _accountContext = await _context.NewAccount(emailAddress, termsOfServiceAgreed: true, eabKeyId: eabCredentials.EabKeyId, eabKey: eabCredentials.EabKey, eabKeyAlg: eabCredentials.EabKeyAlg);
+        _accountContext = await _context.NewAccount(emailAddress, termsOfServiceAgreed: true, eabKeyId: eabCredentials.EabKeyId, eabKey: eabCredentials.EabKey, eabKeyAlg: eabCredentials.EabKeyAlg).ConfigureAwait(false);
 
         return int.TryParse(_accountContext.Location.Segments.Last(), out var accountId)
             ? accountId
@@ -51,7 +51,7 @@ internal class AcmeClient
     public async Task<Uri> GetTermsOfServiceAsync()
     {
         _logger.LogAcmeAction("FetchTOS");
-        return await _context.TermsOfService();
+        return await _context.TermsOfService().ConfigureAwait(false);
     }
 
     public async Task AgreeToTermsOfServiceAsync()
@@ -61,7 +61,7 @@ internal class AcmeClient
             throw MissingAccountContext();
         }
         _logger.LogAcmeAction("UpdateTOS");
-        await _accountContext.Update(agreeTermsOfService: true);
+        await _accountContext.Update(agreeTermsOfService: true).ConfigureAwait(false);
     }
 
     public async Task<IEnumerable<IOrderContext>> GetOrdersAsync()
@@ -72,56 +72,56 @@ internal class AcmeClient
         }
 
         _logger.LogAcmeAction("FetchOrderList");
-        var orderListContext = await _accountContext.Orders();
+        var orderListContext = await _accountContext.Orders().ConfigureAwait(false);
 
         if (orderListContext == null)
         {
             return Enumerable.Empty<IOrderContext>();
         }
         _logger.LogAcmeAction("FetchOrderDetails", orderListContext);
-        return await orderListContext.Orders();
+        return await orderListContext.Orders().ConfigureAwait(false);
     }
 
     public async Task<IOrderContext> CreateOrderAsync(string[] domainNames)
     {
         _logger.LogAcmeAction("NewOrder");
-        return await _context.NewOrder(domainNames);
+        return await _context.NewOrder(domainNames).ConfigureAwait(false);
     }
 
     public async Task<Order> GetOrderDetailsAsync(IOrderContext order)
     {
         _logger.LogAcmeAction("FetchOrderDetails", order);
-        return await order.Resource();
+        return await order.Resource().ConfigureAwait(false);
     }
 
     public async Task<IEnumerable<IAuthorizationContext>> GetOrderAuthorizations(IOrderContext orderContext)
     {
         _logger.LogAcmeAction("FetchAuthorizations", orderContext);
-        return await orderContext.Authorizations();
+        return await orderContext.Authorizations().ConfigureAwait(false);
     }
 
     public async Task<Authorization> GetAuthorizationAsync(IAuthorizationContext authorizationContext)
     {
         _logger.LogAcmeAction("FetchAuthorizationDetails", authorizationContext);
-        return await authorizationContext.Resource();
+        return await authorizationContext.Resource().ConfigureAwait(false);
     }
 
     public async Task<IChallengeContext> CreateChallengeAsync(IAuthorizationContext authorizationContext, string challengeType)
     {
         _logger.LogAcmeAction("CreateChallenge", authorizationContext);
-        return await authorizationContext.Challenge(challengeType);
+        return await authorizationContext.Challenge(challengeType).ConfigureAwait(false);
     }
 
     public async Task<Challenge> ValidateChallengeAsync(IChallengeContext httpChallenge)
     {
         _logger.LogAcmeAction("ValidateChallenge", httpChallenge);
-        return await httpChallenge.Validate();
+        return await httpChallenge.Validate().ConfigureAwait(false);
     }
 
     public async Task<CertificateChain> GetCertificateAsync(CsrInfo csrInfo, IKey privateKey, IOrderContext order)
     {
         _logger.LogAcmeAction("GenerateCertificate", order);
-        return await order.Generate(csrInfo, privateKey);
+        return await order.Generate(csrInfo, privateKey).ConfigureAwait(false);
     }
 
     private static Exception MissingAccountContext() => new InvalidOperationException("Account wasn't initialized yet");

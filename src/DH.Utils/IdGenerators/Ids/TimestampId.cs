@@ -1,4 +1,6 @@
-﻿namespace DH.IdGenerators.Ids;
+﻿using Pek;
+
+namespace DH.IdGenerators.Ids;
 
 /// <summary>
 /// 时间戳ID，借鉴雪花算法，生成唯一时间戳ID

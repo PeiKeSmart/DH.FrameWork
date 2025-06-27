@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -88,8 +88,8 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
 
             try
             {
-                using IFlurlResponse flurlResponse = await base.SendFlurlRequestAsync(flurlRequest, httpContent, cancellationToken);
-                return await WrapFlurlResponseAsJsonAsync<T>(flurlResponse, cancellationToken);
+                using IFlurlResponse flurlResponse = await base.SendFlurlRequestAsync(flurlRequest, httpContent, cancellationToken).ConfigureAwait(false);
+                return await WrapFlurlResponseAsJsonAsync<T>(flurlResponse, cancellationToken).ConfigureAwait(false);
             }
             catch (FlurlHttpTimeoutException ex)
             {
@@ -121,9 +121,9 @@ namespace SKIT.FlurlHttpClient.ByteDance.DouyinShop
                     flurlRequest.Verb == HttpMethod.Head ||
                     flurlRequest.Verb == HttpMethod.Options;
                 using IFlurlResponse flurlResponse = isSimpleRequest ?
-                    await base.SendFlurlRequestAsync(flurlRequest, null, cancellationToken) :
-                    await base.SendFlurlRequestAsJsonAsync(flurlRequest, data, cancellationToken);
-                return await WrapFlurlResponseAsJsonAsync<T>(flurlResponse, cancellationToken);
+                    await base.SendFlurlRequestAsync(flurlRequest, null, cancellationToken).ConfigureAwait(false) :
+                    await base.SendFlurlRequestAsJsonAsync(flurlRequest, data, cancellationToken).ConfigureAwait(false);
+                return await WrapFlurlResponseAsJsonAsync<T>(flurlResponse, cancellationToken).ConfigureAwait(false);
             }
             catch (FlurlHttpTimeoutException ex)
             {

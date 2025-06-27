@@ -49,7 +49,7 @@ namespace Magicodes.ExporterAndImporter.Excel
         /// <returns>文件</returns>
         public virtual async Task<ExportFileInfo> Export<T>(string fileName, ICollection<T> dataItems) where T : class, new()
         {
-            var bytes = await ExportAsByteArray(dataItems);
+            var bytes = await ExportAsByteArray(dataItems).ConfigureAwait(false);
             return bytes.ToExcelExportFileInfo(fileName);
         }
 
@@ -61,7 +61,7 @@ namespace Magicodes.ExporterAndImporter.Excel
         /// <returns>文件</returns>
         public virtual async Task<ExportFileInfo> ExportWithXSSFWorkbook<T>(string fileName, ICollection<T> dataItems) where T : class, new()
         {
-            var bytes = await ExportWithXSSFWorkbookAsByteArray(dataItems);
+            var bytes = await ExportWithXSSFWorkbookAsByteArray(dataItems).ConfigureAwait(false);
             return bytes.ToExcelExportFileInfo(fileName);
         }
 
@@ -205,7 +205,7 @@ namespace Magicodes.ExporterAndImporter.Excel
         public virtual async Task<ExportFileInfo> ExportAppendData(string fileName)
         {
             fileName.CheckExcelFileName();
-            var bytes = await ExportAppendDataAsByteArray();
+            var bytes = await ExportAppendDataAsByteArray().ConfigureAwait(false);
             return bytes.ToExcelExportFileInfo(fileName);
         }
 
@@ -293,7 +293,7 @@ namespace Magicodes.ExporterAndImporter.Excel
         public virtual async Task<ExportFileInfo> Export<T>(string fileName, DataTable dataItems) where T : class, new()
         {
             fileName.CheckExcelFileName();
-            var bytes = await ExportAsByteArray<T>(dataItems);
+            var bytes = await ExportAsByteArray<T>(dataItems).ConfigureAwait(false);
             return bytes.ToExcelExportFileInfo(fileName);
         }
 
@@ -307,7 +307,7 @@ namespace Magicodes.ExporterAndImporter.Excel
         public virtual async Task<ExportFileInfo> ExportWithXSSFWorkbook<T>(string fileName, DataTable dataItems) where T : class, new()
         {
             fileName.CheckExcelFileName();
-            var bytes = await ExportAsByteArray<T>(dataItems);
+            var bytes = await ExportAsByteArray<T>(dataItems).ConfigureAwait(false);
             return bytes.ToExcelExportFileInfo(fileName);
         }
 
@@ -597,7 +597,7 @@ namespace Magicodes.ExporterAndImporter.Excel
             IExporterHeaderFilter exporterHeaderFilter = null, int maxRowNumberOnASheet = 1000000)
         {
             fileName.CheckExcelFileName();
-            var bytes = await ExportAsByteArray(dataItems, exporterHeaderFilter, maxRowNumberOnASheet);
+            var bytes = await ExportAsByteArray(dataItems, exporterHeaderFilter, maxRowNumberOnASheet).ConfigureAwait(false);
             return bytes.ToExcelExportFileInfo(fileName);
         }
 
@@ -605,7 +605,7 @@ namespace Magicodes.ExporterAndImporter.Excel
           IExporterHeaderFilter exporterHeaderFilter = null, int maxRowNumberOnASheet = 1000000)
         {
             fileName.CheckExcelFileName();
-            var bytes = await ExportAsByteArray(dataItems, exporterHeaderFilter, maxRowNumberOnASheet);
+            var bytes = await ExportAsByteArray(dataItems, exporterHeaderFilter, maxRowNumberOnASheet).ConfigureAwait(false);
             return bytes.ToExcelExportFileInfo(fileName);
         }
 

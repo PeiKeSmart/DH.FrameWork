@@ -40,7 +40,7 @@ namespace DH.Payment.JDPay
 
             using (var client = _httpClientFactory.CreateClient(nameof(JDPayClient)))
             {
-                var body = await client.DoPostAsync(request.GetRequestUrl(), content);
+                var body = await client.DoPostAsync(request.GetRequestUrl(), content).ConfigureAwait(false);
 
                 var parser = new JDPayXmlParser<T>();
                 var rsp = parser.Parse(JDPayUtility.FotmatXmlString(body));
@@ -122,7 +122,7 @@ namespace DH.Payment.JDPay
 
             using (var client = _httpClientFactory.CreateClient(nameof(JDPayClient)))
             {
-                var body = await client.DoPostAsync(request.GetRequestUrl(), content, "application/x-www-form-urlencoded");
+                var body = await client.DoPostAsync(request.GetRequestUrl(), content, "application/x-www-form-urlencoded").ConfigureAwait(false);
 
                 // 验签
                 var dictionary = JsonConvert.DeserializeObject<JDPayDictionary>(body);

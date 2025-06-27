@@ -32,7 +32,7 @@ namespace DH.WebHook
                 _Client = Tracer?.CreateHttpClient() ?? new HttpClient();
             }
 
-            return await _Client.PostAsync<Object>(Url, msg);
+            return await _Client.PostAsync<Object>(Url, msg).ConfigureAwait(false);
         }
 
         /// <summary>

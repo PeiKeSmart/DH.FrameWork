@@ -1,4 +1,6 @@
-﻿using SharpCompress;
+﻿using Pek;
+
+using SharpCompress;
 using SharpCompress.Archives;
 using SharpCompress.Archives.Rar;
 using SharpCompress.Archives.Zip;
@@ -174,10 +176,10 @@ public class SevenZipCompressor : ISevenZipCompressor {
                 {
                     if (t.IsCompleted)
                     {
-                        var res = await t;
+                        var res = await t.ConfigureAwait(false);
                         if (res.IsSuccessStatusCode)
                         {
-                            Stream stream = await res.Content.ReadAsStreamAsync();
+                            Stream stream = await res.Content.ReadAsStreamAsync().ConfigureAwait(false);
                             streams[Path.Combine(rootdir, Path.GetFileName(HttpUtility.UrlDecode(url.AbsolutePath)))] = stream;
                         }
                     }

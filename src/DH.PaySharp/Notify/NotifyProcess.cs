@@ -29,7 +29,7 @@ namespace DH.PaySharp
         /// <returns></returns>
         public static async Task<BaseGateway> GetGatewayAsync(IGateways gateways)
         {
-            var gatewayData = await ReadNotifyDataAsync();
+            var gatewayData = await ReadNotifyDataAsync().ConfigureAwait(false);
             BaseGateway gateway = null;
 
             foreach (var item in gateways.GetList())
@@ -89,7 +89,7 @@ namespace DH.PaySharp
                 if (IsXmlData)
                 {
                     var reader = new StreamReader(HttpUtil.Body);
-                    var xmlData = await reader.ReadToEndAsync();
+                    var xmlData = await reader.ReadToEndAsync().ConfigureAwait(false);
                     gatewayData.FromXml(xmlData);
                 }
                 else

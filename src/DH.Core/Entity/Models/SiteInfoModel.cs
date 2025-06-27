@@ -90,7 +90,7 @@ public partial class SiteInfoModel
     public String SiteCopyright { get; set; }
 
     /// <summary>网站开启关闭状态</summary>
-    public Byte Status { get; set; }
+    public Int16 Status { get; set; }
 
     /// <summary>如果状态关闭，请输入关闭网站原因</summary>
     public String CloseInfo { get; set; }

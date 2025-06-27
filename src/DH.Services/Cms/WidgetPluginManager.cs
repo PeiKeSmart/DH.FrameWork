@@ -41,12 +41,12 @@ public partial class WidgetPluginManager : PluginManager<IWidgetPlugin>, IWidget
     /// </returns>
     public virtual async Task<IList<IWidgetPlugin>> LoadActivePluginsAsync(User customer = null, int storeId = 0, string widgetZone = null)
     {
-        var widgets = await LoadActivePluginsAsync(_widgetSettings.ActiveWidgetSystemNames, customer, storeId);
+        var widgets = await LoadActivePluginsAsync(_widgetSettings.ActiveWidgetSystemNames, customer, storeId).ConfigureAwait(false);
 
         // 按小部件区域筛选
         if (!string.IsNullOrEmpty(widgetZone))
             widgets = await widgets.WhereAwait(async widget =>
-                (await widget.GetWidgetZonesAsync()).Contains(widgetZone, StringComparer.InvariantCultureIgnoreCase)).ToListAsync();
+                (await widget.GetWidgetZonesAsync().ConfigureAwait(false)).Contains(widgetZone, StringComparer.InvariantCultureIgnoreCase)).ToListAsync().ConfigureAwait(false);
 
         return widgets;
     }
@@ -73,7 +73,7 @@ public partial class WidgetPluginManager : PluginManager<IWidgetPlugin>, IWidget
     /// </returns>
     public virtual async Task<bool> IsPluginActiveAsync(string systemName, User customer = null, int storeId = 0)
     {
-        var widget = await LoadPluginBySystemNameAsync(systemName, customer, storeId);
+        var widget = await LoadPluginBySystemNameAsync(systemName, customer, storeId).ConfigureAwait(false);
 
         return IsPluginActive(widget);
     }

@@ -1,12 +1,14 @@
 ﻿using DH.Core;
-using DH.Core.Configuration;
 using DH.Core.Domain.Customers;
 using DH.Core.Infrastructure;
 
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 
+using NewLife;
 using NewLife.Log;
+
+using Pek.Webs;
 
 using XCode.Membership;
 
@@ -49,7 +51,7 @@ public class AuthenticationMiddleware
     /// </summary>
     /// <param name="context">HTTP上下文</param>
     /// <returns>表示异步操作的任务</returns>
-    public async Task InvokeAsync(HttpContext context)
+    public async Task InvokeAsync(Microsoft.AspNetCore.Http.HttpContext context)
     {
         context.Features.Set<IAuthenticationFeature>(new AuthenticationFeature
         {
@@ -59,11 +61,11 @@ public class AuthenticationMiddleware
 
         // 给任何IAuthenticationRequestHandler方案一个处理请求的机会
         var handlers = EngineContext.Current.Resolve<IAuthenticationHandlerProvider>();
-        foreach (var scheme in await Schemes.GetRequestHandlerSchemesAsync())
+        foreach (var scheme in await Schemes.GetRequestHandlerSchemesAsync().ConfigureAwait(false))
         {
             try
             {
-                if (await handlers.GetHandlerAsync(context, scheme.Name) is IAuthenticationRequestHandler handler && await handler.HandleRequestAsync())
+                if (await handlers.GetHandlerAsync(context, scheme.Name).ConfigureAwait(false) is IAuthenticationRequestHandler handler && await handler.HandleRequestAsync().ConfigureAwait(false))
                     return;
             }
             catch (Exception ex)
@@ -87,17 +89,17 @@ public class AuthenticationMiddleware
             }
         }
 
-        var defaultAuthenticate = await Schemes.GetDefaultAuthenticateSchemeAsync();
+        var defaultAuthenticate = await Schemes.GetDefaultAuthenticateSchemeAsync().ConfigureAwait(false);
         if (defaultAuthenticate != null)
         {
-            var result = await context.AuthenticateAsync(defaultAuthenticate.Name);
+            var result = await context.AuthenticateAsync(defaultAuthenticate.Name).ConfigureAwait(false);
             if (result?.Principal != null)
             {
                 context.User = result.Principal;
             }
         }
 
-        await _next(context);
+        await _next(context).ConfigureAwait(false);
     }
 
     #endregion

@@ -296,7 +296,7 @@ public partial class PluginsInfo : IPluginsInfo
         // 保存文件
         var filePath = _fileProvider.MapPath(DHPluginDefaults.PluginsInfoFilePath);
         var text = JsonConvert.SerializeObject(this, Formatting.Indented);
-        await _fileProvider.WriteAllTextAsync(filePath, text, Encoding.UTF8);
+        await _fileProvider.WriteAllTextAsync(filePath, text, Encoding.UTF8).ConfigureAwait(false);
     }
 
     /// <summary>

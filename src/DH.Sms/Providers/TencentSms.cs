@@ -1,12 +1,13 @@
-﻿using DH.DynamicObject;
+﻿using System.Security.Cryptography;
+using System.Text;
+
+using DH.DynamicObject;
 using DH.Helpers;
-using DH.Timing;
 using DH.Web;
 
 using NewLife.Serialization;
 
-using System.Security.Cryptography;
-using System.Text;
+using Pek.Timing;
 
 namespace DH.Sms.Providers;
 
@@ -152,14 +153,14 @@ internal class TencentSms : ISmsProvider {
     public async Task<(bool, String)> SendAsync(string templateParam, params string[] phoneNums)
     {
         HttpClientExt client = GenHttpClient(mSignName, mTemplateCode, templateParam, phoneNums);
-        HttpResponseExt res = await client.PostAsync(sUrl);
+        HttpResponseExt res = await client.PostAsync(sUrl).ConfigureAwait(false);
         return (ParseResult(res), res.ToJson());
     }
 
     public async Task<(bool, String)> Send2Async(string signName, string templateCode, string templateParam, params string[] phoneNums)
     {
         HttpClientExt client = GenHttpClient(signName, templateCode, templateParam, phoneNums);
-        HttpResponseExt res = await client.PostAsync(sUrl);
+        HttpResponseExt res = await client.PostAsync(sUrl).ConfigureAwait(false);
         return (ParseResult(res), res.ToJson());
     }
 }

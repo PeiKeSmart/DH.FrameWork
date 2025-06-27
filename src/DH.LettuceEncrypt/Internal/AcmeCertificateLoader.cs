@@ -1,4 +1,4 @@
-using LettuceEncrypt.Internal.AcmeStates;
+ï»¿using LettuceEncrypt.Internal.AcmeStates;
 
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
@@ -13,7 +13,7 @@ using NewLife.Log;
 namespace LettuceEncrypt.Internal;
 
 /// <summary>
-/// Õâ½«Æô¶¯ACME×´Ì¬»ú£¬¸Ã×´Ì¬»ú´¦ÀíÖ¤ÊéÉú³ÉºÍĞø¶©
+/// è¿™å°†å¯åŠ¨ACMEçŠ¶æ€æœºï¼Œè¯¥çŠ¶æ€æœºå¤„ç†è¯ä¹¦ç”Ÿæˆå’Œç»­è®¢
 /// </summary>
 internal class AcmeCertificateLoader : BackgroundService
 {
@@ -40,13 +40,13 @@ internal class AcmeCertificateLoader : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        XTrace.WriteLine($"½øÀ´ÁËÂğ£¿AcmeCertificateLoader");
+        XTrace.WriteLine($"è¿›æ¥äº†å—ï¼ŸAcmeCertificateLoader");
 
         if (!_server.GetType().Name.StartsWith(nameof(KestrelServer)))
         {
             var serverType = _server.GetType().FullName;
             XTrace.Log.Warn(
-                "LettuceEncryptÖ»ÄÜÓëKestrelÒ»ÆğÊ¹ÓÃ£¬ÔÚ{serverType}·şÎñÆ÷ÉÏ²»ÊÜÖ§³Ö¡£ÕıÔÚÌø¹ıÖ¤ÊéÉèÖÃ¡£",
+                "LettuceEncryptåªèƒ½ä¸Kestrelä¸€èµ·ä½¿ç”¨ï¼Œåœ¨{serverType}æœåŠ¡å™¨ä¸Šä¸å—æ”¯æŒã€‚æ­£åœ¨è·³è¿‡è¯ä¹¦è®¾ç½®ã€‚",
                 serverType);
             return;
         }
@@ -54,15 +54,15 @@ internal class AcmeCertificateLoader : BackgroundService
         if (_config.GetValue<bool>("UseIISIntegration"))
         {
             XTrace.Log.Warn(
-                "LettuceEncrypt²»ÊÊÓÃÓÚIISÖĞÍĞ¹ÜµÄÓ¦ÓÃ³ÌĞò¡£IIS²»ÔÊĞí¶¯Ì¬HTTPSÖ¤Êé°ó¶¨¡£" +
-                "ÕıÔÚÌø¹ıÖ¤ÊéÉèÖÃ¡£");
+                "LettuceEncryptä¸é€‚ç”¨äºIISä¸­æ‰˜ç®¡çš„åº”ç”¨ç¨‹åºã€‚IISä¸å…è®¸åŠ¨æ€HTTPSè¯ä¹¦ç»‘å®šã€‚" +
+                "æ­£åœ¨è·³è¿‡è¯ä¹¦è®¾ç½®ã€‚");
             return;
         }
 
-        // ÔÚºóÌ¨¼ÓÔØÖ¤Êé
+        // åœ¨åå°åŠ è½½è¯ä¹¦
         if (!LettuceEncryptDomainNamesWereConfigured())
         {
-            XTrace.Log.Info("Î´ÅäÖÃÓòÃû");
+            XTrace.Log.Info("æœªé…ç½®åŸŸå");
             return;
         }
 
@@ -74,22 +74,22 @@ internal class AcmeCertificateLoader : BackgroundService
 
             while (!stoppingToken.IsCancellationRequested)
             {
-                XTrace.WriteLine($"ACME×´Ì¬×ª»»£ºÒÆ¶¯µ½{state.GetType().Name}");
-                state = await state.MoveNextAsync(stoppingToken);
+                XTrace.WriteLine($"ACMEçŠ¶æ€è½¬æ¢ï¼šç§»åŠ¨åˆ°{state.GetType().Name}");
+                state = await state.MoveNextAsync(stoppingToken).ConfigureAwait(false);
             }
         }
         catch (OperationCanceledException)
         {
-            XTrace.Log.Debug("ÒÑÇëÇó×´Ì¬»úÈ¡Ïû¡£ÕıÔÚÍË³ö¡£¡£¡£");
+            XTrace.Log.Debug("å·²è¯·æ±‚çŠ¶æ€æœºå–æ¶ˆã€‚æ­£åœ¨é€€å‡ºã€‚ã€‚ã€‚");
         }
         catch (AggregateException ex) when (ex.InnerException != null)
         {
-            XTrace.WriteLine("ACME×´Ì¬»úÓöµ½Î´´¦ÀíµÄ´íÎó");
+            XTrace.WriteLine("ACMEçŠ¶æ€æœºé‡åˆ°æœªå¤„ç†çš„é”™è¯¯");
             XTrace.WriteException(ex.InnerException);
         }
         catch (Exception ex)
         {
-            XTrace.WriteLine("ACME×´Ì¬»úÓöµ½Î´´¦ÀíµÄ´íÎó");
+            XTrace.WriteLine("ACMEçŠ¶æ€æœºé‡åˆ°æœªå¤„ç†çš„é”™è¯¯");
             XTrace.WriteException(ex);
         }
     }

@@ -40,7 +40,7 @@ namespace DH.Core.Caching
                 if (parameters.Any())
                     command.Parameters.AddRange(parameters);
 
-                await command.ExecuteNonQueryAsync();
+                await command.ExecuteNonQueryAsync().ConfigureAwait(false);
             }
             finally
             {
@@ -66,9 +66,9 @@ namespace DH.Core.Caching
                 new SqlCommand(
                     $"DELETE FROM {_distributedCacheConfig.SchemaName}.{_distributedCacheConfig.TableName} WHERE Id LIKE @Prefix + '%'");
 
-            await PerformActionAsync(command, new SqlParameter("Prefix", SqlDbType.NVarChar) { Value = prefix });
+            await PerformActionAsync(command, new SqlParameter("Prefix", SqlDbType.NVarChar) { Value = prefix }).ConfigureAwait(false);
 
-            await RemoveByPrefixInstanceDataAsync(prefix);
+            await RemoveByPrefixInstanceDataAsync(prefix).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -81,7 +81,7 @@ namespace DH.Core.Caching
                 new SqlCommand(
                     $"TRUNCATE TABLE {_distributedCacheConfig.SchemaName}.{_distributedCacheConfig.TableName}");
 
-            await PerformActionAsync(command);
+            await PerformActionAsync(command).ConfigureAwait(false);
 
             ClearInstanceData();
         }

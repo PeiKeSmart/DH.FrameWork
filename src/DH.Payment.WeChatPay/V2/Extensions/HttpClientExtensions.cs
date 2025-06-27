@@ -12,10 +12,10 @@ namespace DH.Payment.WeChatPay.V2.Extensions
             var url = request.GetRequestUrl();
             var content = WeChatPayUtility.BuildContent(textParams);
             using (var reqContent = new StringContent(content, Encoding.UTF8, "application/xml"))
-            using (var resp = await client.PostAsync(url, reqContent))
+            using (var resp = await client.PostAsync(url, reqContent).ConfigureAwait(false))
             using (var respContent = resp.Content)
             {
-                return await respContent.ReadAsStringAsync();
+                return await respContent.ReadAsStringAsync().ConfigureAwait(false);
             }
         }
 
@@ -24,10 +24,10 @@ namespace DH.Payment.WeChatPay.V2.Extensions
             var url = request.GetRequestUrl();
             var content = WeChatPayUtility.BuildContent(textParams);
             using (var reqContent = new StringContent(content, Encoding.UTF8, "application/xml"))
-            using (var resp = await client.PostAsync(url, reqContent))
+            using (var resp = await client.PostAsync(url, reqContent).ConfigureAwait(false))
             using (var respContent = resp.Content)
             {
-                return await respContent.ReadAsStringAsync();
+                return await respContent.ReadAsStringAsync().ConfigureAwait(false);
             }
         }
     }

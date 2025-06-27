@@ -1,10 +1,12 @@
-﻿using DH.Models;
+﻿using System.Reflection;
+
+using DH.Models;
 
 using NewLife;
 using NewLife.Log;
 using NewLife.Reflection;
 
-using System.Reflection;
+using Pek.Models;
 
 using XCode;
 using XCode.Membership;
@@ -194,7 +196,7 @@ public static class MenuHelper {
                 if (type != null) break;
             }
         }
-        var att = type?.GetCustomAttribute<DHMenu>();
+        var att = type?.GetCustomAttribute<DHMenuAttribute>();
         if (att != null && att.Mode.Has(MenuModes.Tenant))
         {
             return _tenants[key] = true;
@@ -210,7 +212,7 @@ public static class MenuHelper {
         if (_admins.TryGetValue(key, out var rs)) return rs;
 
         var type = Type.GetType(menu.FullName);
-        var att = type?.GetCustomAttribute<DHMenu>();
+        var att = type?.GetCustomAttribute<DHMenuAttribute>();
         if (att != null && att.Mode.Has(MenuModes.Admin))
         {
             return _admins[key] = true;

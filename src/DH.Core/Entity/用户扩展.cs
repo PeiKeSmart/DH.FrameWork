@@ -154,6 +154,14 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
     [BindColumn("IdcardImage3", "身份证反面照", "")]
     public String IdcardImage3 { get => _IdcardImage3; set { if (OnPropertyChanging("IdcardImage3", value)) { _IdcardImage3 = value; OnPropertyChanged("IdcardImage3"); } } }
 
+    private Int32 _CompanyId;
+    /// <summary>公司Id</summary>
+    [DisplayName("公司Id")]
+    [Description("公司Id")]
+    [DataObjectField(false, false, false, 0)]
+    [BindColumn("CompanyId", "公司Id", "")]
+    public Int32 CompanyId { get => _CompanyId; set { if (OnPropertyChanging("CompanyId", value)) { _CompanyId = value; OnPropertyChanged("CompanyId"); } } }
+
     private String _CompanyName;
     /// <summary>公司名称</summary>
     [DisplayName("公司名称")]
@@ -257,6 +265,14 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
     [DataObjectField(false, false, false, 0)]
     [BindColumn("ParentUId", "所属上级会员ID", "")]
     public Int32 ParentUId { get => _ParentUId; set { if (OnPropertyChanging("ParentUId", value)) { _ParentUId = value; OnPropertyChanged("ParentUId"); } } }
+
+    private String _UIds;
+    /// <summary>会员层级集合。从开始到最后一个，以逗号分隔,最前和最后都要有逗号</summary>
+    [DisplayName("会员层级集合")]
+    [Description("会员层级集合。从开始到最后一个，以逗号分隔,最前和最后都要有逗号")]
+    [DataObjectField(false, false, true, 50)]
+    [BindColumn("UIds", "会员层级集合。从开始到最后一个，以逗号分隔,最前和最后都要有逗号", "")]
+    public String UIds { get => _UIds; set { if (OnPropertyChanging("UIds", value)) { _UIds = value; OnPropertyChanged("UIds"); } } }
 
     private Int32 _Points;
     /// <summary>会员积分</summary>
@@ -594,6 +610,7 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
         IdcardImage1 = model.IdcardImage1;
         IdcardImage2 = model.IdcardImage2;
         IdcardImage3 = model.IdcardImage3;
+        CompanyId = model.CompanyId;
         CompanyName = model.CompanyName;
         CompnayAuthState = model.CompnayAuthState;
         CorporateName = model.CorporateName;
@@ -607,6 +624,7 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
         ReferrerId = model.ReferrerId;
         KeFuId = model.KeFuId;
         ParentUId = model.ParentUId;
+        UIds = model.UIds;
         Points = model.Points;
         ExpPoints = model.ExpPoints;
         QQ = model.QQ;
@@ -673,6 +691,7 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
             "IdcardImage1" => _IdcardImage1,
             "IdcardImage2" => _IdcardImage2,
             "IdcardImage3" => _IdcardImage3,
+            "CompanyId" => _CompanyId,
             "CompanyName" => _CompanyName,
             "CompnayAuthState" => _CompnayAuthState,
             "CorporateName" => _CorporateName,
@@ -686,6 +705,7 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
             "ReferrerId" => _ReferrerId,
             "KeFuId" => _KeFuId,
             "ParentUId" => _ParentUId,
+            "UIds" => _UIds,
             "Points" => _Points,
             "ExpPoints" => _ExpPoints,
             "QQ" => _QQ,
@@ -747,6 +767,7 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
                 case "IdcardImage1": _IdcardImage1 = Convert.ToString(value); break;
                 case "IdcardImage2": _IdcardImage2 = Convert.ToString(value); break;
                 case "IdcardImage3": _IdcardImage3 = Convert.ToString(value); break;
+                case "CompanyId": _CompanyId = value.ToInt(); break;
                 case "CompanyName": _CompanyName = Convert.ToString(value); break;
                 case "CompnayAuthState": _CompnayAuthState = Convert.ToInt16(value); break;
                 case "CorporateName": _CorporateName = Convert.ToString(value); break;
@@ -760,6 +781,7 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
                 case "ReferrerId": _ReferrerId = value.ToInt(); break;
                 case "KeFuId": _KeFuId = value.ToInt(); break;
                 case "ParentUId": _ParentUId = value.ToInt(); break;
+                case "UIds": _UIds = Convert.ToString(value); break;
                 case "Points": _Points = value.ToInt(); break;
                 case "ExpPoints": _ExpPoints = value.ToInt(); break;
                 case "QQ": _QQ = Convert.ToString(value); break;
@@ -875,6 +897,9 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
         /// <summary>身份证反面照</summary>
         public static readonly Field IdcardImage3 = FindByName("IdcardImage3");
 
+        /// <summary>公司Id</summary>
+        public static readonly Field CompanyId = FindByName("CompanyId");
+
         /// <summary>公司名称</summary>
         public static readonly Field CompanyName = FindByName("CompanyName");
 
@@ -913,6 +938,9 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
 
         /// <summary>所属上级会员ID</summary>
         public static readonly Field ParentUId = FindByName("ParentUId");
+
+        /// <summary>会员层级集合。从开始到最后一个，以逗号分隔,最前和最后都要有逗号</summary>
+        public static readonly Field UIds = FindByName("UIds");
 
         /// <summary>会员积分</summary>
         public static readonly Field Points = FindByName("Points");
@@ -1085,6 +1113,9 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
         /// <summary>身份证反面照</summary>
         public const String IdcardImage3 = "IdcardImage3";
 
+        /// <summary>公司Id</summary>
+        public const String CompanyId = "CompanyId";
+
         /// <summary>公司名称</summary>
         public const String CompanyName = "CompanyName";
 
@@ -1123,6 +1154,9 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
 
         /// <summary>所属上级会员ID</summary>
         public const String ParentUId = "ParentUId";
+
+        /// <summary>会员层级集合。从开始到最后一个，以逗号分隔,最前和最后都要有逗号</summary>
+        public const String UIds = "UIds";
 
         /// <summary>会员积分</summary>
         public const String Points = "Points";

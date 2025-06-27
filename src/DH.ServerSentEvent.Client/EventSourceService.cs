@@ -63,7 +63,7 @@ internal class EventSourceService {
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        await ConnectToEventSourceApi(processResponseLineString, processResponseLineUTF8, lastEventId, cancellationToken);
+        await ConnectToEventSourceApi(processResponseLineString, processResponseLineUTF8, lastEventId, cancellationToken).ConfigureAwait(false);
     }
 
     #endregion
@@ -105,14 +105,14 @@ internal class EventSourceService {
                 if (_configuration.PreferDataAsUtf8Bytes)
                 {
                     XTrace.Log.Debug("Reading UTF-8 stream without string conversion");
-                    await ProcessResponseFromUtf8StreamAsync(processResponseLineUTF8, stream, cancellationToken);
+                    await ProcessResponseFromUtf8StreamAsync(processResponseLineUTF8, stream, cancellationToken).ConfigureAwait(false);
                 }
                 else
                 {
                     XTrace.Log.Debug("Reading stream with string conversion");
                     using (var reader = new StreamReader(stream, Encoding.UTF8))
                     {
-                        await ProcessResponseFromReaderAsync(processResponseLineString, reader, cancellationToken);
+                        await ProcessResponseFromReaderAsync(processResponseLineString, reader, cancellationToken).ConfigureAwait(false);
                     }
                 }
             }
@@ -144,7 +144,7 @@ internal class EventSourceService {
         while (!cancellationToken.IsCancellationRequested)
         {
             var line = await DoWithTimeout(_configuration.ReadTimeout, cancellationToken,
-                token => AllowCancellation(reader.ReadLineAsync(), token));
+                token => AllowCancellation(reader.ReadLineAsync(), token)).ConfigureAwait(false);
             if (line == null)
             {
                 // this means the stream is done, i.e. the connection was closed
@@ -167,7 +167,7 @@ internal class EventSourceService {
             // does not actually work for network sockets (https://stackoverflow.com/questions/12421989/networkstream-readasync-with-a-cancellation-token-never-cancels).
             // So we must use AsyncHelpers.AllowCancellation to wrap it in a cancellable task.
             int bytesRead = await DoWithTimeout(_configuration.ReadTimeout, cancellationToken,
-                token => AllowCancellation(stream.ReadAsync(lineScanner.Buffer, lineScanner.Count, lineScanner.Available), token));
+                token => AllowCancellation(stream.ReadAsync(lineScanner.Buffer, lineScanner.Count, lineScanner.Available), token)).ConfigureAwait(false);
             if (bytesRead == 0)
             {
                 cancellationToken.ThrowIfCancellationRequested();

@@ -37,7 +37,7 @@ internal class AzureKeyVaultCertificateRepository : ICertificateRepository, ICer
 
         foreach (var domain in _encryptOptions.Value.DomainNames)
         {
-            var cert = await GetCertificateWithPrivateKeyAsync(domain, cancellationToken);
+            var cert = await GetCertificateWithPrivateKeyAsync(domain, cancellationToken).ConfigureAwait(false);
 
             if (cert != null)
             {
@@ -57,7 +57,7 @@ internal class AzureKeyVaultCertificateRepository : ICertificateRepository, ICer
             var normalizedName = NormalizeHostName(domainName);
             var certificateClient = _certificateClientFactory.Create();
 
-            var certificate = await certificateClient.GetCertificateAsync(normalizedName, token);
+            var certificate = await certificateClient.GetCertificateAsync(normalizedName, token).ConfigureAwait(false);
 
             return new X509Certificate2(certificate.Value.Cer);
         }
@@ -88,7 +88,7 @@ internal class AzureKeyVaultCertificateRepository : ICertificateRepository, ICer
             var normalizedName = NormalizeHostName(domainName);
             var secretClient = _secretClientFactory.Create();
 
-            var certificate = await secretClient.GetSecretAsync(normalizedName, null, token);
+            var certificate = await secretClient.GetSecretAsync(normalizedName, null, token).ConfigureAwait(false);
 
             var cert = new X509Certificate2(Convert.FromBase64String(certificate.Value.Value));
 
@@ -122,7 +122,7 @@ internal class AzureKeyVaultCertificateRepository : ICertificateRepository, ICer
 
         _logger.LogInformation("Saving certificate for {domainName} in Azure KeyVault.", domainName);
 
-        if (!await ShouldImportVersionAsync(domainName, certificate, cancellationToken))
+        if (!await ShouldImportVersionAsync(domainName, certificate, cancellationToken).ConfigureAwait(false))
         {
             _logger.LogInformation(
                 "Certificate for {domainName} is already up-to-date in Azure KeyVault. Skipping importing.",
@@ -147,7 +147,7 @@ internal class AzureKeyVaultCertificateRepository : ICertificateRepository, ICer
         {
             var certificateClient = _certificateClientFactory.Create();
 
-            await certificateClient.ImportCertificateAsync(options, cancellationToken);
+            await certificateClient.ImportCertificateAsync(options, cancellationToken).ConfigureAwait(false);
 
             _logger.LogInformation("Imported certificate into Azure KeyVault for {domainName}", domainName);
         }
@@ -160,7 +160,7 @@ internal class AzureKeyVaultCertificateRepository : ICertificateRepository, ICer
     private async ValueTask<bool> ShouldImportVersionAsync(string domainName, X509Certificate2 certificate,
         CancellationToken token)
     {
-        using var other = await GetCertificateAsync(domainName, token);
+        using var other = await GetCertificateAsync(domainName, token).ConfigureAwait(false);
 
         if (other is null)
         {

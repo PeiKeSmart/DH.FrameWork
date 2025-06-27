@@ -37,7 +37,7 @@ public static partial class EmailExtensions
             }
         }
 
-        var message = new MimeMessage(headers.ToArray());
+        var message = new MimeMessage(headers);
         MimeEntity body = null;
         if (mail.Sender != null)
         {

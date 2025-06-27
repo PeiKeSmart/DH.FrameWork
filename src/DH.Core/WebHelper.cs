@@ -13,6 +13,7 @@ using Microsoft.Net.Http.Headers;
 
 using Pek;
 using Pek.Http;
+using Pek.Webs;
 
 namespace DH.Core;
 
@@ -329,7 +330,7 @@ public partial class WebHelper : IWebHelper
     /// <typeparam name="T">返回值类型</typeparam>
     /// <param name="name">查询参数名称</param>
     /// <returns>查询字符串值</returns>
-    public virtual T QueryString<T>(string name)
+    public virtual T QueryString<T>(String name)
     {
         if (!IsRequestAvailable())
             return default;
@@ -343,21 +344,18 @@ public partial class WebHelper : IWebHelper
     /// <summary>
     /// 重新启动应用程序域
     /// </summary>
-    public virtual void RestartAppDomain()
-    {
-        _hostApplicationLifetime.StopApplication();
-    }
+    public virtual void RestartAppDomain() => _hostApplicationLifetime.StopApplication();
 
     /// <summary>
     /// 获取一个值，该值指示客户端是否正在重定向到新位置
     /// </summary>
-    public virtual bool IsRequestBeingRedirected
+    public virtual Boolean IsRequestBeingRedirected
     {
         get
         {
             var response = _httpContextAccessor.HttpContext.Response;
             //ASP.NET 4风格-返回response.IsRequestBeingRedirected；
-            int[] redirectionStatusCodes = { StatusCodes.Status301MovedPermanently, StatusCodes.Status302Found };
+            Int32[] redirectionStatusCodes = [StatusCodes.Status301MovedPermanently, StatusCodes.Status302Found];
 
             return redirectionStatusCodes.Contains(response.StatusCode);
         }
@@ -366,7 +364,7 @@ public partial class WebHelper : IWebHelper
     /// <summary>
     /// 获取或设置一个值，该值指示客户端是否正在使用POST重定向到新位置
     /// </summary>
-    public virtual bool IsPostBeingDone
+    public virtual Boolean IsPostBeingDone
     {
         get
         {
@@ -382,17 +380,14 @@ public partial class WebHelper : IWebHelper
     /// <summary>
     /// 获取当前HTTP请求协议
     /// </summary>
-    public virtual string GetCurrentRequestProtocol()
-    {
-        return IsCurrentConnectionSecured() ? Uri.UriSchemeHttps : Uri.UriSchemeHttp;
-    }
+    public virtual String GetCurrentRequestProtocol() => IsCurrentConnectionSecured() ? Uri.UriSchemeHttps : Uri.UriSchemeHttp;
 
     /// <summary>
     /// 获取指定的HTTP请求URI是否引用本地主机。
     /// </summary>
     /// <param name="req">HTTP请求</param>
     /// <returns>True，如果HTTP请求URI引用本地主机</returns>
-    public virtual bool IsLocalRequest(HttpRequest req)
+    public virtual Boolean IsLocalRequest(HttpRequest req)
     {
         // 来源：https://stackoverflow.com/a/41242493/7860424
         var connection = req.HttpContext.Connection;
@@ -414,17 +409,32 @@ public partial class WebHelper : IWebHelper
     /// </summary>
     /// <param name="request">HTTP请求</param>
     /// <returns>原始URL</returns>
-    public virtual string GetRawUrl(HttpRequest request)
+    public virtual String GetRawUrl(HttpRequest request)
     {
         // 首先尝试从请求功能获取原始目标
         // 注意：值尚未UrlDecoded
         var rawUrl = request.HttpContext.Features.Get<IHttpRequestFeature>()?.RawTarget;
 
         //or compose raw URL manually
-        if (string.IsNullOrEmpty(rawUrl))
+        if (String.IsNullOrEmpty(rawUrl))
             rawUrl = $"{request.PathBase}{request.Path}{request.QueryString}";
 
         return rawUrl;
+    }
+
+    /// <summary>
+    /// 获取请求是否使用 AJAX 进行
+    /// </summary>
+    /// <param name="request">HTTP 请求</param>
+    /// <returns>结果</returns>
+    public virtual Boolean IsAjaxRequest(HttpRequest request)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+
+        if (request.Headers == null)
+            return false;
+
+        return request.Headers.XRequestedWith == "XMLHttpRequest";
     }
 
     #endregion

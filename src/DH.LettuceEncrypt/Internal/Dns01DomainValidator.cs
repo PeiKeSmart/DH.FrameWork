@@ -1,4 +1,4 @@
-using Certes;
+﻿using Certes;
 using Certes.Acme;
 using Certes.Acme.Resource;
 using LettuceEncrypt.Acme;
@@ -30,13 +30,13 @@ internal class Dns01DomainValidator : DomainOwnershipValidator
         var context = new DnsTxtRecordContext(_domainName, string.Empty);
         try
         {
-            context = await PrepareDns01ChallengeResponseAsync(authzContext, _domainName, cancellationToken);
-            await WaitForChallengeResultAsync(authzContext, cancellationToken);
+            context = await PrepareDns01ChallengeResponseAsync(authzContext, _domainName, cancellationToken).ConfigureAwait(false);
+            await WaitForChallengeResultAsync(authzContext, cancellationToken).ConfigureAwait(false);
         }
         finally
         {
             // Cleanup
-            await _dnsChallengeProvider.RemoveTxtRecordAsync(context, cancellationToken);
+            await _dnsChallengeProvider.RemoveTxtRecordAsync(context, cancellationToken).ConfigureAwait(false);
         }
     }
 
@@ -49,16 +49,16 @@ internal class Dns01DomainValidator : DomainOwnershipValidator
         cancellationToken.ThrowIfCancellationRequested();
 
         var account = _client.GetAccountKey();
-        var dnsChallenge = await _client.CreateChallengeAsync(authorizationContext, ChallengeTypes.Dns01);
+        var dnsChallenge = await _client.CreateChallengeAsync(authorizationContext, ChallengeTypes.Dns01).ConfigureAwait(false);
 
         var dnsTxt = account.DnsTxt(dnsChallenge.Token);
 
         var acmeDomain = GetAcmeDnsDomain(domainName);
 
-        var context = await _dnsChallengeProvider.AddTxtRecordAsync(acmeDomain, dnsTxt, cancellationToken);
+        var context = await _dnsChallengeProvider.AddTxtRecordAsync(acmeDomain, dnsTxt, cancellationToken).ConfigureAwait(false);
 
         _logger.LogTrace("Requesting server to validate DNS challenge");
-        await _client.ValidateChallengeAsync(dnsChallenge);
+        await _client.ValidateChallengeAsync(dnsChallenge).ConfigureAwait(false);
 
         return context;
     }

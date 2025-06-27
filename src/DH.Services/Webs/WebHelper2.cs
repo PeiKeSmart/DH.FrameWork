@@ -1,6 +1,5 @@
 ﻿using System.Net;
 
-using DH.AspNetCore.Webs;
 using DH.Core.Domain;
 using DH.Core.Infrastructure;
 using DH.Helpers;
@@ -22,6 +21,7 @@ using NewLife.Serialization;
 
 using Pek;
 using Pek.Http;
+using Pek.Webs;
 
 using XCode;
 using XCode.Membership;
@@ -86,7 +86,7 @@ public static class WebHelper2 {
     /// <summary>获取用户主机</summary>
     /// <param name="context"></param>
     /// <returns></returns>
-    public static String GetUserHost(this HttpContext context)
+    public static String GetUserHost(this Microsoft.AspNetCore.Http.HttpContext context)
     {
         var request = context.Request;
 
@@ -241,7 +241,7 @@ public static class WebHelper2 {
     /// 检查当前HTTP请求是否可用
     /// </summary>
     /// <returns>如果可用，则为true；否则为true。 否则为假</returns>
-    public static Boolean IsRequestAvailable(HttpContext httpContext = null)
+    public static Boolean IsRequestAvailable(Microsoft.AspNetCore.Http.HttpContext httpContext = null)
     {
         if (httpContext != null) return true;
 
@@ -500,7 +500,7 @@ public static class WebHelper2 {
     /// 如果请求的资源是引擎不需要处理的典型资源之一，则返回true。
     /// </summary>
     /// <returns>如果请求针对静态资源文件，则为True。</returns>
-    public static Boolean IsStaticResource(HttpContext httpContext = null)
+    public static Boolean IsStaticResource(Microsoft.AspNetCore.Http.HttpContext httpContext = null)
     {
         if (!IsRequestAvailable(httpContext))
             return false;

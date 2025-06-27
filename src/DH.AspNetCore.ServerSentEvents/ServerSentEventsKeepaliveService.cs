@@ -60,7 +60,7 @@ internal class ServerSentEventsKeepaliveService<TServerSentEventsService> : IHos
         }
         finally
         {
-            await Task.WhenAny(_executingTask, Task.Delay(Timeout.Infinite, cancellationToken));
+            await Task.WhenAny(_executingTask, Task.Delay(Timeout.Infinite, cancellationToken)).ConfigureAwait(false);
         }
 
     }
@@ -69,9 +69,9 @@ internal class ServerSentEventsKeepaliveService<TServerSentEventsService> : IHos
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            await _serverSentEventsService.SendAsync(_keepaliveServerSentEventBytes, CancellationToken.None);
+            await _serverSentEventsService.SendAsync(_keepaliveServerSentEventBytes, CancellationToken.None).ConfigureAwait(false);
 
-            await Task.Delay(TimeSpan.FromSeconds(_options.KeepaliveInterval), stoppingToken);
+            await Task.Delay(TimeSpan.FromSeconds(_options.KeepaliveInterval), stoppingToken).ConfigureAwait(false);
         }
     }
 

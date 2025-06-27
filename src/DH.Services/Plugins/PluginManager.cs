@@ -60,8 +60,8 @@ namespace DH.Services.Plugins
         protected virtual async Task<TPlugin> LoadPrimaryPluginAsync(string systemName, User customer = null, int storeId = 0)
         {
             //try to get a plugin by system name or return the first loaded one (it's necessary to have a primary active plugin)
-            var plugin = await LoadPluginBySystemNameAsync(systemName, customer, storeId)
-                         ?? (await LoadAllPluginsAsync(customer, storeId)).FirstOrDefault();
+            var plugin = await LoadPluginBySystemNameAsync(systemName, customer, storeId).ConfigureAwait(false)
+                         ?? (await LoadAllPluginsAsync(customer, storeId).ConfigureAwait(false)).FirstOrDefault();
 
             return plugin;
         }
@@ -84,7 +84,7 @@ namespace DH.Services.Plugins
             //get plugins and put them into the dictionary to avoid further loading
             var key = GetKey(customer, storeId);
             if (!_plugins.ContainsKey(key))
-                _plugins.Add(key, await _pluginService.GetPluginsAsync<TPlugin>(customer: customer, storeId: storeId));
+                _plugins.Add(key, await _pluginService.GetPluginsAsync<TPlugin>(customer: customer, storeId: storeId).ConfigureAwait(false));
 
             return _plugins[key];
         }
@@ -114,7 +114,7 @@ namespace DH.Services.Plugins
                 && plugins.FirstOrDefault(plugin =>
                     plugin.PluginDescriptor.SystemName.Equals(systemName, StringComparison.InvariantCultureIgnoreCase)) is TPlugin loadedPlugin
                 ? loadedPlugin
-                : (await _pluginService.GetPluginDescriptorBySystemNameAsync<TPlugin>(systemName, customer: customer, storeId: storeId))?.Instance<TPlugin>();
+                : (await _pluginService.GetPluginDescriptorBySystemNameAsync<TPlugin>(systemName, customer: customer, storeId: storeId).ConfigureAwait(false))?.Instance<TPlugin>();
 
             _plugins.Add(key, new List<TPlugin> { pluginBySystemName });
 
@@ -137,7 +137,7 @@ namespace DH.Services.Plugins
                 return new List<TPlugin>();
 
             //get loaded plugins according to passed system names
-            return (await LoadAllPluginsAsync(customer, storeId))
+            return (await LoadAllPluginsAsync(customer, storeId).ConfigureAwait(false))
                 .Where(plugin => systemNames.Contains(plugin.PluginDescriptor.SystemName, StringComparer.InvariantCultureIgnoreCase))
                 .ToList();
         }
@@ -168,7 +168,7 @@ namespace DH.Services.Plugins
         /// </returns>
         public virtual async Task<string> GetPluginLogoUrlAsync(TPlugin plugin)
         {
-            return await _pluginService.GetPluginLogoUrlAsync(plugin.PluginDescriptor);
+            return await _pluginService.GetPluginLogoUrlAsync(plugin.PluginDescriptor).ConfigureAwait(false);
         }
 
         #endregion

@@ -10,12 +10,11 @@
   </PropertyGroup>
 	
   <ItemGroup>
-    <PackageReference Include="DH.NAgent" Version="4.0.2024.1119-beta0815" />
+    <PackageReference Include="DH.NAgent" Version="4.12.2025.617-beta1020" />
     <PackageReference Include="RestSharp" Version="112.1.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\DH.MDB\DH.MDB.csproj" />
     <ProjectReference Include="..\..\src\DH.WebHook\DH.WebHook.csproj" />
   </ItemGroup>
 

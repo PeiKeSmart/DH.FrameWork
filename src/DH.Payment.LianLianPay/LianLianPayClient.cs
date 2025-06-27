@@ -67,7 +67,7 @@ namespace DH.Payment.LianLianPay
 
             using (var client = _httpClientFactory.CreateClient(nameof(LianLianPay)))
             {
-                var body = await client.DoPostAsync(request.GetRequestUrl(), content);
+                var body = await client.DoPostAsync(request.GetRequestUrl(), content).ConfigureAwait(false);
                 var parser = new LianLianPayJsonParser<T>();
                 var rsp = parser.Parse(body);
 

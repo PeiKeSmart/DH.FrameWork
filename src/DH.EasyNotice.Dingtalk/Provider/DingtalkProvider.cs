@@ -120,10 +120,10 @@ internal class DingtalkProvider : IDingtalkProvider {
             return await IntervalHelper.IntervalExcuteAsync(async () =>
             {
                 var requestUrl = DingTalkHelper.GetRequestUrl(_dingTalkOptions.WebHook, _dingTalkOptions.Secret);
-                var response = await _httpClient.PostAsync(requestUrl, new StringContent(message.ToString(), Encoding.UTF8, "application/json"));
-                var html = await response.Content.ReadAsStringAsync();
+                var response = await _httpClient.PostAsync(requestUrl, new StringContent(message.ToString(), Encoding.UTF8, "application/json")).ConfigureAwait(false);
+                var html = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 return JsonConvert.DeserializeObject<EasyNoticeSendResponse>(html);
-            }, message.title, _noticeOptions.IntervalSeconds);
+            }, message.title, _noticeOptions.IntervalSeconds).ConfigureAwait(false);
         }
         catch (Exception ex)
         {

@@ -64,7 +64,7 @@ namespace DH.PaySharp.Allinpay
 
         protected override async Task<bool> ValidateNotifyAsync()
         {
-            base.NotifyResponse = await GatewayData.ToObjectAsync<NotifyResponse>(StringCase.Lower);
+            base.NotifyResponse = await GatewayData.ToObjectAsync<NotifyResponse>(StringCase.Lower).ConfigureAwait(false);
             base.NotifyResponse.Raw = GatewayData.Raw;
 
             if (!SubmitProcess.CheckSign(GatewayData, _merchant.Key, NotifyResponse.Sign))

@@ -38,17 +38,6 @@ public class DepartmentE : Department {
         return FindAll(exp, page);
     }
 
-    /// <summary>根据父级查找</summary>
-    /// <param name="parentid">父级</param>
-    /// <returns>实体集合</returns>
-    public static IEnumerable<Department> FindAllByParentID(Int32 parentid)
-    {
-        // 实体缓存
-        if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => e.ParentID == parentid);
-
-        return FindAll(_.ParentID == parentid);
-    }
-
     /// <summary>获取全部</summary>
     /// <returns>实体集合</returns>
     public static IEnumerable<Department> GetAll()
@@ -65,8 +54,8 @@ public class DepartmentE : Department {
     /// <returns></returns>
     public static IEnumerable<Department> GetList()
     {
-        var list = DepartmentE.GetAll().Where(e => e.ParentID == 0).OrderBy(e => e.ID);
-        IList<Department> listDepartment = new List<Department>();
+        var list = GetAll().Where(e => e.ParentID == 0).OrderBy(e => e.ID);
+        IList<Department> listDepartment = [];
         GetChildList(list, listDepartment);
 
         return listDepartment;
@@ -85,10 +74,30 @@ public class DepartmentE : Department {
             {
                 list.Add(item);
 
-                var level = DepartmentE.FindAllByParentID(item.ID).OrderBy(e => e.ID);
+                var level = FindAllByParentId(item.ID).OrderBy(e => e.ID);
                 GetChildList(level, list);
             }
         }
     }
 
+    /// <summary>根据当前层级查找</summary>
+    /// <param name="level">当前层级</param>
+    /// <returns>实体列表</returns>
+    public static IList<Department> FindAllByLevel(Int32 level = 0)
+    {
+        // 实体缓存
+        if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => e.Level == level);
+
+        return FindAll(_.Level == level);
+    }
+
+    /// <summary>
+    /// 根据ID集合删除数据
+    /// </summary>
+    /// <param name="Ids">ID集合</param>
+    public static void DelByIds(String Ids)
+    {
+        if (Delete(_.ID.In(Ids)) > 0)
+            Meta.Cache.Clear("", true);
+    }
 }

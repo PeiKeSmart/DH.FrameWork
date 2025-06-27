@@ -1,10 +1,9 @@
 ﻿using System.Reflection;
 
-using DH.Helpers;
-
 using NewLife.Reflection;
 
 using Pek;
+using Pek.Helpers;
 
 using Quartz;
 using Quartz.Impl;
@@ -27,10 +26,10 @@ public class Scheduler : IScheduler {
     /// </summary>
     public async Task StartAsync()
     {
-        _scheduler = await GetScheduler();
+        _scheduler = await GetScheduler().ConfigureAwait(false);
         if (_scheduler.IsStarted)
             return;
-        await _scheduler.Start();
+        await _scheduler.Start().ConfigureAwait(false);
     }
 
     /// <summary>
@@ -41,7 +40,7 @@ public class Scheduler : IScheduler {
         if (_scheduler != null)
             return _scheduler;
         var factory = new StdSchedulerFactory();
-        return await factory.GetScheduler();
+        return await factory.GetScheduler().ConfigureAwait(false);
     }
 
     /// <summary>
@@ -51,7 +50,7 @@ public class Scheduler : IScheduler {
     {
         if (_scheduler == null)
             return;
-        await _scheduler.PauseAll();
+        await _scheduler.PauseAll().ConfigureAwait(false);
     }
 
     /// <summary>
@@ -61,7 +60,7 @@ public class Scheduler : IScheduler {
     {
         if (_scheduler == null)
             return;
-        await _scheduler.ResumeAll();
+        await _scheduler.ResumeAll().ConfigureAwait(false);
     }
 
     /// <summary>
@@ -73,7 +72,7 @@ public class Scheduler : IScheduler {
             return;
         if (_scheduler.IsShutdown)
             return;
-        await _scheduler.Shutdown(true);
+        await _scheduler.Shutdown(true).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -95,7 +94,7 @@ public class Scheduler : IScheduler {
         if (jobs == null)
             return;
         foreach (var job in jobs)
-            await AddJobAsync(job);
+            await AddJobAsync(job).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -103,7 +102,7 @@ public class Scheduler : IScheduler {
     /// </summary>
     public async Task AddJobAsync<TJob>() where TJob : IJob, new()
     {
-        await AddJobAsync(new TJob());
+        await AddJobAsync(new TJob()).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -116,7 +115,7 @@ public class Scheduler : IScheduler {
             throw new InvalidOperationException("Ding.Schedulers.Quartz.JobBase派生");
         var jobDetail = CreateJob(quartzJob);
         var trigger = CreateTrigger(quartzJob);
-        await AddJobAsync(jobDetail, trigger);
+        await AddJobAsync(jobDetail, trigger).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -219,7 +218,7 @@ public class Scheduler : IScheduler {
         var triggerBuilder = TriggerBuilder.Create();
         configureTrigger(triggerBuilder);
         var trigger = triggerBuilder.Build();
-        await AddJobAsync(job, trigger);
+        await AddJobAsync(job, trigger).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -229,7 +228,7 @@ public class Scheduler : IScheduler {
     /// <param name="trigger">触发器</param>
     public async Task AddJobAsync(IJobDetail job, ITrigger trigger)
     {
-        _scheduler = await GetScheduler();
-        await _scheduler.ScheduleJob(job, trigger);
+        _scheduler = await GetScheduler().ConfigureAwait(false);
+        await _scheduler.ScheduleJob(job, trigger).ConfigureAwait(false);
     }
 }

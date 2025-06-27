@@ -119,7 +119,7 @@ public class EventSource : IEventSource, IDisposable {
                     }
                     _lastSuccessfulConnectionTime = null;
                 }
-                await MaybeWaitWithBackOff();
+                await MaybeWaitWithBackOff().ConfigureAwait(false);
             }
             firstTime = false;
 
@@ -147,7 +147,7 @@ public class EventSource : IEventSource, IDisposable {
 
             try
             {
-                await ConnectToEventSourceAsync(cancellationToken);
+                await ConnectToEventSourceAsync(cancellationToken).ConfigureAwait(false);
 
                 // ConnectToEventSourceAsync normally doesn't return, unless it detects that the request has been cancelled.
                 Close(ReadyState.Closed);
@@ -197,7 +197,7 @@ public class EventSource : IEventSource, IDisposable {
             {
                 XTrace.Log.Info("Waiting {0} milliseconds before reconnecting...", sleepTime.TotalMilliseconds);
                 BackOffDelay = sleepTime;
-                await Task.Delay(sleepTime);
+                await Task.Delay(sleepTime).ConfigureAwait(false);
             }
         }
     }
@@ -305,7 +305,7 @@ public class EventSource : IEventSource, IDisposable {
             ProcessResponseLineUtf8,
             _lastEventId,
             cancellationToken
-        );
+        ).ConfigureAwait(false);
     }
 
     private void Close(ReadyState state)

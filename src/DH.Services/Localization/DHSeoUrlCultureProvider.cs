@@ -24,12 +24,12 @@ public partial class DHSeoUrlCultureProvider : RequestCultureProvider
         var localizationSettings = LocalizationSettings.Current;
 
         if (!localizationSettings.SeoFriendlyUrlsForLanguagesEnabled)
-            return await NullProviderCultureResult;
+            return await NullProviderCultureResult.ConfigureAwait(false);
 
         // 已启用本地化URL，因此请尝试从请求的页面URL获取语言
         var (isLocalized, language) = httpContext.Request.Path.Value.IsLocalizedUrlAsync(httpContext.Request.PathBase, false);
         if (!isLocalized || language is null)
-            return await NullProviderCultureResult;
+            return await NullProviderCultureResult.ConfigureAwait(false);
 
         return new ProviderCultureResult(language.LanguageCulture);
     }

@@ -31,7 +31,7 @@ public class ExcelResult : IActionResult {
         if (!ContentType.IsNullOrEmpty())
             rs.Headers[HeaderNames.ContentType] = ContentType;
 
-        await using var csv = new CsvFile(rs.Body, true);
+        using var csv = new CsvFile(rs.Body, true);
 
         // 列头
         var headers = new List<String>();
@@ -45,12 +45,12 @@ public class ExcelResult : IActionResult {
             if (name == "ID" && fi == Fields[0]) name = "Id";
             headers.Add(name);
         }
-        await csv.WriteLineAsync(headers);
+        await csv.WriteLineAsync(headers).ConfigureAwait(false);
 
         // 内容
         foreach (var entity in Data)
         {
-            await csv.WriteLineAsync(Fields.Select(e => entity[e.Name]));
+            await csv.WriteLineAsync(Fields.Select(e => entity[e.Name])).ConfigureAwait(false);
         }
     }
 }

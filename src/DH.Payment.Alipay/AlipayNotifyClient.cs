@@ -36,8 +36,8 @@ namespace DH.Payment.Alipay
                 throw new AlipayException($"options.{nameof(AlipayOptions.AlipayPublicKey)} is Empty!");
             }
 
-            var parameters = await GetParametersAsync(request);
-            return await ExecuteAsync<T>(parameters, options);
+            var parameters = await GetParametersAsync(request).ConfigureAwait(false);
+            return await ExecuteAsync<T>(parameters, options).ConfigureAwait(false);
         }
 
         #endregion
@@ -58,7 +58,7 @@ namespace DH.Payment.Alipay
             var parameters = new Dictionary<string, string>();
             if (request.Method == "POST")
             {
-                var form = await request.ReadFormAsync();
+                var form = await request.ReadFormAsync().ConfigureAwait(false);
                 foreach (var iter in form)
                 {
                     parameters.Add(iter.Key, iter.Value);

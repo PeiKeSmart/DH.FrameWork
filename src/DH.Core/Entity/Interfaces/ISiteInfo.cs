@@ -90,7 +90,7 @@ public partial interface ISiteInfo
     String SiteCopyright { get; set; }
 
     /// <summary>网站开启关闭状态</summary>
-    Byte Status { get; set; }
+    Int16 Status { get; set; }
 
     /// <summary>如果状态关闭，请输入关闭网站原因</summary>
     String CloseInfo { get; set; }

@@ -1,4 +1,4 @@
-using NewLife;
+﻿using NewLife;
 using NewLife.Data;
 using NewLife.Log;
 
@@ -208,13 +208,13 @@ public partial class Attachment : DHEntityBase<Attachment> {
 
         // 抓取并保存
         client ??= _client ??= new HttpClient();
-        var rs = await client.GetAsync(url);
+        var rs = await client.GetAsync(url).ConfigureAwait(false);
         var contentType = rs.Content.Headers.ContentType + "";
         if (!contentType.IsNullOrEmpty()) ContentType = contentType;
 
         {
             using var fs = new FileStream(fullFile, FileMode.OpenOrCreate);
-            await rs.Content.CopyToAsync(fs);
+            await rs.Content.CopyToAsync(fs).ConfigureAwait(false);
             fs.SetLength(fs.Position);
         }
 
@@ -259,7 +259,7 @@ public partial class Attachment : DHEntityBase<Attachment> {
 
         {
             using var fs = new FileStream(fullFile, FileMode.OpenOrCreate);
-            await stream.CopyToAsync(fs);
+            await stream.CopyToAsync(fs).ConfigureAwait(false);
             fs.SetLength(fs.Position);
         }
 

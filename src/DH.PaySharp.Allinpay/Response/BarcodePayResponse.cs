@@ -29,7 +29,7 @@ namespace DH.PaySharp.Allinpay.Response
                     queryResponse = await PollQueryTradeStateAsync(
                         barcodePayRequest.Model.OutTradeNo,
                         barcodePayRequest.PollTime,
-                        barcodePayRequest.PollCount);
+                        barcodePayRequest.PollCount).ConfigureAwait(false);
                 })
                 .GetAwaiter()
                 .GetResult();
@@ -86,7 +86,7 @@ namespace DH.PaySharp.Allinpay.Response
         /// <returns></returns>
         private async Task<QueryResponse> PollQueryTradeStateAsync(string outTradeNo, int pollTime, int pollCount)
         {
-            return await Task.Run(() => PollQueryTradeState(outTradeNo, pollTime, pollCount));
+            return await Task.Run(() => PollQueryTradeState(outTradeNo, pollTime, pollCount)).ConfigureAwait(false);
         }
     }
 }

@@ -14,14 +14,14 @@ namespace DH.Entity
 {
     /// <summary>实体基类</summary>
     /// <typeparam name="TEntity"></typeparam>
-    public class DHEntityBase<TEntity> : Entity<TEntity>, BaseDHModel where TEntity : DHEntityBase<TEntity>, new()
+    public class DHEntityBase<TEntity> : Entity<TEntity>, BasePekModel where TEntity : DHEntityBase<TEntity>, new()
     {
         /// <summary>
         /// 实例化
         /// </summary>
         public DHEntityBase()
         {
-            CustomProperties = new Dictionary<string, string>();
+            CustomProperties = [];
             PostInitialize();
         }
 
@@ -37,7 +37,7 @@ namespace DH.Entity
         /// 获取或设置属性以存储模型的任何自定义值
         /// </summary>
         [XmlIgnore]
-        public Dictionary<string, string> CustomProperties { get; set; }
+        public Dictionary<String, String> CustomProperties { get; set; }
 
         /// <summary>
         /// 当前语言
@@ -59,7 +59,7 @@ namespace DH.Entity
             {
                 if (!Value.IsNullOrWhiteSpace() && this[Field].SafeString() != Value)
                 {
-                    this.SetItem(Field, Value);
+                    SetItem(Field, Value);
                 }
             }
         }
@@ -70,16 +70,13 @@ namespace DH.Entity
         /// <param name="where">条件，不带Where</param>
         /// <param name="selects">查询列，null表示所有字段</param>
         /// <returns></returns>
-        public static TEntity FindFirstOrDefault(Expression where, string selects)
-        {
-            return FindAll(where, null, selects).FirstOrDefault();
-        }
+        public static TEntity FindFirstOrDefault(Expression where, String selects) => FindAll(where, null, selects).FirstOrDefault();
 
         /// <summary>
         /// 软删除
         /// </summary>
         /// <returns></returns>
-        protected override int OnDelete()
+        protected override Int32 OnDelete()
         {
             var fi = Meta.Fields.FirstOrDefault(e => e.Name == "IsDeleted");
 
@@ -96,11 +93,11 @@ namespace DH.Entity
         /// 重写新增
         /// </summary>
         /// <returns></returns>
-        protected override int OnInsert()
+        protected override Int32 OnInsert()
         {
             var fi = Meta.Fields.FirstOrDefault(e => e.Name == "Id");
 
-            if (fi != null && fi.Type == typeof(string))
+            if (fi != null && fi.Type == typeof(String))
             {
                 var value = this.GetValue(fi.Name).SafeString();
                 if (value.IsNullOrWhiteSpace())

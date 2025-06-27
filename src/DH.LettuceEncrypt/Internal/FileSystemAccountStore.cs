@@ -40,7 +40,7 @@ internal class FileSystemAccountStore : IAccountStore
         {
             _logger.LogTrace("正在分析帐户信息的{path}", jsonFile);
 
-            var accountModel = await Deserialize(jsonFile, cancellationToken);
+            var accountModel = await Deserialize(jsonFile, cancellationToken).ConfigureAwait(false);
             if (accountModel != null)
             {
                 _logger.LogDebug("已从{path}加载帐户信息", _accountDir.FullName);
@@ -61,7 +61,7 @@ internal class FileSystemAccountStore : IAccountStore
         };
 
         return await JsonSerializer.DeserializeAsync<AccountModel>(fileStream, deserializeOptions,
-            cancellationToken);
+            cancellationToken).ConfigureAwait(false);
     }
 
     public async Task SaveAccountAsync(AccountModel account, CancellationToken cancellationToken)
@@ -76,7 +76,7 @@ internal class FileSystemAccountStore : IAccountStore
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         };
-        await JsonSerializer.SerializeAsync(writeStream, account, serializerOptions, cancellationToken);
+        await JsonSerializer.SerializeAsync(writeStream, account, serializerOptions, cancellationToken).ConfigureAwait(false);
 
         _logger.LogDebug("已将帐户信息保存到{path}", jsonFile.FullName);
     }

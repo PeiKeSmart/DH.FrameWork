@@ -46,11 +46,11 @@ public static class HttpClientExtensions
         client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue(new ProductHeaderValue("Unknown")));
         client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-        using (var resp = await client.GetAsync(url))
+        using (var resp = await client.GetAsync(url).ConfigureAwait(false))
         using (var respContent = resp.Content)
         {
             var headers = GetWeChatPayHeadersFromResponse(resp);
-            var body = await respContent.ReadAsStringAsync();
+            var body = await respContent.ReadAsStringAsync().ConfigureAwait(false);
             var statusCode = resp.StatusCode;
 
             return (headers, body, statusCode);
@@ -74,11 +74,11 @@ public static class HttpClientExtensions
         client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
         using (var reqContent = new StringContent(content, Encoding.UTF8, "application/json"))
-        using (var resp = await client.PostAsync(url, reqContent))
+        using (var resp = await client.PostAsync(url, reqContent).ConfigureAwait(false))
         using (var respContent = resp.Content)
         {
             var headers = GetWeChatPayHeadersFromResponse(resp);
-            var body = await respContent.ReadAsStringAsync();
+            var body = await respContent.ReadAsStringAsync().ConfigureAwait(false);
             var statusCode = resp.StatusCode;
 
             return (headers, body, statusCode);
@@ -111,11 +111,11 @@ public static class HttpClientExtensions
         client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue(new ProductHeaderValue("Unknown")));
         client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-        using (var resp = await client.GetAsync(url))
+        using (var resp = await client.GetAsync(url).ConfigureAwait(false))
         using (var respContent = resp.Content)
         {
             var headers = GetWeChatPayHeadersFromResponse(resp);
-            var body = await respContent.ReadAsStringAsync();
+            var body = await respContent.ReadAsStringAsync().ConfigureAwait(false);
             var statusCode = resp.StatusCode;
 
             return (headers, body, statusCode);
@@ -140,11 +140,11 @@ public static class HttpClientExtensions
         client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
         using (var reqContent = new StringContent(content, Encoding.UTF8, "application/json"))
-        using (var resp = await client.PostAsync(url, reqContent))
+        using (var resp = await client.PostAsync(url, reqContent).ConfigureAwait(false))
         using (var respContent = resp.Content)
         {
             var headers = GetWeChatPayHeadersFromResponse(resp);
-            var body = await respContent.ReadAsStringAsync();
+            var body = await respContent.ReadAsStringAsync().ConfigureAwait(false);
             var statusCode = resp.StatusCode;
 
             return (headers, body, statusCode);

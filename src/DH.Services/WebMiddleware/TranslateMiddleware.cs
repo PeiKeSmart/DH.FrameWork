@@ -86,7 +86,7 @@ public class TranslateMiddleware
         var Accept = context.Request.Headers["Accept"];
         if (!Accept.Any())
         {
-            await _next(context);
+            await _next(context).ConfigureAwait(false);
         }
         else
         {
@@ -99,19 +99,19 @@ public class TranslateMiddleware
                 context.Response.Body = memStream;
 
                 // 执行其他中间件
-                await _next(context);
+                await _next(context).ConfigureAwait(false);
 
                 //处理执行其他中间件后的ResponseBody
                 memStream.Position = 0;
                 var responseReader = new StreamReader(memStream, Encoding.UTF8);
-                var responseBody = await responseReader.ReadToEndAsync();
+                var responseBody = await responseReader.ReadToEndAsync().ConfigureAwait(false);
                 memStream = new MemoryStream(Encoding.UTF8.GetBytes(WordsHelper.ToTraditionalChinese(responseBody)));
-                await memStream.CopyToAsync(responseOriginalBody);
+                await memStream.CopyToAsync(responseOriginalBody).ConfigureAwait(false);
                 context.Response.Body = responseOriginalBody;
             }
             else
             {
-                await _next(context);
+                await _next(context).ConfigureAwait(false);
             }
         }
     }

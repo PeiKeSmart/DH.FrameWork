@@ -1,4 +1,4 @@
-using LettuceEncrypt.Internal.IO;
+ï»¿using LettuceEncrypt.Internal.IO;
 
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -29,7 +29,7 @@ internal class CheckForRenewalState : AcmeState
 
     public override async Task<IAcmeState> MoveNextAsync(CancellationToken cancellationToken)
     {
-        XTrace.WriteLine($"½øÀ´ÁËÂğ£¿CheckForRenewalState");
+        XTrace.WriteLine($"è¿›æ¥äº†å—ï¼ŸCheckForRenewalState");
 
         while (!cancellationToken.IsCancellationRequested)
         {
@@ -37,14 +37,14 @@ internal class CheckForRenewalState : AcmeState
             var daysInAdvance = _options.Value.RenewDaysInAdvance;
             if (!checkPeriod.HasValue || !daysInAdvance.HasValue)
             {
-                XTrace.Log.Info($"Î´ÅäÖÃ×Ô¶¯Ö¤ÊéĞø¶©¡£ÕıÔÚÍ£Ö¹{nameof(AcmeCertificateLoader)}");
+                XTrace.Log.Info($"æœªé…ç½®è‡ªåŠ¨è¯ä¹¦ç»­è®¢ã€‚æ­£åœ¨åœæ­¢{nameof(AcmeCertificateLoader)}");
                 return MoveTo<TerminalState>();
             }
 
             var domainNames = _options.Value.DomainNames;
             if (_logger.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
             {
-                XTrace.Log.Debug($"ÕıÔÚ¼ì²é{string.Join(", ", domainNames)}µÄÖ¤ÊéĞø¶©");
+                XTrace.Log.Debug($"æ­£åœ¨æ£€æŸ¥{string.Join(", ", domainNames)}çš„è¯ä¹¦ç»­è®¢");
             }
 
             foreach (var domainName in domainNames)
@@ -55,10 +55,10 @@ internal class CheckForRenewalState : AcmeState
                 {
                     return MoveTo<BeginCertificateCreationState>();
                 }
-                XTrace.WriteLine($"»ñÈ¡Ö¤ÊéµÄÊ±¼ä£º{domainName}_{cert.NotAfter}_{_clock.Now.DateTime}_{daysInAdvance.Value}");
+                XTrace.WriteLine($"è·å–è¯ä¹¦çš„æ—¶é—´ï¼š{domainName}_{cert.NotAfter}_{_clock.Now.DateTime}_{daysInAdvance.Value}");
             }
 
-            await Task.Delay(checkPeriod.Value, cancellationToken);
+            await Task.Delay(checkPeriod.Value, cancellationToken).ConfigureAwait(false);
         }
 
         return MoveTo<TerminalState>();

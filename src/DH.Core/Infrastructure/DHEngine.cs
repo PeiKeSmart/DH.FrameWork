@@ -159,7 +159,13 @@ public partial class DHEngine : IEngine
         foreach (var instance in DHConast.DHStartups.OrderBy(e => e.StartupOrder))
         {
             XTrace.WriteLine($"{instance.GetType().Name}:{instance.StartupOrder}");
-            instance.ConfigureServices(services, configuration, webHostEnvironment);
+
+            var t = instance.GetType();
+            if (typeof(IPekStartup).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract)
+            {
+                var tt = instance as IPekStartup;
+                tt?.ConfigureServices(services, configuration, webHostEnvironment);
+            }
         }
 
         services.AddSingleton(services);
@@ -189,7 +195,13 @@ public partial class DHEngine : IEngine
         foreach (var instance in DHConast.DHStartups.OrderBy(e => e.StartupOrder))
         {
             XTrace.WriteLine($"{instance.GetType().Name}:{instance.StartupOrder}");
-            instance.Configure(application);
+
+            var t = instance.GetType();
+            if (typeof(IPekStartup).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract)
+            {
+                var tt = instance as IPekStartup;
+                tt.Configure(application);
+            }
         }
     }
 

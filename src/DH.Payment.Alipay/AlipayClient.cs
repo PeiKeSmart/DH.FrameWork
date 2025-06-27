@@ -29,12 +29,12 @@ namespace DH.Payment.Alipay
 
         public async Task<T> PageExecuteAsync<T>(IAlipayRequest<T> request, AlipayOptions options) where T : AlipayResponse
         {
-            return await PageExecuteAsync(request, options, null, "POST");
+            return await PageExecuteAsync(request, options, null, "POST").ConfigureAwait(false);
         }
 
         public async Task<T> PageExecuteAsync<T>(IAlipayRequest<T> request, AlipayOptions options, string accessToken, string reqMethod) where T : AlipayResponse
         {
-            return await PageExecuteAsync(request, options, accessToken, null, reqMethod);
+            return await PageExecuteAsync(request, options, accessToken, null, reqMethod).ConfigureAwait(false);
         }
 
         public async Task<T> PageExecuteAsync<T>(IAlipayRequest<T> request, AlipayOptions options, string accessToken, string appAuthToken, string reqMethod) where T : AlipayResponse
@@ -106,7 +106,7 @@ namespace DH.Payment.Alipay
                 var fileParams = AlipayUtility.CleanupDictionary(uRequest.GetFileParameters());
 
                 var client = _httpClientFactory.CreateClient(nameof(AlipayClient));
-                body = await client.PostAsync(options.ServerUrl + "?" + AlipayConstants.CHARSET + "=" + options.Charset, txtParams, fileParams);
+                body = await client.PostAsync(options.ServerUrl + "?" + AlipayConstants.CHARSET + "=" + options.Charset, txtParams, fileParams).ConfigureAwait(false);
             }
             else
             {
@@ -144,17 +144,17 @@ namespace DH.Payment.Alipay
 
         public async Task<T> ExecuteAsync<T>(IAlipayRequest<T> request, AlipayOptions options) where T : AlipayResponse
         {
-            return await ExecuteAsync(request, options, null);
+            return await ExecuteAsync(request, options, null).ConfigureAwait(false);
         }
 
         public async Task<T> ExecuteAsync<T>(IAlipayRequest<T> request, AlipayOptions options, string accessToken) where T : AlipayResponse
         {
-            return await ExecuteAsync(request, options, accessToken, null);
+            return await ExecuteAsync(request, options, accessToken, null).ConfigureAwait(false);
         }
 
         public async Task<T> ExecuteAsync<T>(IAlipayRequest<T> request, AlipayOptions options, string accessToken, string appAuthToken) where T : AlipayResponse
         {
-            return await ExecuteAsync(request, options, accessToken, appAuthToken, null);
+            return await ExecuteAsync(request, options, accessToken, appAuthToken, null).ConfigureAwait(false);
         }
 
         public async Task<T> ExecuteAsync<T>(IAlipayRequest<T> request, AlipayOptions options, string accessToken, string appAuthToken, string targetAppId) where T : AlipayResponse
@@ -265,11 +265,11 @@ namespace DH.Payment.Alipay
             {
                 var fileParams = AlipayUtility.CleanupDictionary(uRequest.GetFileParameters());
 
-                body = await client.PostAsync(options.ServerUrl + "?" + AlipayConstants.CHARSET + "=" + options.Charset, txtParams, fileParams);
+                body = await client.PostAsync(options.ServerUrl + "?" + AlipayConstants.CHARSET + "=" + options.Charset, txtParams, fileParams).ConfigureAwait(false);
             }
             else
             {
-                body = await client.PostAsync(options.ServerUrl + "?" + AlipayConstants.CHARSET + "=" + options.Charset, txtParams);
+                body = await client.PostAsync(options.ServerUrl + "?" + AlipayConstants.CHARSET + "=" + options.Charset, txtParams).ConfigureAwait(false);
             }
 
             var parser = new AlipayJsonParser<T>();
@@ -317,17 +317,17 @@ namespace DH.Payment.Alipay
 
         public async Task<T> CertificateExecuteAsync<T>(IAlipayRequest<T> request, AlipayOptions options) where T : AlipayResponse
         {
-            return await CertificateExecuteAsync(request, options, null);
+            return await CertificateExecuteAsync(request, options, null).ConfigureAwait(false);
         }
 
         public async Task<T> CertificateExecuteAsync<T>(IAlipayRequest<T> request, AlipayOptions options, string accessToken) where T : AlipayResponse
         {
-            return await CertificateExecuteAsync(request, options, accessToken, null);
+            return await CertificateExecuteAsync(request, options, accessToken, null).ConfigureAwait(false);
         }
 
         public async Task<T> CertificateExecuteAsync<T>(IAlipayRequest<T> request, AlipayOptions options, string accessToken, string appAuthToken) where T : AlipayResponse
         {
-            return await CertificateExecuteAsync(request, options, accessToken, appAuthToken, null);
+            return await CertificateExecuteAsync(request, options, accessToken, appAuthToken, null).ConfigureAwait(false);
         }
 
         public async Task<T> CertificateExecuteAsync<T>(IAlipayRequest<T> request, AlipayOptions options, string accessToken, string appAuthToken, string targetAppId) where T : AlipayResponse
@@ -450,18 +450,18 @@ namespace DH.Payment.Alipay
             {
                 var fileParams = AlipayUtility.CleanupDictionary(uRequest.GetFileParameters());
 
-                body = await client.PostAsync(options.ServerUrl + "?" + AlipayConstants.CHARSET + "=" + options.Charset, txtParams, fileParams);
+                body = await client.PostAsync(options.ServerUrl + "?" + AlipayConstants.CHARSET + "=" + options.Charset, txtParams, fileParams).ConfigureAwait(false);
             }
             else
             {
-                body = await client.PostAsync(options.ServerUrl + "?" + AlipayConstants.CHARSET + "=" + options.Charset, txtParams);
+                body = await client.PostAsync(options.ServerUrl + "?" + AlipayConstants.CHARSET + "=" + options.Charset, txtParams).ConfigureAwait(false);
             }
 
             var parser = new AlipayJsonParser<T>();
             var item = ParseRespItem(request, body, parser, options.EncryptKey, options.EncryptType);
             var rsp = parser.Parse(item.RealContent);
 
-            await CheckResponseCertSignAsync(request, item.RespContent, rsp.IsError, parser, options);
+            await CheckResponseCertSignAsync(request, item.RespContent, rsp.IsError, parser, options).ConfigureAwait(false);
 
             return rsp;
         }
@@ -481,7 +481,7 @@ namespace DH.Payment.Alipay
 
             if (!isError || isError && !string.IsNullOrEmpty(certItem.Sign))
             {
-                var currentAlipayPublicKey = await _publicKeyManager.GetAlipayPublicKeyAsync(this, options, certItem.CertSN);
+                var currentAlipayPublicKey = await _publicKeyManager.GetAlipayPublicKeyAsync(this, options, certItem.CertSN).ConfigureAwait(false);
                 var rsaCheckContent = AlipaySignature.RSACheckContent(certItem.SignSourceData, certItem.Sign, currentAlipayPublicKey, options.SignType);
                 if (!rsaCheckContent)
                 {
@@ -598,7 +598,7 @@ namespace DH.Payment.Alipay
 
         public async Task<T> SdkExecuteAsync<T>(IAlipayRequest<T> request, AlipayOptions options) where T : AlipayResponse
         {
-            return await SdkExecuteAsync(request, options, null);
+            return await SdkExecuteAsync(request, options, null).ConfigureAwait(false);
         }
 
         public Task<T> SdkExecuteAsync<T>(IAlipayRequest<T> request, AlipayOptions options, string appAuthToken) where T : AlipayResponse

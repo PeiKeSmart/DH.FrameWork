@@ -259,7 +259,7 @@ public partial class WebWorkContext : IWorkContext {
     {
         // 保存传递的语言标识符
         var customer = CurrentCustomer;
-        if (customer != null)
+        if (customer != null && customer.Id > 0)
         {
             customer.LanguageId = language?.Id ?? 0;
             customer.Update();

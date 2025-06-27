@@ -59,6 +59,9 @@ public partial interface IUserDetail
     /// <summary>身份证反面照</summary>
     String IdcardImage3 { get; set; }
 
+    /// <summary>公司Id</summary>
+    Int32 CompanyId { get; set; }
+
     /// <summary>公司名称</summary>
     String CompanyName { get; set; }
 
@@ -97,6 +100,9 @@ public partial interface IUserDetail
 
     /// <summary>所属上级会员ID</summary>
     Int32 ParentUId { get; set; }
+
+    /// <summary>会员层级集合。从开始到最后一个，以逗号分隔,最前和最后都要有逗号</summary>
+    String UIds { get; set; }
 
     /// <summary>会员积分</summary>
     Int32 Points { get; set; }

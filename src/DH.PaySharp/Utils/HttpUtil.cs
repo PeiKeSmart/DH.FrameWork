@@ -156,7 +156,7 @@ namespace DH.PaySharp.Utils
 
             Task.Run(async () =>
             {
-                await Current.Response.WriteAsync(text);
+                await Current.Response.WriteAsync(text).ConfigureAwait(false);
             }).GetAwaiter().GetResult();
 
         }
@@ -179,7 +179,7 @@ namespace DH.PaySharp.Utils
 
             Task.Run(async () =>
             {
-                await Current.Response.Body.WriteAsync(buffer, 0, (int)size);
+                await Current.Response.Body.WriteAsync(buffer, 0, (int)size).ConfigureAwait(false);
             }).GetAwaiter().GetResult();
             Current.Response.Body.Close();
         }
@@ -207,7 +207,7 @@ namespace DH.PaySharp.Utils
         /// <returns></returns>
         public static async Task<string> GetAsync(string url)
         {
-            return await Task.Run(() => Get(url));
+            return await Task.Run(() => Get(url)).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -271,7 +271,7 @@ namespace DH.PaySharp.Utils
         public static async Task<byte[]> DownloadAsync(string url)
         {
             using var webClient = new WebClient();
-            return await webClient.DownloadDataTaskAsync(url);
+            return await webClient.DownloadDataTaskAsync(url).ConfigureAwait(false);
         }
 
         #endregion

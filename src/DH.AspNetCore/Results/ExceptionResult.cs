@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
+using NewLife;
 using NewLife.Remoting;
 
 namespace DH.AspNetCore.Results;
@@ -34,6 +35,6 @@ public class ExceptionResult : ContentResult {
         //if (StatusCode != null)
         //    httpContext.Response.StatusCode = StatusCode.Value;
 
-        await base.ExecuteResultAsync(context);
+        await base.ExecuteResultAsync(context).ConfigureAwait(false);
     }
 }

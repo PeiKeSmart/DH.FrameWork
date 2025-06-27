@@ -149,7 +149,7 @@ internal class AlibabaSms : ISmsProvider {
     {
         string _queryParams = GenQueryParams(mSignName, mTemplateCode, phoneNum, templateParams);
         string url = GenRquestUri(_queryParams);
-        HttpResponseExt res = await WebTool.New().Client().GetAsync(url);
+        HttpResponseExt res = await WebTool.New().Client().GetAsync(url).ConfigureAwait(false);
         return (res.Json.Code == "OK", JsonConvert.SerializeObject(res.Json));
     }
 
@@ -157,7 +157,7 @@ internal class AlibabaSms : ISmsProvider {
     {
         string _queryParams = GenQueryParams(signName, templateCode, phoneNum, templateParams);
         string url = GenRquestUri(_queryParams);
-        HttpResponseExt res = await WebTool.New().Client().GetAsync(url);
+        HttpResponseExt res = await WebTool.New().Client().GetAsync(url).ConfigureAwait(false);
         return (res.Json.Code == "OK", JsonConvert.SerializeObject(res.Json));
     }
 }

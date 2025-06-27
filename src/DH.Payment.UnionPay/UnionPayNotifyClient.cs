@@ -19,12 +19,12 @@ namespace DH.Payment.UnionPay
 
         public async Task<T> ExecuteAsync<T>(HttpRequest request) where T : UnionPayNotify
         {
-            return await ExecuteAsync<T>(request, null);
+            return await ExecuteAsync<T>(request, null).ConfigureAwait(false);
         }
 
         public async Task<T> ExecuteAsync<T>(HttpRequest request, UnionPayOptions options) where T : UnionPayNotify
         {
-            var parameters = await GetParametersAsync(request);
+            var parameters = await GetParametersAsync(request).ConfigureAwait(false);
             var parser = new UnionPayDictionaryParser<T>();
             var rsp = parser.Parse(parameters);
             CheckNotifySign(parameters, options);
@@ -38,7 +38,7 @@ namespace DH.Payment.UnionPay
         private async Task<UnionPayDictionary> GetParametersAsync(HttpRequest request)
         {
             var parameters = new UnionPayDictionary();
-            var form = await request.ReadFormAsync();
+            var form = await request.ReadFormAsync().ConfigureAwait(false);
             foreach (var iter in form)
             {
                 parameters.Add(iter.Key, iter.Value);

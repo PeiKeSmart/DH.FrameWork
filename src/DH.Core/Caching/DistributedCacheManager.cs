@@ -110,7 +110,7 @@ namespace DH.Core.Caching
         /// </returns>
         private async Task<(bool isSet, T item)> TryGetItemAsync<T>(CacheKey key)
         {
-            var json = await _distributedCache.GetStringAsync(key.Key);
+            var json = await _distributedCache.GetStringAsync(key.Key).ConfigureAwait(false);
 
             if (string.IsNullOrEmpty(json))
                 return (false, default);
@@ -185,9 +185,9 @@ namespace DH.Core.Caching
                 return (T)_items.GetOrAdd(key, acquire);
 
             if (key.CacheTime <= 0)
-                return await acquire();
+                return await acquire().ConfigureAwait(false);
 
-            var (isSet, item) = await TryGetItemAsync<T>(key);
+            var (isSet, item) = await TryGetItemAsync<T>(key).ConfigureAwait(false);
 
             if (isSet)
             {
@@ -197,10 +197,10 @@ namespace DH.Core.Caching
                 return item;
             }
 
-            var result = await acquire();
+            var result = await acquire().ConfigureAwait(false);
 
             if (result != null)
-                await SetAsync(key, result);
+                await SetAsync(key, result).ConfigureAwait(false);
 
             return result;
         }
@@ -226,7 +226,7 @@ namespace DH.Core.Caching
             if (key.CacheTime <= 0)
                 return acquire();
 
-            var (isSet, item) = await TryGetItemAsync<T>(key);
+            var (isSet, item) = await TryGetItemAsync<T>(key).ConfigureAwait(false);
 
             if (isSet)
             {
@@ -239,7 +239,7 @@ namespace DH.Core.Caching
             var result = acquire();
 
             if (result != null)
-                await SetAsync(key, result);
+                await SetAsync(key, result).ConfigureAwait(false);
 
             return result;
         }
@@ -290,7 +290,7 @@ namespace DH.Core.Caching
         {
             cacheKey = PrepareKey(cacheKey, cacheKeyParameters);
 
-            await _distributedCache.RemoveAsync(cacheKey.Key);
+            await _distributedCache.RemoveAsync(cacheKey.Key).ConfigureAwait(false);
             _items.TryRemove(cacheKey, out _);
 
             _onKeyRemoved?.Invoke(cacheKey);
@@ -307,7 +307,7 @@ namespace DH.Core.Caching
             if ((key?.CacheTime ?? 0) <= 0 || data == null)
                 return;
 
-            await _distributedCache.SetStringAsync(key.Key, JsonConvert.SerializeObject(data), PrepareEntryOptions(key));
+            await _distributedCache.SetStringAsync(key.Key, JsonConvert.SerializeObject(data), PrepareEntryOptions(key)).ConfigureAwait(false);
             _items.TryAdd(key, data);
 
             _onKeyAdded?.Invoke(key);
@@ -336,7 +336,7 @@ namespace DH.Core.Caching
         /// <returns>True if lock was acquired and action was performed; otherwise false</returns>
         public async Task<bool> PerformActionWithLockAsync(string resource, TimeSpan expirationTime, Func<Task> action)
         {
-            if (!string.IsNullOrEmpty(await _distributedCache.GetStringAsync(resource)))
+            if (!string.IsNullOrEmpty(await _distributedCache.GetStringAsync(resource).ConfigureAwait(false)))
                 return false;
 
             try
@@ -344,17 +344,17 @@ namespace DH.Core.Caching
                 await _distributedCache.SetStringAsync(resource, resource, new DistributedCacheEntryOptions
                 {
                     AbsoluteExpirationRelativeToNow = expirationTime
-                });
+                }).ConfigureAwait(false);
 
                 //perform action
-                await action();
+                await action().ConfigureAwait(false);
 
                 return true;
             }
             finally
             {
                 //release lock even if action fails
-                await _distributedCache.RemoveAsync(resource);
+                await _distributedCache.RemoveAsync(resource).ConfigureAwait(false);
             }
         }
 

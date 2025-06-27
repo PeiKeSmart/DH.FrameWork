@@ -17,7 +17,7 @@ namespace Baidu.Yingyan
         /// <returns></returns>
         public static async Task<T> JsonReadAsAsync<T>(this HttpContent content)
         {
-            var json = await content.ReadAsStringAsync();
+            var json = await content.ReadAsStringAsync().ConfigureAwait(false);
             return JsonConvert.DeserializeObject<T>(json);
         }
     }

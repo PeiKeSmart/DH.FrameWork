@@ -74,11 +74,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="NPOI" Version="2.7.2" />
+		<PackageReference Include="NPOI" Version="2.7.3" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\DH.Base\DH.Base.csproj" />
+	  <ProjectReference Include="..\DH.Utils\DH.Utils.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

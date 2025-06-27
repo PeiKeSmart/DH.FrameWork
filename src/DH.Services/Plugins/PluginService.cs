@@ -7,11 +7,13 @@ using DH.Services.Localization;
 
 using Microsoft.AspNetCore.Http;
 
+using NewLife;
 using NewLife.Log;
 using NewLife.Model;
 
 using Pek.Exceptions;
 using Pek.Infrastructure;
+using Pek.Webs;
 
 using XCode.Membership;
 
@@ -250,7 +252,7 @@ public partial class PluginService : IPluginService
         }
 
         //save changes
-        await _pluginsInfo.SaveAsync();
+        await _pluginsInfo.SaveAsync().ConfigureAwait(false);
     }
 
     /// <summary>
@@ -344,7 +346,7 @@ public partial class PluginService : IPluginService
                 //InsertPluginData(descriptor.pluginDescriptor.PluginType, MigrationProcessType.Installation);
 
                 // 尝试安装实例
-                await descriptor.pluginDescriptor.Instance<IPlugin>().InstallAsync();
+                await descriptor.pluginDescriptor.Instance<IPlugin>().InstallAsync().ConfigureAwait(false);
 
                 // 移除插件系统名称并将其添加到适当的列表中
                 var pluginToInstall = _pluginsInfo.PluginNamesToInstall
@@ -378,7 +380,7 @@ public partial class PluginService : IPluginService
         }
 
         // 保存更改
-        await _pluginsInfo.SaveAsync();
+        await _pluginsInfo.SaveAsync().ConfigureAwait(false);
     }
 
     /// <summary>
@@ -406,7 +408,7 @@ public partial class PluginService : IPluginService
             return;
 
         _pluginsInfo.PluginNamesToDelete.Add(systemName);
-        await _pluginsInfo.SaveAsync();
+        await _pluginsInfo.SaveAsync().ConfigureAwait(false);
     }
 
     /// <summary>
@@ -427,7 +429,7 @@ public partial class PluginService : IPluginService
 
         if (checkDependencies)
         {
-            var descriptor = await GetPluginDescriptorBySystemNameAsync<IPlugin>(systemName, LoadPluginsMode.NotInstalledOnly);
+            var descriptor = await GetPluginDescriptorBySystemNameAsync<IPlugin>(systemName, LoadPluginsMode.NotInstalledOnly).ConfigureAwait(false);
 
             if (descriptor.DependsOn?.Any() ?? false)
             {
@@ -449,7 +451,7 @@ public partial class PluginService : IPluginService
         }
 
         _pluginsInfo.PluginNamesToInstall.Add((systemName, customer?.ID));
-        await _pluginsInfo.SaveAsync();
+        await _pluginsInfo.SaveAsync().ConfigureAwait(false);
     }
 
     /// <summary>
@@ -463,8 +465,8 @@ public partial class PluginService : IPluginService
         if (_pluginsInfo.PluginNamesToUninstall.Contains(systemName))
             return;
 
-        var dependentPlugins = await GetPluginDescriptorsAsync<IPlugin>(dependsOnSystemName: systemName);
-        var descriptor = await GetPluginDescriptorBySystemNameAsync<IPlugin>(systemName);
+        var dependentPlugins = await GetPluginDescriptorsAsync<IPlugin>(dependsOnSystemName: systemName).ConfigureAwait(false);
+        var descriptor = await GetPluginDescriptorBySystemNameAsync<IPlugin>(systemName).ConfigureAwait(false);
 
         if (dependentPlugins.Any())
         {
@@ -500,10 +502,10 @@ public partial class PluginService : IPluginService
         var plugin = descriptor?.Instance<IPlugin>();
 
         if (plugin != null)
-            await plugin.PreparePluginToUninstallAsync();
+            await plugin.PreparePluginToUninstallAsync().ConfigureAwait(false);
 
         _pluginsInfo.PluginNamesToUninstall.Add(systemName);
-        await _pluginsInfo.SaveAsync();
+        await _pluginsInfo.SaveAsync().ConfigureAwait(false);
     }
 
     /// <summary>
@@ -551,7 +553,7 @@ public partial class PluginService : IPluginService
             {
                 var plugin = descriptor.pluginDescriptor.Instance<IPlugin>();
                 // 尝试卸载实例
-                await plugin.UninstallAsync();
+                await plugin.UninstallAsync().ConfigureAwait(false);
 
                 //// 清除数据库中的插件数据
                 //DeletePluginData(descriptor.pluginDescriptor.PluginType);
@@ -585,7 +587,7 @@ public partial class PluginService : IPluginService
         }
 
         // 保存更改
-        await _pluginsInfo.SaveAsync();
+        await _pluginsInfo.SaveAsync().ConfigureAwait(false);
     }
 
     /// <summary>
@@ -609,13 +611,13 @@ public partial class PluginService : IPluginService
             //InsertPluginData(newVersion.pluginDescriptor.PluginType, MigrationProcessType.Update);
 
             // 运行插件更新逻辑
-            await newVersion.pluginDescriptor.Instance<IPlugin>().UpdateAsync(installedPlugin.Version, newVersion.pluginDescriptor.Version);
+            await newVersion.pluginDescriptor.Instance<IPlugin>().UpdateAsync(installedPlugin.Version, newVersion.pluginDescriptor.Version).ConfigureAwait(false);
 
             // 更新已安装的插件信息
             installedPlugin.Version = newVersion.pluginDescriptor.Version;
         }
 
-        await _pluginsInfo.SaveAsync();
+        await _pluginsInfo.SaveAsync().ConfigureAwait(false);
     }
 
     /// <summary>
@@ -635,7 +637,7 @@ public partial class PluginService : IPluginService
         LoadPluginsMode loadMode = LoadPluginsMode.InstalledOnly,
         User customer = null, int storeId = 0, string @group = null) where TPlugin : class, IPlugin
     {
-        return (await GetPluginDescriptorsAsync<TPlugin>(loadMode, customer, storeId, group))
+        return (await GetPluginDescriptorsAsync<TPlugin>(loadMode, customer, storeId, group).ConfigureAwait(false))
             .FirstOrDefault(descriptor => descriptor.SystemName.Equals(systemName));
     }
 
@@ -667,7 +669,7 @@ public partial class PluginService : IPluginService
             FilterByPluginGroup(descriptor, group) &&
             FilterByDependsOn(descriptor, dependsOnSystemName) &&
             FilterByPluginFriendlyName(descriptor, friendlyName) &&
-            FilterByPluginAuthor(descriptor, author)).ToListAsync();
+            FilterByPluginAuthor(descriptor, author)).ToListAsync().ConfigureAwait(false);
 
         // 按传递类型筛选
         if (typeof(TPlugin) != typeof(IPlugin))
@@ -696,7 +698,7 @@ public partial class PluginService : IPluginService
         LoadPluginsMode loadMode = LoadPluginsMode.InstalledOnly,
         User customer = null, int storeId = 0, string @group = null) where TPlugin : class, IPlugin
     {
-        return (await GetPluginDescriptorsAsync<TPlugin>(loadMode, customer, storeId, group))
+        return (await GetPluginDescriptorsAsync<TPlugin>(loadMode, customer, storeId, group).ConfigureAwait(false))
             .Select(descriptor => descriptor.Instance<TPlugin>()).ToList();
     }
 

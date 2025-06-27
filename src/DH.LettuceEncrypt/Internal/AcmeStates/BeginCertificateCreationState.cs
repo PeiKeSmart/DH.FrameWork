@@ -1,4 +1,4 @@
-using Certes;
+ï»¿using Certes;
 using Certes.Acme;
 
 using Microsoft.Extensions.Logging;
@@ -34,26 +34,26 @@ internal class BeginCertificateCreationState : AcmeState
 
     public override async Task<IAcmeState> MoveNextAsync(CancellationToken cancellationToken)
     {
-        XTrace.WriteLine($"½øÀ´ÁËÂğ£¿BeginCertificateCreationState");
+        XTrace.WriteLine($"è¿›æ¥äº†å—ï¼ŸBeginCertificateCreationState");
 
         var domainNames = _options.Value.DomainNames;
 
         try
         {
-            var account = await _acmeCertificateFactory.GetOrCreateAccountAsync(cancellationToken);
-            XTrace.Log.Info($"Ê¹ÓÃÕÊ»§ {account.Id}");
+            var account = await _acmeCertificateFactory.GetOrCreateAccountAsync(cancellationToken).ConfigureAwait(false);
+            XTrace.Log.Info($"ä½¿ç”¨å¸æˆ· {account.Id}");
 
-            XTrace.Log.Info($"Îª{string.Join(",", domainNames)}´´½¨Ö¤Êé");
+            XTrace.Log.Info($"ä¸º{string.Join(",", domainNames)}åˆ›å»ºè¯ä¹¦");
 
-            var cert = await _acmeCertificateFactory.CreateCertificateAsync(cancellationToken);
+            var cert = await _acmeCertificateFactory.CreateCertificateAsync(cancellationToken).ConfigureAwait(false);
 
-            XTrace.Log.Info($"´´½¨µÄÖ¤Êé {cert.Item1.Subject} ({cert.Item1.Thumbprint})");
+            XTrace.Log.Info($"åˆ›å»ºçš„è¯ä¹¦ {cert.Item1.Subject} ({cert.Item1.Thumbprint})");
 
-            await SaveCertificateAsync(cert.Item1, cert.Item2, cert.Item3, cancellationToken);
+            await SaveCertificateAsync(cert.Item1, cert.Item2, cert.Item3, cancellationToken).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
-            XTrace.WriteLine($"ÎŞ·¨×Ô¶¯Îª{domainNames.Join()}´´½¨Ö¤Êé");
+            XTrace.WriteLine($"æ— æ³•è‡ªåŠ¨ä¸º{domainNames.Join()}åˆ›å»ºè¯ä¹¦");
             XTrace.WriteException(ex);
             throw;
         }
@@ -79,16 +79,16 @@ internal class BeginCertificateCreationState : AcmeState
             }
             catch (Exception ex)
             {
-                // Í¬²½±£´æ¿ÉÄÜ»áÁ¢¼´Ê§°Ü
+                // åŒæ­¥ä¿å­˜å¯èƒ½ä¼šç«‹å³å¤±è´¥
                 errors.Add(ex);
             }
         }
 
-        await Task.WhenAll(saveTasks);
+        await Task.WhenAll(saveTasks).ConfigureAwait(false);
 
         if (errors.Count > 0)
         {
-            throw new AggregateException("ÎŞ·¨½«Ö¤Êé±£´æµ½´æ´¢¿â", errors);
+            throw new AggregateException("æ— æ³•å°†è¯ä¹¦ä¿å­˜åˆ°å­˜å‚¨åº“", errors);
         }
     }
 }

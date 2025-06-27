@@ -59,6 +59,9 @@ public partial class UserDetailModel
     /// <summary>身份证反面照</summary>
     public String IdcardImage3 { get; set; }
 
+    /// <summary>公司Id</summary>
+    public Int32 CompanyId { get; set; }
+
     /// <summary>公司名称</summary>
     public String CompanyName { get; set; }
 
@@ -97,6 +100,9 @@ public partial class UserDetailModel
 
     /// <summary>所属上级会员ID</summary>
     public Int32 ParentUId { get; set; }
+
+    /// <summary>会员层级集合。从开始到最后一个，以逗号分隔,最前和最后都要有逗号</summary>
+    public String UIds { get; set; }
 
     /// <summary>会员积分</summary>
     public Int32 Points { get; set; }
@@ -237,6 +243,7 @@ public partial class UserDetailModel
         IdcardImage1 = model.IdcardImage1;
         IdcardImage2 = model.IdcardImage2;
         IdcardImage3 = model.IdcardImage3;
+        CompanyId = model.CompanyId;
         CompanyName = model.CompanyName;
         CompnayAuthState = model.CompnayAuthState;
         CorporateName = model.CorporateName;
@@ -250,6 +257,7 @@ public partial class UserDetailModel
         ReferrerId = model.ReferrerId;
         KeFuId = model.KeFuId;
         ParentUId = model.ParentUId;
+        UIds = model.UIds;
         Points = model.Points;
         ExpPoints = model.ExpPoints;
         QQ = model.QQ;

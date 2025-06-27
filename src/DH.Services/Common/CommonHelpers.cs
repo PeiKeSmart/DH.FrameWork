@@ -6,10 +6,7 @@ using AutoMapper;
 
 using DH.Core.Infrastructure;
 using DH.Entity;
-using DH.Extension;
 using DH.Extensions;
-using DH.Models;
-using DH.Timing;
 
 using IP2Region.Net.Abstractions;
 using IP2Region.Net.XDB;
@@ -25,6 +22,7 @@ using NewLife;
 
 using Pek;
 using Pek.Models;
+using Pek.Timing;
 
 using Polly;
 
@@ -36,11 +34,7 @@ namespace DH.Services.Common;
 
 public static class CommonHelpers
 {
-    /// <summary>
-    /// 系统设定
-    /// </summary>
-    public static ConcurrentDictionary<string, string> SystemSettings { get; set; } = new();
-
+    
     /// <summary>
     /// 根据指定的ResourceKey属性获取资源字符串。
     /// </summary>
@@ -161,7 +155,7 @@ public static class CommonHelpers
     /// <returns></returns>
     public static bool IsInDenyArea(this string ips)
     {
-        var denyAreas = SystemSettings.GetOrAdd("DenyArea", "").Split(new[] { ',', '，' }, StringSplitOptions.RemoveEmptyEntries);
+        var denyAreas = CommonHelper.SystemSettings.GetOrAdd("DenyArea", "").Split(new[] { ',', '，' }, StringSplitOptions.RemoveEmptyEntries);
         if (denyAreas.Any())
         {
             foreach (var item in ips.Split(','))
@@ -432,7 +426,7 @@ public static class CommonHelpers
     /// <returns></returns>
     public static Stream AddWatermark(this Stream stream)
     {
-        if (!string.IsNullOrEmpty(SystemSettings.GetOrAdd("Watermark", string.Empty)))
+        if (!string.IsNullOrEmpty(CommonHelper.SystemSettings.GetOrAdd("Watermark", string.Empty)))
         {
             try
             {

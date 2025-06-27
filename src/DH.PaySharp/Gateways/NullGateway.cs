@@ -21,7 +21,7 @@ namespace DH.PaySharp
 
         protected internal override async Task<bool> ValidateNotifyAsync()
         {
-            return await Task.Run(() => { return false; });
+            return await Task.Run(() => { return false; }).ConfigureAwait(false);
         }
 
         public override TResponse Execute<TModel, TResponse>(Request<TModel, TResponse> request)
