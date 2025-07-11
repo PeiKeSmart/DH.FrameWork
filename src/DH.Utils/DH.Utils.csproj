@@ -70,11 +70,11 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\DH.Common\DH.Common.csproj" />
-		<PackageReference Include="DH.NCode" Version="4.12.2025.618-beta0923" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.6" />
-		<PackageReference Include="Microsoft.Extensions.Options" Version="9.0.6" />
+		<PackageReference Include="DH.NCode" Version="4.13.2025.711-beta0217" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.7" />
+		<PackageReference Include="Microsoft.Extensions.Options" Version="9.0.7" />
 		<PackageReference Include="murmurhash" Version="1.0.3" />
-		<PackageReference Include="System.Text.Json" Version="9.0.6" />
+		<PackageReference Include="System.Text.Json" Version="9.0.7" />
 	</ItemGroup>
 
 	<ItemGroup>
