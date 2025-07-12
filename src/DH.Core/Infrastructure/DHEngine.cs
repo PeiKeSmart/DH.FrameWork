@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 using NewLife.Log;
 
@@ -118,12 +118,8 @@ public partial class DHEngine : IEngine
             configExpression.AddProfile(instance.GetType());
         }
 
-        // 获取或创建 ILoggerFactory
-        var loggerFactory = ServiceProvider?.GetService<ILoggerFactory>() ?? 
-                           LoggerFactory.Create(builder => builder.AddConsole());
-
         // 创建AutoMapper配置
-        var config = new MapperConfiguration(configExpression, loggerFactory);
+        var config = new MapperConfiguration(configExpression, NullLoggerFactory.Instance);
 
         // 注册
         AutoMapperConfiguration.Init(config);
