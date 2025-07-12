@@ -15,7 +15,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 using NewLife.Log;
-using NewLife.Model;
 
 using Pek.Exceptions;
 using Pek.Infrastructure;
@@ -58,7 +57,7 @@ public partial class DHEngine : IEngine
     protected virtual void RunStartupTasks()
     {
         // 查找其他程序集提供的启动任务
-        var typeFinder = ObjectContainer.Provider.GetPekService<ITypeFinder>();
+        var typeFinder = NewLife.Model.ObjectContainer.Provider.GetPekService<ITypeFinder>();
         var startupTasks = typeFinder.FindClassesOfType<IStartupTask>();
 
         // 创建和排序启动任务的实例
@@ -104,7 +103,7 @@ public partial class DHEngine : IEngine
     protected virtual void AddAutoMapper()
     {
         // 查找其他程序集提供的映射器配置
-        var typeFinder = ObjectContainer.Provider.GetPekService<ITypeFinder>();
+        var typeFinder = NewLife.Model.ObjectContainer.Provider.GetPekService<ITypeFinder>();
         var mapperConfigurations = typeFinder.FindClassesOfType<IOrderedMapperProfile>();
 
         // 创建和排序映射器配置的实例
@@ -138,7 +137,7 @@ public partial class DHEngine : IEngine
             return assembly;
 
         // 从TypeFinder获取程序集
-        var typeFinder = ObjectContainer.Provider.GetPekService<ITypeFinder>();
+        var typeFinder = NewLife.Model.ObjectContainer.Provider.GetPekService<ITypeFinder>();
         assembly = typeFinder?.GetAssemblies().FirstOrDefault(a => a.FullName == args.Name);
         return assembly;
     }
