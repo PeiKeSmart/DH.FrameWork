@@ -3,6 +3,8 @@ using System.Reflection;
 
 using DH.Npoi.Configurations;
 
+using NewLife;
+
 using NPOI.SS.UserModel;
 
 using Pek;
@@ -129,7 +131,7 @@ internal static class InternalExtensions
             }
             else
             {
-                cell.Value = value is IFormattable val && formatter.IsNotNullOrWhiteSpace()
+                cell.Value = value is IFormattable val && !formatter.IsNullOrWhiteSpace()
                     ? val.ToString(formatter, CultureInfo.CurrentCulture)
                     : value.ToString();
                 cell.CellType = CellType.String;

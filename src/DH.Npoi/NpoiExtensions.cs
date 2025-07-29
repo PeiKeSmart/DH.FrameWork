@@ -2,8 +2,9 @@
 using System.Diagnostics;
 using System.Globalization;
 
-using DH.Helpers;
 using DH.Npoi.Settings;
+
+using NewLife;
 
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
@@ -870,7 +871,7 @@ namespace DH.Npoi
                 }
                 else
                 {
-                    cell.SetCellValue(value is IFormattable val && formatter.IsNotNullOrWhiteSpace()
+                    cell.SetCellValue(value is IFormattable val && !formatter.IsNullOrWhiteSpace()
                         ? val.ToString(formatter, CultureInfo.CurrentCulture)
                         : value.ToString());
                     cell.SetCellType(CellType.String);

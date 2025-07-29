@@ -1,6 +1,6 @@
-﻿using NPOI.SS.UserModel;
+﻿using NewLife;
 
-using Pek;
+using NPOI.SS.UserModel;
 
 namespace DH.Npoi.Settings;
 
@@ -22,7 +22,7 @@ public sealed class SheetSetting
         get => _sheetName;
         set
         {
-            if (value.IsNotNullOrWhiteSpace())
+            if (!value.IsNullOrWhiteSpace())
             {
                 _sheetName = value;
             }

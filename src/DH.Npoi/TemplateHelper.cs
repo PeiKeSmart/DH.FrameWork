@@ -1,4 +1,4 @@
-﻿using Pek;
+﻿using NewLife;
 
 namespace DH.Npoi;
 
@@ -19,7 +19,7 @@ public sealed class TemplateOptions
         get => _templateGlobalParamFormat;
         set
         {
-            if (value.IsNotNullOrWhiteSpace())
+            if (!value.IsNullOrWhiteSpace())
             {
                 _templateGlobalParamFormat = value;
             }
@@ -34,7 +34,7 @@ public sealed class TemplateOptions
         get => _templateHeaderParamFormat;
         set
         {
-            if (value.IsNotNullOrWhiteSpace())
+            if (!value.IsNullOrWhiteSpace())
             {
                 _templateHeaderParamFormat = value;
             }
@@ -49,7 +49,7 @@ public sealed class TemplateOptions
         get => _templateDataParamFormat;
         set
         {
-            if (value.IsNotNullOrWhiteSpace())
+            if (!value.IsNullOrWhiteSpace())
             {
                 _templateDataParamFormat = value;
             }
@@ -64,7 +64,7 @@ public sealed class TemplateOptions
         get => _templateDataPrefix;
         set
         {
-            if (value.IsNotNullOrWhiteSpace())
+            if (!value.IsNullOrWhiteSpace())
             {
                 _templateDataPrefix = value;
             }
@@ -79,7 +79,7 @@ public sealed class TemplateOptions
         get => _templateDataBegin;
         set
         {
-            if (value.IsNotNullOrWhiteSpace())
+            if (!value.IsNullOrWhiteSpace())
             {
                 _templateDataBegin = value;
             }
@@ -94,7 +94,7 @@ public sealed class TemplateOptions
         get => _templateDataEnd;
         set
         {
-            if (value.IsNotNullOrWhiteSpace())
+            if (!value.IsNullOrWhiteSpace())
             {
                 _templateDataEnd = value;
             }
