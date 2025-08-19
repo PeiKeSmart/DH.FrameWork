@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 
 using Pek.Helpers;
 using Pek.Security;
+using Pek.Webs;
 
 namespace DH.Sms.FengHuo;
 
@@ -107,7 +108,7 @@ public class SmsService : ISmsService
         var token = GetToken(seed);
         var sendaction = _options.Url + "sendTemplateParamd";
 
-        var Sid = WebHelper2.FillDeviceId(Pek.Webs.HttpContext.Current);
+        var Sid = DHWebHelper.FillDeviceId(Pek.Webs.HttpContext.Current);
 
         var irequest = Pek.Helpers.DHWeb.Client().Post(sendaction)
             .Data("account", _options.AccessKeyId)
