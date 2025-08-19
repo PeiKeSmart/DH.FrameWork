@@ -50,13 +50,13 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
     [BindColumn("IsSuper", "是否超级管理员", "")]
     public Boolean IsSuper { get => _IsSuper; set { if (OnPropertyChanging("IsSuper", value)) { _IsSuper = value; OnPropertyChanged("IsSuper"); } } }
 
-    private Int64 _SId;
+    private String _SId;
     /// <summary>用户SessionId</summary>
     [DisplayName("用户SessionId")]
     [Description("用户SessionId")]
-    [DataObjectField(false, false, false, 0)]
+    [DataObjectField(false, false, true, 50)]
     [BindColumn("SId", "用户SessionId", "")]
-    public Int64 SId { get => _SId; set { if (OnPropertyChanging("SId", value)) { _SId = value; OnPropertyChanged("SId"); } } }
+    public String SId { get => _SId; set { if (OnPropertyChanging("SId", value)) { _SId = value; OnPropertyChanged("SId"); } } }
 
     private Int32 _TenantId;
     /// <summary>用户所属租户Id</summary>
@@ -754,7 +754,7 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
                 case "Id": _Id = value.ToInt(); break;
                 case "LanguageId": _LanguageId = value.ToInt(); break;
                 case "IsSuper": _IsSuper = value.ToBoolean(); break;
-                case "SId": _SId = value.ToLong(); break;
+                case "SId": _SId = Convert.ToString(value); break;
                 case "TenantId": _TenantId = value.ToInt(); break;
                 case "UType": _UType = (UserKinds)value.ToInt(); break;
                 case "RoleExIds": _RoleExIds = Convert.ToString(value); break;

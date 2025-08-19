@@ -21,7 +21,7 @@ public partial class UserDetailModel
     public Boolean IsSuper { get; set; }
 
     /// <summary>用户SessionId</summary>
-    public Int64 SId { get; set; }
+    public String SId { get; set; }
 
     /// <summary>用户所属租户Id</summary>
     public Int32 TenantId { get; set; }

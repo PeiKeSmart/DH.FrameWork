@@ -21,7 +21,7 @@ public partial interface IUserDetail
     Boolean IsSuper { get; set; }
 
     /// <summary>用户SessionId</summary>
-    Int64 SId { get; set; }
+    String SId { get; set; }
 
     /// <summary>用户所属租户Id</summary>
     Int32 TenantId { get; set; }
