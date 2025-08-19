@@ -168,11 +168,11 @@ public class DHSetting : Config<DHSetting>
     //[Category("通用")]
     //public String CookieDomain { get; set; }
 
-    /// <summary>
-    /// Sid缓存名称
-    /// </summary>
-    [Description("Sid缓存名称")]
-    public String SidName { get; set; } = "sid";
+    ///// <summary>
+    ///// Sid缓存名称
+    ///// </summary>
+    //[Description("Sid缓存名称")]
+    //public String SidName { get; set; } = "sid";
 
     /// <summary>自动注册。默认true，SSO登录后，如果本地未登录，自动注册新用户。全局设置和OAuth应用设置只要有一个启用则表示使用</summary>
     [Description("自动注册。默认true，SSO登录后，如果本地未登录，自动注册新用户。全局设置和OAuth应用设置只要有一个启用则表示使用")]

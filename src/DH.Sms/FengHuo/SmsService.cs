@@ -1,8 +1,7 @@
-﻿using DH.Core.Infrastructure;
+﻿using DH.Core.Webs;
 
 using Microsoft.Extensions.Options;
 
-using Pek.Cookies;
 using Pek.Helpers;
 using Pek.Security;
 
@@ -108,8 +107,7 @@ public class SmsService : ISmsService
         var token = GetToken(seed);
         var sendaction = _options.Url + "sendTemplateParamd";
 
-        var _cookie = EngineContext.Current.Resolve<ICookie>();
-        var Sid = _cookie.GetValue<Int64>(DHSetting.Current.SidName);
+        var Sid = WebHelper2.FillDeviceId(Pek.Webs.HttpContext.Current);
 
         var irequest = Pek.Helpers.DHWeb.Client().Post(sendaction)
             .Data("account", _options.AccessKeyId)

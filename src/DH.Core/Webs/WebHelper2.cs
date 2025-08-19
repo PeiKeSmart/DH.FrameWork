@@ -2,7 +2,6 @@
 
 using DH.Core.Domain;
 using DH.Core.Infrastructure;
-using DH.Helpers;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
@@ -13,10 +12,10 @@ using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Primitives;
-using Microsoft.Net.Http.Headers;
 
 using NewLife;
 using NewLife.Collections;
+using NewLife.Security;
 using NewLife.Serialization;
 
 using Pek;
@@ -234,7 +233,7 @@ public static class WebHelper2 {
             return string.Empty;
 
         // 在某些情况下，URL引荐来源网址为null（例如，在IE 8中）
-        return _httpContextAccessor.HttpContext.Request.Headers[HeaderNames.Referer];
+        return _httpContextAccessor.HttpContext.Request.Headers[Microsoft.Net.Http.Headers.HeaderNames.Referer];
     }
 
     /// <summary>
@@ -334,7 +333,7 @@ public static class WebHelper2 {
             return String.Empty;
 
         // 尝试从请求HOST标头中获取主机
-        var hostHeader = _httpContextAccessor.HttpContext.Request.Headers[HeaderNames.Host];
+        var hostHeader = _httpContextAccessor.HttpContext.Request.Headers[Microsoft.Net.Http.Headers.HeaderNames.Host];
         if (StringValues.IsNullOrEmpty(hostHeader))
             return String.Empty;
 
@@ -597,5 +596,57 @@ public static class WebHelper2 {
         }
 
         return path[index..];
+    }
+
+    /// <summary>获取魔方设备Id。该Id代表一台设备，尽可能在多个应用中共用</summary>
+    /// <param name="ctx"></param>
+    /// <returns></returns>
+    public static String FillDeviceId(Microsoft.AspNetCore.Http.HttpContext ctx)
+    {
+        // 准备Session，避免未启用Session时ctx.Session直接抛出异常
+        var ss = ctx.Features.Get<ISessionFeature>()?.Session;
+        if (ss != null && !ss.IsAvailable) ss = null;
+
+        // http/https分开使用不同的Cookie名，避免站点同时支持http和https时，Cookie冲突
+        var id = ss?.GetString("CubeDeviceId");
+        if (id.IsNullOrEmpty()) id = ctx.Request.Cookies["CubeDeviceId"];
+        if (id.IsNullOrEmpty()) id = ctx.Request.Cookies["CubeDeviceId0"];
+        if (id.IsNullOrEmpty())
+        {
+            id = Rand.NextString(16);
+
+            var option = new CookieOptions
+            {
+                HttpOnly = true,
+                //Domain = domain,
+                Expires = DateTimeOffset.Now.AddYears(10),
+                SameSite = SameSiteMode.Unspecified,
+                //Secure = true,
+            };
+
+            // https时，SameSite使用None，此时可以让cookie写入有最好的兼容性，跨域也可以读取
+            if (ctx.Request.GetRawUrl().Scheme.EqualIgnoreCase("https"))
+            {
+                //var domain = CubeSetting.Current.CookieDomain;
+                //if (!domain.IsNullOrEmpty())
+                //{
+                //    option.Domain = domain;
+                //    option.SameSite = SameSiteMode.None;
+                //    option.Secure = true;
+                //}
+
+                //option.HttpOnly = true;
+                option.SameSite = SameSiteMode.None;
+                option.Secure = true;
+
+                ctx.Response.Cookies.Append("CubeDeviceId", id, option);
+            }
+            else
+                ctx.Response.Cookies.Append("CubeDeviceId0", id, option);
+
+            ss?.SetString("CubeDeviceId", id);
+        }
+
+        return id;
     }
 }
