@@ -141,9 +141,9 @@ public partial class SysOnlineUsers : DHEntityBase<SysOnlineUsers> {
     /// <summary>根据用户sessionid查找</summary>
     /// <param name="sid">用户sessionid</param>
     /// <returns>实体列表</returns>
-    public static IList<SysOnlineUsers> FindAllBySid(Int64 sid)
+    public static IList<SysOnlineUsers> FindAllBySid(String sid)
     {
-        if (sid <= 0) return new List<SysOnlineUsers>();
+        if (sid.IsNullOrWhiteSpace()) return [];
 
         // 实体缓存
         if (Meta.Session.Count < 10000) return Meta.Cache.FindAll(e => e.Sid == sid);
@@ -164,19 +164,6 @@ public partial class SysOnlineUsers : DHEntityBase<SysOnlineUsers> {
         }
 
         return FindAll(_.Updatetime < expiretime);
-    }
-
-    /// <summary>根据用户sessionid查找</summary>
-    /// <param name="sid">用户sessionid</param>
-    /// <returns>实体对象</returns>
-    public static SysOnlineUsers FindBySid(Int64 sid)
-    {
-        if (sid <= 0) return null;
-
-        // 实体缓存
-        if (Meta.Session.Count < 1000) return Meta.Cache.Find(e => e.Sid == sid);
-
-        return Find(_.Sid == sid);
     }
 
     /// <summary>根据编号查找</summary>
@@ -233,11 +220,11 @@ public partial class SysOnlineUsers : DHEntityBase<SysOnlineUsers> {
     /// <param name="userAgent">特征字符串</param>
     /// <param name="network">运营商</param>
     /// <param name="numbers">代号</param>
-    public static void UpdateOnlineUser(Int32 uid, Int64 sid, string nickName, String Name, string ip, String region, String userAgent, String network = "", String numbers = "")
+    public static void UpdateOnlineUser(Int32 uid, String sid, string nickName, String Name, string ip, String region, String userAgent, String network = "", String numbers = "")
     {
         using var span = DefaultTracer.Instance?.NewSpan(nameof(UpdateOnlineUser));
 
-        if (sid <= 0) return;
+        if (sid.IsNullOrWhiteSpace()) return;
 
         var onlineUserInfo = GetOnlineUserBySid(sid);
         if (onlineUserInfo != null)
@@ -329,9 +316,9 @@ public partial class SysOnlineUsers : DHEntityBase<SysOnlineUsers> {
     /// <summary>根据用户SessionId查找</summary>
     /// <param name="sid">SessionId</param>
     /// <returns>实体对象</returns>
-    public static SysOnlineUsers GetOnlineUserBySid(Int64 sid)
+    public static SysOnlineUsers GetOnlineUserBySid(String sid)
     {
-        if (sid <= 0) return null;
+        if (sid.IsNullOrWhiteSpace()) return null;
 
         if (Meta.Session.Count < 10000)
         {

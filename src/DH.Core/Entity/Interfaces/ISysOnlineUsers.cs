@@ -18,7 +18,7 @@ public partial interface ISysOnlineUsers
     Int32 Uid { get; set; }
 
     /// <summary>用户sessionid</summary>
-    Int64 Sid { get; set; }
+    String Sid { get; set; }
 
     /// <summary>用户昵称</summary>
     String NickName { get; set; }

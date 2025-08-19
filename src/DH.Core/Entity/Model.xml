@@ -44,7 +44,7 @@
         <Column Name="Id" DataType="Int32" PrimaryKey="True" Description="用户Id" />
         <Column Name="LanguageId" DataType="Int32" Description="语言Id" />
         <Column Name="IsSuper" DataType="Boolean" Description="是否超级管理员" />
-        <Column Name="SId" DataType="Int64" Description="用户SessionId" />
+        <Column Name="SId" DataType="String" Description="用户SessionId" />
         <Column Name="TenantId" DataType="Int32" Description="用户所属租户Id" />
         <Column Name="UType" DataType="Int16" Description="用户类型。类型自定义" Type="UserKinds" />
         <Column Name="RoleExIds" DataType="String" Length="100" Description="会员前台权限" />
@@ -713,7 +713,7 @@
       <Columns>
         <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
         <Column Name="Uid" DataType="Int32" Description="用户id" />
-        <Column Name="Sid" DataType="Int64" Description="用户sessionid" />
+        <Column Name="Sid" DataType="String" Description="用户sessionid" />
         <Column Name="NickName" DataType="String" Nullable="False" Description="用户昵称" />
         <Column Name="Name" DataType="String" Master="True" Length="100" Nullable="False" Description="用户名" />
         <Column Name="Ip" DataType="String" Length="30" Nullable="False" Description="用户ip" />

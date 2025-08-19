@@ -39,13 +39,13 @@ public partial class SysOnlineUsers : ISysOnlineUsers, IEntity<ISysOnlineUsers>
     [BindColumn("Uid", "用户id", "")]
     public Int32 Uid { get => _Uid; set { if (OnPropertyChanging("Uid", value)) { _Uid = value; OnPropertyChanged("Uid"); } } }
 
-    private Int64 _Sid;
+    private String _Sid;
     /// <summary>用户sessionid</summary>
     [DisplayName("用户sessionid")]
     [Description("用户sessionid")]
-    [DataObjectField(false, false, false, 0)]
+    [DataObjectField(false, false, true, 50)]
     [BindColumn("Sid", "用户sessionid", "")]
-    public Int64 Sid { get => _Sid; set { if (OnPropertyChanging("Sid", value)) { _Sid = value; OnPropertyChanged("Sid"); } } }
+    public String Sid { get => _Sid; set { if (OnPropertyChanging("Sid", value)) { _Sid = value; OnPropertyChanged("Sid"); } } }
 
     private String _NickName;
     /// <summary>用户昵称</summary>
@@ -168,7 +168,7 @@ public partial class SysOnlineUsers : ISysOnlineUsers, IEntity<ISysOnlineUsers>
             {
                 case "Id": _Id = value.ToInt(); break;
                 case "Uid": _Uid = value.ToInt(); break;
-                case "Sid": _Sid = value.ToLong(); break;
+                case "Sid": _Sid = Convert.ToString(value); break;
                 case "NickName": _NickName = Convert.ToString(value); break;
                 case "Name": _Name = Convert.ToString(value); break;
                 case "Ip": _Ip = Convert.ToString(value); break;
@@ -188,6 +188,18 @@ public partial class SysOnlineUsers : ISysOnlineUsers, IEntity<ISysOnlineUsers>
     #endregion
 
     #region 扩展查询
+    /// <summary>根据用户sessionid查找</summary>
+    /// <param name="sid">用户sessionid</param>
+    /// <returns>实体对象</returns>
+    public static SysOnlineUsers FindBySid(String sid)
+    {
+        if (sid.IsNullOrEmpty()) return null;
+
+        // 实体缓存
+        if (Meta.Session.Count < 1000) return Meta.Cache.Find(e => e.Sid.EqualIgnoreCase(sid));
+
+        return Find(_.Sid == sid);
+    }
     #endregion
 
     #region 字段名

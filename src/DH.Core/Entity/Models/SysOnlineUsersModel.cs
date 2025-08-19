@@ -18,7 +18,7 @@ public partial class SysOnlineUsersModel
     public Int32 Uid { get; set; }
 
     /// <summary>用户sessionid</summary>
-    public Int64 Sid { get; set; }
+    public String Sid { get; set; }
 
     /// <summary>用户昵称</summary>
     public String NickName { get; set; }
