@@ -1,14 +1,13 @@
-﻿using NewLife;
+﻿using System.ComponentModel;
+using System.Globalization;
+
+using NewLife;
 using NewLife.Data;
 using NewLife.Log;
 
 using Pek;
 
-using System.ComponentModel;
-using System.Globalization;
-
 using XCode;
-using XCode.Membership;
 
 namespace DH.Entity;
 
@@ -776,7 +775,7 @@ public partial class Language : DHEntityBase<Language>
     public static IEnumerable<Language> Searchs(string name, PageParameter page)
     {
         var exp = new WhereExpression();
-        if (name.IsNotNullAndWhiteSpace())
+        if (!name.IsNullOrWhiteSpace())
         {
             exp &= _.Name.Contains(name);
 

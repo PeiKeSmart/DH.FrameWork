@@ -150,17 +150,17 @@ public partial class PdLog : DHEntityBase<PdLog> {
         }
 
         var exp = new WhereExpression();
-        if (mname.IsNotNullAndWhiteSpace())
+        if (!mname.IsNullOrWhiteSpace())
         {
             exp &= _.UName.Contains(mname);
         }
 
-        if (stime.IsNotNullAndWhiteSpace() && etime.IsNotNullAndWhiteSpace())
+        if (!stime.IsNullOrWhiteSpace() && !etime.IsNullOrWhiteSpace())
         {
             exp &= _.CreateTime > stime.ToDateTime() & _.CreateTime < etime.ToDateTime();
         }
 
-        if (aname.IsNotNullAndWhiteSpace())
+        if (!aname.IsNullOrWhiteSpace())
         {
             exp &= _.CreateUser.Contains(aname);
         }
@@ -188,7 +188,7 @@ public partial class PdLog : DHEntityBase<PdLog> {
         }
 
         var exp = new WhereExpression();
-        if (key.IsNotNullAndWhiteSpace())
+        if (!key.IsNullOrWhiteSpace())
         {
             exp &= _.Id == key;
         }
@@ -227,11 +227,11 @@ public partial class PdLog : DHEntityBase<PdLog> {
         }
 
         var exp = new WhereExpression();
-        if (key.IsNotNullAndWhiteSpace())
+        if (!key.IsNullOrWhiteSpace())
         {
             exp &= _.Id == key;
         }
-        if (Types.IsNotNullAndWhiteSpace())
+        if (!Types.IsNullOrWhiteSpace())
         {
             exp &= _.PdType.In(arr);
         }

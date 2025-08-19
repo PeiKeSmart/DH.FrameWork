@@ -1,31 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
-using System.Web.Script.Serialization;
-using System.Xml.Serialization;
-using NewLife;
+﻿using NewLife;
 using NewLife.Data;
-using NewLife.Log;
-using NewLife.Model;
-using NewLife.Reflection;
-using NewLife.Threading;
-using NewLife.Web;
 
 using Pek;
 
 using XCode;
-using XCode.Cache;
-using XCode.Configuration;
-using XCode.DataAccessLayer;
-using XCode.Membership;
-using XCode.Shards;
 
 namespace DH.Entity;
 
@@ -140,15 +118,15 @@ public partial class UserLog : DHEntityBase<UserLog> {
             IEnumerable<UserLog> list;
 
             list = FindAllWithCache();
-            if (name.IsNotNullAndWhiteSpace())
+            if (!name.IsNullOrWhiteSpace())
             {
                 list = list.Where(e => e.CreateUser.Contains(name));
             }
-            if (start.IsNotNullAndWhiteSpace())
+            if (!start.IsNullOrWhiteSpace())
             {
                 list = list.Where(x => x.CreateTime >= start.ToDateTime());
             }
-            if (end.IsNotNullAndWhiteSpace())
+            if (!end.IsNullOrWhiteSpace())
             {
                 list = list.Where(x => x.CreateTime <= end.ToDateTime());
             }
@@ -158,7 +136,7 @@ public partial class UserLog : DHEntityBase<UserLog> {
             return list;
         }
         var exp = new WhereExpression();
-        if (name.IsNotNullAndWhiteSpace())
+        if (!name.IsNullOrWhiteSpace())
         {
             exp &= _.CreateUser.Contains(name);
         }
@@ -185,15 +163,15 @@ public partial class UserLog : DHEntityBase<UserLog> {
 
             list = FindAllWithCache();
             list = list.Where(x => Ids.SplitAsInt(",").Contains(x.CreateUserID));
-            if (name.IsNotNullAndWhiteSpace())
+            if (!name.IsNullOrWhiteSpace())
             {
                 list = list.Where(e => e.CreateUser.Contains(name));
             }
-            if (start.IsNotNullAndWhiteSpace())
+            if (!start.IsNullOrWhiteSpace())
             {
                 list = list.Where(x => x.CreateTime >= start.ToDateTime());
             }
-            if (end.IsNotNullAndWhiteSpace())
+            if (!end.IsNullOrWhiteSpace())
             {
                 list = list.Where(x => x.CreateTime <= end.ToDateTime());
             }
@@ -204,11 +182,11 @@ public partial class UserLog : DHEntityBase<UserLog> {
         }
         var exp = new WhereExpression();
         exp &= _.CreateUserID.In(Ids.Split(','));
-        if (name.IsNotNullAndWhiteSpace())
+        if (!name.IsNullOrWhiteSpace())
         {
             exp &= _.CreateUser.Contains(name);
         }
-        if (start.IsNotNullAndWhiteSpace() && end.IsNotNullAndWhiteSpace())
+        if (!start.IsNullOrWhiteSpace() && !end.IsNullOrWhiteSpace())
         {
             exp &= _.CreateTime.Between(start.ToDateTime(), end.ToDateTime());
         }
@@ -235,19 +213,19 @@ public partial class UserLog : DHEntityBase<UserLog> {
 
             list = FindAllWithCache();
             list = list.Where(x => Ids.SplitAsInt(",").Contains(x.CreateUserID));
-            if (name.IsNotNullAndWhiteSpace())
+            if (!name.IsNullOrWhiteSpace())
             {
                 list = list.Where(e => e.CreateUser.Contains(name));
             }
-            if (start.IsNotNullAndWhiteSpace())
+            if (!start.IsNullOrWhiteSpace())
             {
                 list = list.Where(x => x.CreateTime >= start.ToDateTime());
             }
-            if (end.IsNotNullAndWhiteSpace())
+            if (!end.IsNullOrWhiteSpace())
             {
                 list = list.Where(x => x.CreateTime <= end.ToDateTime());
             }
-            if (key.IsNotNullAndWhiteSpace())
+            if (!key.IsNullOrWhiteSpace())
             {
                 list = list.Where(x => x.Content.Contains(key));
             }
@@ -258,15 +236,15 @@ public partial class UserLog : DHEntityBase<UserLog> {
         }
         var exp = new WhereExpression();
         exp &= _.CreateUserID.In(Ids.Split(','));
-        if (name.IsNotNullAndWhiteSpace())
+        if (!name.IsNullOrWhiteSpace())
         {
             exp &= _.CreateUser.Contains(name);
         }
-        if (key.IsNotNullAndWhiteSpace())
+        if (!key.IsNullOrWhiteSpace())
         {
             exp &= _.Content.Contains(key);
         }
-        if (start.IsNotNullAndWhiteSpace() && end.IsNotNullAndWhiteSpace())
+        if (!start.IsNullOrWhiteSpace() && !end.IsNullOrWhiteSpace())
         {
             exp &= _.CreateTime.Between(start.ToDateTime(), end.ToDateTime());
         }

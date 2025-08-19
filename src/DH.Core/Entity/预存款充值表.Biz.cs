@@ -137,7 +137,7 @@ public partial class PdRecharge : DHEntityBase<PdRecharge> {
             return list.Skip(--p.PageIndex * p.PageSize).Take(p.PageSize);
         }
         var exp = new WhereExpression();
-        if (key.IsNotNullAndWhiteSpace()) exp &= _.UName.Contains(key);
+        if (!key.IsNullOrWhiteSpace()) exp &= _.UName.Contains(key);
         if (STime != DateTime.MinValue) exp &= _.CreateTime > STime;
         if (ETime != DateTime.MinValue) exp &= _.CreateTime < ETime;
         if (State != 0) exp &= _.State == (State == 1);
@@ -174,7 +174,7 @@ public partial class PdRecharge : DHEntityBase<PdRecharge> {
         if (Meta.Session.Count < 1000)
         {
             var list = Meta.Cache.FindAll(e => e.UId == UId);
-            if (mname.IsNotNullAndWhiteSpace())
+            if (!mname.IsNullOrWhiteSpace())
             {
                 list = list.Where(x => x.UName.Contains(mname) || x.PCode.Contains(mname)).ToList();
             }
@@ -185,7 +185,7 @@ public partial class PdRecharge : DHEntityBase<PdRecharge> {
         }
 
         var exp = new WhereExpression();
-        if (mname.IsNotNullAndWhiteSpace())
+        if (!mname.IsNullOrWhiteSpace())
         {
             exp &= _.UName.Contains(mname);
         }
