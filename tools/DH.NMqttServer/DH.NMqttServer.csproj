@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DH.NMQTT" Version="4.13.2025.826-beta0410" />
+    <PackageReference Include="DH.NMQTT" Version="4.13.2025.910-beta1314" />
     <PackageReference Include="DH.NStardust" Version="4.14.2025.910-beta0622" />
   </ItemGroup>
 
