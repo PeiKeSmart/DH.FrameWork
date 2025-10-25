@@ -183,24 +183,6 @@ public static class AsyncIEnumerableExtensions
     }
 
     /// <summary>
-    /// Sorts the elements of a sequence in descending order according to a key obtained
-    /// by invoking a transform function on each element and awaiting the result
-    /// </summary>
-    /// <typeparam name="TSource">The type of the elements of source</typeparam>
-    /// <typeparam name="TKey">The type of the key returned by keySelector</typeparam>
-    /// <param name="source">An async-enumerable sequence of values to order</param>
-    /// <param name="keySelector">An asynchronous function to extract a key from an element</param>
-    /// <returns>
-    /// An ordered async-enumerable sequence whose elements are sorted in descending
-    /// order according to a key
-    /// </returns>
-    public static IOrderedAsyncEnumerable<TSource> OrderByDescendingAwait<TSource, TKey>(
-        this IEnumerable<TSource> source, Func<TSource, ValueTask<TKey>> keySelector)
-    {
-        return (IOrderedAsyncEnumerable<TSource>)source.ToAsyncEnumerable().OrderByDescendingAwait(keySelector);
-    }
-
-    /// <summary>
     /// Groups the elements of an async-enumerable sequence and selects the resulting
     /// elements by using a specified function
     /// </summary>

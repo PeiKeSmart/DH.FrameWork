@@ -102,7 +102,7 @@
 		<PackageReference Include="Polly" Version="8.6.4" />
 		<PackageReference Include="TimeZoneConverter" Version="7.2.0" />
 		<PackageReference Include="ToolGood.Words" Version="3.1.0.2" />
-    <PackageReference Include="System.Linq.Async" Version="6.0.3">
+    <PackageReference Include="System.Linq.Async" Version="7.0.0-preview.1.g24680b5469">
       <Aliases>SystemLinq1Async</Aliases>
     </PackageReference>
 	</ItemGroup>

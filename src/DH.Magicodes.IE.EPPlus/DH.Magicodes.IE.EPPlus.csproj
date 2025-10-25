@@ -76,8 +76,8 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="SixLabors.ImageSharp" Version="3.1.11" />
-    <PackageReference Include="SkiaSharp" Version="3.119.1" />
-    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="9.0.10" />
+    <PackageReference Include="SkiaSharp" Version="3.119.2-preview.1" />
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.0-rc.2.25502.107" />
   </ItemGroup>
 
 </Project>
