@@ -4,7 +4,7 @@
 	<PropertyGroup>
 		<LangVersion>latest</LangVersion>
 		<OutputType>Library</OutputType>
-		<TargetFramework>net9.0</TargetFramework>
+		<TargetFramework>net10.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<RootNamespace>LettuceEncrypt.Azure</RootNamespace>
@@ -69,7 +69,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="DynamicExpresso.Core" Version="2.19.2" />
+		<PackageReference Include="DynamicExpresso.Core" Version="2.19.3" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -77,7 +77,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Azure.Identity" Version="1.16.0" />
+		<PackageReference Include="Azure.Identity" Version="1.17.0" />
 		<PackageReference Include="Azure.Security.KeyVault.Certificates" Version="4.8.0" />
 		<PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.8.0" />
 	</ItemGroup>

@@ -1,4 +1,6 @@
-﻿using DH.Domain.Cms;
+﻿using System.Linq;
+
+using DH.Domain.Cms;
 using DH.Services.Customers;
 using DH.Services.Plugins;
 

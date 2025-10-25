@@ -1,4 +1,6 @@
-﻿using DH.Core;
+﻿using System.Linq;
+
+using DH.Core;
 using DH.Core.Domain.Catalog;
 using DH.Core.Domain.Media;
 using DH.Core.Infrastructure;
@@ -669,7 +671,7 @@ public partial class PluginService : IPluginService
             FilterByPluginGroup(descriptor, group) &&
             FilterByDependsOn(descriptor, dependsOnSystemName) &&
             FilterByPluginFriendlyName(descriptor, friendlyName) &&
-            FilterByPluginAuthor(descriptor, author)).ToListAsync().ConfigureAwait(false);
+            FilterByPluginAuthor(descriptor, author)).ToDHListAsync().ConfigureAwait(false);
 
         // 按传递类型筛选
         if (typeof(TPlugin) != typeof(IPlugin))

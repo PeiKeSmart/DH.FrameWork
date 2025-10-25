@@ -4,7 +4,7 @@
 	<PropertyGroup>
 		<LangVersion>latest</LangVersion>
 		<OutputType>Library</OutputType>
-		<TargetFramework>net9.0</TargetFramework>
+		<TargetFramework>net10.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<RootNamespace>Magicodes.IE.Excel</RootNamespace>
 		<AssemblyName>DH.Magicodes.IE.Excel</AssemblyName>
@@ -69,13 +69,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="DynamicExpresso.Core" Version="2.19.2" />
+		<PackageReference Include="DynamicExpresso.Core" Version="2.19.3" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="3.119.0" />
-		<PackageReference Include="System.Linq.Dynamic.Core" Version="1.6.7" />
+		<PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="3.119.1" />
+		<PackageReference Include="System.Linq.Dynamic.Core" Version="1.6.9" />
 	</ItemGroup>
 
 	<ItemGroup>

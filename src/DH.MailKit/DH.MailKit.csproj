@@ -4,7 +4,7 @@
 	<PropertyGroup>
 		<LangVersion>latest</LangVersion>
 		<OutputType>Library</OutputType>
-		<TargetFramework>net9.0</TargetFramework>
+		<TargetFramework>net10.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<RootNamespace>DH.MailKit</RootNamespace>
 		<AssemblyName>DH.MailKit</AssemblyName>
@@ -80,7 +80,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MailKit" Version="4.13.0" />
+		<PackageReference Include="MailKit" Version="4.14.1" />
 	</ItemGroup>
 
 </Project>

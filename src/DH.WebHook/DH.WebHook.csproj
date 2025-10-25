@@ -4,7 +4,7 @@
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
     <OutputType>Library</OutputType>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>DH.WebHook</RootNamespace>
     <AssemblyName>DH.WebHook</AssemblyName>
@@ -59,7 +59,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DH.NCore" Version="4.14.2025.910-beta0613" />
+    <PackageReference Include="DH.NCore" Version="4.15.2025.1024-beta1228" />
     <PackageReference Include="WebApiClient.Extensions.DependencyInjection" Version="2.0.3" />
     <PackageReference Include="WebApiClient.JIT" Version="1.1.4" />
   </ItemGroup>

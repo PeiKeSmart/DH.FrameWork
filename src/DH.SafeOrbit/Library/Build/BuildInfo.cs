@@ -39,6 +39,8 @@ public class BuildInfo : IBuildInfo
         return Platform.Net80;
 #elif NET9_0
         return Platform.Net90;
+#elif NET10_0
+        return Platform.Net10_0;
 #endif
     }
 

@@ -4,7 +4,7 @@
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
     <OutputType>Library</OutputType>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>Magicodes.IE.EPPlus</RootNamespace>
     <AssemblyName>DH.Magicodes.IE.EPPlus</AssemblyName>
@@ -69,15 +69,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DH.NCore" Version="4.14.2025.910-beta0613" />
+    <PackageReference Include="DH.NCore" Version="4.15.2025.1024-beta1228" />
     <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="3.0.1" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="SixLabors.ImageSharp" Version="3.1.11" />
-    <PackageReference Include="SkiaSharp" Version="3.119.0" />
-    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="9.0.9" />
+    <PackageReference Include="SkiaSharp" Version="3.119.1" />
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="9.0.10" />
   </ItemGroup>
 
 </Project>

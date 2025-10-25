@@ -20,6 +20,7 @@
         Net60,
         Net70,
         Net80,
-        Net90
+        Net90,
+        Net10_0
     }
 }

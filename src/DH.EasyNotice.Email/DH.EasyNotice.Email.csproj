@@ -4,7 +4,7 @@
 	<PropertyGroup>
 		<LangVersion>latest</LangVersion>
 		<OutputType>Library</OutputType>
-		<TargetFramework>net9.0</TargetFramework>
+		<TargetFramework>net10.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<RootNamespace>EasyNotice.Email</RootNamespace>
@@ -77,7 +77,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MailKit" Version="4.13.0" />
+		<PackageReference Include="MailKit" Version="4.14.1" />
 	</ItemGroup>
 
 	<ItemGroup>

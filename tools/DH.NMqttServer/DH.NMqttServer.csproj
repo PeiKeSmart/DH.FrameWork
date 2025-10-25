@@ -2,13 +2,13 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DH.NMQTT" Version="4.13.2025.910-beta1314" />
-    <PackageReference Include="DH.NStardust" Version="4.14.2025.910-beta0622" />
+    <PackageReference Include="DH.NMQTT" Version="4.15.2025.1025-beta0146" />
+    <PackageReference Include="DH.NStardust" Version="4.15.2025.1024-beta1328" />
   </ItemGroup>
 
 </Project>
