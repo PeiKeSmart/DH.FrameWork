@@ -68,7 +68,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="10.0.0-rc.2.25502.107" />
-		<PackageReference Include="Pek.AspNetCore" Version="4.14.2025.1029-beta1411" />
+		<PackageReference Include="Pek.AspNetCore" Version="4.14.2025.1111-beta0804" />
 		<PackageReference Include="Pek.Common" Version="4.15.2025.1029-beta1406" />
 		<PackageReference Include="SharpCompress" Version="0.41.0" />
 	</ItemGroup>

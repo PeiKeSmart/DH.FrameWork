@@ -29,14 +29,17 @@ public partial class UserDetailModel
     /// <summary>用户类型。类型自定义</summary>
     public UserKinds UType { get; set; }
 
-    /// <summary>会员前台权限</summary>
+    /// <summary>用户前台权限</summary>
     public String RoleExIds { get; set; }
 
-    /// <summary>会员其他权限</summary>
+    /// <summary>用户其他权限</summary>
     public String OtherPermissions { get; set; }
 
-    /// <summary>会员所在多部门</summary>
+    /// <summary>用户所在多部门</summary>
     public String DepartmentIds { get; set; }
+
+    /// <summary>用户所在多岗位</summary>
+    public String PositionIds { get; set; }
 
     /// <summary>真实姓名</summary>
     public String TrueName { get; set; }
@@ -236,6 +239,7 @@ public partial class UserDetailModel
         RoleExIds = model.RoleExIds;
         OtherPermissions = model.OtherPermissions;
         DepartmentIds = model.DepartmentIds;
+        PositionIds = model.PositionIds;
         TrueName = model.TrueName;
         PayPwd = model.PayPwd;
         AuthState = model.AuthState;

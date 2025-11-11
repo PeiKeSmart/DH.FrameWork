@@ -75,28 +75,36 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
     public UserKinds UType { get => _UType; set { if (OnPropertyChanging("UType", value)) { _UType = value; OnPropertyChanged("UType"); } } }
 
     private String _RoleExIds;
-    /// <summary>会员前台权限</summary>
-    [DisplayName("会员前台权限")]
-    [Description("会员前台权限")]
+    /// <summary>用户前台权限</summary>
+    [DisplayName("用户前台权限")]
+    [Description("用户前台权限")]
     [DataObjectField(false, false, true, 100)]
-    [BindColumn("RoleExIds", "会员前台权限", "")]
+    [BindColumn("RoleExIds", "用户前台权限", "")]
     public String RoleExIds { get => _RoleExIds; set { if (OnPropertyChanging("RoleExIds", value)) { _RoleExIds = value; OnPropertyChanged("RoleExIds"); } } }
 
     private String _OtherPermissions;
-    /// <summary>会员其他权限</summary>
-    [DisplayName("会员其他权限")]
-    [Description("会员其他权限")]
+    /// <summary>用户其他权限</summary>
+    [DisplayName("用户其他权限")]
+    [Description("用户其他权限")]
     [DataObjectField(false, false, true, 200)]
-    [BindColumn("OtherPermissions", "会员其他权限", "")]
+    [BindColumn("OtherPermissions", "用户其他权限", "")]
     public String OtherPermissions { get => _OtherPermissions; set { if (OnPropertyChanging("OtherPermissions", value)) { _OtherPermissions = value; OnPropertyChanged("OtherPermissions"); } } }
 
     private String _DepartmentIds;
-    /// <summary>会员所在多部门</summary>
-    [DisplayName("会员所在多部门")]
-    [Description("会员所在多部门")]
+    /// <summary>用户所在多部门</summary>
+    [DisplayName("用户所在多部门")]
+    [Description("用户所在多部门")]
     [DataObjectField(false, false, true, 200)]
-    [BindColumn("DepartmentIds", "会员所在多部门", "")]
+    [BindColumn("DepartmentIds", "用户所在多部门", "")]
     public String DepartmentIds { get => _DepartmentIds; set { if (OnPropertyChanging("DepartmentIds", value)) { _DepartmentIds = value; OnPropertyChanged("DepartmentIds"); } } }
+
+    private String _PositionIds;
+    /// <summary>用户所在多岗位</summary>
+    [DisplayName("用户所在多岗位")]
+    [Description("用户所在多岗位")]
+    [DataObjectField(false, false, true, 200)]
+    [BindColumn("PositionIds", "用户所在多岗位", "")]
+    public String PositionIds { get => _PositionIds; set { if (OnPropertyChanging("PositionIds", value)) { _PositionIds = value; OnPropertyChanged("PositionIds"); } } }
 
     private String _TrueName;
     /// <summary>真实姓名</summary>
@@ -603,6 +611,7 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
         RoleExIds = model.RoleExIds;
         OtherPermissions = model.OtherPermissions;
         DepartmentIds = model.DepartmentIds;
+        PositionIds = model.PositionIds;
         TrueName = model.TrueName;
         PayPwd = model.PayPwd;
         AuthState = model.AuthState;
@@ -684,6 +693,7 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
             "RoleExIds" => _RoleExIds,
             "OtherPermissions" => _OtherPermissions,
             "DepartmentIds" => _DepartmentIds,
+            "PositionIds" => _PositionIds,
             "TrueName" => _TrueName,
             "PayPwd" => _PayPwd,
             "AuthState" => _AuthState,
@@ -760,6 +770,7 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
                 case "RoleExIds": _RoleExIds = Convert.ToString(value); break;
                 case "OtherPermissions": _OtherPermissions = Convert.ToString(value); break;
                 case "DepartmentIds": _DepartmentIds = Convert.ToString(value); break;
+                case "PositionIds": _PositionIds = Convert.ToString(value); break;
                 case "TrueName": _TrueName = Convert.ToString(value); break;
                 case "PayPwd": _PayPwd = Convert.ToString(value); break;
                 case "AuthState": _AuthState = Convert.ToInt16(value); break;
@@ -867,14 +878,17 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
         /// <summary>用户类型。类型自定义</summary>
         public static readonly Field UType = FindByName("UType");
 
-        /// <summary>会员前台权限</summary>
+        /// <summary>用户前台权限</summary>
         public static readonly Field RoleExIds = FindByName("RoleExIds");
 
-        /// <summary>会员其他权限</summary>
+        /// <summary>用户其他权限</summary>
         public static readonly Field OtherPermissions = FindByName("OtherPermissions");
 
-        /// <summary>会员所在多部门</summary>
+        /// <summary>用户所在多部门</summary>
         public static readonly Field DepartmentIds = FindByName("DepartmentIds");
+
+        /// <summary>用户所在多岗位</summary>
+        public static readonly Field PositionIds = FindByName("PositionIds");
 
         /// <summary>真实姓名</summary>
         public static readonly Field TrueName = FindByName("TrueName");
@@ -1083,14 +1097,17 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
         /// <summary>用户类型。类型自定义</summary>
         public const String UType = "UType";
 
-        /// <summary>会员前台权限</summary>
+        /// <summary>用户前台权限</summary>
         public const String RoleExIds = "RoleExIds";
 
-        /// <summary>会员其他权限</summary>
+        /// <summary>用户其他权限</summary>
         public const String OtherPermissions = "OtherPermissions";
 
-        /// <summary>会员所在多部门</summary>
+        /// <summary>用户所在多部门</summary>
         public const String DepartmentIds = "DepartmentIds";
+
+        /// <summary>用户所在多岗位</summary>
+        public const String PositionIds = "PositionIds";
 
         /// <summary>真实姓名</summary>
         public const String TrueName = "TrueName";

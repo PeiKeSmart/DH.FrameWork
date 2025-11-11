@@ -47,9 +47,10 @@
         <Column Name="SId" DataType="String" Description="用户SessionId" />
         <Column Name="TenantId" DataType="Int32" Description="用户所属租户Id" />
         <Column Name="UType" DataType="Int16" Description="用户类型。类型自定义" Type="UserKinds" />
-        <Column Name="RoleExIds" DataType="String" Length="100" Description="会员前台权限" />
-        <Column Name="OtherPermissions" DataType="String" Length="200" Description="会员其他权限" />
-        <Column Name="DepartmentIds" DataType="String" Length="200" Description="会员所在多部门" />
+        <Column Name="RoleExIds" DataType="String" Length="100" Description="用户前台权限" />
+        <Column Name="OtherPermissions" DataType="String" Length="200" Description="用户其他权限" />
+        <Column Name="DepartmentIds" DataType="String" Length="200" Description="用户所在多部门" />
+        <Column Name="PositionIds" DataType="String" Length="200" Description="用户所在多岗位" />
         <Column Name="TrueName" DataType="String" Description="真实姓名" />
         <Column Name="PayPwd" DataType="String" Description="支付密码" />
         <Column Name="AuthState" DataType="Int16" Description="个人实名认证状态（0默认1审核中2未通过3已认证）" />

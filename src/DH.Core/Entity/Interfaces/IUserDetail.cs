@@ -29,14 +29,17 @@ public partial interface IUserDetail
     /// <summary>用户类型。类型自定义</summary>
     UserKinds UType { get; set; }
 
-    /// <summary>会员前台权限</summary>
+    /// <summary>用户前台权限</summary>
     String RoleExIds { get; set; }
 
-    /// <summary>会员其他权限</summary>
+    /// <summary>用户其他权限</summary>
     String OtherPermissions { get; set; }
 
-    /// <summary>会员所在多部门</summary>
+    /// <summary>用户所在多部门</summary>
     String DepartmentIds { get; set; }
+
+    /// <summary>用户所在多岗位</summary>
+    String PositionIds { get; set; }
 
     /// <summary>真实姓名</summary>
     String TrueName { get; set; }
