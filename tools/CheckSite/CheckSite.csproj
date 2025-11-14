@@ -10,7 +10,7 @@
   </PropertyGroup>
 	
   <ItemGroup>
-    <PackageReference Include="DH.NAgent" Version="4.15.2025.1024-beta1307" />
+    <PackageReference Include="DH.NAgent" Version="4.16.2025.1113" />
     <PackageReference Include="RestSharp" Version="112.1.1-alpha.0.4" />
   </ItemGroup>
 
