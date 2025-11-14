@@ -4,8 +4,8 @@
 	<PropertyGroup>
 		<LangVersion>latest</LangVersion>
 		<OutputType>Library</OutputType>
-		<TargetFramework>net10.0</TargetFramework>
-		<ImplicitUsings>enable</ImplicitUsings>
+    <TargetFrameworks>net9.0;net10.0</TargetFrameworks>
+    <ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<RootNamespace>SKIT.FlurlHttpClient.Upyun.Console</RootNamespace>
 		<AssemblyName>DH.SKIT.FlurlHttpClient.Upyun.Console</AssemblyName>
