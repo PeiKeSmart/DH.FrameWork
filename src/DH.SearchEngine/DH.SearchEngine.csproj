@@ -93,9 +93,9 @@
 		<PackageReference Include="TinyPinyin.Net" Version="1.0.2" />
 	</ItemGroup>
 	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
-		<PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="9.0.11" />
-		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="9.0.11" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.11" />
+		<PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="10.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="10.0.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.0" />
 	</ItemGroup>
 
 </Project>

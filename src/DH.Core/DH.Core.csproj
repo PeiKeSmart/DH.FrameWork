@@ -73,7 +73,7 @@
     <PackageReference Include="AutoMapper" Version="15.1.0" />
     <PackageReference Include="MiniProfiler.AspNetCore.Mvc" Version="4.5.4" />
     <PackageReference Include="Nito.AsyncEx.Coordination" Version="5.1.2" />
-    <PackageReference Include="System.Linq.Async" Version="7.0.0-preview.1.g24680b5469">
+    <PackageReference Include="System.Linq.Async" Version="7.0.0-preview.10">
       <Aliases>SystemLinq1Async</Aliases>
     </PackageReference>
   </ItemGroup>
