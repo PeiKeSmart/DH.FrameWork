@@ -4,7 +4,7 @@
 	<PropertyGroup>
 		<LangVersion>latest</LangVersion>
 		<OutputType>Library</OutputType>
-		<TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFrameworks>net9.0;net10.0;netstandard2.1</TargetFrameworks>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<RootNamespace>DH</RootNamespace>
 		<AssemblyName>DH.Common</AssemblyName>
@@ -85,16 +85,26 @@
 		<PackageReference Include="Xfrogcn.BinaryFormatter" Version="1.0.0" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
-		<PackageReference Include="System.Text.Json" Version="10.0.0" />
-		<PackageReference Include="System.Drawing.Common" Version="10.0.0" />
-	</ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' != 'net9.0'">
+    <PackageReference Include="System.Text.Json" Version="10.0.0" />
+    <PackageReference Include="System.Drawing.Common" Version="10.0.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
+    <PackageReference Include="System.Text.Json" Version="9.0.11" />
+    <PackageReference Include="System.Drawing.Common" Version="9.0.11" />
+  </ItemGroup>
 
 	<ItemGroup>
 		<Compile Update="Properties\R.Designer.cs">
 			<DependentUpon>R.resx</DependentUpon>
 			<DesignTime>True</DesignTime>
 			<AutoGen>True</AutoGen>
+		</Compile>
+		<Compile Update="Resource.Designer.cs">
+		  <DesignTime>True</DesignTime>
+		  <AutoGen>True</AutoGen>
+		  <DependentUpon>Resource.resx</DependentUpon>
 		</Compile>
 	</ItemGroup>
 

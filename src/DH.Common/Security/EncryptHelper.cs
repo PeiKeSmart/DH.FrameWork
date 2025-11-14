@@ -33,33 +33,33 @@ public class EncryptHelper
         return key;
     }
 
-    /// <summary>
-    /// 对象生成Md5 key
-    /// </summary>
-    /// <param name="obj">对象</param>
-    /// <returns>对象md5值</returns>
-    public static string GenerateMd5Hash(object obj)
-    {
-        if (obj == null)
-        {
-            throw new ArgumentNullException($"The parameter cannot be null");
-        }
-        byte[] soruce;
-        using (MemoryStream fs = new MemoryStream())
-        {
-            BinaryFormatter formatter = new BinaryFormatter();
-            lock (Locker)
-            {
-                Xfrogcn.BinaryFormatter.BinarySerializer.SerializeAsync(fs, obj);
-            }
-            soruce = fs.ToArray();
-        }
-        var md5 = new MD5CryptoServiceProvider();
-        var hash = md5.ComputeHash(soruce);
-        md5.Clear();
-        string hashString = BitConverter.ToString(hash);
-        return hashString.Replace("-", "");
-    }
+    ///// <summary>
+    ///// 对象生成Md5 key
+    ///// </summary>
+    ///// <param name="obj">对象</param>
+    ///// <returns>对象md5值</returns>
+    //public static string GenerateMd5Hash(object obj)
+    //{
+    //    if (obj == null)
+    //    {
+    //        throw new ArgumentNullException($"The parameter cannot be null");
+    //    }
+    //    byte[] soruce;
+    //    using (MemoryStream fs = new MemoryStream())
+    //    {
+    //        BinaryFormatter formatter = new BinaryFormatter();
+    //        lock (Locker)
+    //        {
+    //            Xfrogcn.BinaryFormatter.BinarySerializer.SerializeAsync(fs, obj);
+    //        }
+    //        soruce = fs.ToArray();
+    //    }
+    //    var md5 = new MD5CryptoServiceProvider();
+    //    var hash = md5.ComputeHash(soruce);
+    //    md5.Clear();
+    //    string hashString = BitConverter.ToString(hash);
+    //    return hashString.Replace("-", "");
+    //}
 
     #region AES
 
