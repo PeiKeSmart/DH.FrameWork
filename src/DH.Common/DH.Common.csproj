@@ -74,7 +74,7 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Pek.Common" Version="4.16.2025.1113" />
+		<PackageReference Include="Pek.Common" Version="4.16.2025.1114-beta0746" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -86,8 +86,8 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
-		<PackageReference Include="System.Text.Json" Version="9.0.0" />
-		<PackageReference Include="System.Drawing.Common" Version="9.0.0" />
+		<PackageReference Include="System.Text.Json" Version="10.0.0" />
+		<PackageReference Include="System.Drawing.Common" Version="10.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
