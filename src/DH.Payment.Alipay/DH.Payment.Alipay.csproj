@@ -73,11 +73,11 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+		<PackageReference Include="Pek.Payment.Security" Version="4.16.2025.1120-beta0318" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\DH.Core\DH.Core.csproj" />
-		<ProjectReference Include="..\DH.Payment.Security\DH.Payment.Security.csproj" />
 	</ItemGroup>
 
 </Project>

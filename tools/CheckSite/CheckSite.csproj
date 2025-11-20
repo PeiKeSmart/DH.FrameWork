@@ -11,7 +11,7 @@
 	
   <ItemGroup>
     <PackageReference Include="DH.NAgent" Version="4.16.2025.1113" />
-    <PackageReference Include="RestSharp" Version="112.1.1-alpha.0.8" />
+    <PackageReference Include="RestSharp" Version="112.1.1-alpha.0.12" />
   </ItemGroup>
 
   <ItemGroup>
