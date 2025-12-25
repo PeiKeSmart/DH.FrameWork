@@ -1,4 +1,4 @@
-using DH.Core;
+﻿using DH.Core;
 using DH.Core.Domain.Localization;
 using DH.Core.Infrastructure;
 
@@ -29,6 +29,10 @@ public partial class LocaleStringResource : DHEntityBase<LocaleStringResource>
         Meta.Modules.Add<UserModule>();
         Meta.Modules.Add<TimeModule>();
         Meta.Modules.Add<IPModule>();
+
+        // 实体缓存
+        var ec = Meta.Cache;
+        ec.Expire = 60;
     }
 
     /// <summary>验证数据，通过抛出异常的方式提示验证失败。</summary>
@@ -99,7 +103,7 @@ public partial class LocaleStringResource : DHEntityBase<LocaleStringResource>
         if (id <= 0) return null;
 
         // 实体缓存
-        if (Meta.Session.Count < 1000) return Meta.Cache.Find(e => e.Id == id);
+        if (Meta.Session.Count < 10000) return Meta.Cache.Find(e => e.Id == id);
 
         // 单对象缓存
         return Meta.SingleCache[id];
@@ -127,7 +131,7 @@ public partial class LocaleStringResource : DHEntityBase<LocaleStringResource>
     {
         if (lanKey.IsNullOrWhiteSpace()) return new List<LocaleStringResource>();
 
-        if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => e.LanKey.EqualIgnoreCase(lanKey));
+        if (Meta.Session.Count < 10000) return Meta.Cache.FindAll(e => e.LanKey.EqualIgnoreCase(lanKey));
 
         return FindAll(_.LanKey == lanKey);
     }
@@ -151,7 +155,7 @@ public partial class LocaleStringResource : DHEntityBase<LocaleStringResource>
 
         ids = ids.Trim(',');
 
-        if (Meta.Session.Count < 1000)
+        if (Meta.Session.Count < 10000)
         {
             return Meta.Cache.FindAll(x => ids.SplitAsInt(",").Contains(x.Id));
         }
@@ -166,7 +170,7 @@ public partial class LocaleStringResource : DHEntityBase<LocaleStringResource>
     /// <returns></returns>
     public static IList<LocaleStringResource> GetWithPage(PageParameter pages)
     {
-        if (Meta.Session.Count < 1000)
+        if (Meta.Session.Count < 10000)
         {
             pages.TotalCount = Meta.Session.Count;
             return FindAllWithCache().OrderBy(e => e.Id).Skip((pages.PageIndex - 1) * pages.PageSize).Take(pages.PageSize).ToList();
