@@ -1,0 +1,173 @@
+<Solution>
+  <Folder Name="/Demo/">
+    <Project Path="demo/NopDemo/NopDemo.csproj" />
+    <Project Path="demo/SignalRDemo/SignalRDemo.csproj" />
+    <Project Path="demo/UIDemo1/UIDemo1.csproj" />
+  </Folder>
+  <Folder Name="/Demo/Plugins/">
+    <Project Path="demo/TestPlugin/TestPlugin.csproj" />
+  </Folder>
+  <Folder Name="/Demo/Plugins/Plugin1/">
+    <File Path="src/DH.PluginCore.VueAspNetCore/ReadMe.txt" />
+    <Project Path="src/DH.PluginCore.IPlugins.AspNetCore/DH.PluginCore.IPlugins.AspNetCore.csproj" />
+    <Project Path="src/DH.PluginCore.IPlugins/DH.PluginCore.IPlugins.csproj" />
+    <Project Path="src/DH.PluginCore.VueAspNetCore/DH.PluginCore.VueAspNetCore.csproj" />
+    <Project Path="src/DH.PluginCore/DH.PluginCore.csproj" />
+  </Folder>
+  <Folder Name="/Demo/Plugins/Plugin1/demo/">
+    <Project Path="demo/DemoPlugins1/DemoPlugins1.csproj" />
+    <Project Path="demo/DemoPluginsNetCore7/DemoPluginsNetCore7.csproj" />
+  </Folder>
+  <Folder Name="/Demo/Plugins/Plugin1/plugins/">
+    <Project Path="plugins/HelloWorldPlugin/HelloWorldPlugin.csproj" />
+  </Folder>
+  <Folder Name="/Demo/Plugins/Plugin2/">
+    <Project Path="src/DH.CoolCat.Core.Mvc/DH.CoolCat.Core.Mvc.csproj" />
+    <Project Path="src/DH.CoolCat.Core/DH.CoolCat.Core.csproj" />
+  </Folder>
+  <Folder Name="/Demo/Plugins/Plugin2/demo/">
+    <Project Path="demo/CoolCatPluginDemo/CoolCatPluginDemo.csproj" />
+  </Folder>
+  <Folder Name="/Demo/Plugins/Plugin2/plugins/">
+    <Project Path="plugins/DemoPlugin1/DemoPlugin1.csproj" />
+  </Folder>
+  <Folder Name="/Demo/Vue/">
+    <Project Path="demo/ScuiDemo/ScuiDemo.csproj" />
+    <Project Path="demo/VueDemo/VueDemo.csproj" />
+    <Project Path="demo/VueDemo1/VueDemo1.csproj" />
+  </Folder>
+  <Folder Name="/Files/">
+    <File Path="global.json" />
+    <File Path="NuGet.config" />
+    <File Path="README.md" />
+    <File Path="version.props" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/DH.AspNetCore/DH.AspNetCore.csproj" />
+    <Project Path="src/DH.AspNetCoreProxy/DH.AspNetCoreProxy.csproj" />
+    <Project Path="src/DH.Common/DH.Common.csproj" />
+    <Project Path="src/DH.Core/DH.Core.csproj" />
+    <Project Path="src/DH.Platform.Windows/DH.Platform.Windows.csproj" />
+    <Project Path="src/DH.Services/DH.Services.csproj" />
+    <Project Path="src/DH.Utils/DH.Utils.csproj" />
+  </Folder>
+  <Folder Name="/src/Libraries/">
+    <Project Path="src/DH.Clay/DH.Clay.csproj" />
+    <Project Path="src/DH.CliWrap/DH.CliWrap.csproj" />
+    <Project Path="src/DH.DotNetDetour/DH.DotNetDetour.csproj" />
+    <Project Path="src/DH.EnumsNet/DH.EnumsNet.csproj" />
+    <Project Path="src/DH.FileZilla.Api/DH.FileZilla.Api.csproj" />
+    <Project Path="src/DH.Ftp/DH.Ftp.csproj" />
+    <Project Path="src/DH.HttpHelper/DH.HttpHelper.csproj" />
+    <Project Path="src/DH.MailKit/DH.MailKit.csproj" />
+    <Project Path="src/DH.MockData/DH.MockData.csproj" />
+    <Project Path="src/DH.NMemory/DH.NMemory.csproj" />
+    <Project Path="src/DH.OneOf/DH.OneOf.csproj" />
+    <Project Path="src/DH.RoslynCompile/DH.RoslynCompile.csproj" />
+    <Project Path="src/DH.SafeOrbit/DH.SafeOrbit.csproj" />
+    <Project Path="src/DH.Schedulers/DH.Schedulers.csproj" />
+    <Project Path="src/DH.SearchEngine/DH.SearchEngine.csproj" />
+    <Project Path="src/DH.ShippingRates/DH.ShippingRates.csproj" />
+    <Project Path="src/DH.Sms/DH.Sms.csproj" />
+    <Project Path="src/DH.Sprache/DH.Sprache.csproj" />
+    <Project Path="src/DH.SSH/DH.SSH.csproj" />
+    <Project Path="src/DH.WebHook/DH.WebHook.csproj" />
+  </Folder>
+  <Folder Name="/src/Libraries/BaiDu/">
+    <Project Path="src/DH.BaiDuAipSdk/DH.BaiDuAipSdk.csproj" />
+    <Project Path="src/DH.BDYYSDK/DH.BDYYSDK.csproj" />
+  </Folder>
+  <Folder Name="/src/Libraries/Captcha/">
+    <Project Path="src/DH.SkiaCaptcha/DH.SkiaCaptcha.csproj" />
+  </Folder>
+  <Folder Name="/src/Libraries/EasyNotice/">
+    <Project Path="src/DH.EasyNotice.Dingtalk/DH.EasyNotice.Dingtalk.csproj" />
+    <Project Path="src/DH.EasyNotice.Email/DH.EasyNotice.Email.csproj" />
+    <Project Path="src/DH.EasyNotice.Feishu/DH.EasyNotice.Feishu.csproj" />
+    <Project Path="src/DH.EasyNotice.QyWeixin/DH.EasyNotice.QyWeixin.csproj" />
+    <Project Path="src/DH.EasyNotice/DH.EasyNotice.csproj" />
+  </Folder>
+  <Folder Name="/src/Libraries/Excel/">
+    <Project Path="src/DH.Npoi/DH.Npoi.csproj" />
+  </Folder>
+  <Folder Name="/src/Libraries/Excel/Magicodes.IE.EPPlus/">
+    <Project Path="src/DH.Magicodes.IE.Core/DH.Magicodes.IE.Core.csproj" />
+    <Project Path="src/DH.Magicodes.IE.EPPlus/DH.Magicodes.IE.EPPlus.csproj" />
+    <Project Path="src/DH.Magicodes.IE.Excel/DH.Magicodes.IE.Excel.csproj" />
+  </Folder>
+  <Folder Name="/src/Libraries/LettuceEncrypt/">
+    <Project Path="src/DH.AspNetCore.Kestrel.Certificates/DH.AspNetCore.Kestrel.Certificates.csproj" />
+    <Project Path="src/DH.LettuceEncrypt.Azure/DH.LettuceEncrypt.Azure.csproj" />
+    <Project Path="src/DH.LettuceEncrypt/DH.LettuceEncrypt.csproj" />
+  </Folder>
+  <Folder Name="/src/Libraries/Pay/" />
+  <Folder Name="/src/Libraries/Pay/Payment/">
+    <Project Path="src/DH.Payment.Alipay/DH.Payment.Alipay.csproj" />
+    <Project Path="src/DH.Payment.JDPay/DH.Payment.JDPay.csproj" />
+    <Project Path="src/DH.Payment.LianLianPay/DH.Payment.LianLianPay.csproj" />
+    <Project Path="src/DH.Payment.PayPal/DH.Payment.PayPal.csproj" />
+    <Project Path="src/DH.Payment.QPay/DH.Payment.QPay.csproj" />
+    <Project Path="src/DH.Payment.UnionPay/DH.Payment.UnionPay.csproj" />
+    <Project Path="src/DH.Payment.WeChatPay/DH.Payment.WeChatPay.csproj" />
+  </Folder>
+  <Folder Name="/src/Libraries/Pay/PaySharp/">
+    <Project Path="src/DH.PaySharp.Allinpay/DH.PaySharp.Allinpay.csproj" />
+    <Project Path="src/DH.PaySharp/DH.PaySharp.csproj" />
+  </Folder>
+  <Folder Name="/src/Libraries/Pdf/">
+    <Project Path="src/DH.Magicodes.IE.Pdf/DH.Magicodes.IE.Pdf.csproj" />
+    <Project Path="src/DH.PdfSharpCore/DH.PdfSharpCore.csproj" />
+    <Project Path="src/DH.QuestPDF/DH.QuestPDF.csproj" />
+  </Folder>
+  <Folder Name="/src/Libraries/Pdu/">
+    <Project Path="src/DH.Pdu/DH.Pdu.csproj" />
+    <Project Path="src/DH.SmsPdu/DH.SmsPdu.csproj" />
+  </Folder>
+  <Folder Name="/src/Libraries/QRCode/">
+    <Project Path="src/DH.QRCode/DH.QRCode.csproj" />
+  </Folder>
+  <Folder Name="/src/Libraries/QRCode/BarCoder/">
+    <Project Path="src/DH.Barcoder.Renderer.Image/DH.Barcoder.Renderer.Image.csproj" />
+    <Project Path="src/DH.Barcoder.Renderer.Svg/DH.Barcoder.Renderer.Svg.csproj" />
+    <Project Path="src/DH.Barcoder/DH.Barcoder.csproj" />
+  </Folder>
+  <Folder Name="/src/Libraries/SSE/">
+    <Project Path="src/DH.AspNetCore.ServerSentEvents/DH.AspNetCore.ServerSentEvents.csproj" />
+    <Project Path="src/DH.ServerSentEvent.Client/DH.ServerSentEvent.Client.csproj" />
+  </Folder>
+  <Folder Name="/src/Libraries/Word/">
+    <Project Path="src/DH.Magicodes.IE.Word/DH.Magicodes.IE.Word.csproj" />
+    <Project Path="src/DH.MiniWord/DH.MiniWord.csproj" />
+  </Folder>
+  <Folder Name="/src/Libraries/开放平台SDK/" />
+  <Folder Name="/src/Libraries/开放平台SDK/又拍云/">
+    <Project Path="src/DH.SKIT.FlurlHttpClient.Upyun.Console/DH.SKIT.FlurlHttpClient.Upyun.Console.csproj" />
+    <Project Path="src/DH.SKIT.FlurlHttpClient.Upyun.Sim/DH.SKIT.FlurlHttpClient.Upyun.Sim.csproj" />
+    <Project Path="src/DH.SKIT.FlurlHttpClient.Upyun.Sms/DH.SKIT.FlurlHttpClient.Upyun.Sms.csproj" />
+    <Project Path="src/DH.SKIT.FlurlHttpClient.Upyun.Uss/DH.SKIT.FlurlHttpClient.Upyun.Uss.csproj" />
+  </Folder>
+  <Folder Name="/src/Libraries/开放平台SDK/客如云/">
+    <Project Path="src/DH.FlurlHttpClient.KeRuYun.Api/DH.FlurlHttpClient.KeRuYun.Api.csproj" />
+  </Folder>
+  <Folder Name="/src/Libraries/开放平台SDK/抖音/">
+    <Project Path="src/DH.SKIT.FlurlHttpClient.ByteDance.DouyinOpen/DH.SKIT.FlurlHttpClient.ByteDance.DouyinOpen.csproj" />
+    <Project Path="src/DH.SKIT.FlurlHttpClient.ByteDance.DouyinShop/DH.SKIT.FlurlHttpClient.ByteDance.DouyinShop.csproj" />
+    <Project Path="src/DH.SKIT.FlurlHttpClient.ByteDance.MicroApp/DH.SKIT.FlurlHttpClient.ByteDance.MicroApp.csproj" />
+    <Project Path="src/DH.SKIT.FlurlHttpClient.ByteDance.OceanEngine/DH.SKIT.FlurlHttpClient.ByteDance.OceanEngine.csproj" />
+    <Project Path="src/DH.SKIT.FlurlHttpClient.ByteDance.TikTokGlobal/DH.SKIT.FlurlHttpClient.ByteDance.TikTokGlobal.csproj" />
+    <Project Path="src/DH.SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop/DH.SKIT.FlurlHttpClient.ByteDance.TikTokGlobalShop.csproj" />
+  </Folder>
+  <Folder Name="/src/Libraries/开放平台SDK/百度/">
+    <Project Path="src/DH.SKIT.FlurlHttpClient.Baidu.Push/DH.SKIT.FlurlHttpClient.Baidu.Push.csproj" />
+    <Project Path="src/DH.SKIT.FlurlHttpClient.Baidu.SmartApp/DH.SKIT.FlurlHttpClient.Baidu.SmartApp.csproj" />
+    <Project Path="src/DH.SKIT.FlurlHttpClient.Baidu.Translate/DH.SKIT.FlurlHttpClient.Baidu.Translate.csproj" />
+  </Folder>
+  <Folder Name="/src/Libraries/开放平台SDK/银豹收银/">
+    <Project Path="src/DH.FlurlHttpClient.Pospal.Api/DH.FlurlHttpClient.Pospal.Api.csproj" />
+  </Folder>
+  <Folder Name="/tools/">
+    <Project Path="tools/CheckSite/CheckSite.csproj" />
+    <Project Path="tools/DH.NMqttServer/DH.NMqttServer.csproj" />
+    <Project Path="tools/PushNuget/PushNuget.csproj" />
+  </Folder>
+</Solution>
