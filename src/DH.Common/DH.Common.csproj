@@ -74,11 +74,11 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Pek.Common" Version="4.16.2025.1117-beta0408" />
+		<PackageReference Include="Pek.Common" Version="4.16.2025.1227-beta0406" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="JetBrains.Annotations" Version="2025.2.2" />
+		<PackageReference Include="JetBrains.Annotations" Version="2025.2.4" />
 		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
 		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
@@ -86,8 +86,8 @@
 	</ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' != 'net9.0'">
-    <PackageReference Include="System.Text.Json" Version="10.0.0" />
-    <PackageReference Include="System.Drawing.Common" Version="10.0.0" />
+    <PackageReference Include="System.Text.Json" Version="10.0.1" />
+    <PackageReference Include="System.Drawing.Common" Version="10.0.1" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
