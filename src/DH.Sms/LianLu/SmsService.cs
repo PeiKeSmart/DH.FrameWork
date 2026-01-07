@@ -52,7 +52,7 @@ public class SmsService : ISmsService
         var ts = UnixTime.ToTimestamp();
         var sign = Encrypt.GetMD5($"{_options.AccessKeyId}{ts}{_options.AccessKeySecret}").ToLower();
 
-        var result = await Pek.Helpers.DHWeb.Client().Post(sendaction)
+        var response = await Pek.Helpers.DHWeb.Client().Post(sendaction)
             .Data("userid", _options.AccessKeyId)
             .Data("ts", ts)
             .Data("sign", sign)
@@ -62,15 +62,22 @@ public class SmsService : ISmsService
             .Data("extnum", "")
             .Data("time", "")
             .Data("messageid", "")
-            .ResultStringAsync().ConfigureAwait(false);
+            .GetResponseAsync().ConfigureAwait(false);
 
+        if (!response.IsSuccess)
+        {
+            var errorMsg = $"HTTP请求失败: {response.StatusCode}, 响应: {response.GetDataOrDefault("N/A")}";
+            return new SmsResult(false, errorMsg);
+        }
+
+        var result = response.GetDataOrDefault(String.Empty);
         if (result.Contains("提交成功"))
         {
             return new SmsResult(true, result);
         }
         else
         {
-            return new SmsResult(false, result);
+            return new SmsResult(false, $"短信发送失败: {result}");
         }
     }
 }

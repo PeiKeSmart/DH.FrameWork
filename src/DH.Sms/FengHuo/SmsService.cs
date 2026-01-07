@@ -67,21 +67,29 @@ public class SmsService : ISmsService
         var token = GetToken(seed);
         var sendaction = _options.Url + "send";
 
-        var result = await DHWeb.Client().Post(sendaction)
+        var response = await DHWeb.Client().Post(sendaction)
             .Data("account", _options.AccessKeyId)
             .Data("token", token)
             .Data("ts", seed)
             .Data("mobiles", mobile)
             .Data("content", content.UrlEncode())
             .Data("ext", "")
-            .ResultStringAsync().ConfigureAwait(false);
+            .GetResponseAsync().ConfigureAwait(false);
+
+        if (!response.IsSuccess)
+        {
+            var errorMsg = $"HTTP请求失败: {response.StatusCode}, 响应: {response.GetDataOrDefault("N/A")}";
+            return new SmsResult(false, errorMsg);
+        }
+
+        var result = response.GetDataOrDefault(String.Empty);
         if (result.Contains("提交成功"))
         {
             return new SmsResult(true, result);
         }
         else
         {
-            return new SmsResult(false, result);
+            return new SmsResult(false, $"短信发送失败: {result}");
         }
     }
 
@@ -124,14 +132,22 @@ public class SmsService : ISmsService
             irequest.Data($"param{i + 1}", paramValues[i]);
         }
 
-        var result = await irequest.ResultStringAsync().ConfigureAwait(false);
+        var response = await irequest.GetResponseAsync().ConfigureAwait(false);
+
+        if (!response.IsSuccess)
+        {
+            var errorMsg = $"HTTP请求失败: {response.StatusCode}, 响应: {response.GetDataOrDefault("N/A")}";
+            return new SmsResult(false, errorMsg);
+        }
+
+        var result = response.GetDataOrDefault(String.Empty);
         if (result.Contains("提交成功"))
         {
             return new SmsResult(true, result);
         }
         else
         {
-            return new SmsResult(false, result);
+            return new SmsResult(false, $"模板短信发送失败: {result}");
         }
     }
 }
