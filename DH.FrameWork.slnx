@@ -68,7 +68,6 @@
     <Project Path="src/DH.Schedulers/DH.Schedulers.csproj" />
     <Project Path="src/DH.SearchEngine/DH.SearchEngine.csproj" />
     <Project Path="src/DH.ShippingRates/DH.ShippingRates.csproj" />
-    <Project Path="src/DH.Sms/DH.Sms.csproj" />
     <Project Path="src/DH.Sprache/DH.Sprache.csproj" />
     <Project Path="src/DH.SSH/DH.SSH.csproj" />
     <Project Path="src/DH.WebHook/DH.WebHook.csproj" />
