@@ -70,7 +70,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\DH.Common\DH.Common.csproj" />
-		<PackageReference Include="DH.NCode" Version="4.17.2026.129-beta1327" />
+		<PackageReference Include="DH.NCode" Version="4.18.2026.210" />
 		<PackageReference Include="murmurhash" Version="1.0.3" />
 	</ItemGroup>
 

@@ -68,8 +68,8 @@
 
 	<ItemGroup>
 		<!-- 公共包，net9/net10 版本相同，写一份即可 -->
-		<PackageReference Include="Pek.AspNetCore" Version="4.17.2026.120-beta0247" />
-		<PackageReference Include="Pek.Common" Version="4.17.2026.130-beta1028" />
+		<PackageReference Include="Pek.AspNetCore" Version="4.18.2026.210" />
+		<PackageReference Include="Pek.Common" Version="4.18.2026.210" />
 		<PackageReference Include="SharpCompress" Version="0.44.5" />
 	</ItemGroup>
 
