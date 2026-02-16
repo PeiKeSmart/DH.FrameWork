@@ -14,8 +14,4 @@
     <PackageReference Include="RestSharp" Version="113.1.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\DH.WebHook\DH.WebHook.csproj" />
-  </ItemGroup>
-
 </Project>

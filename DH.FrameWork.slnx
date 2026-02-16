@@ -71,7 +71,6 @@
     <Project Path="src/DH.ShippingRates/DH.ShippingRates.csproj" />
     <Project Path="src/DH.Sprache/DH.Sprache.csproj" />
     <Project Path="src/DH.SSH/DH.SSH.csproj" />
-    <Project Path="src/DH.WebHook/DH.WebHook.csproj" />
   </Folder>
   <Folder Name="/src/Libraries/BaiDu/">
     <Project Path="src/DH.BaiDuAipSdk/DH.BaiDuAipSdk.csproj" />
