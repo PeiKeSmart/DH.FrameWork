@@ -70,11 +70,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.102">
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.103">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Pek.Common" Version="4.18.2026.210" />
+		<PackageReference Include="Pek.Common" Version="4.18.2026.226-beta0407" />
 	</ItemGroup>
 
 	<ItemGroup>

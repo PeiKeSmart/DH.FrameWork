@@ -70,7 +70,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\DH.Common\DH.Common.csproj" />
-		<PackageReference Include="DH.NCode" Version="4.18.2026.210" />
+		<PackageReference Include="DH.NCode" Version="4.18.2026.225-beta1054" />
 		<PackageReference Include="murmurhash" Version="1.0.3" />
 	</ItemGroup>
 
@@ -86,7 +86,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.102">
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.103">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>

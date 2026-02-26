@@ -70,7 +70,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="DynamicExpresso.Core" Version="2.19.3" />
-		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.102">
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.103">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
@@ -79,7 +79,7 @@
 	<ItemGroup>
 		<PackageReference Include="Azure.Identity" Version="1.17.1" />
 		<PackageReference Include="Azure.Security.KeyVault.Certificates" Version="4.8.0" />
-		<PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.8.0" />
+		<PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.9.0" />
 	</ItemGroup>
 
 	<ItemGroup>
