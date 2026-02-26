@@ -37,6 +37,7 @@
     <Project Path="demo/VueDemo1/VueDemo1.csproj" />
   </Folder>
   <Folder Name="/Files/">
+    <File Path=".github/copilot-instructions.md" />
     <File Path="global.json" />
     <File Path="NuGet.config" />
     <File Path="README.md" />
@@ -69,7 +70,6 @@
     <Project Path="src/DH.ShippingRates/DH.ShippingRates.csproj" />
     <Project Path="src/DH.Sprache/DH.Sprache.csproj" />
     <Project Path="src/DH.SSH/DH.SSH.csproj" />
-    <Project Path="src/DH.WebHook/DH.WebHook.csproj" />
   </Folder>
   <Folder Name="/src/Libraries/BaiDu/">
     <Project Path="src/DH.BaiDuAipSdk/DH.BaiDuAipSdk.csproj" />
