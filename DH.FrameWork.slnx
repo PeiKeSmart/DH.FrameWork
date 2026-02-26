@@ -59,7 +59,6 @@
     <Project Path="src/DH.FileZilla.Api/DH.FileZilla.Api.csproj" />
     <Project Path="src/DH.Ftp/DH.Ftp.csproj" />
     <Project Path="src/DH.HttpHelper/DH.HttpHelper.csproj" />
-    <Project Path="src/DH.MailKit/DH.MailKit.csproj" />
     <Project Path="src/DH.MockData/DH.MockData.csproj" />
     <Project Path="src/DH.NMemory/DH.NMemory.csproj" />
     <Project Path="src/DH.OneOf/DH.OneOf.csproj" />
