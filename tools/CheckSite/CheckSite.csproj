@@ -10,7 +10,9 @@
   </PropertyGroup>
 	
   <ItemGroup>
-    <PackageReference Include="DH.NAgent" Version="4.18.2026.210" />
+    <PackageReference Include="DH.NAgent" Version="4.18.2026.225-beta0320" />
+    <PackageReference Include="Pek.MDB" Version="4.14.2025.821-beta1537" />
+    <PackageReference Include="Pek.WebHook" Version="4.16.2026.213" />
     <PackageReference Include="RestSharp" Version="113.1.0" />
   </ItemGroup>
 
