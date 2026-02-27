@@ -7,6 +7,7 @@ using SharpCompress.Archives.Zip;
 using SharpCompress.Common;
 using SharpCompress.Readers;
 using SharpCompress.Writers;
+using SharpCompress.Writers.Zip;
 
 using System.Collections.Concurrent;
 using System.Text;
@@ -39,7 +40,7 @@ public class SevenZipCompressor : ISevenZipCompressor {
     {
         using var archive = CreateZipArchive(files, rootdir);
         var ms = new MemoryStream();
-        archive.SaveTo(ms, new WriterOptions(CompressionType.Deflate)
+        archive.SaveTo(ms, new ZipWriterOptions(CompressionType.Deflate)
         {
             LeaveStreamOpen = true,
             ArchiveEncoding = new ArchiveEncoding()
@@ -59,7 +60,8 @@ public class SevenZipCompressor : ISevenZipCompressor {
     public void Zip(List<string> files, string zipFile, string rootdir = "")
     {
         using var archive = CreateZipArchive(files, rootdir);
-        archive.SaveTo(zipFile, new WriterOptions(CompressionType.Deflate)
+        using var fs = File.Create(zipFile);
+        archive.SaveTo(fs, new ZipWriterOptions(CompressionType.Deflate)
         {
             LeaveStreamOpen = true,
             ArchiveEncoding = new ArchiveEncoding()
@@ -82,15 +84,13 @@ public class SevenZipCompressor : ISevenZipCompressor {
             dir = Path.GetDirectoryName(rar);
         }
 
-        using var archive = RarArchive.Open(rar);
+        using var archive = RarArchive.OpenArchive(rar, ReaderOptions.ForOwnedFile
+            .WithExtractFullPath(true)
+            .WithOverwrite(true));
         var entries = ignoreEmptyDir ? archive.Entries.Where(entry => !entry.IsDirectory) : archive.Entries;
         foreach (var entry in entries)
         {
-            entry.WriteToDirectory(dir, new ExtractionOptions()
-            {
-                ExtractFullPath = true,
-                Overwrite = true
-            });
+            entry.WriteToDirectory(dir);
         }
     }
 
@@ -116,28 +116,26 @@ public class SevenZipCompressor : ISevenZipCompressor {
         }
 
         using Stream stream = File.OpenRead(compressedFile);
-        using var reader = ReaderFactory.Open(stream);
+        using var reader = ReaderFactory.OpenReader(stream, new ReaderOptions
+        {
+            LeaveStreamOpen = true
+        }
+            .WithExtractFullPath(true)
+            .WithOverwrite(true));
         while (reader.MoveToNextEntry())
         {
-            if (ignoreEmptyDir)
+            if (!ignoreEmptyDir && reader.Entry.IsDirectory)
             {
-                reader.WriteEntryToDirectory(dir, new ExtractionOptions()
-                {
-                    ExtractFullPath = true,
-                    Overwrite = true
-                });
+                reader.WriteEntryToDirectory(dir);
+                continue;
             }
-            else
+
+            if (ignoreEmptyDir && reader.Entry.IsDirectory)
             {
-                if (!reader.Entry.IsDirectory)
-                {
-                    reader.WriteEntryToDirectory(dir, new ExtractionOptions()
-                    {
-                        ExtractFullPath = true,
-                        Overwrite = true
-                    });
-                }
+                continue;
             }
+
+            reader.WriteEntryToDirectory(dir);
         }
     }
 
@@ -147,9 +145,9 @@ public class SevenZipCompressor : ISevenZipCompressor {
     /// <param name="files"></param>
     /// <param name="rootdir"></param>
     /// <returns></returns>
-    private ZipArchive CreateZipArchive(List<string> files, string rootdir)
+    private IWritableArchive<ZipWriterOptions> CreateZipArchive(List<string> files, string rootdir)
     {
-        var archive = ZipArchive.Create();
+        var archive = ZipArchive.CreateArchive();
         var dic = GetFileEntryMaps(files);
         var remoteUrls = files.Distinct().Where(s => s.StartsWith("http")).Select(s =>
         {
@@ -179,7 +177,7 @@ public class SevenZipCompressor : ISevenZipCompressor {
                         var res = await t.ConfigureAwait(false);
                         if (res.IsSuccessStatusCode)
                         {
-                            Stream stream = await res.Content.ReadAsStreamAsync().ConfigureAwait(false);
+                            var stream = await res.Content.ReadAsStreamAsync().ConfigureAwait(false);
                             streams[Path.Combine(rootdir, Path.GetFileName(HttpUtility.UrlDecode(url.AbsolutePath)))] = stream;
                         }
                     }
