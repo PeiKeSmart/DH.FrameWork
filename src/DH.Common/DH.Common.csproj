@@ -70,11 +70,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.103">
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.201">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Pek.Common" Version="4.18.2026.226-beta0407" />
+		<PackageReference Include="Pek.Common" Version="4.20.2026.312-beta1246" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -86,13 +86,13 @@
 	</ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' != 'net9.0'">
-    <PackageReference Include="System.Text.Json" Version="10.0.3" />
-    <PackageReference Include="System.Drawing.Common" Version="10.0.3" />
+    <PackageReference Include="System.Text.Json" Version="10.0.5" />
+    <PackageReference Include="System.Drawing.Common" Version="10.0.5" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
-    <PackageReference Include="System.Text.Json" Version="9.0.13" />
-    <PackageReference Include="System.Drawing.Common" Version="9.0.13" />
+    <PackageReference Include="System.Text.Json" Version="9.0.14" />
+    <PackageReference Include="System.Drawing.Common" Version="9.0.14" />
   </ItemGroup>
 
 	<ItemGroup>

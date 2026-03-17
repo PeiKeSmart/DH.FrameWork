@@ -84,13 +84,16 @@ public class SevenZipCompressor : ISevenZipCompressor {
             dir = Path.GetDirectoryName(rar);
         }
 
-        using var archive = RarArchive.OpenArchive(rar, ReaderOptions.ForOwnedFile
-            .WithExtractFullPath(true)
-            .WithOverwrite(true));
+        var extractionOptions = new ExtractionOptions
+        {
+            ExtractFullPath = true,
+            Overwrite = true
+        };
+        using var archive = RarArchive.OpenArchive(rar, ReaderOptions.ForFilePath);
         var entries = ignoreEmptyDir ? archive.Entries.Where(entry => !entry.IsDirectory) : archive.Entries;
         foreach (var entry in entries)
         {
-            entry.WriteToDirectory(dir);
+            entry.WriteToDirectory(dir, extractionOptions);
         }
     }
 
@@ -116,17 +119,17 @@ public class SevenZipCompressor : ISevenZipCompressor {
         }
 
         using Stream stream = File.OpenRead(compressedFile);
-        using var reader = ReaderFactory.OpenReader(stream, new ReaderOptions
+        var extractionOptions = new ExtractionOptions
         {
-            LeaveStreamOpen = true
-        }
-            .WithExtractFullPath(true)
-            .WithOverwrite(true));
+            ExtractFullPath = true,
+            Overwrite = true
+        };
+        using var reader = ReaderFactory.OpenReader(stream, ReaderOptions.ForExternalStream);
         while (reader.MoveToNextEntry())
         {
             if (!ignoreEmptyDir && reader.Entry.IsDirectory)
             {
-                reader.WriteEntryToDirectory(dir);
+                reader.WriteEntryToDirectory(dir, extractionOptions);
                 continue;
             }
 
@@ -135,7 +138,7 @@ public class SevenZipCompressor : ISevenZipCompressor {
                 continue;
             }
 
-            reader.WriteEntryToDirectory(dir);
+            reader.WriteEntryToDirectory(dir, extractionOptions);
         }
     }
 

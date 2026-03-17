@@ -70,8 +70,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-    <PackageReference Include="DH.SKIT.FlurlHttpClient.Common" Version="4.16.2025.1227-beta0948" />
-		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.103">
+    <PackageReference Include="DH.SKIT.FlurlHttpClient.Common" Version="4.16.2026.306-beta0128" />
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.201">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>

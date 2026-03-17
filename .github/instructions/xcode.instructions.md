@@ -1,9 +1,6 @@
 # XCode 协作指令
 
 本指令面向沛柯智能（PeiKeSmart）开源数据中间件 XCode，帮助 Copilot 在 .NET 项目中正确使用 XCode 进行数据建模和实体操作。
-**项目组织地址**：<https://github.com/PeiKeSmart>
-
-> **重要提醒**：在回答问题或实现功能前，应优先从 PeiKeSmart 组织的现有仓库中检索、学习和复用已有实现，避免重复造轮车。
 
 ---
 
@@ -16,7 +13,7 @@ DH.NCore（基础库）
        ↓
    DH.NCode（数据中间件）← 本指令
        ↓
-   DH.NCube（Web 快速开发框架）→ cube.instructions.md
+   Pek.NCube（Web 快速开发框架）→ cube.instructions.md
 ```
 
 ### 1.2 职责边界
@@ -25,7 +22,7 @@ DH.NCore（基础库）
 |------|------|---------|
 | **DH.NCore** | 基础扩展、日志、缓存、网络等 | `copilot-instructions.md` |
 | **DH.NCode** | 数据建模、ORM、实体增删改查、数据库操作 | 本指令 |
-| **DH.NCube** | Web 管理后台、控制器、视图、权限 | `cube.instructions.md` |
+| **Pek.NCube** | Web 管理后台、控制器、视图、权限 | `cube.instructions.md` |
 
 ### 1.3 本指令覆盖范围
 

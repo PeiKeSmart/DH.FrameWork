@@ -1,0 +1,6 @@
+<Project>
+  <PropertyGroup>
+    <_NewLifeCore_CopilotInstructions_SourceTime Condition="'$(_NewLifeCore_CopilotInstructions_SourceTime)' == ''">0</_NewLifeCore_CopilotInstructions_SourceTime>
+    <_NewLifeCore_CopilotInstructions_DestTime Condition="'$(_NewLifeCore_CopilotInstructions_DestTime)' == ''">0</_NewLifeCore_CopilotInstructions_DestTime>
+  </PropertyGroup>
+</Project>
