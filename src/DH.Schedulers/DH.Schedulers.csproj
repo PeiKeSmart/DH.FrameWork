@@ -74,7 +74,8 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Quartz" Version="3.16.1" />
+		<PackageReference Include="NPOI" Version="2.8.0" />
+		<PackageReference Include="Quartz" Version="3.18.0" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -70,6 +70,8 @@
 
 	<ItemGroup>
 		<PackageReference Include="DynamicExpresso.Core" Version="2.19.3" />
+		<PackageReference Include="Fare" Version="2.2.2" />
+		<PackageReference Include="FluentFTP" Version="54.1.1" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.201">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -77,9 +79,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Azure.Identity" Version="1.19.0" />
+		<PackageReference Include="Azure.Identity" Version="1.21.0" />
 		<PackageReference Include="Azure.Security.KeyVault.Certificates" Version="4.8.0" />
-		<PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.9.0" />
+		<PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.10.0" />
+		<PackageReference Include="NPOI" Version="2.8.0" />
 	</ItemGroup>
 
 	<ItemGroup>
