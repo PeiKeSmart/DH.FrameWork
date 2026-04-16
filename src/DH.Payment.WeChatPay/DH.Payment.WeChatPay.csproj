@@ -24,7 +24,7 @@
      确保从NuGet缓存复制的dll到项目的输出-->
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<!-- 对控制器/操作/方法没有阻止注释禁用警告 -->
-		<NoWarn>1701;1702;1705;1591;NU5104</NoWarn>
+		<NoWarn>1701;1702;1705;1591</NoWarn>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<!--禁止生成launchSettings.json-->
 		<NoDefaultLaunchSettingsFile>True</NoDefaultLaunchSettingsFile>
