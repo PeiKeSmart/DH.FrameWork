@@ -75,7 +75,7 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="NPOI" Version="2.8.0" />
-		<PackageReference Include="Pek.Common" Version="4.22.2026.415-beta1156" />
+		<PackageReference Include="Pek.Common" Version="4.22.2026.415-beta0901" />
 	</ItemGroup>
 
 	<ItemGroup>
