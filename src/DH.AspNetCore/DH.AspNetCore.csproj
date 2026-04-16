@@ -68,9 +68,9 @@
 
 	<ItemGroup>
 		<!-- 公共包，net9/net10 版本相同，写一份即可 -->
-		<PackageReference Include="Pek.AspNetCore" Version="4.22.2026.415-beta0907" />
-		<PackageReference Include="Pek.Common" Version="4.22.2026.415-beta0901" />
-		<PackageReference Include="SharpCompress" Version="0.47.4" />
+		<PackageReference Include="Pek.AspNetCore" Version="4.18.2026.305-beta0952" />
+		<PackageReference Include="Pek.Common" Version="4.20.2026.312-beta1246" />
+		<PackageReference Include="SharpCompress" Version="0.47.0" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
