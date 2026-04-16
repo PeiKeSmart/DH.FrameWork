@@ -69,13 +69,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.202">
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.201">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-		<PackageReference Include="BouncyCastle.Cryptography" Version="2.6.2">
-			<ExcludeAssets>compile</ExcludeAssets>
-			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
     <PackageReference Include="Pek.Payment.Security" Version="4.16.2025.1120-beta0318" />
 	</ItemGroup>
