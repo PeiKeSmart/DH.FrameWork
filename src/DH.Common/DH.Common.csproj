@@ -86,13 +86,13 @@
 	</ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' != 'net9.0'">
-    <PackageReference Include="System.Text.Json" Version="10.0.5" />
-    <PackageReference Include="System.Drawing.Common" Version="10.0.5" />
+    <PackageReference Include="System.Text.Json" Version="10.0.6" />
+    <PackageReference Include="System.Drawing.Common" Version="10.0.6" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
-    <PackageReference Include="System.Text.Json" Version="9.0.14" />
-    <PackageReference Include="System.Drawing.Common" Version="9.0.14" />
+    <PackageReference Include="System.Text.Json" Version="9.0.15" />
+    <PackageReference Include="System.Drawing.Common" Version="9.0.15" />
   </ItemGroup>
 
 	<ItemGroup>
