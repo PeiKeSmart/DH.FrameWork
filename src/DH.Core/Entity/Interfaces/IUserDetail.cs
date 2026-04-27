@@ -14,8 +14,14 @@ public partial interface IUserDetail
     /// <summary>用户Id</summary>
     Int32 Id { get; set; }
 
-    /// <summary>语言Id</summary>
+    /// <summary>前台语言Id</summary>
     Int32 LanguageId { get; set; }
+
+    /// <summary>后台语言Id</summary>
+    Int32 AdminLanguageId { get; set; }
+
+    /// <summary>货币Id</summary>
+    Int32 CurrenciesId { get; set; }
 
     /// <summary>是否超级管理员</summary>
     Boolean IsSuper { get; set; }
@@ -118,6 +124,12 @@ public partial interface IUserDetail
 
     /// <summary>微信号码</summary>
     String WeiXin { get; set; }
+
+    /// <summary>WhatsApp号码</summary>
+    String WhatsApp { get; set; }
+
+    /// <summary>Skype号码</summary>
+    String Skype { get; set; }
 
     /// <summary>阿里旺旺号码</summary>
     String WangWang { get; set; }

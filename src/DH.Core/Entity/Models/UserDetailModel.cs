@@ -14,8 +14,14 @@ public partial class UserDetailModel
     /// <summary>用户Id</summary>
     public Int32 Id { get; set; }
 
-    /// <summary>语言Id</summary>
+    /// <summary>前台语言Id</summary>
     public Int32 LanguageId { get; set; }
+
+    /// <summary>后台语言Id</summary>
+    public Int32 AdminLanguageId { get; set; }
+
+    /// <summary>货币Id</summary>
+    public Int32 CurrenciesId { get; set; }
 
     /// <summary>是否超级管理员</summary>
     public Boolean IsSuper { get; set; }
@@ -118,6 +124,12 @@ public partial class UserDetailModel
 
     /// <summary>微信号码</summary>
     public String WeiXin { get; set; }
+
+    /// <summary>WhatsApp号码</summary>
+    public String WhatsApp { get; set; }
+
+    /// <summary>Skype号码</summary>
+    public String Skype { get; set; }
 
     /// <summary>阿里旺旺号码</summary>
     public String WangWang { get; set; }
@@ -232,6 +244,8 @@ public partial class UserDetailModel
     {
         Id = model.Id;
         LanguageId = model.LanguageId;
+        AdminLanguageId = model.AdminLanguageId;
+        CurrenciesId = model.CurrenciesId;
         IsSuper = model.IsSuper;
         SId = model.SId;
         TenantId = model.TenantId;
@@ -266,6 +280,8 @@ public partial class UserDetailModel
         ExpPoints = model.ExpPoints;
         QQ = model.QQ;
         WeiXin = model.WeiXin;
+        WhatsApp = model.WhatsApp;
+        Skype = model.Skype;
         WangWang = model.WangWang;
         ContactName = model.ContactName;
         Tel = model.Tel;

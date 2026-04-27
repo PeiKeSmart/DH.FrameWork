@@ -195,7 +195,7 @@ public partial class LocaleStringResource : ILocaleStringResource, IEntity<ILoca
         if (lanKey.IsNullOrEmpty()) return [];
 
         // 实体缓存
-        if (Meta.Session.Count < 20000) return Meta.Cache.FindAll(e => e.LanKey.EqualIgnoreCase(lanKey));
+        if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => e.LanKey.EqualIgnoreCase(lanKey));
 
         return FindAll(_.LanKey == lanKey);
     }

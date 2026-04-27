@@ -17,12 +17,12 @@ namespace DH.Entity;
 [Serializable]
 [DataObject]
 [Description("用户扩展")]
-[BindIndex("IX_DG_UserDetail_ReferrerId", false, "ReferrerId")]
-[BindIndex("IX_DG_UserDetail_TenantId", false, "TenantId")]
-[BindIndex("IX_DG_UserDetail_KeFuId", false, "KeFuId")]
-[BindIndex("IX_DG_UserDetail_UType", false, "UType")]
-[BindIndex("IX_DG_UserDetail_ParentUId", false, "ParentUId")]
-[BindTable("DG_UserDetail", Description = "用户扩展", ConnName = "Membership", DbType = DatabaseType.None)]
+[BindIndex("IX_DH_UserDetail_ReferrerId", false, "ReferrerId")]
+[BindIndex("IX_DH_UserDetail_TenantId", false, "TenantId")]
+[BindIndex("IX_DH_UserDetail_KeFuId", false, "KeFuId")]
+[BindIndex("IX_DH_UserDetail_UType", false, "UType")]
+[BindIndex("IX_DH_UserDetail_ParentUId", false, "ParentUId")]
+[BindTable("DH_UserDetail", Description = "用户扩展", ConnName = "Membership", DbType = DatabaseType.None)]
 public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
 {
     #region 属性
@@ -35,12 +35,28 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
     public Int32 Id { get => _Id; set { if (OnPropertyChanging("Id", value)) { _Id = value; OnPropertyChanged("Id"); } } }
 
     private Int32 _LanguageId;
-    /// <summary>语言Id</summary>
-    [DisplayName("语言Id")]
-    [Description("语言Id")]
+    /// <summary>前台语言Id</summary>
+    [DisplayName("前台语言Id")]
+    [Description("前台语言Id")]
     [DataObjectField(false, false, false, 0)]
-    [BindColumn("LanguageId", "语言Id", "")]
+    [BindColumn("LanguageId", "前台语言Id", "")]
     public Int32 LanguageId { get => _LanguageId; set { if (OnPropertyChanging("LanguageId", value)) { _LanguageId = value; OnPropertyChanged("LanguageId"); } } }
+
+    private Int32 _AdminLanguageId;
+    /// <summary>后台语言Id</summary>
+    [DisplayName("后台语言Id")]
+    [Description("后台语言Id")]
+    [DataObjectField(false, false, false, 0)]
+    [BindColumn("AdminLanguageId", "后台语言Id", "")]
+    public Int32 AdminLanguageId { get => _AdminLanguageId; set { if (OnPropertyChanging("AdminLanguageId", value)) { _AdminLanguageId = value; OnPropertyChanged("AdminLanguageId"); } } }
+
+    private Int32 _CurrenciesId;
+    /// <summary>货币Id</summary>
+    [DisplayName("货币Id")]
+    [Description("货币Id")]
+    [DataObjectField(false, false, false, 0)]
+    [BindColumn("CurrenciesId", "货币Id", "")]
+    public Int32 CurrenciesId { get => _CurrenciesId; set { if (OnPropertyChanging("CurrenciesId", value)) { _CurrenciesId = value; OnPropertyChanged("CurrenciesId"); } } }
 
     private Boolean _IsSuper;
     /// <summary>是否超级管理员</summary>
@@ -313,6 +329,22 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
     [DataObjectField(false, false, true, 50)]
     [BindColumn("WeiXin", "微信号码", "")]
     public String WeiXin { get => _WeiXin; set { if (OnPropertyChanging("WeiXin", value)) { _WeiXin = value; OnPropertyChanged("WeiXin"); } } }
+
+    private String _WhatsApp;
+    /// <summary>WhatsApp号码</summary>
+    [DisplayName("WhatsApp号码")]
+    [Description("WhatsApp号码")]
+    [DataObjectField(false, false, true, 50)]
+    [BindColumn("WhatsApp", "WhatsApp号码", "")]
+    public String WhatsApp { get => _WhatsApp; set { if (OnPropertyChanging("WhatsApp", value)) { _WhatsApp = value; OnPropertyChanged("WhatsApp"); } } }
+
+    private String _Skype;
+    /// <summary>Skype号码</summary>
+    [DisplayName("Skype号码")]
+    [Description("Skype号码")]
+    [DataObjectField(false, false, true, 50)]
+    [BindColumn("Skype", "Skype号码", "")]
+    public String Skype { get => _Skype; set { if (OnPropertyChanging("Skype", value)) { _Skype = value; OnPropertyChanged("Skype"); } } }
 
     private String _WangWang;
     /// <summary>阿里旺旺号码</summary>
@@ -604,6 +636,8 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
     {
         Id = model.Id;
         LanguageId = model.LanguageId;
+        AdminLanguageId = model.AdminLanguageId;
+        CurrenciesId = model.CurrenciesId;
         IsSuper = model.IsSuper;
         SId = model.SId;
         TenantId = model.TenantId;
@@ -638,6 +672,8 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
         ExpPoints = model.ExpPoints;
         QQ = model.QQ;
         WeiXin = model.WeiXin;
+        WhatsApp = model.WhatsApp;
+        Skype = model.Skype;
         WangWang = model.WangWang;
         ContactName = model.ContactName;
         Tel = model.Tel;
@@ -686,6 +722,8 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
         {
             "Id" => _Id,
             "LanguageId" => _LanguageId,
+            "AdminLanguageId" => _AdminLanguageId,
+            "CurrenciesId" => _CurrenciesId,
             "IsSuper" => _IsSuper,
             "SId" => _SId,
             "TenantId" => _TenantId,
@@ -720,6 +758,8 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
             "ExpPoints" => _ExpPoints,
             "QQ" => _QQ,
             "WeiXin" => _WeiXin,
+            "WhatsApp" => _WhatsApp,
+            "Skype" => _Skype,
             "WangWang" => _WangWang,
             "ContactName" => _ContactName,
             "Tel" => _Tel,
@@ -763,6 +803,8 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
             {
                 case "Id": _Id = value.ToInt(); break;
                 case "LanguageId": _LanguageId = value.ToInt(); break;
+                case "AdminLanguageId": _AdminLanguageId = value.ToInt(); break;
+                case "CurrenciesId": _CurrenciesId = value.ToInt(); break;
                 case "IsSuper": _IsSuper = value.ToBoolean(); break;
                 case "SId": _SId = Convert.ToString(value); break;
                 case "TenantId": _TenantId = value.ToInt(); break;
@@ -797,6 +839,8 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
                 case "ExpPoints": _ExpPoints = value.ToInt(); break;
                 case "QQ": _QQ = Convert.ToString(value); break;
                 case "WeiXin": _WeiXin = Convert.ToString(value); break;
+                case "WhatsApp": _WhatsApp = Convert.ToString(value); break;
+                case "Skype": _Skype = Convert.ToString(value); break;
                 case "WangWang": _WangWang = Convert.ToString(value); break;
                 case "ContactName": _ContactName = Convert.ToString(value); break;
                 case "Tel": _Tel = Convert.ToString(value); break;
@@ -863,8 +907,14 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
         /// <summary>用户Id</summary>
         public static readonly Field Id = FindByName("Id");
 
-        /// <summary>语言Id</summary>
+        /// <summary>前台语言Id</summary>
         public static readonly Field LanguageId = FindByName("LanguageId");
+
+        /// <summary>后台语言Id</summary>
+        public static readonly Field AdminLanguageId = FindByName("AdminLanguageId");
+
+        /// <summary>货币Id</summary>
+        public static readonly Field CurrenciesId = FindByName("CurrenciesId");
 
         /// <summary>是否超级管理员</summary>
         public static readonly Field IsSuper = FindByName("IsSuper");
@@ -967,6 +1017,12 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
 
         /// <summary>微信号码</summary>
         public static readonly Field WeiXin = FindByName("WeiXin");
+
+        /// <summary>WhatsApp号码</summary>
+        public static readonly Field WhatsApp = FindByName("WhatsApp");
+
+        /// <summary>Skype号码</summary>
+        public static readonly Field Skype = FindByName("Skype");
 
         /// <summary>阿里旺旺号码</summary>
         public static readonly Field WangWang = FindByName("WangWang");
@@ -1082,8 +1138,14 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
         /// <summary>用户Id</summary>
         public const String Id = "Id";
 
-        /// <summary>语言Id</summary>
+        /// <summary>前台语言Id</summary>
         public const String LanguageId = "LanguageId";
+
+        /// <summary>后台语言Id</summary>
+        public const String AdminLanguageId = "AdminLanguageId";
+
+        /// <summary>货币Id</summary>
+        public const String CurrenciesId = "CurrenciesId";
 
         /// <summary>是否超级管理员</summary>
         public const String IsSuper = "IsSuper";
@@ -1186,6 +1248,12 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
 
         /// <summary>微信号码</summary>
         public const String WeiXin = "WeiXin";
+
+        /// <summary>WhatsApp号码</summary>
+        public const String WhatsApp = "WhatsApp";
+
+        /// <summary>Skype号码</summary>
+        public const String Skype = "Skype";
 
         /// <summary>阿里旺旺号码</summary>
         public const String WangWang = "WangWang";

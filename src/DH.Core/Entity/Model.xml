@@ -39,10 +39,12 @@
     <CubeOutput />
   </Option>
   <Tables>
-    <Table Name="UserDetail" TableName="DG_UserDetail" Description="用户扩展" ConnName="Membership">
+    <Table Name="UserDetail" TableName="DH_UserDetail" Description="用户扩展" ConnName="Membership">
       <Columns>
         <Column Name="Id" DataType="Int32" PrimaryKey="True" Description="用户Id" />
-        <Column Name="LanguageId" DataType="Int32" Description="语言Id" />
+        <Column Name="LanguageId" DataType="Int32" Description="前台语言Id" />
+        <Column Name="AdminLanguageId" DataType="Int32" Description="后台语言Id" />
+        <Column Name="CurrenciesId" DataType="Int32" Description="货币Id" />
         <Column Name="IsSuper" DataType="Boolean" Description="是否超级管理员" />
         <Column Name="SId" DataType="String" Description="用户SessionId" />
         <Column Name="TenantId" DataType="Int32" Description="用户所属租户Id" />
@@ -77,6 +79,8 @@
         <Column Name="ExpPoints" DataType="Int32" Description="会员经验值" />
         <Column Name="QQ" DataType="String" Description="QQ号码" />
         <Column Name="WeiXin" DataType="String" Description="微信号码" />
+        <Column Name="WhatsApp" DataType="String" Description="WhatsApp号码" />
+        <Column Name="Skype" DataType="String" Description="Skype号码" />
         <Column Name="WangWang" DataType="String" Description="阿里旺旺号码" />
         <Column Name="ContactName" DataType="String" Description="联系人" />
         <Column Name="Tel" DataType="String" Description="固话" />
