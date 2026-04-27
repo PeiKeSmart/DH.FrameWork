@@ -179,6 +179,28 @@ public partial class SendLog : ISendLog, IEntity<ISendLog>
     #region 扩展查询
     #endregion
 
+    #region 高级查询
+    /// <summary>高级查询</summary>
+    /// <param name="account">手机号/邮箱</param>
+    /// <param name="smsId">短信平台返回的Id</param>
+    /// <param name="start">消息添加时间开始</param>
+    /// <param name="end">消息添加时间结束</param>
+    /// <param name="key">关键字</param>
+    /// <param name="page">分页参数信息。可携带统计和数据权限扩展查询等信息</param>
+    /// <returns>实体列表</returns>
+    public static IList<SendLog> Search(String account, String smsId, DateTime start, DateTime end, String key, PageParameter page)
+    {
+        var exp = new WhereExpression();
+
+        if (!account.IsNullOrEmpty()) exp &= _.Account == account;
+        if (!smsId.IsNullOrEmpty()) exp &= _.SmsId == smsId;
+        exp &= _.CreateTime.Between(start, end);
+        if (!key.IsNullOrEmpty()) exp &= SearchWhereByKeys(key);
+
+        return FindAll(exp, page);
+    }
+    #endregion
+
     #region 字段名
     /// <summary>取得消息记录字段信息的快捷方式</summary>
     public partial class _

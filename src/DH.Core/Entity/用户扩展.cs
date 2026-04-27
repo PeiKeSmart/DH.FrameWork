@@ -900,6 +900,52 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
     }
     #endregion
 
+    #region 高级查询
+    /// <summary>高级查询</summary>
+    /// <param name="tenantId">用户所属租户Id</param>
+    /// <param name="uType">用户类型。类型自定义</param>
+    /// <param name="referrerId">推荐人ID</param>
+    /// <param name="keFuId">所属销售ID</param>
+    /// <param name="parentUId">所属上级会员ID</param>
+    /// <param name="isSuper">是否超级管理员</param>
+    /// <param name="emailBind">是否绑定邮箱</param>
+    /// <param name="mobileBind">是否绑定手机</param>
+    /// <param name="isSubScribe">是否关注微信公众号</param>
+    /// <param name="isSales">是否销售人员</param>
+    /// <param name="isEngineer">是否为工程师</param>
+    /// <param name="informAllow">是否禁止举报</param>
+    /// <param name="isBuy">是否禁止购买</param>
+    /// <param name="isAllowTalk">是否禁止发表言论</param>
+    /// <param name="start">更新时间开始</param>
+    /// <param name="end">更新时间结束</param>
+    /// <param name="key">关键字</param>
+    /// <param name="page">分页参数信息。可携带统计和数据权限扩展查询等信息</param>
+    /// <returns>实体列表</returns>
+    public static IList<UserDetail> Search(Int32 tenantId, UserKinds uType, Int32 referrerId, Int32 keFuId, Int32 parentUId, Boolean? isSuper, Boolean? emailBind, Boolean? mobileBind, Boolean? isSubScribe, Boolean? isSales, Boolean? isEngineer, Boolean? informAllow, Boolean? isBuy, Boolean? isAllowTalk, DateTime start, DateTime end, String key, PageParameter page)
+    {
+        var exp = new WhereExpression();
+
+        if (tenantId >= 0) exp &= _.TenantId == tenantId;
+        if (uType >= 0) exp &= _.UType == uType;
+        if (referrerId >= 0) exp &= _.ReferrerId == referrerId;
+        if (keFuId >= 0) exp &= _.KeFuId == keFuId;
+        if (parentUId >= 0) exp &= _.ParentUId == parentUId;
+        if (isSuper != null) exp &= _.IsSuper == isSuper;
+        if (emailBind != null) exp &= _.EmailBind == emailBind;
+        if (mobileBind != null) exp &= _.MobileBind == mobileBind;
+        if (isSubScribe != null) exp &= _.IsSubScribe == isSubScribe;
+        if (isSales != null) exp &= _.IsSales == isSales;
+        if (isEngineer != null) exp &= _.IsEngineer == isEngineer;
+        if (informAllow != null) exp &= _.InformAllow == informAllow;
+        if (isBuy != null) exp &= _.IsBuy == isBuy;
+        if (isAllowTalk != null) exp &= _.IsAllowTalk == isAllowTalk;
+        exp &= _.UpdateTime.Between(start, end);
+        if (!key.IsNullOrEmpty()) exp &= SearchWhereByKeys(key);
+
+        return FindAll(exp, page);
+    }
+    #endregion
+
     #region 字段名
     /// <summary>取得用户扩展字段信息的快捷方式</summary>
     public partial class _

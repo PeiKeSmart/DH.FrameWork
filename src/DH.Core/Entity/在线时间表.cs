@@ -530,6 +530,34 @@ public partial class SysOnlineTime : ISysOnlineTime, IEntity<ISysOnlineTime>
     }
     #endregion
 
+    #region 高级查询
+    /// <summary>高级查询</summary>
+    /// <param name="uId">用户编号</param>
+    /// <param name="year">年</param>
+    /// <param name="roleId">角色</param>
+    /// <param name="uName">用户名</param>
+    /// <param name="month">月</param>
+    /// <param name="start">最后更新时间开始</param>
+    /// <param name="end">最后更新时间结束</param>
+    /// <param name="key">关键字</param>
+    /// <param name="page">分页参数信息。可携带统计和数据权限扩展查询等信息</param>
+    /// <returns>实体列表</returns>
+    public static IList<SysOnlineTime> Search(Int32 uId, Int32 year, Int32 roleId, String uName, Int32 month, DateTime start, DateTime end, String key, PageParameter page)
+    {
+        var exp = new WhereExpression();
+
+        if (uId >= 0) exp &= _.UId == uId;
+        if (year >= 0) exp &= _.Year == year;
+        if (roleId >= 0) exp &= _.RoleId == roleId;
+        if (!uName.IsNullOrEmpty()) exp &= _.UName == uName;
+        if (month >= 0) exp &= _.Month == month;
+        exp &= _.UpdateTime.Between(start, end);
+        if (!key.IsNullOrEmpty()) exp &= SearchWhereByKeys(key);
+
+        return FindAll(exp, page);
+    }
+    #endregion
+
     #region 字段名
     /// <summary>取得在线时间表字段信息的快捷方式</summary>
     public partial class _

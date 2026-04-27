@@ -266,6 +266,28 @@ public partial class AppVersion : IAppVersion, IEntity<IAppVersion>
     #region 扩展查询
     #endregion
 
+    #region 高级查询
+    /// <summary>高级查询</summary>
+    /// <param name="boundId">APP包名</param>
+    /// <param name="isQiangZhi">是否强制升级</param>
+    /// <param name="start">更新时间开始</param>
+    /// <param name="end">更新时间结束</param>
+    /// <param name="key">关键字</param>
+    /// <param name="page">分页参数信息。可携带统计和数据权限扩展查询等信息</param>
+    /// <returns>实体列表</returns>
+    public static IList<AppVersion> Search(String boundId, Boolean? isQiangZhi, DateTime start, DateTime end, String key, PageParameter page)
+    {
+        var exp = new WhereExpression();
+
+        if (!boundId.IsNullOrEmpty()) exp &= _.BoundId == boundId;
+        if (isQiangZhi != null) exp &= _.IsQiangZhi == isQiangZhi;
+        exp &= _.UpdateTime.Between(start, end);
+        if (!key.IsNullOrEmpty()) exp &= SearchWhereByKeys(key);
+
+        return FindAll(exp, page);
+    }
+    #endregion
+
     #region 字段名
     /// <summary>取得APP版本字段信息的快捷方式</summary>
     public partial class _

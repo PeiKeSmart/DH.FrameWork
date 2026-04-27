@@ -177,6 +177,27 @@ public partial class MailInfo : IMailInfo, IEntity<IMailInfo>
     #region 扩展查询
     #endregion
 
+    #region 高级查询
+    /// <summary>高级查询</summary>
+    /// <param name="isEnabled">是否启用</param>
+    /// <param name="isDefault">是否默认</param>
+    /// <param name="isSSL">SMTP 协议</param>
+    /// <param name="key">关键字</param>
+    /// <param name="page">分页参数信息。可携带统计和数据权限扩展查询等信息</param>
+    /// <returns>实体列表</returns>
+    public static IList<MailInfo> Search(Boolean? isEnabled, Boolean? isDefault, Boolean? isSSL, String key, PageParameter page)
+    {
+        var exp = new WhereExpression();
+
+        if (isEnabled != null) exp &= _.IsEnabled == isEnabled;
+        if (isDefault != null) exp &= _.IsDefault == isDefault;
+        if (isSSL != null) exp &= _.IsSSL == isSSL;
+        if (!key.IsNullOrEmpty()) exp &= SearchWhereByKeys(key);
+
+        return FindAll(exp, page);
+    }
+    #endregion
+
     #region 字段名
     /// <summary>取得邮箱配置字段信息的快捷方式</summary>
     public partial class _

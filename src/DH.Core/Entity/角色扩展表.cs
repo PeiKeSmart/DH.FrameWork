@@ -87,20 +87,22 @@ public partial class RoleEx : IRoleEx, IEntity<IRoleEx>
     #endregion
 
     #region 扩展查询
-    /// <summary>根据角色编号查找</summary>
-    /// <param name="id">角色编号</param>
-    /// <returns>实体对象</returns>
-    public static RoleEx FindById(Int32 id)
+    #endregion
+
+    #region 高级查询
+    /// <summary>高级查询</summary>
+    /// <param name="isAdmin">是否管理员</param>
+    /// <param name="key">关键字</param>
+    /// <param name="page">分页参数信息。可携带统计和数据权限扩展查询等信息</param>
+    /// <returns>实体列表</returns>
+    public static IList<RoleEx> Search(Boolean? isAdmin, String key, PageParameter page)
     {
-        if (id < 0) return null;
+        var exp = new WhereExpression();
 
-        // 实体缓存
-        if (Meta.Session.Count < 1000) return Meta.Cache.Find(e => e.Id == id);
+        if (isAdmin != null) exp &= _.IsAdmin == isAdmin;
+        if (!key.IsNullOrEmpty()) exp &= SearchWhereByKeys(key);
 
-        // 单对象缓存
-        return Meta.SingleCache[id];
-
-        //return Find(_.Id == id);
+        return FindAll(exp, page);
     }
     #endregion
 

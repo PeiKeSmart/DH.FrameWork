@@ -189,6 +189,28 @@ public partial class PointsLog : IPointsLog, IEntity<IPointsLog>
     #region 扩展查询
     #endregion
 
+    #region 高级查询
+    /// <summary>高级查询</summary>
+    /// <param name="uId">会员ID</param>
+    /// <param name="stage">积分操作阶段。regist注册,login登录,comments商品评论,order订单消费,system系统调整,pointorder礼品兑换,exchange积分兑换,signin签到,inviter推荐注册,rebate推荐返利</param>
+    /// <param name="start">积分添加时间开始</param>
+    /// <param name="end">积分添加时间结束</param>
+    /// <param name="key">关键字</param>
+    /// <param name="page">分页参数信息。可携带统计和数据权限扩展查询等信息</param>
+    /// <returns>实体列表</returns>
+    public static IList<PointsLog> Search(Int32 uId, String stage, DateTime start, DateTime end, String key, PageParameter page)
+    {
+        var exp = new WhereExpression();
+
+        if (uId >= 0) exp &= _.UId == uId;
+        if (!stage.IsNullOrEmpty()) exp &= _.Stage == stage;
+        exp &= _.CreateTime.Between(start, end);
+        if (!key.IsNullOrEmpty()) exp &= SearchWhereByKeys(key);
+
+        return FindAll(exp, page);
+    }
+    #endregion
+
     #region 字段名
     /// <summary>取得会员积分日志表字段信息的快捷方式</summary>
     public partial class _

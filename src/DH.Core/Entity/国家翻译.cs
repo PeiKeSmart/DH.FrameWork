@@ -115,6 +115,25 @@ public partial class CountryLan : ICountryLan, IEntity<ICountryLan>
     }
     #endregion
 
+    #region 高级查询
+    /// <summary>高级查询</summary>
+    /// <param name="cId">关联国家Id</param>
+    /// <param name="lId">关联所属语言Id</param>
+    /// <param name="key">关键字</param>
+    /// <param name="page">分页参数信息。可携带统计和数据权限扩展查询等信息</param>
+    /// <returns>实体列表</returns>
+    public static IList<CountryLan> Search(Int32 cId, Int32 lId, String key, PageParameter page)
+    {
+        var exp = new WhereExpression();
+
+        if (cId >= 0) exp &= _.CId == cId;
+        if (lId >= 0) exp &= _.LId == lId;
+        if (!key.IsNullOrEmpty()) exp &= SearchWhereByKeys(key);
+
+        return FindAll(exp, page);
+    }
+    #endregion
+
     #region 字段名
     /// <summary>取得国家翻译字段信息的快捷方式</summary>
     public partial class _

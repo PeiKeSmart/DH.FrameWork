@@ -344,20 +344,33 @@ public partial class Regions : IRegions, IEntity<IRegions>
     #endregion
 
     #region 扩展查询
-    /// <summary>根据编号查找</summary>
-    /// <param name="id">编号</param>
-    /// <returns>实体对象</returns>
-    public static Regions FindById(Int32 id)
+    #endregion
+
+    #region 高级查询
+    /// <summary>高级查询</summary>
+    /// <param name="cId">国家编号</param>
+    /// <param name="level">层级</param>
+    /// <param name="parentCode">父级行政代码</param>
+    /// <param name="areaCode">行政代码</param>
+    /// <param name="cityId">城市Id</param>
+    /// <param name="start">更新时间开始</param>
+    /// <param name="end">更新时间结束</param>
+    /// <param name="key">关键字</param>
+    /// <param name="page">分页参数信息。可携带统计和数据权限扩展查询等信息</param>
+    /// <returns>实体列表</returns>
+    public static IList<Regions> Search(Int32 cId, Int32 level, Int64 parentCode, Int64 areaCode, Int32 cityId, DateTime start, DateTime end, String key, PageParameter page)
     {
-        if (id < 0) return null;
+        var exp = new WhereExpression();
 
-        // 实体缓存
-        if (Meta.Session.Count < 1000) return Meta.Cache.Find(e => e.Id == id);
+        if (cId >= 0) exp &= _.CId == cId;
+        if (level >= 0) exp &= _.Level == level;
+        if (parentCode >= 0) exp &= _.ParentCode == parentCode;
+        if (areaCode >= 0) exp &= _.AreaCode == areaCode;
+        if (cityId >= 0) exp &= _.CityId == cityId;
+        exp &= _.UpdateTime.Between(start, end);
+        if (!key.IsNullOrEmpty()) exp &= SearchWhereByKeys(key);
 
-        // 单对象缓存
-        return Meta.SingleCache[id];
-
-        //return Find(_.Id == id);
+        return FindAll(exp, page);
     }
     #endregion
 

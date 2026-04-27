@@ -213,6 +213,30 @@ public partial class PdRecharge : IPdRecharge, IEntity<IPdRecharge>
     }
     #endregion
 
+    #region 高级查询
+    /// <summary>高级查询</summary>
+    /// <param name="sn">记录唯一标示</param>
+    /// <param name="uId">会员ID</param>
+    /// <param name="state">支付状态。是否支付</param>
+    /// <param name="start">创建时间开始</param>
+    /// <param name="end">创建时间结束</param>
+    /// <param name="key">关键字</param>
+    /// <param name="page">分页参数信息。可携带统计和数据权限扩展查询等信息</param>
+    /// <returns>实体列表</returns>
+    public static IList<PdRecharge> Search(String sn, Int32 uId, Boolean? state, DateTime start, DateTime end, String key, PageParameter page)
+    {
+        var exp = new WhereExpression();
+
+        if (!sn.IsNullOrEmpty()) exp &= _.Sn == sn;
+        if (uId >= 0) exp &= _.UId == uId;
+        if (state != null) exp &= _.State == state;
+        exp &= _.CreateTime.Between(start, end);
+        if (!key.IsNullOrEmpty()) exp &= SearchWhereByKeys(key);
+
+        return FindAll(exp, page);
+    }
+    #endregion
+
     #region 字段名
     /// <summary>取得预存款充值表字段信息的快捷方式</summary>
     public partial class _

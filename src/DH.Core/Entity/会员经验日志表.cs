@@ -167,6 +167,26 @@ public partial class ExpPointsLog : IExpPointsLog, IEntity<IExpPointsLog>
     #region 扩展查询
     #endregion
 
+    #region 高级查询
+    /// <summary>高级查询</summary>
+    /// <param name="uId">会员ID</param>
+    /// <param name="start">经验添加时间开始</param>
+    /// <param name="end">经验添加时间结束</param>
+    /// <param name="key">关键字</param>
+    /// <param name="page">分页参数信息。可携带统计和数据权限扩展查询等信息</param>
+    /// <returns>实体列表</returns>
+    public static IList<ExpPointsLog> Search(Int32 uId, DateTime start, DateTime end, String key, PageParameter page)
+    {
+        var exp = new WhereExpression();
+
+        if (uId >= 0) exp &= _.UId == uId;
+        exp &= _.CreateTime.Between(start, end);
+        if (!key.IsNullOrEmpty()) exp &= SearchWhereByKeys(key);
+
+        return FindAll(exp, page);
+    }
+    #endregion
+
     #region 字段名
     /// <summary>取得会员经验日志表字段信息的快捷方式</summary>
     public partial class _

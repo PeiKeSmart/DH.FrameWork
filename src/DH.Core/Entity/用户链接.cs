@@ -327,6 +327,38 @@ public partial class UserConnect : IUserConnect, IEntity<IUserConnect>
     }
     #endregion
 
+    #region 高级查询
+    /// <summary>高级查询</summary>
+    /// <param name="provider">提供商</param>
+    /// <param name="userId">用户。本地用户</param>
+    /// <param name="openId">身份标识。用户名、OpenID</param>
+    /// <param name="unionId">全局标识。跨应用统一</param>
+    /// <param name="linkId">用户编号。第三方用户编号</param>
+    /// <param name="deviceId">设备标识。企业微信用于唯一标识设备，重装后改变</param>
+    /// <param name="enable">启用</param>
+    /// <param name="start">更新时间开始</param>
+    /// <param name="end">更新时间结束</param>
+    /// <param name="key">关键字</param>
+    /// <param name="page">分页参数信息。可携带统计和数据权限扩展查询等信息</param>
+    /// <returns>实体列表</returns>
+    public static IList<UserConnect> Search(String provider, Int32 userId, String openId, String unionId, Int64 linkId, String deviceId, Boolean? enable, DateTime start, DateTime end, String key, PageParameter page)
+    {
+        var exp = new WhereExpression();
+
+        if (!provider.IsNullOrEmpty()) exp &= _.Provider == provider;
+        if (userId >= 0) exp &= _.UserID == userId;
+        if (!openId.IsNullOrEmpty()) exp &= _.OpenID == openId;
+        if (!unionId.IsNullOrEmpty()) exp &= _.UnionID == unionId;
+        if (linkId >= 0) exp &= _.LinkID == linkId;
+        if (!deviceId.IsNullOrEmpty()) exp &= _.DeviceId == deviceId;
+        if (enable != null) exp &= _.Enable == enable;
+        exp &= _.UpdateTime.Between(start, end);
+        if (!key.IsNullOrEmpty()) exp &= SearchWhereByKeys(key);
+
+        return FindAll(exp, page);
+    }
+    #endregion
+
     #region 字段名
     /// <summary>取得用户链接字段信息的快捷方式</summary>
     public partial class _

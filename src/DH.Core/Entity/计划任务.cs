@@ -166,6 +166,25 @@ public partial class ScheduleTask : IScheduleTask, IEntity<IScheduleTask>
     #region 扩展查询
     #endregion
 
+    #region 高级查询
+    /// <summary>高级查询</summary>
+    /// <param name="enabled">是否启用任务</param>
+    /// <param name="stopOnError">是否应在出现错误时停止任务</param>
+    /// <param name="key">关键字</param>
+    /// <param name="page">分页参数信息。可携带统计和数据权限扩展查询等信息</param>
+    /// <returns>实体列表</returns>
+    public static IList<ScheduleTask> Search(Boolean? enabled, Boolean? stopOnError, String key, PageParameter page)
+    {
+        var exp = new WhereExpression();
+
+        if (enabled != null) exp &= _.Enabled == enabled;
+        if (stopOnError != null) exp &= _.StopOnError == stopOnError;
+        if (!key.IsNullOrEmpty()) exp &= SearchWhereByKeys(key);
+
+        return FindAll(exp, page);
+    }
+    #endregion
+
     #region 字段名
     /// <summary>取得计划任务字段信息的快捷方式</summary>
     public partial class _

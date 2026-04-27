@@ -17,9 +17,9 @@ namespace DH.Entity;
 [Serializable]
 [DataObject]
 [Description("语言类别")]
-[BindIndex("IU_DG_Language_UniqueSeoCode", true, "UniqueSeoCode")]
-[BindIndex("IU_DG_Language_LanguageCulture", true, "LanguageCulture")]
-[BindTable("DG_Language", Description = "语言类别", ConnName = "DG", DbType = DatabaseType.None)]
+[BindIndex("IU_DH_Language_UniqueSeoCode", true, "UniqueSeoCode")]
+[BindIndex("IU_DH_Language_LanguageCulture", true, "LanguageCulture")]
+[BindTable("DH_Language", Description = "语言类别", ConnName = "DG", DbType = DatabaseType.None)]
 public partial class Language : ILanguage, IEntity<ILanguage>
 {
     #region 属性
@@ -36,7 +36,7 @@ public partial class Language : ILanguage, IEntity<ILanguage>
     [DisplayName("语言名称")]
     [Description("语言名称")]
     [DataObjectField(false, false, true, 30)]
-    [BindColumn("Name", "语言名称", "varchar(30)", Master = true)]
+    [BindColumn("Name", "语言名称", "", Master = true)]
     public String Name { get => _Name; set { if (OnPropertyChanging("Name", value)) { _Name = value; OnPropertyChanged("Name"); } } }
 
     private String _DisplayName;
@@ -44,7 +44,7 @@ public partial class Language : ILanguage, IEntity<ILanguage>
     [DisplayName("显示名称")]
     [Description("显示名称")]
     [DataObjectField(false, false, true, 30)]
-    [BindColumn("DisplayName", "显示名称", "varchar(30)", Master = true)]
+    [BindColumn("DisplayName", "显示名称", "", Master = true)]
     public String DisplayName { get => _DisplayName; set { if (OnPropertyChanging("DisplayName", value)) { _DisplayName = value; OnPropertyChanged("DisplayName"); } } }
 
     private String _EnglishName;
@@ -52,7 +52,7 @@ public partial class Language : ILanguage, IEntity<ILanguage>
     [DisplayName("英文名称")]
     [Description("英文名称")]
     [DataObjectField(false, false, true, 50)]
-    [BindColumn("EnglishName", "英文名称", "varchar(50)")]
+    [BindColumn("EnglishName", "英文名称", "")]
     public String EnglishName { get => _EnglishName; set { if (OnPropertyChanging("EnglishName", value)) { _EnglishName = value; OnPropertyChanged("EnglishName"); } } }
 
     private String _FlagImageFileName;
@@ -60,23 +60,23 @@ public partial class Language : ILanguage, IEntity<ILanguage>
     [DisplayName("旗帜文件名")]
     [Description("旗帜文件名")]
     [DataObjectField(false, false, true, 50)]
-    [BindColumn("FlagImageFileName", "旗帜文件名", "varchar(50)")]
+    [BindColumn("FlagImageFileName", "旗帜文件名", "")]
     public String FlagImageFileName { get => _FlagImageFileName; set { if (OnPropertyChanging("FlagImageFileName", value)) { _FlagImageFileName = value; OnPropertyChanged("FlagImageFileName"); } } }
 
     private String _LanguageCulture;
     /// <summary>本地化语言标识</summary>
     [DisplayName("本地化语言标识")]
     [Description("本地化语言标识")]
-    [DataObjectField(false, false, true, 30)]
-    [BindColumn("LanguageCulture", "本地化语言标识", "varchar(30)")]
+    [DataObjectField(false, false, false, 30)]
+    [BindColumn("LanguageCulture", "本地化语言标识", "")]
     public String LanguageCulture { get => _LanguageCulture; set { if (OnPropertyChanging("LanguageCulture", value)) { _LanguageCulture = value; OnPropertyChanged("LanguageCulture"); } } }
 
     private String _UniqueSeoCode;
     /// <summary>Url缩写</summary>
     [DisplayName("Url缩写")]
     [Description("Url缩写")]
-    [DataObjectField(false, false, true, 30)]
-    [BindColumn("UniqueSeoCode", "Url缩写", "varchar(30)")]
+    [DataObjectField(false, false, false, 30)]
+    [BindColumn("UniqueSeoCode", "Url缩写", "")]
     public String UniqueSeoCode { get => _UniqueSeoCode; set { if (OnPropertyChanging("UniqueSeoCode", value)) { _UniqueSeoCode = value; OnPropertyChanged("UniqueSeoCode"); } } }
 
     private String _LangAbbreviation;
@@ -84,7 +84,7 @@ public partial class Language : ILanguage, IEntity<ILanguage>
     [DisplayName("语言简写")]
     [Description("语言简写")]
     [DataObjectField(false, false, true, 10)]
-    [BindColumn("LangAbbreviation", "语言简写", "varchar(10)")]
+    [BindColumn("LangAbbreviation", "语言简写", "")]
     public String LangAbbreviation { get => _LangAbbreviation; set { if (OnPropertyChanging("LangAbbreviation", value)) { _LangAbbreviation = value; OnPropertyChanged("LangAbbreviation"); } } }
 
     private String _Flag;
@@ -92,7 +92,7 @@ public partial class Language : ILanguage, IEntity<ILanguage>
     [DisplayName("旗帜")]
     [Description("旗帜")]
     [DataObjectField(false, false, true, 100)]
-    [BindColumn("Flag", "旗帜", "varchar(100)")]
+    [BindColumn("Flag", "旗帜", "")]
     public String Flag { get => _Flag; set { if (OnPropertyChanging("Flag", value)) { _Flag = value; OnPropertyChanged("Flag"); } } }
 
     private String _Domain;
@@ -100,7 +100,7 @@ public partial class Language : ILanguage, IEntity<ILanguage>
     [DisplayName("域名")]
     [Description("域名")]
     [DataObjectField(false, false, true, 100)]
-    [BindColumn("Domain", "域名", "varchar(100)")]
+    [BindColumn("Domain", "域名", "")]
     public String Domain { get => _Domain; set { if (OnPropertyChanging("Domain", value)) { _Domain = value; OnPropertyChanged("Domain"); } } }
 
     private Int32 _Lcid;
@@ -108,7 +108,7 @@ public partial class Language : ILanguage, IEntity<ILanguage>
     [DisplayName("LCID")]
     [Description("LCID")]
     [DataObjectField(false, false, false, 0)]
-    [BindColumn("Lcid", "LCID", "int(11)")]
+    [BindColumn("Lcid", "LCID", "")]
     public Int32 Lcid { get => _Lcid; set { if (OnPropertyChanging("Lcid", value)) { _Lcid = value; OnPropertyChanged("Lcid"); } } }
 
     private Boolean _Status;
@@ -132,7 +132,7 @@ public partial class Language : ILanguage, IEntity<ILanguage>
     [DisplayName("排序")]
     [Description("排序")]
     [DataObjectField(false, false, true, 0)]
-    [BindColumn("DisplayOrder", "排序", "int(11)")]
+    [BindColumn("DisplayOrder", "排序", "")]
     public Int32 DisplayOrder { get => _DisplayOrder; set { if (OnPropertyChanging("DisplayOrder", value)) { _DisplayOrder = value; OnPropertyChanged("DisplayOrder"); } } }
 
     private Byte _IsDefault;
@@ -140,7 +140,7 @@ public partial class Language : ILanguage, IEntity<ILanguage>
     [DisplayName("是否网站打开默认语言")]
     [Description("是否网站打开默认语言")]
     [DataObjectField(false, false, false, 0)]
-    [BindColumn("IsDefault", "是否网站打开默认语言", "tinyint(1)")]
+    [BindColumn("IsDefault", "是否网站打开默认语言", "")]
     public Byte IsDefault { get => _IsDefault; set { if (OnPropertyChanging("IsDefault", value)) { _IsDefault = value; OnPropertyChanged("IsDefault"); } } }
 
     private String _Remark;
@@ -148,7 +148,7 @@ public partial class Language : ILanguage, IEntity<ILanguage>
     [DisplayName("描述")]
     [Description("描述")]
     [DataObjectField(false, false, true, 255)]
-    [BindColumn("Remark", "描述", "varchar(255)")]
+    [BindColumn("Remark", "描述", "")]
     public String Remark { get => _Remark; set { if (OnPropertyChanging("Remark", value)) { _Remark = value; OnPropertyChanged("Remark"); } } }
 
     private String _CreateUser;
@@ -320,6 +320,32 @@ public partial class Language : ILanguage, IEntity<ILanguage>
     #endregion
 
     #region 扩展查询
+    #endregion
+
+    #region 高级查询
+    /// <summary>高级查询</summary>
+    /// <param name="languageCulture">本地化语言标识</param>
+    /// <param name="uniqueSeoCode">Url缩写</param>
+    /// <param name="status">状态。是否启用</param>
+    /// <param name="rtl">该语言是否支持从右到左</param>
+    /// <param name="start">更新时间开始</param>
+    /// <param name="end">更新时间结束</param>
+    /// <param name="key">关键字</param>
+    /// <param name="page">分页参数信息。可携带统计和数据权限扩展查询等信息</param>
+    /// <returns>实体列表</returns>
+    public static IList<Language> Search(String languageCulture, String uniqueSeoCode, Boolean? status, Boolean? rtl, DateTime start, DateTime end, String key, PageParameter page)
+    {
+        var exp = new WhereExpression();
+
+        if (!languageCulture.IsNullOrEmpty()) exp &= _.LanguageCulture == languageCulture;
+        if (!uniqueSeoCode.IsNullOrEmpty()) exp &= _.UniqueSeoCode == uniqueSeoCode;
+        if (status != null) exp &= _.Status == status;
+        if (rtl != null) exp &= _.Rtl == rtl;
+        exp &= _.UpdateTime.Between(start, end);
+        if (!key.IsNullOrEmpty()) exp &= SearchWhereByKeys(key);
+
+        return FindAll(exp, page);
+    }
     #endregion
 
     #region 字段名

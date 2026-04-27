@@ -178,6 +178,28 @@ public partial class SnsAlbumClass : ISnsAlbumClass, IEntity<ISnsAlbumClass>
     #region 扩展查询
     #endregion
 
+    #region 高级查询
+    /// <summary>高级查询</summary>
+    /// <param name="uId">会员ID</param>
+    /// <param name="isDefault">是否为买家秀相册</param>
+    /// <param name="start">创建时间开始</param>
+    /// <param name="end">创建时间结束</param>
+    /// <param name="key">关键字</param>
+    /// <param name="page">分页参数信息。可携带统计和数据权限扩展查询等信息</param>
+    /// <returns>实体列表</returns>
+    public static IList<SnsAlbumClass> Search(Int32 uId, Boolean? isDefault, DateTime start, DateTime end, String key, PageParameter page)
+    {
+        var exp = new WhereExpression();
+
+        if (uId >= 0) exp &= _.UId == uId;
+        if (isDefault != null) exp &= _.IsDefault == isDefault;
+        exp &= _.CreateTime.Between(start, end);
+        if (!key.IsNullOrEmpty()) exp &= SearchWhereByKeys(key);
+
+        return FindAll(exp, page);
+    }
+    #endregion
+
     #region 字段名
     /// <summary>取得买家相册表字段信息的快捷方式</summary>
     public partial class _

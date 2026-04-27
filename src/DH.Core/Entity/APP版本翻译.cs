@@ -101,6 +101,25 @@ public partial class AppVersionLan : IAppVersionLan, IEntity<IAppVersionLan>
     #region 扩展查询
     #endregion
 
+    #region 高级查询
+    /// <summary>高级查询</summary>
+    /// <param name="aId">APP版本Id</param>
+    /// <param name="lId">关联所属语言Id</param>
+    /// <param name="key">关键字</param>
+    /// <param name="page">分页参数信息。可携带统计和数据权限扩展查询等信息</param>
+    /// <returns>实体列表</returns>
+    public static IList<AppVersionLan> Search(Int32 aId, Int32 lId, String key, PageParameter page)
+    {
+        var exp = new WhereExpression();
+
+        if (aId >= 0) exp &= _.AId == aId;
+        if (lId >= 0) exp &= _.LId == lId;
+        if (!key.IsNullOrEmpty()) exp &= SearchWhereByKeys(key);
+
+        return FindAll(exp, page);
+    }
+    #endregion
+
     #region 字段名
     /// <summary>取得APP版本翻译字段信息的快捷方式</summary>
     public partial class _
