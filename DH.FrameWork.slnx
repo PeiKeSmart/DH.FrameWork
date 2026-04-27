@@ -135,7 +135,6 @@
   </Folder>
   <Folder Name="/src/Libraries/Word/">
     <Project Path="src/DH.Magicodes.IE.Word/DH.Magicodes.IE.Word.csproj" />
-    <Project Path="src/DH.MiniWord/DH.MiniWord.csproj" />
   </Folder>
   <Folder Name="/src/Libraries/开放平台SDK/" />
   <Folder Name="/src/Libraries/开放平台SDK/又拍云/">
