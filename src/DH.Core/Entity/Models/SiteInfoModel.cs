@@ -26,6 +26,9 @@ public partial class SiteInfoModel
     /// <summary>此站点的默认语言的标识符。使用默认语言时设置0</summary>
     public Int32 DefaultLanguageId { get; set; }
 
+    /// <summary>此站点的默认货币的标识符。使用默认货币时设置0</summary>
+    public Int32 DefaultCurrenciesId { get; set; }
+
     /// <summary>获取或设置显示顺序</summary>
     public Int32 DisplayOrder { get; set; }
 
@@ -98,6 +101,12 @@ public partial class SiteInfoModel
     /// <summary>备案号</summary>
     public String Registration { get; set; }
 
+    /// <summary>头部自定义HTML值</summary>
+    public String HeaderCustomHtml { get; set; }
+
+    /// <summary>页脚自定义HTML值</summary>
+    public String FooterCustomHtml { get; set; }
+
     /// <summary>创建者</summary>
     public String CreateUser { get; set; }
 
@@ -133,6 +142,7 @@ public partial class SiteInfoModel
         Hosts = model.Hosts;
         SslEnabled = model.SslEnabled;
         DefaultLanguageId = model.DefaultLanguageId;
+        DefaultCurrenciesId = model.DefaultCurrenciesId;
         DisplayOrder = model.DisplayOrder;
         CompanyName = model.CompanyName;
         CompanyAddress = model.CompanyAddress;
@@ -157,6 +167,8 @@ public partial class SiteInfoModel
         Status = model.Status;
         CloseInfo = model.CloseInfo;
         Registration = model.Registration;
+        HeaderCustomHtml = model.HeaderCustomHtml;
+        FooterCustomHtml = model.FooterCustomHtml;
         CreateUser = model.CreateUser;
         CreateUserID = model.CreateUserID;
         CreateTime = model.CreateTime;

@@ -37,6 +37,12 @@ public partial class SiteInfoLanModel
 
     /// <summary>网站版权等信息</summary>
     public String SiteCopyright { get; set; }
+
+    /// <summary>头部自定义HTML值</summary>
+    public String HeaderCustomHtml { get; set; }
+
+    /// <summary>页脚自定义HTML值</summary>
+    public String FooterCustomHtml { get; set; }
     #endregion
 
     #region 拷贝
@@ -53,6 +59,8 @@ public partial class SiteInfoLanModel
         SeoDescribe = model.SeoDescribe;
         Registration = model.Registration;
         SiteCopyright = model.SiteCopyright;
+        HeaderCustomHtml = model.HeaderCustomHtml;
+        FooterCustomHtml = model.FooterCustomHtml;
     }
     #endregion
 }

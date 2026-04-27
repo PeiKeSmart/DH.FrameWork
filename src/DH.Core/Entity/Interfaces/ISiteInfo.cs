@@ -26,6 +26,9 @@ public partial interface ISiteInfo
     /// <summary>此站点的默认语言的标识符。使用默认语言时设置0</summary>
     Int32 DefaultLanguageId { get; set; }
 
+    /// <summary>此站点的默认货币的标识符。使用默认货币时设置0</summary>
+    Int32 DefaultCurrenciesId { get; set; }
+
     /// <summary>获取或设置显示顺序</summary>
     Int32 DisplayOrder { get; set; }
 
@@ -97,6 +100,12 @@ public partial interface ISiteInfo
 
     /// <summary>备案号</summary>
     String Registration { get; set; }
+
+    /// <summary>头部自定义HTML值</summary>
+    String HeaderCustomHtml { get; set; }
+
+    /// <summary>页脚自定义HTML值</summary>
+    String FooterCustomHtml { get; set; }
 
     /// <summary>创建者</summary>
     String CreateUser { get; set; }

@@ -37,5 +37,11 @@ public partial interface ISiteInfoLan
 
     /// <summary>网站版权等信息</summary>
     String SiteCopyright { get; set; }
+
+    /// <summary>头部自定义HTML值</summary>
+    String HeaderCustomHtml { get; set; }
+
+    /// <summary>页脚自定义HTML值</summary>
+    String FooterCustomHtml { get; set; }
     #endregion
 }

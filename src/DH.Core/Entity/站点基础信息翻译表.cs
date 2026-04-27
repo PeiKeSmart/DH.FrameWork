@@ -17,8 +17,8 @@ namespace DH.Entity;
 [Serializable]
 [DataObject]
 [Description("站点基础信息翻译表")]
-[BindIndex("IU_DG_SiteInfoLan_SiteInfoId_LanguageId", true, "SiteInfoId,LanguageId")]
-[BindTable("DG_SiteInfoLan", Description = "站点基础信息翻译表", ConnName = "DG", DbType = DatabaseType.None)]
+[BindIndex("IU_DH_SiteInfoLan_SiteInfoId_LanguageId", true, "SiteInfoId,LanguageId")]
+[BindTable("DH_SiteInfoLan", Description = "站点基础信息翻译表", ConnName = "DG", DbType = DatabaseType.None)]
 public partial class SiteInfoLan : ISiteInfoLan, IEntity<ISiteInfoLan>
 {
     #region 属性
@@ -93,6 +93,22 @@ public partial class SiteInfoLan : ISiteInfoLan, IEntity<ISiteInfoLan>
     [DataObjectField(false, false, true, 2000)]
     [BindColumn("SiteCopyright", "网站版权等信息", "")]
     public String SiteCopyright { get => _SiteCopyright; set { if (OnPropertyChanging("SiteCopyright", value)) { _SiteCopyright = value; OnPropertyChanged("SiteCopyright"); } } }
+
+    private String _HeaderCustomHtml;
+    /// <summary>头部自定义HTML值</summary>
+    [DisplayName("头部自定义HTML值")]
+    [Description("头部自定义HTML值")]
+    [DataObjectField(false, false, true, 2000)]
+    [BindColumn("HeaderCustomHtml", "头部自定义HTML值", "")]
+    public String HeaderCustomHtml { get => _HeaderCustomHtml; set { if (OnPropertyChanging("HeaderCustomHtml", value)) { _HeaderCustomHtml = value; OnPropertyChanged("HeaderCustomHtml"); } } }
+
+    private String _FooterCustomHtml;
+    /// <summary>页脚自定义HTML值</summary>
+    [DisplayName("页脚自定义HTML值")]
+    [Description("页脚自定义HTML值")]
+    [DataObjectField(false, false, true, 2000)]
+    [BindColumn("FooterCustomHtml", "页脚自定义HTML值", "")]
+    public String FooterCustomHtml { get => _FooterCustomHtml; set { if (OnPropertyChanging("FooterCustomHtml", value)) { _FooterCustomHtml = value; OnPropertyChanged("FooterCustomHtml"); } } }
     #endregion
 
     #region 拷贝
@@ -109,6 +125,8 @@ public partial class SiteInfoLan : ISiteInfoLan, IEntity<ISiteInfoLan>
         SeoDescribe = model.SeoDescribe;
         Registration = model.Registration;
         SiteCopyright = model.SiteCopyright;
+        HeaderCustomHtml = model.HeaderCustomHtml;
+        FooterCustomHtml = model.FooterCustomHtml;
     }
     #endregion
 
@@ -129,6 +147,8 @@ public partial class SiteInfoLan : ISiteInfoLan, IEntity<ISiteInfoLan>
             "SeoDescribe" => _SeoDescribe,
             "Registration" => _Registration,
             "SiteCopyright" => _SiteCopyright,
+            "HeaderCustomHtml" => _HeaderCustomHtml,
+            "FooterCustomHtml" => _FooterCustomHtml,
             _ => base[name]
         };
         set
@@ -144,6 +164,8 @@ public partial class SiteInfoLan : ISiteInfoLan, IEntity<ISiteInfoLan>
                 case "SeoDescribe": _SeoDescribe = Convert.ToString(value); break;
                 case "Registration": _Registration = Convert.ToString(value); break;
                 case "SiteCopyright": _SiteCopyright = Convert.ToString(value); break;
+                case "HeaderCustomHtml": _HeaderCustomHtml = Convert.ToString(value); break;
+                case "FooterCustomHtml": _FooterCustomHtml = Convert.ToString(value); break;
                 default: base[name] = value; break;
             }
         }
@@ -199,6 +221,12 @@ public partial class SiteInfoLan : ISiteInfoLan, IEntity<ISiteInfoLan>
         /// <summary>网站版权等信息</summary>
         public static readonly Field SiteCopyright = FindByName("SiteCopyright");
 
+        /// <summary>头部自定义HTML值</summary>
+        public static readonly Field HeaderCustomHtml = FindByName("HeaderCustomHtml");
+
+        /// <summary>页脚自定义HTML值</summary>
+        public static readonly Field FooterCustomHtml = FindByName("FooterCustomHtml");
+
         static Field FindByName(String name) => Meta.Table.FindByName(name);
     }
 
@@ -231,6 +259,12 @@ public partial class SiteInfoLan : ISiteInfoLan, IEntity<ISiteInfoLan>
 
         /// <summary>网站版权等信息</summary>
         public const String SiteCopyright = "SiteCopyright";
+
+        /// <summary>头部自定义HTML值</summary>
+        public const String HeaderCustomHtml = "HeaderCustomHtml";
+
+        /// <summary>页脚自定义HTML值</summary>
+        public const String FooterCustomHtml = "FooterCustomHtml";
     }
     #endregion
 }

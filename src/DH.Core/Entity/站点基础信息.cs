@@ -17,7 +17,7 @@ namespace DH.Entity;
 [Serializable]
 [DataObject]
 [Description("站点基础信息。目前表只启用部分字段")]
-[BindTable("DG_SiteInfo", Description = "站点基础信息。目前表只启用部分字段", ConnName = "DG", DbType = DatabaseType.None)]
+[BindTable("DH_SiteInfo", Description = "站点基础信息。目前表只启用部分字段", ConnName = "DG", DbType = DatabaseType.None)]
 public partial class SiteInfo : ISiteInfo, IEntity<ISiteInfo>
 {
     #region 属性
@@ -61,6 +61,14 @@ public partial class SiteInfo : ISiteInfo, IEntity<ISiteInfo>
     [BindColumn("DefaultLanguageId", "此站点的默认语言的标识符。使用默认语言时设置0", "")]
     public Int32 DefaultLanguageId { get => _DefaultLanguageId; set { if (OnPropertyChanging("DefaultLanguageId", value)) { _DefaultLanguageId = value; OnPropertyChanged("DefaultLanguageId"); } } }
 
+    private Int32 _DefaultCurrenciesId;
+    /// <summary>此站点的默认货币的标识符。使用默认货币时设置0</summary>
+    [DisplayName("此站点的默认货币的标识符")]
+    [Description("此站点的默认货币的标识符。使用默认货币时设置0")]
+    [DataObjectField(false, false, false, 0)]
+    [BindColumn("DefaultCurrenciesId", "此站点的默认货币的标识符。使用默认货币时设置0", "")]
+    public Int32 DefaultCurrenciesId { get => _DefaultCurrenciesId; set { if (OnPropertyChanging("DefaultCurrenciesId", value)) { _DefaultCurrenciesId = value; OnPropertyChanged("DefaultCurrenciesId"); } } }
+
     private Int32 _DisplayOrder;
     /// <summary>获取或设置显示顺序</summary>
     [DisplayName("获取或设置显示顺序")]
@@ -73,7 +81,7 @@ public partial class SiteInfo : ISiteInfo, IEntity<ISiteInfo>
     /// <summary>公司名称</summary>
     [DisplayName("公司名称")]
     [Description("公司名称")]
-    [DataObjectField(false, false, true, 1000)]
+    [DataObjectField(false, false, true, 200)]
     [BindColumn("CompanyName", "公司名称", "")]
     public String CompanyName { get => _CompanyName; set { if (OnPropertyChanging("CompanyName", value)) { _CompanyName = value; OnPropertyChanged("CompanyName"); } } }
 
@@ -81,7 +89,7 @@ public partial class SiteInfo : ISiteInfo, IEntity<ISiteInfo>
     /// <summary>公司地址</summary>
     [DisplayName("公司地址")]
     [Description("公司地址")]
-    [DataObjectField(false, false, true, 1000)]
+    [DataObjectField(false, false, true, 200)]
     [BindColumn("CompanyAddress", "公司地址", "")]
     public String CompanyAddress { get => _CompanyAddress; set { if (OnPropertyChanging("CompanyAddress", value)) { _CompanyAddress = value; OnPropertyChanged("CompanyAddress"); } } }
 
@@ -89,7 +97,7 @@ public partial class SiteInfo : ISiteInfo, IEntity<ISiteInfo>
     /// <summary>公司电话号码</summary>
     [DisplayName("公司电话号码")]
     [Description("公司电话号码")]
-    [DataObjectField(false, false, true, 1000)]
+    [DataObjectField(false, false, true, 50)]
     [BindColumn("CompanyPhoneNumber", "公司电话号码", "")]
     public String CompanyPhoneNumber { get => _CompanyPhoneNumber; set { if (OnPropertyChanging("CompanyPhoneNumber", value)) { _CompanyPhoneNumber = value; OnPropertyChanged("CompanyPhoneNumber"); } } }
 
@@ -97,7 +105,7 @@ public partial class SiteInfo : ISiteInfo, IEntity<ISiteInfo>
     /// <summary>公司VAT。用于欧盟国家/地区</summary>
     [DisplayName("公司VAT")]
     [Description("公司VAT。用于欧盟国家/地区")]
-    [DataObjectField(false, false, true, 1000)]
+    [DataObjectField(false, false, true, 100)]
     [BindColumn("CompanyVat", "公司VAT。用于欧盟国家/地区", "")]
     public String CompanyVat { get => _CompanyVat; set { if (OnPropertyChanging("CompanyVat", value)) { _CompanyVat = value; OnPropertyChanged("CompanyVat"); } } }
 
@@ -153,7 +161,7 @@ public partial class SiteInfo : ISiteInfo, IEntity<ISiteInfo>
     /// <summary>公司客服QQ</summary>
     [DisplayName("公司客服QQ")]
     [Description("公司客服QQ")]
-    [DataObjectField(false, false, true, 500)]
+    [DataObjectField(false, false, true, 200)]
     [BindColumn("QQ", "公司客服QQ", "")]
     public String QQ { get => _QQ; set { if (OnPropertyChanging("QQ", value)) { _QQ = value; OnPropertyChanged("QQ"); } } }
 
@@ -193,7 +201,7 @@ public partial class SiteInfo : ISiteInfo, IEntity<ISiteInfo>
     /// <summary>网站备案号其它等信息</summary>
     [DisplayName("网站备案号其它等信息")]
     [Description("网站备案号其它等信息")]
-    [DataObjectField(false, false, true, 2000)]
+    [DataObjectField(false, false, true, 1000)]
     [BindColumn("SiteCode", "网站备案号其它等信息", "")]
     public String SiteCode { get => _SiteCode; set { if (OnPropertyChanging("SiteCode", value)) { _SiteCode = value; OnPropertyChanged("SiteCode"); } } }
 
@@ -217,7 +225,7 @@ public partial class SiteInfo : ISiteInfo, IEntity<ISiteInfo>
     /// <summary>网站SEO描述</summary>
     [DisplayName("网站SEO描述")]
     [Description("网站SEO描述")]
-    [DataObjectField(false, false, true, 2000)]
+    [DataObjectField(false, false, true, 1000)]
     [BindColumn("SeoDescribe", "网站SEO描述", "")]
     public String SeoDescribe { get => _SeoDescribe; set { if (OnPropertyChanging("SeoDescribe", value)) { _SeoDescribe = value; OnPropertyChanged("SeoDescribe"); } } }
 
@@ -225,7 +233,7 @@ public partial class SiteInfo : ISiteInfo, IEntity<ISiteInfo>
     /// <summary>网站版权等信息</summary>
     [DisplayName("网站版权等信息")]
     [Description("网站版权等信息")]
-    [DataObjectField(false, false, true, 2000)]
+    [DataObjectField(false, false, true, 1000)]
     [BindColumn("SiteCopyright", "网站版权等信息", "")]
     public String SiteCopyright { get => _SiteCopyright; set { if (OnPropertyChanging("SiteCopyright", value)) { _SiteCopyright = value; OnPropertyChanged("SiteCopyright"); } } }
 
@@ -252,6 +260,22 @@ public partial class SiteInfo : ISiteInfo, IEntity<ISiteInfo>
     [DataObjectField(false, false, true, 50)]
     [BindColumn("Registration", "备案号", "")]
     public String Registration { get => _Registration; set { if (OnPropertyChanging("Registration", value)) { _Registration = value; OnPropertyChanged("Registration"); } } }
+
+    private String _HeaderCustomHtml;
+    /// <summary>头部自定义HTML值</summary>
+    [DisplayName("头部自定义HTML值")]
+    [Description("头部自定义HTML值")]
+    [DataObjectField(false, false, true, 1000)]
+    [BindColumn("HeaderCustomHtml", "头部自定义HTML值", "")]
+    public String HeaderCustomHtml { get => _HeaderCustomHtml; set { if (OnPropertyChanging("HeaderCustomHtml", value)) { _HeaderCustomHtml = value; OnPropertyChanged("HeaderCustomHtml"); } } }
+
+    private String _FooterCustomHtml;
+    /// <summary>页脚自定义HTML值</summary>
+    [DisplayName("页脚自定义HTML值")]
+    [Description("页脚自定义HTML值")]
+    [DataObjectField(false, false, true, 1000)]
+    [BindColumn("FooterCustomHtml", "页脚自定义HTML值", "")]
+    public String FooterCustomHtml { get => _FooterCustomHtml; set { if (OnPropertyChanging("FooterCustomHtml", value)) { _FooterCustomHtml = value; OnPropertyChanged("FooterCustomHtml"); } } }
 
     private String _CreateUser;
     /// <summary>创建者</summary>
@@ -328,6 +352,7 @@ public partial class SiteInfo : ISiteInfo, IEntity<ISiteInfo>
         Hosts = model.Hosts;
         SslEnabled = model.SslEnabled;
         DefaultLanguageId = model.DefaultLanguageId;
+        DefaultCurrenciesId = model.DefaultCurrenciesId;
         DisplayOrder = model.DisplayOrder;
         CompanyName = model.CompanyName;
         CompanyAddress = model.CompanyAddress;
@@ -352,6 +377,8 @@ public partial class SiteInfo : ISiteInfo, IEntity<ISiteInfo>
         Status = model.Status;
         CloseInfo = model.CloseInfo;
         Registration = model.Registration;
+        HeaderCustomHtml = model.HeaderCustomHtml;
+        FooterCustomHtml = model.FooterCustomHtml;
         CreateUser = model.CreateUser;
         CreateUserID = model.CreateUserID;
         CreateTime = model.CreateTime;
@@ -376,6 +403,7 @@ public partial class SiteInfo : ISiteInfo, IEntity<ISiteInfo>
             "Hosts" => _Hosts,
             "SslEnabled" => _SslEnabled,
             "DefaultLanguageId" => _DefaultLanguageId,
+            "DefaultCurrenciesId" => _DefaultCurrenciesId,
             "DisplayOrder" => _DisplayOrder,
             "CompanyName" => _CompanyName,
             "CompanyAddress" => _CompanyAddress,
@@ -400,6 +428,8 @@ public partial class SiteInfo : ISiteInfo, IEntity<ISiteInfo>
             "Status" => _Status,
             "CloseInfo" => _CloseInfo,
             "Registration" => _Registration,
+            "HeaderCustomHtml" => _HeaderCustomHtml,
+            "FooterCustomHtml" => _FooterCustomHtml,
             "CreateUser" => _CreateUser,
             "CreateUserID" => _CreateUserID,
             "CreateTime" => _CreateTime,
@@ -419,6 +449,7 @@ public partial class SiteInfo : ISiteInfo, IEntity<ISiteInfo>
                 case "Hosts": _Hosts = Convert.ToString(value); break;
                 case "SslEnabled": _SslEnabled = value.ToBoolean(); break;
                 case "DefaultLanguageId": _DefaultLanguageId = value.ToInt(); break;
+                case "DefaultCurrenciesId": _DefaultCurrenciesId = value.ToInt(); break;
                 case "DisplayOrder": _DisplayOrder = value.ToInt(); break;
                 case "CompanyName": _CompanyName = Convert.ToString(value); break;
                 case "CompanyAddress": _CompanyAddress = Convert.ToString(value); break;
@@ -443,6 +474,8 @@ public partial class SiteInfo : ISiteInfo, IEntity<ISiteInfo>
                 case "Status": _Status = Convert.ToInt16(value); break;
                 case "CloseInfo": _CloseInfo = Convert.ToString(value); break;
                 case "Registration": _Registration = Convert.ToString(value); break;
+                case "HeaderCustomHtml": _HeaderCustomHtml = Convert.ToString(value); break;
+                case "FooterCustomHtml": _FooterCustomHtml = Convert.ToString(value); break;
                 case "CreateUser": _CreateUser = Convert.ToString(value); break;
                 case "CreateUserID": _CreateUserID = value.ToInt(); break;
                 case "CreateTime": _CreateTime = value.ToDateTime(); break;
@@ -501,6 +534,9 @@ public partial class SiteInfo : ISiteInfo, IEntity<ISiteInfo>
 
         /// <summary>此站点的默认语言的标识符。使用默认语言时设置0</summary>
         public static readonly Field DefaultLanguageId = FindByName("DefaultLanguageId");
+
+        /// <summary>此站点的默认货币的标识符。使用默认货币时设置0</summary>
+        public static readonly Field DefaultCurrenciesId = FindByName("DefaultCurrenciesId");
 
         /// <summary>获取或设置显示顺序</summary>
         public static readonly Field DisplayOrder = FindByName("DisplayOrder");
@@ -574,6 +610,12 @@ public partial class SiteInfo : ISiteInfo, IEntity<ISiteInfo>
         /// <summary>备案号</summary>
         public static readonly Field Registration = FindByName("Registration");
 
+        /// <summary>头部自定义HTML值</summary>
+        public static readonly Field HeaderCustomHtml = FindByName("HeaderCustomHtml");
+
+        /// <summary>页脚自定义HTML值</summary>
+        public static readonly Field FooterCustomHtml = FindByName("FooterCustomHtml");
+
         /// <summary>创建者</summary>
         public static readonly Field CreateUser = FindByName("CreateUser");
 
@@ -618,6 +660,9 @@ public partial class SiteInfo : ISiteInfo, IEntity<ISiteInfo>
 
         /// <summary>此站点的默认语言的标识符。使用默认语言时设置0</summary>
         public const String DefaultLanguageId = "DefaultLanguageId";
+
+        /// <summary>此站点的默认货币的标识符。使用默认货币时设置0</summary>
+        public const String DefaultCurrenciesId = "DefaultCurrenciesId";
 
         /// <summary>获取或设置显示顺序</summary>
         public const String DisplayOrder = "DisplayOrder";
@@ -690,6 +735,12 @@ public partial class SiteInfo : ISiteInfo, IEntity<ISiteInfo>
 
         /// <summary>备案号</summary>
         public const String Registration = "Registration";
+
+        /// <summary>头部自定义HTML值</summary>
+        public const String HeaderCustomHtml = "HeaderCustomHtml";
+
+        /// <summary>页脚自定义HTML值</summary>
+        public const String FooterCustomHtml = "FooterCustomHtml";
 
         /// <summary>创建者</summary>
         public const String CreateUser = "CreateUser";
