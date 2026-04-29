@@ -1,7 +1,4 @@
-﻿using DH.Core.Infrastructure;
-using DH.Security;
-
-using NewLife.Caching;
+﻿using NewLife.Caching;
 
 using Pek.Helpers;
 using Pek.Security;
@@ -32,7 +29,7 @@ public partial class CheckSignature {
         if (time > DateTime.Now.AddSeconds(DHSetting.Current.SignatureExpire)) return 2;
         if (time < DateTime.Now.AddSeconds(-DHSetting.Current.SignatureExpire)) return 3;
 
-        var _cache = EngineContext.Current.Resolve<ICache>();
+        var _cache = Cache.Default; //EngineContext.Current.Resolve<ICache>();
         if (_cache.ContainsKey(signature))
         {
             return 4;
@@ -90,7 +87,7 @@ public partial class CheckSignature {
 
         if (CheckType == 0)
         {
-            var _cache = EngineContext.Current.Resolve<ICache>();
+            var _cache = Cache.Default; // EngineContext.Current.Resolve<ICache>();
             if (_cache.ContainsKey(signature))
             {
                 return 4;
@@ -133,7 +130,7 @@ public partial class CheckSignature {
         if (time > DateTime.Now.AddSeconds(DHSetting.Current.SignatureExpire)) return 2;
         if (time < DateTime.Now.AddSeconds(-DHSetting.Current.SignatureExpire)) return 3;
 
-        var _cache = EngineContext.Current.Resolve<ICache>();
+        var _cache = Cache.Default; // EngineContext.Current.Resolve<ICache>();
         if (_cache.ContainsKey(signature))
         {
             return 5;
