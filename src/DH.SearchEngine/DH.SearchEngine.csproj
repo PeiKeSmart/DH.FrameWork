@@ -88,9 +88,9 @@
 		<PackageReference Include="Lucene.JIEba.Segment.NetCore" Version="1.0.0" />
 		<PackageReference Include="Lucene.Net.QueryParser" Version="4.8.0-beta00017" />
 		<PackageReference Include="TinyPinyin.Net" Version="1.0.2" />
-		<PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="10.0.6" />
-		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="10.0.6" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.6" />
+		<PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="10.0.7" />
+		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="10.0.7" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.7" />
 	</ItemGroup>
 
 </Project>

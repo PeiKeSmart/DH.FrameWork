@@ -75,9 +75,9 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' != 'net9.0'">
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.6" />
-		<PackageReference Include="Microsoft.Extensions.Options" Version="10.0.6" />
-		<PackageReference Include="System.Text.Json" Version="10.0.6" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.7" />
+		<PackageReference Include="Microsoft.Extensions.Options" Version="10.0.7" />
+		<PackageReference Include="System.Text.Json" Version="10.0.7" />
 	</ItemGroup>
 	<ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.15" />
