@@ -102,7 +102,7 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
     /// <summary>用户其他权限</summary>
     [DisplayName("用户其他权限")]
     [Description("用户其他权限")]
-    [DataObjectField(false, false, true, 512)]
+    [DataObjectField(false, false, true, 2048)]
     [BindColumn("OtherPermissions", "用户其他权限", "")]
     public String OtherPermissions { get => _OtherPermissions; set { if (OnPropertyChanging("OtherPermissions", value)) { _OtherPermissions = value; OnPropertyChanged("OtherPermissions"); } } }
 
