@@ -87,11 +87,6 @@
   <Folder Name="/src/Libraries/Excel/">
     <Project Path="src/DH.Npoi/DH.Npoi.csproj" />
   </Folder>
-  <Folder Name="/src/Libraries/Excel/Magicodes.IE.EPPlus/">
-    <Project Path="src/DH.Magicodes.IE.Core/DH.Magicodes.IE.Core.csproj" />
-    <Project Path="src/DH.Magicodes.IE.EPPlus/DH.Magicodes.IE.EPPlus.csproj" />
-    <Project Path="src/DH.Magicodes.IE.Excel/DH.Magicodes.IE.Excel.csproj" />
-  </Folder>
   <Folder Name="/src/Libraries/LettuceEncrypt/">
     <Project Path="src/DH.AspNetCore.Kestrel.Certificates/DH.AspNetCore.Kestrel.Certificates.csproj" />
     <Project Path="src/DH.LettuceEncrypt.Azure/DH.LettuceEncrypt.Azure.csproj" />
@@ -112,7 +107,6 @@
     <Project Path="src/DH.PaySharp/DH.PaySharp.csproj" />
   </Folder>
   <Folder Name="/src/Libraries/Pdf/">
-    <Project Path="src/DH.Magicodes.IE.Pdf/DH.Magicodes.IE.Pdf.csproj" />
     <Project Path="src/DH.PdfSharpCore/DH.PdfSharpCore.csproj" />
     <Project Path="src/DH.QuestPDF/DH.QuestPDF.csproj" />
   </Folder>
@@ -131,9 +125,6 @@
   <Folder Name="/src/Libraries/SSE/">
     <Project Path="src/DH.AspNetCore.ServerSentEvents/DH.AspNetCore.ServerSentEvents.csproj" />
     <Project Path="src/DH.ServerSentEvent.Client/DH.ServerSentEvent.Client.csproj" />
-  </Folder>
-  <Folder Name="/src/Libraries/Word/">
-    <Project Path="src/DH.Magicodes.IE.Word/DH.Magicodes.IE.Word.csproj" />
   </Folder>
   <Folder Name="/src/Libraries/开放平台SDK/" />
   <Folder Name="/src/Libraries/开放平台SDK/又拍云/">
