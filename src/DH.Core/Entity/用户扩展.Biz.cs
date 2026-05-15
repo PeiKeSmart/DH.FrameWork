@@ -324,10 +324,15 @@ public partial class UserDetail : DHEntityBase<UserDetail>
 
         if (uId >= 0) exp &= _.ParentUId == uId;
 
+        var userExp = new WhereExpression();
+        if (!includeRole1) userExp &= UserE._.RoleID != 1;
+
         if (!key.IsNullOrWhiteSpace())
         {
-            exp &= _.Id.In(UserE.FindSQLWithKey(includeRole1 ? (UserE._.Mobile.Contains(key) | UserE._.Mail.Contains(key) | UserE._.Name.Contains(key)) : (UserE._.RoleID != 1 & (UserE._.Mobile.Contains(key) | UserE._.Mail.Contains(key) | UserE._.Name.Contains(key)))));
+            userExp &= UserE._.Mobile.Contains(key) | UserE._.Mail.Contains(key) | UserE._.Name.Contains(key);
         }
+
+        if (!userExp.IsEmpty) exp &= _.Id.In(UserE.FindSQLWithKey(userExp));
 
         return FindAll(exp, page);
     }
@@ -346,10 +351,15 @@ public partial class UserDetail : DHEntityBase<UserDetail>
         if (uId >= 0) exp &= _.ParentUId == uId;
         if (uType >= 0) exp &= _.UType == uType;
 
+        var userExp = new WhereExpression();
+        if (!includeRole1) userExp &= UserE._.RoleID != 1;
+
         if (!key.IsNullOrWhiteSpace())
         {
-            exp &= _.Id.In(UserE.FindSQLWithKey(includeRole1 ? (UserE._.Mobile.Contains(key) | UserE._.Mail.Contains(key) | UserE._.Name.Contains(key)) : (UserE._.RoleID != 1 & (UserE._.Mobile.Contains(key) | UserE._.Mail.Contains(key) | UserE._.Name.Contains(key)))));
+            userExp &= UserE._.Mobile.Contains(key) | UserE._.Mail.Contains(key) | UserE._.Name.Contains(key);
         }
+
+        if (!userExp.IsEmpty) exp &= _.Id.In(UserE.FindSQLWithKey(userExp));
 
         return FindAll(exp, page);
     }
