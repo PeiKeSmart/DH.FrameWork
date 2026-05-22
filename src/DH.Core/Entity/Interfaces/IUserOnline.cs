@@ -12,7 +12,7 @@ public partial interface IUserOnline
 {
     #region 属性
     /// <summary>编号</summary>
-    Int32 ID { get; set; }
+    Int64 Id { get; set; }
 
     /// <summary>用户。当前登录人</summary>
     Int32 UserID { get; set; }

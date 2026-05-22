@@ -692,7 +692,7 @@
     </Table>
     <Table Name="UserOnline" Description="用户在线" ConnName="Log">
       <Columns>
-        <Column Name="ID" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
+        <Column Name="Id" DataType="Int64" PrimaryKey="True" DataScale="time" Description="编号" />
         <Column Name="UserID" DataType="Int32" Description="用户。当前登录人" />
         <Column Name="Name" DataType="String" Master="True" Description="名称。当前登录人，或根据设备标识推算出来的使用人" />
         <Column Name="SessionID" DataType="String" Description="会话。Web的SessionID或Server的会话编号" />

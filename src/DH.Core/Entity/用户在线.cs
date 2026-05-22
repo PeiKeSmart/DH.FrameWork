@@ -24,13 +24,13 @@ namespace DH.Entity;
 public partial class UserOnline : IUserOnline, IEntity<IUserOnline>
 {
     #region 属性
-    private Int32 _ID;
+    private Int64 _Id;
     /// <summary>编号</summary>
     [DisplayName("编号")]
     [Description("编号")]
-    [DataObjectField(true, true, false, 0)]
-    [BindColumn("ID", "编号", "")]
-    public Int32 ID { get => _ID; set { if (OnPropertyChanging("ID", value)) { _ID = value; OnPropertyChanged("ID"); } } }
+    [DataObjectField(true, false, false, 0)]
+    [BindColumn("Id", "编号", "", DataScale = "time")]
+    public Int64 Id { get => _Id; set { if (OnPropertyChanging("Id", value)) { _Id = value; OnPropertyChanged("Id"); } } }
 
     private Int32 _UserID;
     /// <summary>用户。当前登录人</summary>
@@ -211,7 +211,7 @@ public partial class UserOnline : IUserOnline, IEntity<IUserOnline>
     /// <param name="model">模型</param>
     public void Copy(IUserOnline model)
     {
-        ID = model.ID;
+        Id = model.Id;
         UserID = model.UserID;
         Name = model.Name;
         SessionID = model.SessionID;
@@ -244,7 +244,7 @@ public partial class UserOnline : IUserOnline, IEntity<IUserOnline>
     {
         get => name switch
         {
-            "ID" => _ID,
+            "Id" => _Id,
             "UserID" => _UserID,
             "Name" => _Name,
             "SessionID" => _SessionID,
@@ -272,7 +272,7 @@ public partial class UserOnline : IUserOnline, IEntity<IUserOnline>
         {
             switch (name)
             {
-                case "ID": _ID = value.ToInt(); break;
+                case "Id": _Id = value.ToLong(); break;
                 case "UserID": _UserID = value.ToInt(); break;
                 case "Name": _Name = Convert.ToString(value); break;
                 case "SessionID": _SessionID = Convert.ToString(value); break;
@@ -304,6 +304,50 @@ public partial class UserOnline : IUserOnline, IEntity<IUserOnline>
     #endregion
 
     #region 扩展查询
+    /// <summary>根据编号查找</summary>
+    /// <param name="id">编号</param>
+    /// <returns>实体对象</returns>
+    public static UserOnline FindById(Int64 id)
+    {
+        if (id < 0) return null;
+
+        return Find(_.Id == id);
+    }
+    #endregion
+
+    #region 高级查询
+    /// <summary>高级查询</summary>
+    /// <param name="userId">用户。当前登录人</param>
+    /// <param name="sessionId">会话。Web的SessionID或Server的会话编号</param>
+    /// <param name="createTime">创建时间</param>
+    /// <param name="start">编号开始</param>
+    /// <param name="end">编号结束</param>
+    /// <param name="key">关键字</param>
+    /// <param name="page">分页参数信息。可携带统计和数据权限扩展查询等信息</param>
+    /// <returns>实体列表</returns>
+    public static IList<UserOnline> Search(Int32 userId, String sessionId, DateTime createTime, DateTime start, DateTime end, String key, PageParameter page)
+    {
+        var exp = new WhereExpression();
+
+        if (userId >= 0) exp &= _.UserID == userId;
+        if (!sessionId.IsNullOrEmpty()) exp &= _.SessionID == sessionId;
+        exp &= _.Id.Between(start, end, Meta.Factory.Snow);
+        if (!key.IsNullOrEmpty()) exp &= SearchWhereByKeys(key);
+
+        return FindAll(exp, page);
+    }
+    #endregion
+
+    #region 数据清理
+    /// <summary>清理指定时间段内的数据</summary>
+    /// <param name="start">开始时间。未指定时清理小于指定时间的所有数据</param>
+    /// <param name="end">结束时间</param>
+    /// <param name="maximumRows">最大删除行数。清理历史数据时，避免一次性删除过多导致数据库IO跟不上，0表示所有</param>
+    /// <returns>清理行数</returns>
+    public static Int32 DeleteWith(DateTime start, DateTime end, Int32 maximumRows = 0)
+    {
+        return Delete(_.Id.Between(start, end, Meta.Factory.Snow), maximumRows);
+    }
     #endregion
 
     #region 字段名
@@ -311,7 +355,7 @@ public partial class UserOnline : IUserOnline, IEntity<IUserOnline>
     public partial class _
     {
         /// <summary>编号</summary>
-        public static readonly Field ID = FindByName("ID");
+        public static readonly Field Id = FindByName("Id");
 
         /// <summary>用户。当前登录人</summary>
         public static readonly Field UserID = FindByName("UserID");
@@ -383,7 +427,7 @@ public partial class UserOnline : IUserOnline, IEntity<IUserOnline>
     public partial class __
     {
         /// <summary>编号</summary>
-        public const String ID = "ID";
+        public const String Id = "Id";
 
         /// <summary>用户。当前登录人</summary>
         public const String UserID = "UserID";
