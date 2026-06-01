@@ -177,7 +177,7 @@ public class UserService {
             UserStat stat = null;
             if (total != _onlines || list.Count > 0)
             {
-                if (set.EnableUserStat)
+                if (set.EnableUserStat1)
                 {
                     stat = UserStat.GetOrAdd(DateTime.Today);
                     if (stat != null)
@@ -234,7 +234,7 @@ public class UserService {
                 user.OnlineTime += olt.OnlineTime;
                 olt.Delete();
             }
-            if (set.EnableUserStat)
+            if (set.EnableUserStat1)
             {
                 var stat = UserStat.GetOrAdd(DateTime.Today);
                 foreach (var olt in olts)
@@ -257,7 +257,7 @@ public class UserService {
         if (_onlines == 0) return;
 
         var set = DHSetting.Current;
-        if (!set.EnableUserStat) return;
+        if (!set.EnableUserStat1) return;
 
         using var span = _tracer?.NewSpan("UserStat");
 

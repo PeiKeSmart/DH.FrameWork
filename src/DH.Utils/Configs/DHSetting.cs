@@ -379,12 +379,12 @@ public class DHSetting : Config<DHSetting>
     /// <summary>用户在线。是否记录用户在线信息，0表示不记录，1表示仅记录已登录用户，2表示记录所有访客。默认2</summary>
     [Description("用户在线。是否记录用户在线信息，0表示不记录，1表示仅记录已登录用户，2表示记录所有访客。默认2")]
     [Category("系统功能")]
-    public Int32 EnableUserOnline { get; set; } = 2;
+    public Int32 EnableUserOnline1 { get; set; } = 0;
 
     /// <summary>用户统计。是否统计用户访问，默认true</summary>
     [Description("用户统计。是否统计用户访问，默认true")]
     [Category("系统功能")]
-    public Boolean EnableUserStat { get; set; } = true;
+    public Boolean EnableUserStat1 { get; set; } = false;
 
     /// <summary>版权。留空表示不显示版权信息</summary>
     [Description("版权。留空表示不显示版权信息")]
