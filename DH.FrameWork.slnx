@@ -117,11 +117,6 @@
   <Folder Name="/src/Libraries/QRCode/">
     <Project Path="src/DH.QRCode/DH.QRCode.csproj" />
   </Folder>
-  <Folder Name="/src/Libraries/QRCode/BarCoder/">
-    <Project Path="src/DH.Barcoder.Renderer.Image/DH.Barcoder.Renderer.Image.csproj" />
-    <Project Path="src/DH.Barcoder.Renderer.Svg/DH.Barcoder.Renderer.Svg.csproj" />
-    <Project Path="src/DH.Barcoder/DH.Barcoder.csproj" />
-  </Folder>
   <Folder Name="/src/Libraries/SSE/">
     <Project Path="src/DH.AspNetCore.ServerSentEvents/DH.AspNetCore.ServerSentEvents.csproj" />
     <Project Path="src/DH.ServerSentEvent.Client/DH.ServerSentEvent.Client.csproj" />
