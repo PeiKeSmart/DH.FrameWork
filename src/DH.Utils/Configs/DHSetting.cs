@@ -3,8 +3,6 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 
-using DH.Extensions;
-
 using NewLife;
 using NewLife.Configuration;
 using NewLife.Security;

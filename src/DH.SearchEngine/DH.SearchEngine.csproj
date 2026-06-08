@@ -77,7 +77,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="DH.NCode" Version="4.22.2026.512-beta1150" />
+		<PackageReference Include="DH.NCode" Version="4.22.2026.513-beta1121" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.203">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
