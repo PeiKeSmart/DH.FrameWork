@@ -93,15 +93,6 @@
     <Project Path="src/DH.LettuceEncrypt/DH.LettuceEncrypt.csproj" />
   </Folder>
   <Folder Name="/src/Libraries/Pay/" />
-  <Folder Name="/src/Libraries/Pay/Payment/">
-    <Project Path="src/DH.Payment.Alipay/DH.Payment.Alipay.csproj" />
-    <Project Path="src/DH.Payment.JDPay/DH.Payment.JDPay.csproj" />
-    <Project Path="src/DH.Payment.LianLianPay/DH.Payment.LianLianPay.csproj" />
-    <Project Path="src/DH.Payment.PayPal/DH.Payment.PayPal.csproj" />
-    <Project Path="src/DH.Payment.QPay/DH.Payment.QPay.csproj" />
-    <Project Path="src/DH.Payment.UnionPay/DH.Payment.UnionPay.csproj" />
-    <Project Path="src/DH.Payment.WeChatPay/DH.Payment.WeChatPay.csproj" />
-  </Folder>
   <Folder Name="/src/Libraries/Pay/PaySharp/">
     <Project Path="src/DH.PaySharp.Allinpay/DH.PaySharp.Allinpay.csproj" />
     <Project Path="src/DH.PaySharp/DH.PaySharp.csproj" />
