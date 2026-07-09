@@ -1,4 +1,4 @@
-using NewLife;
+﻿using NewLife;
 using NewLife.Data;
 
 using System.ComponentModel;
@@ -12,7 +12,8 @@ using XCode.Membership;
 namespace DH.Entity;
 
 /// <summary>用户类型</summary>
-public enum UserKinds {
+public enum UserKinds
+{
     /// <summary>无</summary>
     [Description("无")]
     No = 1,
@@ -164,12 +165,12 @@ public partial class UserDetail : DHEntityBase<UserDetail>
     /// <returns>实体集合</returns>
     public static IEnumerable<UserDetail> FindAllByUType(Int16 uType)
     {
-        if (uType <= 0) return new List<UserDetail>();
+        if (uType <= 0) return [];
 
         // 实体缓存
         if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => (Int16)e.UType == uType);
 
-        return FindAll(_.UType == uType);
+        return FindAll(_.UType == uType, new PageParameter() { Desc = true, Sort = _.Id });
     }
 
     /// <summary>根据用户类型查找</summary>
@@ -256,57 +257,57 @@ public partial class UserDetail : DHEntityBase<UserDetail>
     }
 
 
-/// <summary>根据推荐人ID查找</summary>
-/// <param name="referrerId">推荐人ID</param>
-/// <returns>实体列表</returns>
-public static IList<UserDetail> FindAllByReferrerId(Int32 referrerId)
-{
-    if (referrerId <= 0) return new List<UserDetail>();
+    /// <summary>根据推荐人ID查找</summary>
+    /// <param name="referrerId">推荐人ID</param>
+    /// <returns>实体列表</returns>
+    public static IList<UserDetail> FindAllByReferrerId(Int32 referrerId)
+    {
+        if (referrerId <= 0) return new List<UserDetail>();
 
-    // 实体缓存
-    if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => e.ReferrerId == referrerId);
+        // 实体缓存
+        if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => e.ReferrerId == referrerId);
 
-    return FindAll(_.ReferrerId == referrerId);
-}
+        return FindAll(_.ReferrerId == referrerId);
+    }
 
-/// <summary>根据用户所属租户Id查找</summary>
-/// <param name="tenantId">用户所属租户Id</param>
-/// <returns>实体列表</returns>
-public static IList<UserDetail> FindAllByTenantId(Int32 tenantId)
-{
-    if (tenantId <= 0) return new List<UserDetail>();
+    /// <summary>根据用户所属租户Id查找</summary>
+    /// <param name="tenantId">用户所属租户Id</param>
+    /// <returns>实体列表</returns>
+    public static IList<UserDetail> FindAllByTenantId(Int32 tenantId)
+    {
+        if (tenantId <= 0) return new List<UserDetail>();
 
-    // 实体缓存
-    if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => e.TenantId == tenantId);
+        // 实体缓存
+        if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => e.TenantId == tenantId);
 
-    return FindAll(_.TenantId == tenantId);
-}
+        return FindAll(_.TenantId == tenantId);
+    }
 
-/// <summary>根据所属销售ID查找</summary>
-/// <param name="keFuId">所属销售ID</param>
-/// <returns>实体列表</returns>
-public static IList<UserDetail> FindAllByKeFuId(Int32 keFuId)
-{
-    if (keFuId <= 0) return new List<UserDetail>();
+    /// <summary>根据所属销售ID查找</summary>
+    /// <param name="keFuId">所属销售ID</param>
+    /// <returns>实体列表</returns>
+    public static IList<UserDetail> FindAllByKeFuId(Int32 keFuId)
+    {
+        if (keFuId <= 0) return new List<UserDetail>();
 
-    // 实体缓存
-    if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => e.KeFuId == keFuId);
+        // 实体缓存
+        if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => e.KeFuId == keFuId);
 
-    return FindAll(_.KeFuId == keFuId);
-}
+        return FindAll(_.KeFuId == keFuId);
+    }
 
-/// <summary>根据所属上级会员ID查找</summary>
-/// <param name="parentUId">所属上级会员ID</param>
-/// <returns>实体列表</returns>
-public static IList<UserDetail> FindAllByParentUId(Int32 parentUId)
-{
-    if (parentUId <= 0) return new List<UserDetail>();
+    /// <summary>根据所属上级会员ID查找</summary>
+    /// <param name="parentUId">所属上级会员ID</param>
+    /// <returns>实体列表</returns>
+    public static IList<UserDetail> FindAllByParentUId(Int32 parentUId)
+    {
+        if (parentUId <= 0) return new List<UserDetail>();
 
-    // 实体缓存
-    if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => e.ParentUId == parentUId);
+        // 实体缓存
+        if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => e.ParentUId == parentUId);
 
-    return FindAll(_.ParentUId == parentUId);
-}
+        return FindAll(_.ParentUId == parentUId);
+    }
     #endregion
 
     #region 高级查询
@@ -315,17 +316,50 @@ public static IList<UserDetail> FindAllByParentUId(Int32 parentUId)
     /// <param name="uId">用户Id</param>
     /// <param name="key">关键字</param>
     /// <param name="page">分页参数信息。可携带统计和数据权限扩展查询等信息</param>
+    /// <param name="includeRole1">是否包含角色ID为1的用户</param>
     /// <returns>实体列表</returns>
-    public static IList<UserDetail> Search(Int32 uId, String key, PageParameter page)
+    public static IList<UserDetail> Search(Int32 uId, String key, PageParameter page, Boolean includeRole1 = false)
     {
         var exp = new WhereExpression();
 
         if (uId >= 0) exp &= _.ParentUId == uId;
 
+        var userExp = new WhereExpression();
+        if (!includeRole1) userExp &= UserE._.RoleID != 1;
+
         if (!key.IsNullOrWhiteSpace())
         {
-            exp &= _.Id.In(UserE.FindSQLWithKey(UserE._.Mobile.Contains(key) | UserE._.Mail.Contains(key) | UserE._.Name.Contains(key)));
+            userExp &= UserE._.Mobile.Contains(key) | UserE._.Mail.Contains(key) | UserE._.Name.Contains(key);
         }
+
+        if (!userExp.IsEmpty) exp &= _.Id.In(UserE.FindSQLWithKey(userExp));
+
+        return FindAll(exp, page);
+    }
+
+    /// <summary>高级查询</summary>
+    /// <param name="uId">用户Id</param>
+    /// <param name="uType">用户类型</param>
+    /// <param name="key">关键字</param>
+    /// <param name="page">分页参数信息。可携带统计和数据权限扩展查询等信息</param>
+    /// <param name="includeRole1">是否包含角色ID为1的用户</param>
+    /// <returns>实体列表</returns>
+    public static IList<UserDetail> Search(Int32 uId, Int32 uType, String key, PageParameter page, Boolean includeRole1 = false)
+    {
+        var exp = new WhereExpression();
+
+        if (uId >= 0) exp &= _.ParentUId == uId;
+        if (uType >= 0) exp &= _.UType == uType;
+
+        var userExp = new WhereExpression();
+        if (!includeRole1) userExp &= UserE._.RoleID != 1;
+
+        if (!key.IsNullOrWhiteSpace())
+        {
+            userExp &= UserE._.Mobile.Contains(key) | UserE._.Mail.Contains(key) | UserE._.Name.Contains(key);
+        }
+
+        if (!userExp.IsEmpty) exp &= _.Id.In(UserE.FindSQLWithKey(userExp));
 
         return FindAll(exp, page);
     }

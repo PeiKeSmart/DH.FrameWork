@@ -1,5 +1,8 @@
-xcode
-IF ERRORLEVEL 1 (
-    echo xcode 命令执行失败，正在安装 .NET 工具...
-    dotnet tool install xcodetool -g --prerelease
+@echo off
+dotnet tool update xcodetool -g --prerelease
+if errorlevel 1 (
+	echo xcode 棰勮鐗堟洿鏂板け璐ワ紝姝ｅ湪瀹夎 .NET 宸ュ叿...
+	dotnet tool install xcodetool -g --prerelease
 )
+
+xcode %*

@@ -12,7 +12,7 @@ public partial class UserOnlineModel
 {
     #region 属性
     /// <summary>编号</summary>
-    public Int32 ID { get; set; }
+    public Int64 Id { get; set; }
 
     /// <summary>用户。当前登录人</summary>
     public Int32 UserID { get; set; }
@@ -83,7 +83,7 @@ public partial class UserOnlineModel
     /// <param name="model">模型</param>
     public void Copy(IUserOnline model)
     {
-        ID = model.ID;
+        Id = model.Id;
         UserID = model.UserID;
         Name = model.Name;
         SessionID = model.SessionID;

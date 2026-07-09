@@ -32,7 +32,6 @@
     <Project Path="plugins/DemoPlugin1/DemoPlugin1.csproj" />
   </Folder>
   <Folder Name="/Demo/Vue/">
-    <Project Path="demo/ScuiDemo/ScuiDemo.csproj" />
     <Project Path="demo/VueDemo/VueDemo.csproj" />
     <Project Path="demo/VueDemo1/VueDemo1.csproj" />
   </Folder>
@@ -88,32 +87,17 @@
   <Folder Name="/src/Libraries/Excel/">
     <Project Path="src/DH.Npoi/DH.Npoi.csproj" />
   </Folder>
-  <Folder Name="/src/Libraries/Excel/Magicodes.IE.EPPlus/">
-    <Project Path="src/DH.Magicodes.IE.Core/DH.Magicodes.IE.Core.csproj" />
-    <Project Path="src/DH.Magicodes.IE.EPPlus/DH.Magicodes.IE.EPPlus.csproj" />
-    <Project Path="src/DH.Magicodes.IE.Excel/DH.Magicodes.IE.Excel.csproj" />
-  </Folder>
   <Folder Name="/src/Libraries/LettuceEncrypt/">
     <Project Path="src/DH.AspNetCore.Kestrel.Certificates/DH.AspNetCore.Kestrel.Certificates.csproj" />
     <Project Path="src/DH.LettuceEncrypt.Azure/DH.LettuceEncrypt.Azure.csproj" />
     <Project Path="src/DH.LettuceEncrypt/DH.LettuceEncrypt.csproj" />
   </Folder>
   <Folder Name="/src/Libraries/Pay/" />
-  <Folder Name="/src/Libraries/Pay/Payment/">
-    <Project Path="src/DH.Payment.Alipay/DH.Payment.Alipay.csproj" />
-    <Project Path="src/DH.Payment.JDPay/DH.Payment.JDPay.csproj" />
-    <Project Path="src/DH.Payment.LianLianPay/DH.Payment.LianLianPay.csproj" />
-    <Project Path="src/DH.Payment.PayPal/DH.Payment.PayPal.csproj" />
-    <Project Path="src/DH.Payment.QPay/DH.Payment.QPay.csproj" />
-    <Project Path="src/DH.Payment.UnionPay/DH.Payment.UnionPay.csproj" />
-    <Project Path="src/DH.Payment.WeChatPay/DH.Payment.WeChatPay.csproj" />
-  </Folder>
   <Folder Name="/src/Libraries/Pay/PaySharp/">
     <Project Path="src/DH.PaySharp.Allinpay/DH.PaySharp.Allinpay.csproj" />
     <Project Path="src/DH.PaySharp/DH.PaySharp.csproj" />
   </Folder>
   <Folder Name="/src/Libraries/Pdf/">
-    <Project Path="src/DH.Magicodes.IE.Pdf/DH.Magicodes.IE.Pdf.csproj" />
     <Project Path="src/DH.PdfSharpCore/DH.PdfSharpCore.csproj" />
     <Project Path="src/DH.QuestPDF/DH.QuestPDF.csproj" />
   </Folder>
@@ -124,17 +108,9 @@
   <Folder Name="/src/Libraries/QRCode/">
     <Project Path="src/DH.QRCode/DH.QRCode.csproj" />
   </Folder>
-  <Folder Name="/src/Libraries/QRCode/BarCoder/">
-    <Project Path="src/DH.Barcoder.Renderer.Image/DH.Barcoder.Renderer.Image.csproj" />
-    <Project Path="src/DH.Barcoder.Renderer.Svg/DH.Barcoder.Renderer.Svg.csproj" />
-    <Project Path="src/DH.Barcoder/DH.Barcoder.csproj" />
-  </Folder>
   <Folder Name="/src/Libraries/SSE/">
     <Project Path="src/DH.AspNetCore.ServerSentEvents/DH.AspNetCore.ServerSentEvents.csproj" />
     <Project Path="src/DH.ServerSentEvent.Client/DH.ServerSentEvent.Client.csproj" />
-  </Folder>
-  <Folder Name="/src/Libraries/Word/">
-    <Project Path="src/DH.Magicodes.IE.Word/DH.Magicodes.IE.Word.csproj" />
   </Folder>
   <Folder Name="/src/Libraries/开放平台SDK/" />
   <Folder Name="/src/Libraries/开放平台SDK/又拍云/">

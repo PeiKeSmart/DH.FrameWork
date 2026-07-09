@@ -43,7 +43,7 @@ public partial class CheckSignature {
 
         token ??= Token;
         var array = new string[] { timestamp.ToString(), nonce, token };
-        Array.Sort(array);  //升序
+        Array.Sort(array, StringComparer.Ordinal);  //升序（使用 Ordinal 确保跨环境排序一致）
         var text = string.Join("", array); //在指定 String 数组的每个元素之间串联指定的分隔符 String，从而产生单个串联的字符串
                                               //text = DESEncrypt.Encrypt(text, 0);
         text = Encrypt.GetSha1(text);
@@ -102,7 +102,7 @@ public partial class CheckSignature {
 
         token ??= Token;
         var array = new string[] { timestamp.ToString(), nonce, token };
-        Array.Sort(array);  //升序
+        Array.Sort(array, StringComparer.Ordinal);  //升序（使用 Ordinal 确保跨环境排序一致）
         var text = string.Join("", array); //在指定 String 数组的每个元素之间串联指定的分隔符 String，从而产生单个串联的字符串
         //text = DESEncrypt.Encrypt(text, 0);
         text = Encrypt.GetSha1(text);
