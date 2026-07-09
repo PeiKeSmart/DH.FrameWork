@@ -122,6 +122,14 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
     [BindColumn("PositionIds", "用户所在多岗位", "")]
     public String PositionIds { get => _PositionIds; set { if (OnPropertyChanging("PositionIds", value)) { _PositionIds = value; OnPropertyChanged("PositionIds"); } } }
 
+    private String _Position;
+    /// <summary>职务</summary>
+    [DisplayName("职务")]
+    [Description("职务")]
+    [DataObjectField(false, false, true, 200)]
+    [BindColumn("Position", "职务", "")]
+    public String Position { get => _Position; set { if (OnPropertyChanging("Position", value)) { _Position = value; OnPropertyChanged("Position"); } } }
+
     private String _TrueName;
     /// <summary>真实姓名</summary>
     [DisplayName("真实姓名")]
@@ -646,6 +654,7 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
         OtherPermissions = model.OtherPermissions;
         DepartmentIds = model.DepartmentIds;
         PositionIds = model.PositionIds;
+        Position = model.Position;
         TrueName = model.TrueName;
         PayPwd = model.PayPwd;
         AuthState = model.AuthState;
@@ -732,6 +741,7 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
             "OtherPermissions" => _OtherPermissions,
             "DepartmentIds" => _DepartmentIds,
             "PositionIds" => _PositionIds,
+            "Position" => _Position,
             "TrueName" => _TrueName,
             "PayPwd" => _PayPwd,
             "AuthState" => _AuthState,
@@ -813,6 +823,7 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
                 case "OtherPermissions": _OtherPermissions = Convert.ToString(value); break;
                 case "DepartmentIds": _DepartmentIds = Convert.ToString(value); break;
                 case "PositionIds": _PositionIds = Convert.ToString(value); break;
+                case "Position": _Position = Convert.ToString(value); break;
                 case "TrueName": _TrueName = Convert.ToString(value); break;
                 case "PayPwd": _PayPwd = Convert.ToString(value); break;
                 case "AuthState": _AuthState = Convert.ToInt16(value); break;
@@ -985,6 +996,9 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
 
         /// <summary>用户所在多岗位</summary>
         public static readonly Field PositionIds = FindByName("PositionIds");
+
+        /// <summary>职务</summary>
+        public static readonly Field Position = FindByName("Position");
 
         /// <summary>真实姓名</summary>
         public static readonly Field TrueName = FindByName("TrueName");
@@ -1216,6 +1230,9 @@ public partial class UserDetail : IUserDetail, IEntity<IUserDetail>
 
         /// <summary>用户所在多岗位</summary>
         public const String PositionIds = "PositionIds";
+
+        /// <summary>职务</summary>
+        public const String Position = "Position";
 
         /// <summary>真实姓名</summary>
         public const String TrueName = "TrueName";
