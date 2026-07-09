@@ -435,13 +435,10 @@ public class VerifyCode
     /// <returns></returns>
     private SKPaint CreatePaint(SKColor color, float fontSize)
     {
-        SkiaSharp.SKTypeface font = SKTypeface.FromFamilyName(null, SKFontStyleWeight.SemiBold, SKFontStyleWidth.ExtraCondensed, SKFontStyleSlant.Upright);
         SKPaint paint = new SKPaint();
 
         paint.IsAntialias = true;
         paint.Color = color;
-        paint.Typeface = font;
-        paint.TextSize = fontSize;
         return paint;
     }
 
@@ -473,31 +470,28 @@ public class VerifyCode
                 // 将文字写到画布上
                 var drawStyle = new SKPaint();
                 drawStyle.IsAntialias = true;
-                drawStyle.TextSize = SetFontSize;
+                drawStyle.Color = SetFontColor;
                 char[] chars = SetVerifyCodeText.ToCharArray();
+                using var typeface = SKTypeface.FromFamilyName(SetFontFamily, SKFontStyleWeight.SemiBold, SKFontStyleWidth.ExtraCondensed, SKFontStyleSlant.Upright);
 
                 for (Int32 i = 0; i < chars.Length; i++)
                 {
-                    var font = SKTypeface.FromFamilyName(SetFontFamily, SKFontStyleWeight.SemiBold, SKFontStyleWidth.ExtraCondensed, SKFontStyleSlant.Upright);
+                    using var font = new SKFont(typeface, SetFontSize);
 
                     // 转动的度数
                     var angle = objRandom.Next(-30, 30);
 
+                    canvas.Save();
                     canvas.Translate(12, 12);
 
-                    float px = (i) * SetFontSize;
+                    float px = i * SetFontSize;
                     float py = SetHeight / 2;
 
                     canvas.RotateDegrees(angle, px, py);
 
-                    drawStyle.Typeface = font;
-                    drawStyle.Color = SetFontColor;
-
                     // 写字 (i + 1)* 16, 28
-                    canvas.DrawText(chars[i].ToString(), px, py, drawStyle);
-
-                    canvas.RotateDegrees(-angle, px, py);
-                    canvas.Translate(-12, -12);
+                    canvas.DrawText(chars[i].ToString(), px, py, SKTextAlign.Left, font, drawStyle);
+                    canvas.Restore();
                 }
 
                 //画随机干扰线
