@@ -74,9 +74,6 @@
     <Project Path="src/DH.BaiDuAipSdk/DH.BaiDuAipSdk.csproj" />
     <Project Path="src/DH.BDYYSDK/DH.BDYYSDK.csproj" />
   </Folder>
-  <Folder Name="/src/Libraries/Captcha/">
-    <Project Path="src/DH.SkiaCaptcha/DH.SkiaCaptcha.csproj" />
-  </Folder>
   <Folder Name="/src/Libraries/EasyNotice/">
     <Project Path="src/DH.EasyNotice.Dingtalk/DH.EasyNotice.Dingtalk.csproj" />
     <Project Path="src/DH.EasyNotice.Email/DH.EasyNotice.Email.csproj" />
