@@ -47,6 +47,9 @@ public partial interface IUserDetail
     /// <summary>用户所在多岗位</summary>
     String PositionIds { get; set; }
 
+    /// <summary>职务</summary>
+    String Position { get; set; }
+
     /// <summary>真实姓名</summary>
     String TrueName { get; set; }
 

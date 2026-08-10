@@ -101,11 +101,27 @@ public class TranslateMiddleware
                 // 执行其他中间件
                 await _next(context).ConfigureAwait(false);
 
+                // 根据响应的 Content-Type 判断是否为文本内容。二进制文件（Excel、图片等）直接透传，
+                // 避免被当作 UTF-8 文本翻译导致文件损坏，并引发 Content-Length 不匹配
+                if (!IsTextResponse(context.Response.ContentType))
+                {
+                    memStream.Position = 0;
+                    await memStream.CopyToAsync(responseOriginalBody).ConfigureAwait(false);
+                    context.Response.Body = responseOriginalBody;
+
+                    return;
+                }
+
                 //处理执行其他中间件后的ResponseBody
                 memStream.Position = 0;
                 var responseReader = new StreamReader(memStream, Encoding.UTF8);
                 var responseBody = await responseReader.ReadToEndAsync().ConfigureAwait(false);
-                memStream = new MemoryStream(Encoding.UTF8.GetBytes(WordsHelper.ToTraditionalChinese(responseBody)));
+                var bytes = Encoding.UTF8.GetBytes(WordsHelper.ToTraditionalChinese(responseBody));
+
+                // 翻译后字节数会变化，必须清除 Content-Length，交由 Kestrel 重新计算传输长度，否则报 Content-Length mismatch
+                context.Response.Headers.ContentLength = null;
+
+                memStream = new MemoryStream(bytes);
                 await memStream.CopyToAsync(responseOriginalBody).ConfigureAwait(false);
                 context.Response.Body = responseOriginalBody;
             }
@@ -114,5 +130,20 @@ public class TranslateMiddleware
                 await _next(context).ConfigureAwait(false);
             }
         }
+    }
+
+    /// <summary>
+    /// 判断响应内容类型是否为可翻译的文本类型
+    /// </summary>
+    /// <param name="contentType">响应内容类型</param>
+    /// <returns>是否为文本类型</returns>
+    private static Boolean IsTextResponse(String? contentType)
+    {
+        if (contentType.IsNullOrEmpty()) return false;
+
+        var mime = contentType.Split(';')[0].Trim().ToLowerInvariant();
+
+        return mime.StartsWith("text/") ||
+            mime is "application/json" or "application/xml" or "application/javascript" or "application/xhtml+xml";
     }
 }

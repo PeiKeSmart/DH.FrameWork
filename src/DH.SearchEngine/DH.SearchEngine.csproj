@@ -77,8 +77,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="DH.NCode" Version="4.22.2026.513-beta1121" />
-		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.203">
+		<PackageReference Include="DH.NCode" Version="4.24.2026.708-beta0703" />
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.300">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
@@ -86,7 +86,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Lucene.JIEba.Segment.NetCore" Version="1.0.0" />
-		<PackageReference Include="Lucene.Net.QueryParser" Version="4.8.0-beta00017" />
+		<PackageReference Include="Lucene.Net.QueryParser" Version="4.8.0-beta00018" />
 		<PackageReference Include="TinyPinyin.Net" Version="1.0.2" />
 		<PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="10.0.7" />
 		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="10.0.7" />

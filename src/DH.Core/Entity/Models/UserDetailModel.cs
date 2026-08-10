@@ -47,6 +47,9 @@ public partial class UserDetailModel
     /// <summary>用户所在多岗位</summary>
     public String PositionIds { get; set; }
 
+    /// <summary>职务</summary>
+    public String Position { get; set; }
+
     /// <summary>真实姓名</summary>
     public String TrueName { get; set; }
 
@@ -254,6 +257,7 @@ public partial class UserDetailModel
         OtherPermissions = model.OtherPermissions;
         DepartmentIds = model.DepartmentIds;
         PositionIds = model.PositionIds;
+        Position = model.Position;
         TrueName = model.TrueName;
         PayPwd = model.PayPwd;
         AuthState = model.AuthState;
