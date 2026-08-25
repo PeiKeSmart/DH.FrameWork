@@ -17,6 +17,9 @@ public partial class UserConnectModel
     /// <summary>提供商</summary>
     public String Provider { get; set; }
 
+    /// <summary>Sso提供商。如果不是Sso登录的就默认是Provider的值</summary>
+    public String SsoProvider { get; set; }
+
     /// <summary>用户。本地用户</summary>
     public Int32 UserID { get; set; }
 
@@ -82,6 +85,7 @@ public partial class UserConnectModel
     {
         ID = model.ID;
         Provider = model.Provider;
+        SsoProvider = model.SsoProvider;
         UserID = model.UserID;
         OpenID = model.OpenID;
         UnionID = model.UnionID;

@@ -45,6 +45,14 @@ public partial class UserConnect : IUserConnect, IEntity<IUserConnect>
     [BindColumn("Provider", "提供商", "")]
     public String Provider { get => _Provider; set { if (OnPropertyChanging("Provider", value)) { _Provider = value; OnPropertyChanged("Provider"); } } }
 
+    private String _SsoProvider;
+    /// <summary>Sso提供商。如果不是Sso登录的就默认是Provider的值</summary>
+    [DisplayName("Sso提供商")]
+    [Description("Sso提供商。如果不是Sso登录的就默认是Provider的值")]
+    [DataObjectField(false, false, true, 50)]
+    [BindColumn("SsoProvider", "Sso提供商。如果不是Sso登录的就默认是Provider的值", "")]
+    public String SsoProvider { get => _SsoProvider; set { if (OnPropertyChanging("SsoProvider", value)) { _SsoProvider = value; OnPropertyChanged("SsoProvider"); } } }
+
     private Int32 _UserID;
     /// <summary>用户。本地用户</summary>
     [DisplayName("用户")]
@@ -212,6 +220,7 @@ public partial class UserConnect : IUserConnect, IEntity<IUserConnect>
     {
         ID = model.ID;
         Provider = model.Provider;
+        SsoProvider = model.SsoProvider;
         UserID = model.UserID;
         OpenID = model.OpenID;
         UnionID = model.UnionID;
@@ -244,6 +253,7 @@ public partial class UserConnect : IUserConnect, IEntity<IUserConnect>
         {
             "ID" => _ID,
             "Provider" => _Provider,
+            "SsoProvider" => _SsoProvider,
             "UserID" => _UserID,
             "OpenID" => _OpenID,
             "UnionID" => _UnionID,
@@ -271,6 +281,7 @@ public partial class UserConnect : IUserConnect, IEntity<IUserConnect>
             {
                 case "ID": _ID = value.ToInt(); break;
                 case "Provider": _Provider = Convert.ToString(value); break;
+                case "SsoProvider": _SsoProvider = Convert.ToString(value); break;
                 case "UserID": _UserID = value.ToInt(); break;
                 case "OpenID": _OpenID = Convert.ToString(value); break;
                 case "UnionID": _UnionID = Convert.ToString(value); break;
@@ -369,6 +380,9 @@ public partial class UserConnect : IUserConnect, IEntity<IUserConnect>
         /// <summary>提供商</summary>
         public static readonly Field Provider = FindByName("Provider");
 
+        /// <summary>Sso提供商。如果不是Sso登录的就默认是Provider的值</summary>
+        public static readonly Field SsoProvider = FindByName("SsoProvider");
+
         /// <summary>用户。本地用户</summary>
         public static readonly Field UserID = FindByName("UserID");
 
@@ -437,6 +451,9 @@ public partial class UserConnect : IUserConnect, IEntity<IUserConnect>
 
         /// <summary>提供商</summary>
         public const String Provider = "Provider";
+
+        /// <summary>Sso提供商。如果不是Sso登录的就默认是Provider的值</summary>
+        public const String SsoProvider = "SsoProvider";
 
         /// <summary>用户。本地用户</summary>
         public const String UserID = "UserID";

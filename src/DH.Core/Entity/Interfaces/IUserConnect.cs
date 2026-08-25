@@ -17,6 +17,9 @@ public partial interface IUserConnect
     /// <summary>提供商</summary>
     String Provider { get; set; }
 
+    /// <summary>Sso提供商。如果不是Sso登录的就默认是Provider的值</summary>
+    String SsoProvider { get; set; }
+
     /// <summary>用户。本地用户</summary>
     Int32 UserID { get; set; }
 
