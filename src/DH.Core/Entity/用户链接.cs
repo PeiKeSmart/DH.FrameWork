@@ -17,7 +17,7 @@ namespace DH.Entity;
 [Serializable]
 [DataObject]
 [Description("用户链接。第三方绑定")]
-[BindIndex("IU_UserConnect_Provider_OpenID", true, "Provider,OpenID")]
+[BindIndex("IU_UserConnect_Provider_SsoProvider_OpenID", true, "Provider,SsoProvider,OpenID")]
 [BindIndex("IU_UserConnect_Provider_UnionID", true, "Provider,UnionID")]
 [BindIndex("IU_UserConnect_Provider_UserID", true, "Provider,UserID")]
 [BindIndex("IX_UserConnect_UserID", false, "UserID")]
@@ -324,6 +324,21 @@ public partial class UserConnect : IUserConnect, IEntity<IUserConnect>
         return FindAll(_.Provider == provider);
     }
 
+    /// <summary>根据提供商、Sso提供商查找</summary>
+    /// <param name="provider">提供商</param>
+    /// <param name="ssoProvider">Sso提供商</param>
+    /// <returns>实体列表</returns>
+    public static IList<UserConnect> FindAllByProviderAndSsoProvider(String provider, String ssoProvider)
+    {
+        if (provider.IsNullOrEmpty()) return [];
+        if (ssoProvider.IsNullOrEmpty()) return [];
+
+        // 实体缓存
+        if (Meta.Session.Count < 1000) return Meta.Cache.FindAll(e => e.Provider.EqualIgnoreCase(provider) && e.SsoProvider.EqualIgnoreCase(ssoProvider));
+
+        return FindAll(_.Provider == provider & _.SsoProvider == ssoProvider);
+    }
+
     /// <summary>根据全局标识查找</summary>
     /// <param name="unionId">全局标识</param>
     /// <returns>实体列表</returns>
@@ -341,6 +356,7 @@ public partial class UserConnect : IUserConnect, IEntity<IUserConnect>
     #region 高级查询
     /// <summary>高级查询</summary>
     /// <param name="provider">提供商</param>
+    /// <param name="ssoProvider">Sso提供商。如果不是Sso登录的就默认是Provider的值</param>
     /// <param name="userId">用户。本地用户</param>
     /// <param name="openId">身份标识。用户名、OpenID</param>
     /// <param name="unionId">全局标识。跨应用统一</param>
@@ -352,11 +368,12 @@ public partial class UserConnect : IUserConnect, IEntity<IUserConnect>
     /// <param name="key">关键字</param>
     /// <param name="page">分页参数信息。可携带统计和数据权限扩展查询等信息</param>
     /// <returns>实体列表</returns>
-    public static IList<UserConnect> Search(String provider, Int32 userId, String openId, String unionId, Int64 linkId, String deviceId, Boolean? enable, DateTime start, DateTime end, String key, PageParameter page)
+    public static IList<UserConnect> Search(String provider, String ssoProvider, Int32 userId, String openId, String unionId, Int64 linkId, String deviceId, Boolean? enable, DateTime start, DateTime end, String key, PageParameter page)
     {
         var exp = new WhereExpression();
 
         if (!provider.IsNullOrEmpty()) exp &= _.Provider == provider;
+        if (!ssoProvider.IsNullOrEmpty()) exp &= _.SsoProvider == ssoProvider;
         if (userId >= 0) exp &= _.UserID == userId;
         if (!openId.IsNullOrEmpty()) exp &= _.OpenID == openId;
         if (!unionId.IsNullOrEmpty()) exp &= _.UnionID == unionId;

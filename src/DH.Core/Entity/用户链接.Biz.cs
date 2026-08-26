@@ -107,6 +107,35 @@ public partial class UserConnect : DHEntityBase<UserConnect> {
         return Find(_.Provider == provider & _.OpenID == openid);
     }
 
+    /// <summary>根据提供商、Sso提供商、身份标识查找</summary>
+    /// <param name="provider">提供商</param>
+    /// <param name="ssoProvider">Sso提供商</param>
+    /// <param name="openId">身份标识</param>
+    /// <returns>实体对象</returns>
+    public static UserConnect? FindByProviderAndSsoProviderAndOpenID(String provider, String ssoProvider, String openId)
+    {
+        if (provider.IsNullOrEmpty() || ssoProvider.IsNullOrEmpty() || openId.IsNullOrEmpty()) return null;
+
+        if (Meta.Session.Count < 1000)
+            return Meta.Cache.Find(e => e.Provider.EqualIgnoreCase(provider) && e.SsoProvider.EqualIgnoreCase(ssoProvider) && e.OpenID.EqualIgnoreCase(openId));
+
+        return Find(_.Provider == provider & _.SsoProvider == ssoProvider & _.OpenID == openId);
+    }
+
+    /// <summary>根据提供商、身份标识查找旧版数据。仅匹配未设置Sso提供商的记录</summary>
+    /// <param name="provider">提供商</param>
+    /// <param name="openId">身份标识</param>
+    /// <returns>实体对象</returns>
+    public static UserConnect? FindLegacyByProviderAndOpenID(String provider, String openId)
+    {
+        if (provider.IsNullOrEmpty() || openId.IsNullOrEmpty()) return null;
+
+        if (Meta.Session.Count < 1000)
+            return Meta.Cache.Find(e => e.Provider.EqualIgnoreCase(provider) && e.OpenID.EqualIgnoreCase(openId) && e.SsoProvider.IsNullOrEmpty());
+
+        return Find(_.Provider == provider & _.OpenID == openId & (_.SsoProvider == null | _.SsoProvider == ""));
+    }
+
     /// <summary>根据提供商、第三方用户编号查找</summary>
     /// <param name="provider">提供商</param>
     /// <param name="LinkID">第三方用户编号</param>
@@ -231,6 +260,9 @@ public partial class UserConnect : DHEntityBase<UserConnect> {
         var uc = this;
         if (!client.NickName.IsNullOrEmpty()) uc.NickName = client.NickName;
         if (!client.Avatar.IsNullOrEmpty()) uc.Avatar = client.Avatar;
+
+        uc.SsoProvider = client.SsoProvider;
+        if (uc.SsoProvider.IsNullOrEmpty()) uc.SsoProvider = client.Name;
 
         uc.LinkID = client.UserID;
         uc.OpenID = client.OpenID;

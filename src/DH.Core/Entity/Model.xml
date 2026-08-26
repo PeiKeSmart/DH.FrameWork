@@ -514,7 +514,7 @@
         <Column Name="Remark" DataType="String" Length="5000" Description="备注" Category="扩展" />
       </Columns>
       <Indexes>
-        <Index Columns="Provider,OpenID" Unique="True" />
+        <Index Columns="Provider,SsoProvider,OpenID" Unique="True" />
         <Index Columns="Provider,UnionID" Unique="True" />
         <Index Columns="Provider,UserID" Unique="True" />
         <Index Columns="UserID" />

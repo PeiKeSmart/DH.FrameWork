@@ -368,6 +368,9 @@ public class OAuthClient {
     /// <summary>设备标识。</summary>
     public String DeviceId { get; set; }
 
+    /// <summary>实际来源平台。经由SSO登录时表示真实OAuth平台，否则默认为当前提供者</summary>
+    public String SsoProvider { get; set; }
+
     /// <summary>地区编码</summary>
     public Int32 AreaId { get; set; }
 
@@ -667,6 +670,9 @@ public class OAuthClient {
         if (dic.TryGetValue("Avatar", out str)) Avatar = str.Trim();
         if (dic.TryGetValue("headimgurl", out str)) Avatar = str.Trim();
         if (dic.TryGetValue("DeviceId", out str)) DeviceId = str.Trim();
+
+        if (dic.TryGetValue("ssoprovider", out str)) SsoProvider = str.Trim();
+        if (dic.TryGetValue("sso_provider", out str)) SsoProvider = str.Trim();
 
         if (dic.TryGetValue("issubscribe", out str)) IsSubScribe = str.ToBoolean();
 
