@@ -532,7 +532,7 @@ public class OAuthClient {
             {
                 var v = item.Value;
                 if (v is IList<Object> list)
-                    dic[item.Key] = "[" + list.Join() + "]";
+                    dic[item.Key] = list.ToJson();
                 else if (v is IDictionary<String, Object> dic2)
                     dic[item.Key] = dic2.ToJson();
                 else if (v != null)
@@ -575,9 +575,10 @@ public class OAuthClient {
         if (html.IsNullOrEmpty()) return null;
 
         html = html.Trim();
+        LastHtml = html;
         if (Log != null && Log.Enable) WriteLog("GetHtml " + html);
 
-        return html;
+        return LastHtml;
     }
 
     private HttpClient _Client;
@@ -627,8 +628,10 @@ public class OAuthClient {
     /// <param name="dic"></param>
     protected virtual void OnGetInfo(IDictionary<String, String> dic)
     {
-        if (dic.TryGetValue("openid", out var str)) OpenID = str.Trim();
-        if (dic.TryGetValue("unionid", out str)) UnionID = str.Trim();
+        // 空身份归一化为 null：IU_UserConnect_Provider_UnionID 唯一索引允许多个 NULL，但不允许多个空串。
+        // 部分 SSO 服务端（如创楚/登灏通行证）顶层 openid/unionid 可能返回空串，此处直接转为 null，避免以空串落库。
+        if (dic.TryGetValue("openid", out var str)) OpenID = String.IsNullOrEmpty(str = str.Trim()) ? null : str;
+        if (dic.TryGetValue("unionid", out str)) UnionID = String.IsNullOrEmpty(str = str.Trim()) ? null : str;
 
         if (dic.TryGetValue("uid", out str)) UserID = str.ToLong();
         if (dic.TryGetValue("userid", out str)) UserID = str.ToLong();
@@ -722,6 +725,72 @@ public class OAuthClient {
         // 获取用户信息出错时抛出异常
         // 2021-07-19 企业微信正常请求返回"errmsg": "ok"，导致登录报错，所以暂时注释
         if ((dic.TryGetValue("error", out str) || dic.TryGetValue("errmsg", out str)) && str != "ok") throw new InvalidOperationException(str);
+
+        // 顶层 openid 为空时，从原始响应的 connects 明细提取真实第三方身份
+        TryResolveConnectsIdentity();
+    }
+
+    /// <summary>从原始响应的 connects 明细提取真实第三方身份（顶层 openid 为空时）</summary>
+    /// <remarks>
+    /// 部分 SSO 服务端（如创楚/登灏通行证）的 userinfo 顶层 openid/unionid/provider 可能为空，
+    /// 真实第三方身份只放在 connects 数组里。此处取第一条 openid 非空的记录回填，
+    /// 避免本地用 Weixin_ 临时用户名 + 空 UnionID 落库触发 IU_UserConnect_Provider_UnionID 唯一索引冲突。
+    /// 仅当 OpenID 为空时生效，正常平台（顶层 openid 非空）零影响。
+    /// </remarks>
+    protected virtual void TryResolveConnectsIdentity()
+    {
+        if (!OpenID.IsNullOrWhiteSpace()) return;
+        if (LastHtml.IsNullOrWhiteSpace()) return;
+
+        try
+        {
+            var js = JsonParser.Decode(LastHtml);
+            if (!js.TryGetValue("connects", out var value) || value is not IList<Object> list || list.Count == 0) return;
+
+            foreach (var item in list)
+            {
+                if (item is not IDictionary<String, Object> map) continue;
+
+                var mapOpenId = map.TryGetValue("openid", out var openIdValue) ? openIdValue + "" : null;
+                if (mapOpenId.IsNullOrWhiteSpace()) continue;
+
+                var changed = false;
+                OpenID = mapOpenId;
+                changed = true;
+
+                if (UnionID.IsNullOrWhiteSpace() && map.TryGetValue("unionid", out var unionIdValue))
+                {
+                    var unionId = unionIdValue + "";
+                    if (!unionId.IsNullOrWhiteSpace())
+                    {
+                        UnionID = unionId;
+                        changed = true;
+                    }
+                }
+                if (SsoProvider.IsNullOrWhiteSpace())
+                {
+                    if (map.TryGetValue("ssoprovider", out var ssoProviderValue) && !(ssoProviderValue + "").IsNullOrWhiteSpace())
+                    {
+                        SsoProvider = ssoProviderValue + "";
+                        changed = true;
+                    }
+                    else if (map.TryGetValue("provider", out var providerValue) && !(providerValue + "").IsNullOrWhiteSpace())
+                    {
+                        SsoProvider = providerValue + "";
+                        changed = true;
+                    }
+                }
+
+                if (changed)
+                    XTrace.WriteLine($"OAuth从connects回填真实身份: Name={Name}, OpenID={OpenID}, UnionID={UnionID}, SsoProvider={SsoProvider}, UserName={UserName}");
+
+                break;
+            }
+        }
+        catch (Exception ex)
+        {
+            XTrace.WriteException(ex);
+        }
     }
 
     /// <summary>获取头像路径</summary>
