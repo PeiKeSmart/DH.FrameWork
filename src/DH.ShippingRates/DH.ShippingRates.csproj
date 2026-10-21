@@ -77,9 +77,10 @@
 	</ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
-    <PackageReference Include="System.ServiceModel.Http" Version="10.0.652802" />
-    <PackageReference Include="System.ServiceModel.Primitives" Version="10.0.652802" />
+    <PackageReference Include="System.ServiceModel.Http" Version="10.1.0" />
+    <PackageReference Include="System.ServiceModel.Primitives" Version="10.1.0" />
   </ItemGroup>
+  <!-- 10.x 只提供 net10.0 的 ref 资产，net9.0 会命中 ref/netcoreapp2.0/_._ 空占位导致找不到 WCF 类型，故 net9.0 保留 8.1.2 -->
   <ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
     <PackageReference Include="System.ServiceModel.Http" Version="8.1.2" />
     <PackageReference Include="System.ServiceModel.Primitives" Version="8.1.2" />

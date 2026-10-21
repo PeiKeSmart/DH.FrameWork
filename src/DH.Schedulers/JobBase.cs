@@ -126,4 +126,11 @@ public abstract class JobBase : IJob, Qz.IJob {
     /// </summary>
     /// <param name="context">上下文</param>
     public abstract Task Execute(IJobExecutionContext context);
+
+#if NET10_0_OR_GREATER
+    /// <summary>执行。Quartz 4.x 接口带取消令牌，默认转调旧签名，派生类无需改动</summary>
+    /// <param name="context">上下文</param>
+    /// <param name="cancellationToken">取消令牌</param>
+    ValueTask Qz.IJob.Execute(IJobExecutionContext context, CancellationToken cancellationToken) => new(Execute(context));
+#endif
 }

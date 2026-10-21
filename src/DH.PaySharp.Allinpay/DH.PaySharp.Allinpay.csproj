@@ -15,6 +15,8 @@
 		<OutputPath>..\Bin</OutputPath>
 		<DocumentationFile>$(OutputPath)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
 		<GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
+		<!-- 支付类库无静态资源，关闭 StaticWebAssets 避免新 SDK 的 scoped css bundle 校验报错 -->
+		<StaticWebAssetsEnabled>false</StaticWebAssetsEnabled>
 
     <AnalysisLevel>latest</AnalysisLevel>
     <WarningsAsErrors>CA2007</WarningsAsErrors>

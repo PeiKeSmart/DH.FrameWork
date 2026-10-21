@@ -41,9 +41,8 @@ public class TenantMiddleware {
         {
             if (changed)
             {
+                // 租户对象随上下文一起清理
                 TenantContext.Current = null;
-
-                ManageProvider.Provider.Tenant = null;
             }
         }
     }

@@ -21,7 +21,7 @@ internal class MqttController : MqttHandler
         }
     }
 
-    protected override ConnAck OnConnect(ConnectMessage message)
+    protected override MqttMessage OnConnect(ConnectMessage message)
     {
         _log.Info("客户端[{0}]连接 user={0} pass={1} clientId={2}", Session.Remote.EndPoint, message.Username, message.Password, message.ClientId);
         //将连接加入管理

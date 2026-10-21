@@ -208,8 +208,8 @@ public static class ManagerProviderHelper {
     {
         DefaultSpan.Current?.AppendTag($"SetTenant: {tenantId}");
 
-        TenantContext.Current = new TenantContext { TenantId = tenantId };
-        ManageProvider.Provider.Tenant = Tenant.FindById(tenantId);
+        // 新版 XCode 把租户对象并入 TenantContext，IManageProvider 不再暴露 Tenant
+        TenantContext.Current = new TenantContext { TenantId = tenantId, Tenant = Tenant.FindById(tenantId) };
     }
 
     /// <summary>生成令牌</summary>
