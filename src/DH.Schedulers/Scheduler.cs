@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Collections.Specialized;
+using System.Reflection;
 
 using NewLife.Reflection;
 
@@ -46,12 +47,45 @@ public class Scheduler : IScheduler {
             return _scheduler;
 #if NET10_0_OR_GREATER
         // Quartz 4.x 移除 StdSchedulerFactory，改用独立的调度器构建器
-        var factory = QuartzSchedulerBuilder.Create(null).Build();
+        var builder = QuartzSchedulerBuilder.Create();
+        // Quartz 3.x 的 StdSchedulerFactory 会自动加载程序目录下的 quartz.config，4.x 需显式加载以保持兼容
+        var properties = LoadLegacyProperties();
+        if (properties != null) builder = builder.UseProperties(properties);
+        var factory = builder.Build();
 #else
         var factory = new StdSchedulerFactory();
 #endif
         return await factory.GetScheduler().ConfigureAwait(false);
     }
+
+#if NET10_0_OR_GREATER
+    /// <summary>加载 Quartz 3.x 兼容的 quartz.config。文件不存在时返回 null，沿用 Quartz 默认配置</summary>
+    private static NameValueCollection LoadLegacyProperties()
+    {
+        var path = Path.Combine(AppContext.BaseDirectory, "quartz.config");
+        if (!File.Exists(path))
+        {
+            // Windows 文件系统大小写不敏感，兼容常见的文件名大小写写法
+            path = Path.Combine(AppContext.BaseDirectory, "Quartz.config");
+            if (!File.Exists(path)) return null;
+        }
+
+        var properties = new NameValueCollection();
+        foreach (var line in File.ReadAllLines(path))
+        {
+            var text = line.Trim();
+            if (text.Length == 0 || text[0] is '#' or '!') continue;
+
+            var index = text.IndexOf('=');
+            if (index <= 0) index = text.IndexOf(':');
+            if (index <= 0) continue;
+
+            properties[text[..index].Trim()] = text[(index + 1)..].Trim();
+        }
+
+        return properties.Count > 0 ? properties : null;
+    }
+#endif
 
     /// <summary>
     /// 暂停
@@ -81,7 +115,7 @@ public class Scheduler : IScheduler {
         if (_scheduler == null)
             return;
 #if NET10_0_OR_GREATER
-        if (_scheduler.Status == SchedulerStatus.Shutdown)
+        if (_scheduler.Status is SchedulerStatus.Shutdown or SchedulerStatus.ShuttingDown)
             return;
 #else
         if (_scheduler.IsShutdown)
